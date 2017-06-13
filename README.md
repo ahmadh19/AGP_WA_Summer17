@@ -23,6 +23,6 @@ After following the directions for checking out the project, you're ready to get
 
 1. Expand the project.  You should see a typical Web Application projecjt folder.  You'll see greater than marks and question marks on folders/files that were added.
 2. Ignore files that shouldn't be part of the shared repository because they're specific to you.
-   1. TBD
+    * Right-click on the following files/directories and select "Team" --> "Ignore": .classpath .project .settings
 3. Right-click on the project, go to [Maven](https://maven.apache.org/), then select "Update Project".  Click ok to update the project.
 4. Right-click on the project, go to "Run As" and select "Run on Server" and run on the server as usual.
