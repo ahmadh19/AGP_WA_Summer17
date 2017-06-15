@@ -360,7 +360,7 @@ public class Inscription implements Comparable<Inscription> {
 	 */
 	public String getCitation() {
 		String title = agp.getSummary();
-		if(agp.getSummary() == null)
+		if(title == null)
 			title = "Graffito";
 		
 		DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
