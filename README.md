@@ -8,7 +8,7 @@ Development of the AGP Web Application
 3. Click "Clone a Git Repository"
    * Add the link for this repository (https://github.com/sprenks18/AGP_WA_Development.git)
       * Enter your username and password for Github
-   * Select the master branch
+   * Select the `development` branch
    * The defaults are probably okay on this screen, BUT make sure to check the "Import all existing Eclipse projects after clone finishes" checkbox
    * Click `Finish`
 4. Import the project
