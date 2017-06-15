@@ -4,11 +4,13 @@
  * @author whitej
  * @author shnoudah -- added report generation functionality
  * @author sprenkle -- version 2.0 filtering
+ * @author ahmadh -- updates to 2.0 filtering (under Drawing Category)
  */
 
 var currentParams = new Array(); // the ending array of parameters
 requestUrl = "filter"; // request url for filtering
 reportUrl = "admin/report"; // report url for reports
+var filters = new Array(); // an array of the filters applied so far on the search
 
 /**
  * flips the arrow when a filter type (City, Property Type, Drawing Type, etc.)
@@ -85,12 +87,73 @@ function globalSearch() {
  *            the value used to identify the input so it can be unchecked later
  */
 function filterBy(type, label, choice, id) {
-	// addFilter(type, desc, choice, id);
+	
 	var desc = type + ": " + label;
+	filters.push(desc);
+	
+	// if the user has clicked on "All" under Drawing Category, update the filters accordingly
+	if(type == "Drawing Category" && label == "All") {
+		uncheckOtherCheckboxes("Drawing_Category");
+	} else if(type == "Drawing Category" && label != "All" ) {
+		uncheckAllCheckbox("Drawing_Category");
+	}
+	
 	if (termExists(desc)) {
 		removeSearchTermByName(desc);
 	} else {
 		addSearchTerm(type, label, choice, id);
+	}
+}
+
+/**
+ * helper function to uncheck other checkboxes once "All" is checked and update the filters
+ * 
+ * @param divId
+ *            id of the div class
+ */
+function uncheckOtherCheckboxes(divId) {
+	// uncheck the other checkboxes
+	var checkboxes = document.querySelectorAll('#' + divId + ' input[type = "checkbox"]');
+	for(var i = 0; i < checkboxes.length; i++) {
+		var checkbox = checkboxes[i];
+		if(checkbox.id!="dc0") {
+			checkbox.checked = false;
+		}
+	}
+	// update the filters
+	for(var i = 0; i< filters.length; i++) {
+		var filter = filters[i];
+		if(filter != "Drawing Category: All" && filter.startsWith("Drawing Category:")) {
+			if (termExists(filter)) {
+				removeSearchTermByName(filter);
+			}
+		}
+	}
+}
+
+/**
+ * helper function to uncheck "All" and update the filters
+ * 
+ * @param divId
+ *            id of the div class
+ */
+function uncheckAllCheckbox(divId) {
+	// uncheck "All" if something else is checked
+	var checkboxes = document.querySelectorAll('#' + divId + ' input[type = "checkbox"]');
+	for(var i = 0; i < checkboxes.length; i++) {
+		var checkbox = checkboxes[i];
+		if(checkbox.id=="dc0") {
+			checkbox.checked = false;
+		}
+	}
+	// update the filters
+	for(var i = 0; i< filters.length; i++) {
+		var filter = filters[i];
+		if(filter == "Drawing Category: All") {
+			if (termExists(filter)) {
+				removeSearchTermByName(filter);
+			}
+		}
 	}
 }
 
@@ -159,7 +222,6 @@ function addSearchTerm(type, label, choice, id) {
  */
 function removeSearchTerm(e) {
 	var desc = e.target.childNodes[0].textContent;
-	// alert(desc);
 	// alert(currentParams.indexOf(desc));
 	// currentParams.splice(currentParams.indexOf(desc), 1);
 	var type = desc.split(": ")[0];
