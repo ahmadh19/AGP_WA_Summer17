@@ -5,6 +5,8 @@ package edu.wlu.graffiti.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -25,12 +27,24 @@ public class Property {
 	private String pleiadesId="";
 	private String commentary="";
 	private String locationKey="";
+	private static final Map<String, Integer> numerals = new TreeMap<String, Integer>();
 
 	/**
 	 * 
 	 */
 	public Property() {
 		super();
+		
+		numerals.put("I", 1);
+		numerals.put("II", 2);
+		numerals.put("III", 3);
+		numerals.put("IV", 4);
+		numerals.put("V", 5);
+		numerals.put("VI", 6);
+		numerals.put("VII", 7);
+		numerals.put("VIII", 8);
+		numerals.put("IX", 9);
+		numerals.put("X", 10);
 	}
 	
 	public Property(int id) {
@@ -174,6 +188,28 @@ public class Property {
 	@JsonIgnore
 	public String getLocationKey() {
 		return locationKey;
+	}
+	
+	/**
+	 * @param shortName the short name of the insula (region.insula)
+	 * @param propertyNumber the property number
+	 * @return the URL of the PompeiiianPictures for the specific region, insula, and property number
+	 */
+	public String getPompeiiinPicturesURL() {
+		String shortName = insula.getShortName();
+		String numeral = shortName.substring(0, shortName.indexOf('.')).trim();
+		int region = numerals.get(numeral); // convert roman numeral to integer
+		
+		String insulaNum = shortName.substring(shortName.indexOf('.') + 1);
+		if(insulaNum.length() == 1)
+			insulaNum = "0" + insulaNum;
+
+		String propertyNumber = property_number;
+		if(propertyNumber.length() == 1)
+			propertyNumber = "0" + propertyNumber;
+		
+		
+		return "http://pompeiiinpictures.com/pompeiiinpictures/R"+region+"/"+region+" "+insulaNum+" "+propertyNumber+".htm";
 	}
 
 }
