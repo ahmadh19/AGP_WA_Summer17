@@ -36,8 +36,8 @@
 			<table class="main-table" style="margin-bottom: 30px;" border="1">
 				<tr>
 					<th>id</th>
-					<th>name</th>
-					<th>description/long name</th>
+					<th>name (short name)</th>
+					<th>description/long name (full name)</th>
 					<th>modern city</th>
 				</tr>
 				<c:forEach var="k" begin="${1}" end="${fn:length(requestScope.insula)}">
