@@ -55,6 +55,7 @@ CREATE TABLE agp_inscription_info (
     langner character varying(100),
     has_figural_component boolean DEFAULT false,
     individual_letter_heights text,
+    summary character varying(200), 
     is_greatest_hit_translation boolean DEFAULT false,
     is_greatest_hit_figural boolean DEFAULT false,
     epidoc text,
