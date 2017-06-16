@@ -3,6 +3,11 @@
 
 <%@ page import="edu.wlu.graffiti.controller.FilterController"%>
 
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); 
+});
+</script>
 
 <style type="text/css">
 .panel-default>.panel-heading {
@@ -286,9 +291,13 @@ button:disabled {
 					<input id="keyword" type="text" class="form-control"
 						style="border-radius: 4px; margin-bottom: 3px;" />
 					<button class="btn btn-default btn-custom"
-						onclick="contentSearch();" style="float: left;">Content</button>
+						onclick="contentSearch();" style="float: left;"
+						data-toggle="tooltip" data-placement="bottom"
+						title="Perform a search based on graffito content">Content</button>
 					<button class="btn btn-default btn-custom"
-						onclick="globalSearch();" style="float: right;">Global</button>
+						onclick="globalSearch();" style="float: right;"
+						data-toggle="tooltip" data-placement="bottom"
+						title="Perform a search based on all data fields">Global</button>
 				</div>
 			</div>
 		</div>
