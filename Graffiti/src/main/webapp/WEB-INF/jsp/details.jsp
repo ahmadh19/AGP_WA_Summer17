@@ -137,6 +137,30 @@ function backToResults(){
 </script>
 </head>
 <body>
+
+<script>
+	
+	//Function to hide measurements on load:
+	//Note: putting these in the head can cause problems, including endless loading
+	$(document).ready(function() {
+		$("#measurements").hide();
+		});
+	
+	//Toggles Measurements to hide and show the text
+	$(document).ready(function() {
+	$("#showMeasure").click(function(){
+		var button = $(this);
+		if (button.val() == "Show Measurements"){
+			button.val("Hide Measurements");
+			$("#measurements").show();
+		}else{
+			button.val("Show Measurements");
+			$("#measurements").hide();
+		}
+		//button.next().show());
+		});
+	});
+	</script>
 	<%@include file="/WEB-INF/jsp/header.jsp"%>
 
 	<c:set var="i" value="${requestScope.inscription}" />
@@ -337,35 +361,41 @@ function backToResults(){
 						</tr>
 					</c:if>
 					<c:if test="${not empty i.measurements}">
+
 						<tr>
-							<th class="propertyLabel">Measurements (cm):</th>
+							<th class="propertyLabel"><input type="button"
+								class="btn btn-agp" id="showMeasure"
+								value="Show Measurements"></th>
 							<td>
-								<ul>
-									<c:if test="${not empty i.agp.graffitoHeight }">
-										<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.graffitoLength }">
-										<li>Graffito Length: ${i.agp.graffitoLength }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.heightFromGround }">
-										<li>Height from Ground: ${i.agp.heightFromGround }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.minLetterHeight }">
-										<li>Min Letter Height: ${i.agp.minLetterHeight}</li>
-									</c:if>
-									<c:if test="${not empty i.agp.maxLetterHeight }">
-										<li>Max Letter Height: ${i.agp.maxLetterHeight }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.minLetterWithFlourishesHeight }">
-										<li>Min Letter Height with Flourishes:
-											${i.agp.minLetterWithFlourishesHeight }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.maxLetterWithFlourishesHeight }">
-										<li>Max Letter Height with Flourishes:
-											${i.agp.maxLetterWithFlourishesHeight }</li>
-									</c:if>
-								</ul>
+								<div id="measurements">
+									<ul>
+										<c:if test="${not empty i.agp.graffitoHeight }">
+											<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.graffitoLength }">
+											<li>Graffito Length: ${i.agp.graffitoLength }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.heightFromGround }">
+											<li>Height from Ground: ${i.agp.heightFromGround }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.minLetterHeight }">
+											<li>Min Letter Height: ${i.agp.minLetterHeight}</li>
+										</c:if>
+										<c:if test="${not empty i.agp.maxLetterHeight }">
+											<li>Max Letter Height: ${i.agp.maxLetterHeight }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.minLetterWithFlourishesHeight }">
+											<li>Min Letter Height with Flourishes:
+												${i.agp.minLetterWithFlourishesHeight }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.maxLetterWithFlourishesHeight }">
+											<li>Max Letter Height with Flourishes:
+												${i.agp.maxLetterWithFlourishesHeight }</li>
+										</c:if>
+									</ul>
+								</div>
 							</td>
+
 						</tr>
 					</c:if>
 					<c:if test="${not empty i.apparatusDisplay}">
