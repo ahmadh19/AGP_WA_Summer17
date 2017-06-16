@@ -191,8 +191,6 @@ public class Property {
 	}
 	
 	/**
-	 * @param shortName the short name of the insula (region.insula)
-	 * @param propertyNumber the property number
 	 * @return the URL of the PompeiiianPictures for the specific region, insula, and property number
 	 */
 	public String getPompeiiinPicturesURL() {

@@ -385,6 +385,10 @@ function backToResults(){
 						<td><a
 							href="http://www.edr-edr.it/edr_programmi/res_complex_comune.php?id_nr=${i.edrId}&lang=en">#${i.edrId}</a></td>
 					</tr>
+					<tr>
+						<th class="propertyLabel">Suggested Citation:</th>
+						<td>${i.citation}</td>
+					</tr>
 				</table>
 
 			</div>
