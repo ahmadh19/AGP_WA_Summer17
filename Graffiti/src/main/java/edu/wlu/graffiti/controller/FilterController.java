@@ -78,7 +78,7 @@ public class FilterController {
 			PROPERTY_TYPE_SEARCH_DESC, DRAWING_CATEGORY_SEARCH_DESC, WRITING_STYLE_SEARCH_DESC, "Language" };
 
 	private static String[] searchFields = { "content",
-			"content city insula.insula_name property.property_name property.property_types"
+			"content summary city insula.insula_name property.property_name property.property_types"
 					+ "cil description writing_style language edr_id bibliography"
 					+ " drawing.description_in_english drawing.description_in_latin drawing.drawing_tags",
 			CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, PROPERTY_ID_FIELD_NAME, PROPERTY_TYPES_FIELD_NAME,
@@ -126,7 +126,7 @@ public class FilterController {
 	}
 
 	private List<Inscription> searchResults(final HttpServletRequest request) {
-		System.out.println("We're in FilterController: " + request.getQueryString());
+		//System.out.println("We're in FilterController: " + request.getQueryString());
 
 		try {
 			client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
@@ -210,6 +210,7 @@ public class FilterController {
 					QueryBuilder exactQuery;
 
 					String[] a = fieldNames.get(i).split(" ");
+					
 					globalQuery = boolQuery();
 					fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7],
 							a[8]).fuzziness("AUTO");
@@ -270,7 +271,7 @@ public class FilterController {
 					.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME,
 							PROPERTY_ID_FIELD_NAME, "property.property_number", "property.property_name",
 							PROPERTY_TYPES_FIELD_NAME, "drawing.description_in_english", "drawing.description_in_latin",
-							"drawing.drawing_tag_ids", "content", "edr_id", "bibliography",
+							"drawing.drawing_tag_ids", "content", "summary", "edr_id", "bibliography",
 							WRITING_STYLE_IN_ENGLISH_FIELD_NAME, LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description",
 							"lagner", "comment", "content_translation", "measurements")
 					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();

@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Ancient Graffiti Project :: Property Info</title>
@@ -122,12 +122,18 @@ function generateMap(name) {
 						<li> --> <a
 					href="<%=request.getContextPath()%>/results?property=${ prop.id}">Graffiti
 						in this property</a>
-					</li> <!-- 
+					 <!-- </li>
 						<li>PBMP Property Info</li>
 						<li>Pleiades Link for this property</li>
 						 --> <!--  	</ul> -->
 				</td>
 			</tr>
+			<c:if test="${prop.insula.modernCity=='Pompeii'}">
+				<tr>
+					<th class="propertyLabel">Photos:</th>
+					<td><a href="${prop.pompeiiinPicturesURL}">PompeiiinPictures</a></td>
+				</tr>
+			</c:if>
 		</table>
 		<!-- 	<div id="pompeiimap" class="propertymapdiv"></div>  -->
 		<div id="map">

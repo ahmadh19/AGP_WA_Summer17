@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Ancient Graffiti Project :: Search ${requestScope.city}</title>
@@ -21,7 +21,7 @@
 	<%@include file="header.jsp"%>
 
 	<div class="container">
-		<h2>Search by Map</h2>
+		<h2>Search ${requestScope.city} by Map</h2>
 
 		<div id="map">
 			<p>${requestScope.message}</p>

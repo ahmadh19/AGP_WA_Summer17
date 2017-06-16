@@ -7,7 +7,7 @@
 <%@ page import="edu.wlu.graffiti.bean.PropertyType"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Ancient Graffiti Project :: Select City</title>
