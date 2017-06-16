@@ -1,6 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<html>
+<html lang="en">
 <head>
 <%@include file="/resources/common_head.txt"%>
 <title>Registration Form</title>

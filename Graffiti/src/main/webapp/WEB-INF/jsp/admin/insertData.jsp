@@ -4,7 +4,7 @@
 <%@ page import="java.util.*"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>UpdateTest</title>

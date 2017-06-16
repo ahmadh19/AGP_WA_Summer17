@@ -7,7 +7,7 @@
 <%@ page import="edu.wlu.graffiti.bean.DrawingTag"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Update a Graffito</title>
