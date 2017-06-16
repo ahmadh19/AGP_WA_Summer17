@@ -21,9 +21,11 @@ public class InsertPropertyTypes {
 	private static final String INSERT_PROPERTY_TYPE = "INSERT INTO propertyTypes "
 			+ "(name, description) VALUES (?,?)";
 
-	final static String newDBURL = "jdbc:postgresql://hopper.cs.wlu.edu/graffiti3";
-
 	static Connection newDBCon;
+	private static String DB_DRIVER;
+	private static String DB_URL;
+	private static String DB_USER;
+	private static String DB_PASSWORD;
 
 	public static void main(String[] args) {
 		init();
@@ -70,19 +72,29 @@ public class InsertPropertyTypes {
 	}
 
 	private static void init() {
+		getConfigurationProperties();
+
 		try {
-			Class.forName("org.postgresql.Driver");
+			Class.forName(DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			newDBCon = DriverManager.getConnection(newDBURL, "web", "");
-
+			newDBCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public static void getConfigurationProperties() {
+		Properties prop = Utils.getConfigurationProperties();
+
+		DB_DRIVER = prop.getProperty("db.driverClassName");
+		DB_URL = prop.getProperty("db.url");
+		DB_USER = prop.getProperty("db.user");
+		DB_PASSWORD = prop.getProperty("db.password");
 	}
 
 }
