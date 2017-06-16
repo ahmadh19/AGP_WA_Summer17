@@ -21,7 +21,7 @@
 	<%@include file="header.jsp"%>
 
 	<div class="container">
-		<h2>Search by Map</h2>
+		<h2>Search ${requestScope.city} by Map</h2>
 
 		<div id="map">
 			<p>${requestScope.message}</p>
