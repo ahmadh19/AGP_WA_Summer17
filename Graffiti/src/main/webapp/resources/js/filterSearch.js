@@ -4,7 +4,7 @@
  * @author whitej
  * @author shnoudah -- added report generation functionality
  * @author sprenkle -- version 2.0 filtering
- * @author ahmadh -- updates to 2.0 filtering (under Drawing Category)
+ * @author ahmadh -- version 2.1 filtering, includes bug fixes
  */
 
 var currentParams = new Array(); // the ending array of parameters
@@ -179,6 +179,7 @@ function addSearchTerm(type, label, choice, id) {
 		if( document.getElementById(id) != null )
 			document.getElementById(id).checked = true;
 
+		var list = document.createElement('li');
 		var label = document.createElement("label");
 		label.className = "label label-primary search-term-label";
 		label.onclick = removeSearchTerm;
@@ -206,9 +207,12 @@ function addSearchTerm(type, label, choice, id) {
 		label.appendChild(hiddenId);
 		label.appendChild(hiddenSearch);
 
+		list.appendChild(label);
+		
 		// currentParams.push(type + ": " + choice);
 		var searchTerms = document.getElementById("searchTerms");
-		searchTerms.appendChild(label);
+		//searchTerms.appendChild(label);
+		searchTerms.appendChild(list);
 		refineResults();
 	}
 }
@@ -231,7 +235,8 @@ function removeSearchTerm(e) {
 			document.getElementById(id).checked = false;
 		}
 	}
-	e.target.parentElement.removeChild(e.target);
+	//e.target.parentElement.removeChild(e.target);
+	e.target.parentElement.parentElement.removeChild(e.target.parentElement);
 	refineResults();
 }
 
@@ -250,7 +255,8 @@ function removeSearchTermBySpan(e) {
 		var id = e.target.parentElement.childNodes[2].textContent;
 		document.getElementById(id).checked = false;
 	}
-	e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+	//e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+	e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
 	refineResults();
 }
 

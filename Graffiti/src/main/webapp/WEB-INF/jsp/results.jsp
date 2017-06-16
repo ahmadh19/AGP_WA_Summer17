@@ -124,6 +124,10 @@ hr.main-table {
 .map-override1 {
 	position: static
 }
+ul#searchTerms li {
+    display:inline-block;
+    margin: 0 0 7px 0;
+}
 </style>
 </head>
 <body onload="updatePage();">
@@ -140,8 +144,8 @@ hr.main-table {
 		</div>
 
 		<div style="margin-left: 200px;">
-			<div style="width: 100%; float: left; padding-bottom: 10px;">
-				<div id="searchTerms" style="width: 475px"></div>
+			<div style="width: 475px; padding-bottom: 10px;">
+				<ul id="searchTerms" style="width: 525px; margin-left:-40px;"></ul>
 			</div>
 			<div id="search-results">
 				<%@include file="filter.jsp"%>
