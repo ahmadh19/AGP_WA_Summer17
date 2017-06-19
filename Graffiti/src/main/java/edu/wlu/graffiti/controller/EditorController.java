@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import edu.wlu.graffiti.bean.User;
 import edu.wlu.graffiti.dao.EditorDao;
+import edu.wlu.graffiti.dao.UserDao;
 
 /**
  * Handles editor-related functionality
@@ -22,6 +24,8 @@ public class EditorController {
 
 	@Resource
 	private EditorDao editorDao;
+	@Resource
+	private UserDao userDao;
 	
 	@RequestMapping(value = "/admin", method = RequestMethod.GET)
 	public String adminPage(final HttpServletRequest request) {
@@ -59,6 +63,49 @@ public class EditorController {
 
 		return "admin/addEditor";
 	}
+	
+	
+	
+	@RequestMapping(value = "/admin/changePassword", method = RequestMethod.GET)
+		public String ChangePassword(final HttpServletRequest request) {
+			return "admin/changePassword";
+	}
+	@RequestMapping(value = "/admin/changePassword", method = RequestMethod.POST)
+	public String changePassword(final HttpServletRequest request) {
+
+		String password1=request.getParameter("password1");
+		String password2 = request.getParameter("password2");
+		// Clean the input fields 
+		password1 = clean_fields(password1);
+		password2 = clean_fields(password2);
+
+		// Check if the two passwords match
+	
+			if (password1.equals(password2)) {
+				//Change the user object's password:
+				HttpSession session =request.getSession();
+				String username=(String)session.getAttribute("username");
+				String password=(String)session.getAttribute("password");
+				User userObject=userDao.getUser(username,password);
+				userObject.setPassword(password1);
+				request.setAttribute("msg", "Password changed for "+username);
+				//Alter the data in the database:
+				userDao.changePasswordSQL(password1,username);
+				
+			} else {
+				request.setAttribute("msg", "Passwords do not match!");
+			}
+		
+
+		return "admin/changePassword";
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	@RequestMapping(value = "/admin/RemoveEditors", method = RequestMethod.GET)
 	public String listEditors(final HttpServletRequest request) {
