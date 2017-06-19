@@ -194,20 +194,22 @@ public class Property {
 	 * @return the URL of the PompeiiianPictures for the specific region, insula, and property number
 	 */
 	public String getPompeiiinPicturesURL() {
-		String shortName = insula.getShortName();
-		String numeral = shortName.substring(0, shortName.indexOf('.')).trim();
-		int region = numerals.get(numeral); // convert roman numeral to integer
-		
-		String insulaNum = shortName.substring(shortName.indexOf('.') + 1);
-		if(insulaNum.length() == 1)
-			insulaNum = "0" + insulaNum;
+		if(insula.getCity().getName().equals("Pompeii")) {
+			String shortName = insula.getShortName();
+			String numeral = shortName.substring(0, shortName.indexOf('.')).trim();
+			int region = numerals.get(numeral); // convert roman numeral to integer
 
-		String propertyNumber = property_number;
-		if(propertyNumber.length() == 1)
-			propertyNumber = "0" + propertyNumber;
+			String insulaNum = shortName.substring(shortName.indexOf('.') + 1);
+			if(insulaNum.length() == 1)
+				insulaNum = "0" + insulaNum;
+
+			String propertyNumber = property_number;
+			if(propertyNumber.length() == 1)
+				propertyNumber = "0" + propertyNumber;
+
+			return "http://pompeiiinpictures.com/pompeiiinpictures/R"+region+"/"+region+" "+insulaNum+" "+propertyNumber+".htm";
+		}
 		
-		
-		return "http://pompeiiinpictures.com/pompeiiinpictures/R"+region+"/"+region+" "+insulaNum+" "+propertyNumber+".htm";
+		return "";
 	}
-
 }

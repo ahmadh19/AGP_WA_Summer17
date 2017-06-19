@@ -1,5 +1,6 @@
 package edu.wlu.graffiti.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -25,12 +26,12 @@ public class JsonController {
 	public Inscription getInscription(@PathVariable String edrId) {
 		return graffitiDao.getInscriptionByEDR(edrId);
 	}
-
+	
 	@RequestMapping("/all/json")
 	public List<Inscription> getInscriptions() {
 		return graffitiDao.getAllInscriptions();
 	}
-
+	
 	@RequestMapping("/property/{city}/{insula}/{property}/json")
 	public Property getProperty(@PathVariable String city, @PathVariable String insula, @PathVariable String property) {
 		return findspotDao.getPropertyByCityAndInsulaAndProperty(city, insula, property);
