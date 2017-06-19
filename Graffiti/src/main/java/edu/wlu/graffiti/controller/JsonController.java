@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,15 @@ public class JsonController {
 	@RequestMapping("/all/json")
 	public List<Inscription> getInscriptions() {
 		return graffitiDao.getAllInscriptions();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/filtered-results/json")
+	public List<Inscription> getFilteredInscriptions(final HttpServletRequest request) {
+		HttpSession s = request.getSession();
+		List<Inscription> results = (List<Inscription>) s.getAttribute("filteredList");
+		//System.out.println(results.size());
+		return results;
 	}
 	
 	@RequestMapping("/property/{city}/{insula}/{property}/json")

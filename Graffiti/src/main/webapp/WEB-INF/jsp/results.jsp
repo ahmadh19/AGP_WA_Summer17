@@ -124,6 +124,11 @@ hr.main-table {
 .map-override1 {
 	position: static
 }
+
+.btn-agp {
+	margin-bottom: 10px;
+}
+
 ul#searchTerms li {
     display:inline-block;
     margin: 0 0 7px 0;
@@ -141,11 +146,12 @@ ul#searchTerms li {
 		<div class="map-override1">
 			<div id="pompeiiCityMap"></div>
 			<div id="herculaneumCityMap"></div>
+
 		</div>
 
 		<div style="margin-left: 200px;">
 			<div style="width: 475px; padding-bottom: 10px;">
-				<ul id="searchTerms" style="width: 525px; margin-left:-40px;"></ul>
+				<ul id="searchTerms" style="width: 525px; margin-left: -40px;"></ul>
 			</div>
 			<div id="search-results">
 				<%@include file="filter.jsp"%>

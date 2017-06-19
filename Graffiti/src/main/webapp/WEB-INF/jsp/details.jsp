@@ -171,7 +171,7 @@ function backToResults(){
 			to Results</button>-->
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/json"
 			id="json">
-			<button class="btn btn-agp right-align">Download JSON Data</button>
+			<button class="btn btn-agp right-align">Export JSON Data</button>
 		</a>
 	</div>
 
