@@ -7,6 +7,7 @@
 	<h3>
 		<a href=user>Register</a> |
 		<a href=approve>Approve Users</a> |
+		<a href=changePassword>Change Password</a> |
 		<a href=insertData>Insert Data</a> |
 		<a href=inputData>Import CSV file data</a> |
 	</h3>

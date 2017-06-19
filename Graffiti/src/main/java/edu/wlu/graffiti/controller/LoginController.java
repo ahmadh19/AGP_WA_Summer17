@@ -48,6 +48,8 @@ public class LoginController {
 		if (user != null) {
 			session.setAttribute("authenticated", true);
 			session.setAttribute("name", user.getName());
+			session.setAttribute("username", username);
+			session.setAttribute("password", password);
 			session.setAttribute("role", user.getRole());
 			session.setMaxInactiveInterval(15 * 60);
 			return "/admin/admin_page";

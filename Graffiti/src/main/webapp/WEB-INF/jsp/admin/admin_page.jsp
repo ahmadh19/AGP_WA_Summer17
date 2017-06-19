@@ -61,6 +61,9 @@ li {
 			<li><a
 				href="<%=request.getContextPath()%>/admin/report?query_all=true?query_all=true">Generate
 					Report for all Graffiti</a></li>
+			
+			<li><a
+				href="<%=request.getContextPath()%>/admin/changePassword">Change Password</a></li>
 
 			<%
 				if (role != null && role.equals("admin")) {
