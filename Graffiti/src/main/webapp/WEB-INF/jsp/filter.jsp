@@ -4,7 +4,17 @@
 <c:set var="num" value="${fn:length(requestScope.resultsLyst)}" />
 <p class="alert alert-info" style="width: 475px">
 	<c:out value="${num} results found ${searchQueryDesc}" />
+	</br> </br>
+	<a href="<%=request.getContextPath()%>/filtered-results/json"
+		id="bulkJson">
+		<button class="btn btn-agp right-align">Export JSON Data</button>
+	</a>
+	<a href="<%=request.getContextPath()%>/filtered-results/epidocs"
+		id="bulkEpidocs">
+		<button class="btn btn-agp right-align">Export Epidocs Data</button>
+	</a>
 </p>
+
 <c:if test="${num == 0}">
 	<br />
 	<c:out value="Try broadening your search" />
