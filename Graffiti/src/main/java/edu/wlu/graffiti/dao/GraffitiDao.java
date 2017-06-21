@@ -36,6 +36,7 @@ public class GraffitiDao extends JdbcTemplate {
 			+ "LEFT JOIN greatest_hits_info ON edr_inscriptions.edr_id=greatest_hits_info.edr_id "
 			+ "LEFT JOIN properties ON agp_inscription_info.property_id=properties.id "
 			+ "LEFT JOIN insula ON properties.insula_id=insula.id";
+	
 
 	private static final String FIND_BY_ALL = SELECT_STATEMENT + " WHERE UPPER(edr_inscriptions.edr_id) "
 			+ "LIKE UPPER(?) OR UPPER(ANCIENT_CITY) LIKE UPPER(?) OR " + "UPPER(FIND_SPOT) LIKE UPPER(?) OR "
@@ -55,7 +56,7 @@ public class GraffitiDao extends JdbcTemplate {
 			+ "where propertyTypes.id=? and propertyTypes.id=propertytopropertytype.property_type "
 			+ "and properties.id=propertytopropertytype.property_id and properties.id=agp_inscription_info.property_id "
 			+ "and edr_inscriptions.edr_id=agp_inscription_info.edr_id and properties.insula_id = insula.id "
-			+ "AND edr_inscriptions.edr_id=figural_graffiti_info.edr_id " + ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
+			+ "AND edr_inscriptions.edr_id=figural_graffiti_info.edr_id ";
 
 	private static final String FIND_BY_CITY = SELECT_STATEMENT + " WHERE UPPER(ANCIENT_CITY) LIKE UPPER(?) "
 			+ ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
@@ -66,6 +67,12 @@ public class GraffitiDao extends JdbcTemplate {
 	private static final String FIND_BY_CITY_AND_INSULA_AND_PROPERTY = SELECT_STATEMENT
 			+ " WHERE UPPER(ANCIENT_CITY) = UPPER(?) " + "AND insula.id = ? and properties.id = ? "
 			+ ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
+	
+	public static final String FIND_BY_PROPERTY = "SELECT COUNT(*) FROM edr_inscriptions "
+			+ "LEFT JOIN agp_inscription_info ON edr_inscriptions.edr_id=agp_inscription_info.edr_id "
+			+ "LEFT JOIN properties ON agp_inscription_info.property_id=properties.id "
+			+ "LEFT JOIN insula ON properties.insula_id=insula.id"
+			+ " WHERE properties.id = ? ";
 
 	private static final String FIND_BY_CONTENT = SELECT_STATEMENT + " WHERE UPPER(CONTENT) LIKE UPPER(?) "
 			+ ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
@@ -228,7 +235,7 @@ public class GraffitiDao extends JdbcTemplate {
 		addOtherInfo(results);
 		return results;
 	}
-
+	
 	//@Cacheable("inscriptions")
 	public List<Inscription> getInscriptionsByCityAndInsulaAndPropertyNumber(String city, int insula_id,
 			int property_id) {
