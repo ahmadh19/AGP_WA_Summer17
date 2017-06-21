@@ -1,8 +1,13 @@
 House=casa, home, house, apartment
-Workshop=officina,\ workshop
+Workshop=officina,\ workshop,\ bakery,\ fullonica
 Shop=shop
 Tavern=taberna,\ caupona,\ thermopolium,\ tavern
 Public\ building=basilica,\ ampitheater,\ baths
 Inn=hospitium,\ inn
 Sacred\ Space=temple,\ sacred\ space
 Brothel=brothel
+Commercial\ building=
+Garden=garden
+Restaurant=restaurant
+Passageway=passageway
+Public\ space=public space

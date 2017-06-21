@@ -1,18 +1,19 @@
 package edu.wlu.graffiti.data.setup;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class InsertInsulae {
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 
-	private static final String DELIMITER = ";";
+public class InsertInsulae {
 
 	private static final String INSERT_PROPERTY_STMT = "INSERT INTO insula " + "(modern_city, short_name, full_name) VALUES (?,?,?)";
 
@@ -39,19 +40,18 @@ public class InsertInsulae {
 		try {
 			PreparedStatement pstmt = newDBCon.prepareStatement(INSERT_PROPERTY_STMT);
 
-			BufferedReader br = new BufferedReader(new FileReader(datafileName));
-
-			String line;
-
-			while ((line = br.readLine()) != null) {
-				String[] data = line.split(DELIMITER);
-				String modernCity = data[0];
-				String insula = data[1];
-				String fullname = data[2];
-
+			Reader in = new FileReader(datafileName);
+			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+			for (CSVRecord record : records) {
+				String modernCity = Utils.cleanData(record.get(0));
+				String insula = Utils.cleanData(record.get(1));
+				String fullname = Utils.cleanData(record.get(2));
+				//String pleaides_id = Utils.cleanData(record.get(3));
+			
 				pstmt.setString(1, modernCity);
 				pstmt.setString(2, insula);
 				pstmt.setString(3, fullname);
+				//pstmt.setString(4, pleaides_id);
 				try {
 					System.out.println(modernCity + " " + insula);
 					pstmt.executeUpdate();
@@ -60,7 +60,7 @@ public class InsertInsulae {
 				}
 			}
 
-			br.close();
+			in.close();
 			pstmt.close();
 
 		} catch (SQLException e) {
