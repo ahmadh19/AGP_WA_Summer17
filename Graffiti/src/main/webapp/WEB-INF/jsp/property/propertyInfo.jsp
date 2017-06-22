@@ -15,7 +15,7 @@
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/resources/css/main.css" />
 <script type="text/javascript"
-	src="<c:url value="/resources/js/updatedEschebach.js"/>"></script>
+	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>

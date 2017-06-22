@@ -1,7 +1,4 @@
 
-
-
-
 function initmap() {
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
 	
@@ -26,32 +23,60 @@ function initmap() {
 	var clickedAreas = [];
 	
 	map.addLayer(grayscale);
-	L.geoJson(updatedEschebach).addTo(map);
+	L.geoJson(pompeiiPropertyData).addTo(map);
 	
 	//Sets the style of the portions of the map. Color is the outside borders. There are different colors for 
 	//clicked or normal fragments. When clicked, items are stored in a collection. These collections will have the color
 	//contained inside of else. 
 	function style(feature) {
+		
+		var borderColor=makeBorder(feature.properties);
+		var fillColor;
 		if (feature.properties.clicked !== true) {
-			fillColor = 'red';
-			//fillColor = '#ecf0f1';
-		} else {
-			//fillColor = '#3a7ae7';
-			fillColor = 'blue';
-		} return { 
+			//fillColor = 'red';
+			fillColor = '#ecf0f1';
+			
+		} 
+		else {
+			fillColor = '#3a7ae7';
+			//fillColor = 'red';
+		} 
+			return { 
 	    	fillColor,
 	        weight: 2,
 	        opacity: 1,
-	        color: 'purple',
+	        color: borderColor,
 	        fillOpacity: 0.7,
 	    };
-		L.geoJson(updatedEschebach, {style: style}).addTo(map);
+		L.geoJson(pompeiiPropertyData, {style: style}).addTo(map);
+	}
+	
+	function makeBorder(propertyObject){
+		if(0<=propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=1){
+			return 'yellow';
+		}
+		
+		else if(1<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=5){
+			return 'orange';
+		}
+		
+		else if(5<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=10){
+			return 'green';
+		}
+		else if(10<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=15){
+			return 'blue';
+		}
+		else if(15<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=20){
+			return 'purple';
+		}
+		else{
+			return 'red';
+		}
 	}
 	
 	var geojson;
 	
-	//Apparently, necessary for any of the styles to work(why? Because brings to front?).
-	//Sets color for items which the cursor is moving over. 
+	//Sets color for properties which the cursor is moving over. 
 	function highlightFeature(e) {
 		var layer = e.target;
 		layer.setStyle({
@@ -65,10 +90,7 @@ function initmap() {
 		}
 		info.update(layer.feature.properties);
 	}
-	//A central function. Sorts items based on whether they have been clicked or not. If they
-	//have been and are clicked again, sets to false and vice versa. I am confused what pushToFront is
-	//or how it interacts with the wider collection of items if there is one. 
-	//Here, we see clickedAreas collection, which will appear many times later. 
+	
 	/*function showDetails(e) {
 		var layer = e.target;
 		if (layer.feature.properties.clicked != null) {
@@ -85,6 +107,9 @@ function initmap() {
 	*/
 	
 	
+	//A central function. Sorts items based on whether they have been clicked or not. If they
+	//have been and are clicked again, sets to false and vice versa. I am confused what pushToFront is
+	//or how it interacts with the wider collection of items if there is one. 
 	function showDetails(e) {
 		var layer = e.target;
 		if (layer.feature.properties.clicked != null) {
@@ -117,7 +142,7 @@ function initmap() {
 	}
 	
 	//What does this do?
-	geojson = L.geoJson(updatedEschebach, {
+	geojson = L.geoJson(pompeiiPropertyData, {
 		style: style,
 	    onEachFeature: onEachFeature
 	}).addTo(map);
@@ -186,6 +211,7 @@ function initmap() {
 		}
 	}
 	
+	
 	//Displays the Selected Properties and their corresponding information in an HTML table formatted. 
 	//Achieved by mixing html and javascript, accessing text properties of the regions(items). 
 	function displayHighlightedRegions() {
@@ -197,13 +223,14 @@ function initmap() {
 			var property = clickedAreasTable[i];
 			if (property.feature.properties.clicked === true) {
 				html += "<tr><td>" +property.feature.properties.Property_Name + ", " + 
-						property.feature.properties.PRIMARY_DO + "</td></tr>";
+						property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" Graffiti</p>"+ "</td></tr>";
 			}
 		}
 		html += "</table";
 		document.getElementById("newDiv").innerHTML = html;
 		// when you click anywhere on the map, it updates the table
 	}
+	
 	
 	//Handles the events(they're not handled above??).
 	var el = document.getElementById("search");
@@ -221,6 +248,12 @@ function initmap() {
 //	function focusOnProperty(propId) {
 //		
 //	} **** this feature is currently in the works
-	
 }
+	
+	
+	
+	
+	
+	
+	
 	
