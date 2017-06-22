@@ -133,6 +133,10 @@ function generateMap(name) {
 					<th class="propertyLabel">Links:</th>
 					<td><a href="${prop.pompeiiinPicturesURL}">Pompeii in Pictures</a></td>
 				</tr>
+				<tr>
+					<th class="propertyLabel">Linked Open Data</th>
+					<td><a href="${prop.plodURL}">P-LOD</a></td>
+				</tr>
 			</c:if>
 		</table>
 		<!-- 	<div id="pompeiimap" class="propertymapdiv"></div>  -->

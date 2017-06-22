@@ -191,15 +191,27 @@ public class Property {
 	}
 	
 	/**
+	 * @return the data (region and insula num) to be used in generating URLs
+	 */
+	private String[] parseData() {
+		String shortName = insula.getShortName();
+		int periodIndex = shortName.indexOf('.');
+		String numeral = shortName.substring(0, periodIndex).trim();
+		String region = String.valueOf(numerals.get(numeral)); // convert roman numeral to integer
+		String insulaNum = shortName.substring(periodIndex + 1);
+		
+		return new String[]{region, insulaNum};
+	}
+	
+	/**
 	 * @return the URL of the PompeiiianPictures for the specific region, insula, and property number
 	 */
 	public String getPompeiiinPicturesURL() {
 		if(insula.getCity().getName().equals("Pompeii")) {
-			String shortName = insula.getShortName();
-			String numeral = shortName.substring(0, shortName.indexOf('.')).trim();
-			int region = numerals.get(numeral); // convert roman numeral to integer
-
-			String insulaNum = shortName.substring(shortName.indexOf('.') + 1);
+			String data[] = parseData();
+			String region = data[0];
+			String insulaNum = data[1];
+			
 			if(insulaNum.length() == 1)
 				insulaNum = "0" + insulaNum;
 
@@ -208,6 +220,21 @@ public class Property {
 				propertyNumber = "0" + propertyNumber;
 
 			return "http://pompeiiinpictures.com/pompeiiinpictures/R"+region+"/"+region+" "+insulaNum+" "+propertyNumber+".htm";
+		}
+		
+		return "";
+	}
+	
+	/**
+	 * @return the URL to P-LOD linked open data for a Pompeii property
+	 */
+	public String getPlodURL() {
+		if(insula.getCity().getName().equals("Pompeii")) {
+			String data[] = parseData();
+			String region = data[0];
+			String insulaNum = data[1];
+			
+			return "http://digitalhumanities.umass.edu/p-lod/entities/r"+region+"-i"+insulaNum+"-p"+property_number;
 		}
 		
 		return "";
