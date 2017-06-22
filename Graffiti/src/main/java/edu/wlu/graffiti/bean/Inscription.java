@@ -367,7 +367,7 @@ public class Inscription implements Comparable<Inscription> {
 		Date date = new Date();
 		String dateString = dateFormat.format(date);
 		
-		return "'"+title+"', The Ancient Graffiti Project Search Engine, &lt;http://ancientgraffiti.org/Graffiti/graffito/AGP-"+edrId+"&gt; [accessed: "+dateString+"]";
+		return "AGP-"+edrId+", <i>The Ancient Graffiti Project</i>, &lt;http://ancientgraffiti.org/Graffiti/graffito/AGP-"+edrId+"&gt; [accessed: "+dateString+"]";
 	}
 
 }
