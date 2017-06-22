@@ -86,5 +86,19 @@ h3 {
 			href="http://www.outsharked.com/imagemapster/">ImageMapster</a> for
 		the highlighting map feature.
 	</p>
+	<footer>
+		<p style="text-align: center;">
+			<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+			<img src="/Graffiti/src/main/webapp/resources/images/cc_license.png"></a>
+			<a href="http://www.neh.gov/">			
+			<img src="http://www.neh.gov/files/neh_at_logo.png" style="width:88px;height:31px;"></a>
+			<a href="http://digitalhumanities.wlu.edu/">			
+			<img src="http://ancientgraffiti.wlu.edu/files/2016/07/dh_at_wandl.png" style="width:88px;height:31px;"></a>
+			<a href="https://mellon.org/">			
+			<img src="http://ancientgraffiti.wlu.edu/files/2015/06/mellon-e1467740285109.jpeg" style="width:88px;height:31px;"></a>
+			<a href="https://github.com/AncientGraffitiProject/AGP">
+			<img src="/Graffiti/src/main/webapp/resources/images/octocat.png" style="width:88px;height:31px;"></a>
+		</p>
+	</footer>
 </body>
 </html>
