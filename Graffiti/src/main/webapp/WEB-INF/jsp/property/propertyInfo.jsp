@@ -115,7 +115,7 @@ function generateMap(name) {
 				</tr>
 			</c:if>
 			<tr>
-				<th class="propertyLabel">Related Info:</th>
+				<th class="propertyLabel">Architectural Context:</th>
 				<td>
 					<!-- 
 					<ul>
