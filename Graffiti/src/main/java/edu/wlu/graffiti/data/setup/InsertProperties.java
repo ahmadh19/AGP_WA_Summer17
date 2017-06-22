@@ -118,12 +118,11 @@ public class InsertProperties {
 					String[] tagArray = record.get(6).trim().split(",");
 					for (String t : tagArray) {
 						t = t.trim();
-						// System.out.println("tag: " + t);
 						for (PropertyType propType : propertyTypes) {
 							// System.out.println("propType: " +
 							// propType.getName());
 							if (propType.includes(t)) {
-								System.out.println("Match! " + propType.getName());
+								System.out.println("Match! " + propType.getName() + "for propID " + propID);
 								insertPTStmt.setInt(1, propID);
 								insertPTStmt.setInt(2, propType.getId());
 								// Wrapped in try to handle the
