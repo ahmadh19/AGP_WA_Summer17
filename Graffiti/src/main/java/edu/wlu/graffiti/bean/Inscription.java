@@ -9,8 +9,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@XmlRootElement (name = "inscription")
 
 public class Inscription implements Comparable<Inscription> {
 

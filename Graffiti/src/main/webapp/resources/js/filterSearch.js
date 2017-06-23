@@ -304,6 +304,7 @@ function createURL(baseURL) {
 	}
 
 	var myUrl = baseURL;
+	//alert(myUrl);
 
 	if (currentParams.length == 0) {
 		myUrl += "?query_all=true";
@@ -311,7 +312,7 @@ function createURL(baseURL) {
 		myUrl += "?query_all=false"
 		for (var i = 0; i < currentParams.length; i++) {
 			desc = currentParams[i].split(": ");
-			myUrl += "&" + desc[0] + "=" + desc[1];
+			myUrl += "&" + desc[0].toLowerCase() + "=" + desc[1];
 			myUrl = myUrl.replace(/\s/g, '_');
 		}
 	}
@@ -325,13 +326,14 @@ function createURL(baseURL) {
  */
 function refineResults() {
 	var labels = document.getElementsByClassName("search-term-label");
-	if (refine) {
+	//if (refine) {
 		xmlHttp = new XMLHttpRequest();
 		newUrl = createURL(requestUrl);
+		//alert(newUrl);
 		xmlHttp.open("GET", newUrl, false);
 		xmlHttp.send(null);
 		document.getElementById("search-results").innerHTML = xmlHttp.responseText;
-	}
+	//}
 }
 
 /*

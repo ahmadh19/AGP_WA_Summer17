@@ -72,7 +72,53 @@ function checkAlreadyClicked(ids){
 	}
 }
 
+function checkboxesAfterBack() {
+	//remove property
+	
+	contentsUrl = window.location.href;
+	var params = contentsUrl.split("?")[1].split("&");
+		
+	var dict = {
+			"drawing_category" : "dc",
+			"property" : "p",
+			"property_type" : "pt",
+			"insula" : "i",
+			"city" : "c",
+			"writing_style" : "ws",
+			"language" : "l"
+	};
+	
+	for (var i in params){
+		if (params[i] != "query_all=false"){
+			var param = params[i];
+			var term = param.split("=");
+			var type = term[0];
+			var value = term[1];
+			if (value == "All") {
+				value = 0;
+			}
+			if (type in dict) {
+				var typeToken = dict[type];
+				value = value.replace("_", " ");
+				var id = typeToken+value;
+				type = type.replace("_", " ");
+				$("#"+id).click();
+				//addSearchTerm(type + ": " + value, id);
+				//document.getElementById(id).checked = true;
+			} else if (type == "content") {
+					addSearchTerm("Content: " + value, 0, null);
+			} else if (type == "global") {
+					addSearchTerm("Global: " + value, 0, null);
+			}
+		}
+	}
+}
+
+
 function updatePage(){
+	checkboxesAfterBack();
+	
+	/*
 	if ("${sessionScope.requestURL}" != ""){
 		requestUrl = "${sessionScope.requestURL}";
 		var params = requestUrl.split("?")[1].split("&");
@@ -91,6 +137,8 @@ function updatePage(){
 		checkAlreadyClicked('${sessionScope.checkboxIds}');
 		refine = true;
 	}
+	*/
+	
 	<c:if test="${requestScope.returnFromEDR} not empty">
 	document.getElementById("${requestScope.returnFromEDR}").scrollIntoView();
 	</c:if>
