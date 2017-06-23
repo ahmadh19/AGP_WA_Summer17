@@ -101,15 +101,17 @@ h3 {
 		</p>
 		<p style="text-align: center;">
 			<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
-			<img class="footer-img" src="<%=request.getContextPath()%>/resources/images/cc_license.png" style="width:98px;height:41px;"></a>
+			<img class="footer-img" src="<%=request.getContextPath()%>/resources/images/cc_license.png"></a>
 			<a href="http://www.neh.gov/">			
 			<img class="footer-img" src="http://www.neh.gov/files/neh_at_logo.png"></a>
 			<a href="http://digitalhumanities.wlu.edu/">			
-			<img class="footer-img" src="http://ancientgraffiti.wlu.edu/files/2016/07/dh_at_wandl.png" style="width:98px;height:41px;"></a>
+			<img class="footer-img" src="http://ancientgraffiti.wlu.edu/files/2016/07/dh_at_wandl.png"></a>
 			<a href="https://mellon.org/">			
-			<img class="footer-img" src="http://ancientgraffiti.wlu.edu/files/2015/06/mellon-e1467740285109.jpeg" style="width:98px;height:41px;"></a>
+			<img class="footer-img" src="http://ancientgraffiti.wlu.edu/files/2015/06/mellon-e1467740285109.jpeg"></a>
+			<a href="http://chs.harvard.edu/">			
+			<img class="footer-img" src="http://ancientgraffiti.org/about/wp-content/uploads/2017/06/CHS.png"></a>
 			<a href="https://github.com/AncientGraffitiProject/AGP">
-			<img class="footer-img" src="<%=request.getContextPath()%>/resources/images/octocat.png" style="width:98px;height:41px;"></a>
+			<img class="footer-img" src="<%=request.getContextPath()%>/resources/images/octocat.png"></a>
 		</p>
 	</footer>
 </body>
