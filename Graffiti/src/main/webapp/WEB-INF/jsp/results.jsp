@@ -73,8 +73,6 @@ function checkAlreadyClicked(ids){
 }
 
 function checkboxesAfterBack() {
-	//remove property
-	
 	contentsUrl = window.location.href;
 	var params = contentsUrl.split("?")[1].split("&");
 		
@@ -88,6 +86,26 @@ function checkboxesAfterBack() {
 			"language" : "l"
 	};
 	
+	var cities = {
+			"Herculaneum" : 0,
+			"Pompeii" : 1
+	};
+	
+	var writingStyle = {
+		"Graffito/incised" : 1,
+		"charcoal" : 2,
+		"other" : 3
+	};
+
+	
+	var languages = {
+		"Latin" : 1,
+		"Greek" : 2,
+		"Latin/Greek" : 3,
+		"other" : 4
+	};
+	
+	
 	for (var i in params){
 		if (params[i] != "query_all=false"){
 			var param = params[i];
@@ -99,16 +117,24 @@ function checkboxesAfterBack() {
 			}
 			if (type in dict) {
 				var typeToken = dict[type];
+				// convert the human-readable description into IDs for checkboxes
+				if (typeToken == "ws") {
+					value = writingStyle[value];
+				} else if (typeToken == "c") {
+					value = cities[value];
+				} else if (typeToken == "l") {
+					value = languages[value];
+				} else {
 				value = value.replace("_", " ");
+				}
 				var id = typeToken+value;
-				type = type.replace("_", " ");
+				//type = type.replace("_", " ");
+				//alert(id);
 				$("#"+id).click();
-				//addSearchTerm(type + ": " + value, id);
-				//document.getElementById(id).checked = true;
 			} else if (type == "content") {
-					addSearchTerm("Content: " + value, 0, null);
+				addSearchTerm("Content", value, value);
 			} else if (type == "global") {
-					addSearchTerm("Global: " + value, 0, null);
+				addSearchTerm("Global", value, value);
 			}
 		}
 	}
