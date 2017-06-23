@@ -25,7 +25,7 @@
 	margin-left: 10px;
 	margin-right: 10px;
 	width:110px;
-	height:40px;
+	height:50px;
 }
 
 .leftcol {
@@ -108,6 +108,8 @@ h3 {
 			<img class="footer-img" src="http://ancientgraffiti.wlu.edu/files/2016/07/dh_at_wandl.png"></a>
 			<a href="https://mellon.org/">			
 			<img class="footer-img" src="http://ancientgraffiti.wlu.edu/files/2015/06/mellon-e1467740285109.jpeg"></a>
+			<a href="http://chs.harvard.edu/">			
+			<img class="footer-img" src="http://ancientgraffiti.org/about/wp-content/uploads/2017/06/CHS.png"></a>
 			<a href="https://github.com/AncientGraffitiProject/AGP">
 			<img class="footer-img" src="<%=request.getContextPath()%>/resources/images/octocat.png"></a>
 		</p>
