@@ -25,7 +25,7 @@
 	margin-left: 10px;
 	margin-right: 10px;
 	width:110px;
-	height:40px;
+	height:50px;
 }
 
 .leftcol {
