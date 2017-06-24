@@ -326,14 +326,12 @@ function createURL(baseURL) {
  */
 function refineResults() {
 	var labels = document.getElementsByClassName("search-term-label");
-	//if (refine) {
-		xmlHttp = new XMLHttpRequest();
-		newUrl = createURL(requestUrl);
-		//alert(newUrl);
-		xmlHttp.open("GET", newUrl, false);
-		xmlHttp.send(null);
-		document.getElementById("search-results").innerHTML = xmlHttp.responseText;
-	//}
+	xmlHttp = new XMLHttpRequest();
+	newUrl = createURL(requestUrl);
+	//alert(newUrl);
+	xmlHttp.open("GET", newUrl, false);
+	xmlHttp.send(null);
+	document.getElementById("search-results").innerHTML = xmlHttp.responseText;
 }
 
 /*

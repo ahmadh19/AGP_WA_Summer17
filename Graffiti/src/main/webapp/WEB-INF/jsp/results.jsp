@@ -146,28 +146,6 @@ function checkboxesAfterBack() {
 function updatePage(){
 	checkboxesAfterBack();
 	
-	// don't need this old code anymore
-	/*
-	if ("${sessionScope.requestURL}" != ""){
-		requestUrl = "${sessionScope.requestURL}";
-		var params = requestUrl.split("?")[1].split("&");
-		for (var i in params){
-			if (params[i] != "query_all=false"){
-				parseParam(params[i]);
-			}
-		}
-		refine=true;
-	}
-	else {
-		// used for ways we can arrive at the results page that are not through filtering.
-		// Arrive here from the search by map and browse drawings pages
-		// --> could be from the links for a specific location or for a drawing category. 
-		refine = false;
-		checkAlreadyClicked('${sessionScope.checkboxIds}');
-		refine = true;
-	}
-	*/
-	
 	<c:if test="${requestScope.returnFromEDR} not empty">
 	document.getElementById("${requestScope.returnFromEDR}").scrollIntoView();
 	</c:if>

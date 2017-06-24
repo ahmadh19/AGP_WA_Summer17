@@ -542,7 +542,6 @@ public class GraffitiController {
 			e.printStackTrace();
 		}
 		SearchResponse response;
-		String checkboxIds = "";
 		String searchedProperties = "";
 		String searchedDrawings = "";
 		
@@ -606,7 +605,6 @@ public class GraffitiController {
 					BoolQueryBuilder allDrawingsQuery = boolQuery();
 					allDrawingsQuery.should(matchQuery("has_figural_component", true));
 					query.must(allDrawingsQuery);
-					//checkboxIds += "dc0;";
 				} else if (searchTerms.get(i).equals("Global Keyword")) {
 					// Checks content, city, insula name, property name,
 					// property types, drawing description, drawing tags,
@@ -653,8 +651,6 @@ public class GraffitiController {
 						propertyQuery = boolQuery().must(propertyIdQuery);
 
 						propertiesQuery.should(propertyQuery);
-
-						//checkboxIds += "p" + propertyID + ";";
 					}
 					query.must(propertiesQuery);
 				} else if (searchTerms.get(i).equals(WRITING_STYLE_SEARCH_DESC)
@@ -694,7 +690,6 @@ public class GraffitiController {
 				//System.out.println(inscriptions.get(0));
 				request.setAttribute("mapName", inscriptions.get(0).getAncientCity());
 			}
-			session.setAttribute("checkboxIds", checkboxIds);
 			request.setAttribute("searchedProperties", searchedProperties);
 			request.setAttribute("searchedDrawings", searchedDrawings);
 
@@ -707,22 +702,6 @@ public class GraffitiController {
 
 			session.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 
-			// Checks if user was sent from "Back to Results" button; used to filter
-			// results after returning to page
-
-			if (session.getAttribute("backToResults") != null) {
-				boolean backToResults = (boolean) session.getAttribute("backToResults");
-				if (backToResults) {
-					session.setAttribute("backToResults", false);
-					session.setAttribute("returnFromEDR", session.getAttribute("edr"));
-				} else {
-					session.setAttribute("requestURL", "");
-				}
-			} else {
-				session.setAttribute("backToResults", false);
-				session.setAttribute("requestURL", "");
-				session.setAttribute("returnFromEDR", "");
-			}
 			return inscriptions;
 		}
 
@@ -749,184 +728,6 @@ public class GraffitiController {
 
 			return inscription;
 		}
-	
-	/**
-	@RequestMapping(value = "/results", method = RequestMethod.GET)
-	public String search(final HttpServletRequest request) {
-
-		String searchQueryDesc;
-		final Set<Inscription> resultSet = new TreeSet<Inscription>();
-		String checkboxIds = ""; // Used to check the boxes of the searched
-									// properties
-		String searchedProperties = ""; // Used to create the blue filter labels
-		String searchedDrawings = ""; // Used to create blue filter labels
-
-		String browse = request.getParameter("browse");
-		String searchOptions = request.getParameter("searchOptions");
-		String drawing = request.getParameter("drawing");
-		if (browse != null && browse.equals("true")) {
-			List<Inscription> inscriptions = this.graffitiDao.getAllInscriptions();
-			resultSet.addAll(inscriptions);
-			searchQueryDesc = "browsing all inscriptions";
-
-			request.setAttribute("city", "Pompeii");
-			request.setAttribute("insula", "Herculaneum"); // TODO fix
-															// this...temporary
-															// fix to highlight
-															// Herculaneum map
-															// on browse page
-		} else if (searchOptions != null && searchOptions.equals("true")) {
-			List<Inscription> inscriptions = this.graffitiDao.getAllInscriptions();
-			resultSet.addAll(inscriptions);
-			searchQueryDesc = "";
-
-			request.setAttribute("city", "Pompeii");
-			request.setAttribute("insula", "Herculaneum"); // TODO fix
-															// this...temporary
-															// fix to highlight
-															// Herculaneum map
-															// on browse page
-		} else if (drawing != null && !drawing.equals("")) {
-			if (drawing.toLowerCase().equals("all")) {
-				searchQueryDesc = "for all drawings";
-				List<Inscription> inscriptions = this.graffitiDao.getInscriptionByDrawing("0");
-				resultSet.addAll(inscriptions);
-				checkboxIds += "dc0;";
-				searchedDrawings += "All;";
-			} else {
-				List<DrawingTag> drawingTags = this.drawingTagsDao.getDrawingTags();
-				String tag = null;
-				searchQueryDesc = "for drawing tag ";
-				try {
-					for (DrawingTag dt : drawingTags) {
-						if (dt.getId() == Integer.parseInt(drawing)) {
-							tag = dt.getName();
-							List<Inscription> inscriptions = this.graffitiDao.getInscriptionByDrawing(drawing);
-							resultSet.addAll(inscriptions);
-							searchQueryDesc += tag;
-							checkboxIds += "dc" + dt.getId() + ";";
-							searchedDrawings += dt.getName() + ";";
-						}
-					}
-				} catch (NumberFormatException e) {
-					// do nothing; user entered invalid id
-				}
-				if (tag == null) {
-					request.setAttribute("error", "Error: " + drawing + " is not a valid drawing tag id.");
-					return "index";
-				}
-			}
-			request.setAttribute("city", "Pompeii");
-			request.setAttribute("insula", "Herculaneum"); // TODO fix
-															// this...temporary
-															// fix to highlight
-															// Herculaneum map
-															// on drawing tag
-															// page
-		} else {
-			String prop = "";
-			final String[] properties = request.getParameterValues("property");
-			final int[] propertyIds = new int[properties.length];
-			try {
-				for (int i = 0; i < properties.length; i++) {
-					prop = properties[i];
-					propertyIds[i] = Integer.parseInt(properties[i]);
-				}
-			} catch (NumberFormatException e) {
-				if (prop.equals(""))
-					request.setAttribute("error", "Error: no property id entered.");
-				else
-					request.setAttribute("error", "Error: " + prop + " is not a valid property id.");
-				return "index";
-			}
-			Arrays.sort(propertyIds);
-
-			searchQueryDesc = "in propert";
-
-			int id = 0;
-
-			try {
-				if (propertyIds.length == 1) {
-					id = propertyIds[0];
-					Property property = this.findspotDao.getPropertyById(propertyIds[0]);
-					searchQueryDesc += "y " + property.getInsula().getShortName() + "." + property.getPropertyNumber();
-				} else {
-					Property property;
-					property = this.findspotDao.getPropertyById(propertyIds[0]);
-					searchQueryDesc += "ies " + property.getInsula().getShortName() + "."
-							+ property.getPropertyNumber();
-					for (int i = 1; i < properties.length; i++) {
-						id = propertyIds[i];
-						property = this.findspotDao.getPropertyById(propertyIds[i]);
-						String propName = property.getInsula().getShortName() + "." + property.getPropertyNumber();
-						if (i + 1 != properties.length)
-							searchQueryDesc += ", " + propName;
-						else if (i == 1)
-							searchQueryDesc += " and " + propName;
-						else
-							searchQueryDesc += ", and " + propName;
-					}
-					request.setAttribute("city", property.getInsula().getCity().getName());
-				}
-
-				for (int i = 0; i < propertyIds.length; i++) {
-					Property property = this.findspotDao.getPropertyById(propertyIds[i]);
-					checkboxIds += "p" + propertyIds[i] + ";";
-					searchedProperties += property.getInsula().getShortName() + "." + property.getPropertyNumber()
-							+ ";";
-					final List<Inscription> inscriptions = this.graffitiDao
-							.getInscriptionsByFindSpot(property.getInsula().getId(), property.getId());
-					resultSet.addAll(inscriptions);
-					request.setAttribute("city", property.getInsula().getCity().getName());
-				}
-
-			} catch (IndexOutOfBoundsException e) {
-				request.setAttribute("error", "Error: " + id + " is not a valid property id.");
-				return "index";
-			}
-		}
-		final List<Inscription> resultsList = new ArrayList<Inscription>();
-		final HttpSession session = request.getSession();
-
-		resultsList.addAll(resultSet);
-		if (resultsList.size() > 0) {
-			request.setAttribute("mapName", resultsList.get(0).getAncientCity());
-		}
-		request.setAttribute("resultsLyst", resultsList);
-		request.setAttribute("findLocationKeys", findLocationKeys(resultsList));
-		request.setAttribute("searchQueryDesc", searchQueryDesc);
-		session.setAttribute("checkboxIds", checkboxIds);
-		request.setAttribute("searchedProperties", searchedProperties);
-		request.setAttribute("searchedDrawings", searchedDrawings);
-
-		// Used in sidebarSearchMenu.jsp
-		request.setAttribute("cities", findspotDao.getCityNames());
-		request.setAttribute("drawingCategories", drawingTagsDao.getDrawingTags());
-		request.setAttribute("propertyTypes", findspotDao.getPropertyTypes());
-		request.setAttribute("insulaList", insulaDao.getInsula());
-		request.setAttribute("propertiesList", findspotDao.getProperties());
-
-		session.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-
-		// Checks if user was sent from "Back to Results" button; used to filter
-		// results after returning to page
-
-		if (session.getAttribute("backToResults") != null) {
-			boolean backToResults = (boolean) session.getAttribute("backToResults");
-			if (backToResults) {
-				session.setAttribute("backToResults", false);
-				session.setAttribute("returnFromEDR", session.getAttribute("edr"));
-			} else {
-				session.setAttribute("requestURL", "");
-			}
-		} else {
-			session.setAttribute("backToResults", false);
-			session.setAttribute("requestURL", "");
-			session.setAttribute("returnFromEDR", "");
-		}
-		return "results";
-	}
-	*/
 
 	@RequestMapping(value = "/backToResults", method = RequestMethod.GET)
 	public void backToResults(final HttpServletRequest request) {
