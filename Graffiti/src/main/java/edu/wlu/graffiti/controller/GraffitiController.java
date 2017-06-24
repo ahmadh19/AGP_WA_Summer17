@@ -683,26 +683,6 @@ public class GraffitiController {
 							"lagner", "comment", "content_translation", "measurements")
 					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
 
-			/**
-			{ content, global, city, insula, property, propertyType, drawingCategory,
-				writingStyle, language };
-			for (int i = 2; i < searches.length; i++) {
-				if (searches[i] != null) {
-					String[] category = searches[i];
-					string init = null;
-					if(category == drawingCategory) {
-						init = "dc";
-					} else if(category == property) {
-						init = "p";
-					} else if(category == )
-					for (int j = 0; j < searches[i].length; j++) {
-						String ID = searches[i][j];
-
-						checkboxIds += "p" + propertyID + ";";
-					}
-				}
-			}*/
-
 			
 			for (SearchHit hit : response.getHits()) {
 				//System.out.println(hit);
@@ -743,7 +723,6 @@ public class GraffitiController {
 				session.setAttribute("requestURL", "");
 				session.setAttribute("returnFromEDR", "");
 			}
-			System.out.println("checkboxIDs: " + checkboxIds);
 			return inscriptions;
 		}
 

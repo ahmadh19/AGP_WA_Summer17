@@ -132,7 +132,7 @@ function backToResults(){
 	xmlHttp.open("GET", "<%=request.getContextPath()%>/backToResults?edr=" + "${inscription.edrId}", false);
 	xmlHttp.send(null);
 	var url = "${sessionScope.returnURL}";
-	url = url.replace("filter", "results"); // temporary solution... needs a proper fix
+	url = url.replace("filter", "results"); // generate the results page--makes sure the page is formatted
 	window.location.href = url;
 }
 </script>

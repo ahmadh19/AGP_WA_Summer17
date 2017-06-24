@@ -112,7 +112,7 @@ function checkboxesAfterBack() {
 			var term = param.split("=");
 			var type = term[0];
 			var value = term[1];
-			if (value == "All") {
+			if (type == "drawing_category" && value == "All") {
 				value = 0;
 			}
 			if (type in dict) {
@@ -124,6 +124,8 @@ function checkboxesAfterBack() {
 					value = cities[value];
 				} else if (typeToken == "l") {
 					value = languages[value];
+				} else if (typeToken == "dc" && value == 0) {
+					// do nothing if All is selected
 				} else {
 				value = value.replace("_", " ");
 				}
@@ -144,6 +146,7 @@ function checkboxesAfterBack() {
 function updatePage(){
 	checkboxesAfterBack();
 	
+	// don't need this old code anymore
 	/*
 	if ("${sessionScope.requestURL}" != ""){
 		requestUrl = "${sessionScope.requestURL}";
