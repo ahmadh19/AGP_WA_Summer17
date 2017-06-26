@@ -1,3 +1,8 @@
+/target/
+.settings/
+.classpath
+.project
+
 # don't want our configuration file being included in commits
 configuration.properties
 
