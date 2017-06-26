@@ -304,7 +304,6 @@ function createURL(baseURL) {
 	}
 
 	var myUrl = baseURL;
-	//alert(myUrl);
 
 	if (currentParams.length == 0) {
 		myUrl += "?query_all=true";
