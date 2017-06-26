@@ -130,13 +130,12 @@ function generateMap(name) {
 			</tr>
 			<c:if test="${prop.insula.modernCity=='Pompeii'}">
 				<tr>
-					<th class="propertyLabel">Links:</th>
-					<td><a href="${prop.pompeiiinPicturesURL}">Pompeii in Pictures</a></td>
+					<th class="propertyLabel" rowspan="2">Links:</th>
+					<td>
+						<a href="${prop.pompeiiinPicturesURL}">Pompeii in Pictures</a>
+						<!--<br/><a href="${prop.plodURL}">Linked Open Data</a>-->
+					</td>
 				</tr>
-				<!--<tr>
-					<th class="propertyLabel">Linked Open Data:</th>
-					<td><a href="${prop.plodURL}">P-LOD</a></td>
-				</tr>-->
 			</c:if>
 		</table>
 		<!-- 	<div id="pompeiimap" class="propertymapdiv"></div>  -->
