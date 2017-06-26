@@ -72,25 +72,80 @@ function checkAlreadyClicked(ids){
 	}
 }
 
-function updatePage(){
-	if ("${sessionScope.requestURL}" != ""){
-		requestUrl = "${sessionScope.requestURL}";
-		var params = requestUrl.split("?")[1].split("&");
-		for (var i in params){
-			if (params[i] != "query_all=false"){
-				parseParam(params[i]);
+function checkboxesAfterBack() {
+	contentsUrl = window.location.href;
+	var params = contentsUrl.split("?")[1].split("&");
+		
+	var dict = {
+			"drawing_category" : "dc",
+			"property" : "p",
+			"property_type" : "pt",
+			"insula" : "i",
+			"city" : "c",
+			"writing_style" : "ws",
+			"language" : "l"
+	};
+	
+	var cities = {
+			"Herculaneum" : 0,
+			"Pompeii" : 1
+	};
+	
+	var writingStyle = {
+		"Graffito/incised" : 1,
+		"charcoal" : 2,
+		"other" : 3
+	};
+
+	
+	var languages = {
+		"Latin" : 1,
+		"Greek" : 2,
+		"Latin/Greek" : 3,
+		"other" : 4
+	};
+	
+	
+	for (var i in params){
+		if (params[i] != "query_all=false"){
+			var param = params[i];
+			var term = param.split("=");
+			var type = term[0];
+			var value = term[1];
+			if (type == "drawing_category" && value == "All") {
+				value = 0;
+			}
+			if (type in dict) {
+				var typeToken = dict[type];
+				// convert the human-readable description into IDs for checkboxes
+				if (typeToken == "ws") {
+					value = writingStyle[value];
+				} else if (typeToken == "c") {
+					value = cities[value];
+				} else if (typeToken == "l") {
+					value = languages[value];
+				} else if (typeToken == "dc" && value == 0) {
+					// do nothing if All is selected
+				} else {
+				value = value.replace("_", " ");
+				}
+				var id = typeToken+value;
+				//type = type.replace("_", " ");
+				//alert(id);
+				$("#"+id).click();
+			} else if (type == "content") {
+				addSearchTerm("Content", value, value);
+			} else if (type == "global") {
+				addSearchTerm("Global", value, value);
 			}
 		}
-		refine=true;
 	}
-	else {
-		// used for ways we can arrive at the results page that are not through filtering.
-		// Arrive here from the search by map and browse drawings pages
-		// --> could be from the links for a specific location or for a drawing category. 
-		refine = false;
-		checkAlreadyClicked('${sessionScope.checkboxIds}');
-		refine = true;
-	}
+}
+
+
+function updatePage(){
+	checkboxesAfterBack();
+	
 	<c:if test="${requestScope.returnFromEDR} not empty">
 	document.getElementById("${requestScope.returnFromEDR}").scrollIntoView();
 	</c:if>

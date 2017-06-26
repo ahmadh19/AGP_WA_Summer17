@@ -36,7 +36,7 @@ import edu.wlu.graffiti.data.setup.Utils;
 @Controller
 public class FilterController {
 
-	public static final String WRITING_STYLE_PARAM_NAME = "Writing_Style";
+	public static final String WRITING_STYLE_PARAM_NAME = "writing_style";
 	public static final String WRITING_STYLE_SEARCH_DESC = "Writing Style";
 	public static final String DRAWING_CATEGORY_SEARCH_DESC = "Drawing Category";
 	public static final String PROPERTY_TYPE_SEARCH_DESC = "Property Type";
@@ -152,15 +152,15 @@ public class FilterController {
 
 			// Gather all of the request parameters and make an array of those
 			// arrays to loop through and check if null
-			String[] content = request.getParameterValues("Content");
-			String[] global = request.getParameterValues("Global");
-			String[] city = request.getParameterValues("City");
-			String[] insula = request.getParameterValues("Insula");
-			String[] property = request.getParameterValues("Property");
-			String[] propertyType = request.getParameterValues("Property_Type");
-			String[] drawingCategory = request.getParameterValues("Drawing_Category");
+			String[] content = request.getParameterValues("content");
+			String[] global = request.getParameterValues("global");
+			String[] city = request.getParameterValues("city");
+			String[] insula = request.getParameterValues("insula");
+			String[] property = request.getParameterValues("property");
+			String[] propertyType = request.getParameterValues("property_type");
+			String[] drawingCategory = request.getParameterValues("drawing_category");
 			String[] writingStyle = request.getParameterValues(WRITING_STYLE_PARAM_NAME);
-			String[] language = request.getParameterValues("Language");
+			String[] language = request.getParameterValues("language");
 
 			String[][] searches = { content, global, city, insula, property, propertyType, drawingCategory,
 					writingStyle, language };

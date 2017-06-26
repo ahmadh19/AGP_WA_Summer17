@@ -132,6 +132,7 @@ function backToResults(){
 	xmlHttp.open("GET", "<%=request.getContextPath()%>/backToResults?edr=" + "${inscription.edrId}", false);
 	xmlHttp.send(null);
 	var url = "${sessionScope.returnURL}";
+	url = url.replace("filter", "results"); // generate the results page--makes sure the page is formatted
 	window.location.href = url;
 }
 </script>
@@ -166,9 +167,9 @@ function backToResults(){
 	<c:set var="i" value="${requestScope.inscription}" />
 
 	<div class="button_bar">
-		<!--  
+		 
 		<button class="btn btn-agp" onclick="backToResults();">Back
-			to Results</button>-->
+			to Results</button>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/json"
 			id="json">
 			<button class="btn btn-agp right-align">Export JSON Data</button>

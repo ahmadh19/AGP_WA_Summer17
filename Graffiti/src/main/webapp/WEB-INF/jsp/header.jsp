@@ -23,10 +23,10 @@
 				<ul class="nav navbar-nav" id="nav">
 					<li><a href="<%=request.getContextPath()%>/">Home</a></li>
 					<li><a
-						href="<%=request.getContextPath()%>/results?browse=true">Browse All
+						href="<%=request.getContextPath()%>/results?query_all=true">Browse All
 							Inscriptions</a></li>
 					<li><a
-						href="<%=request.getContextPath()%>/results?drawing=all">Browse
+						href="<%=request.getContextPath()%>/results?drawing_category=All">Browse
 							Figural Graffiti (Drawings)</a></li>	
 					<li><a
 						href="<%=request.getContextPath()%>/search?city=Pompeii">Search
