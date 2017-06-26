@@ -24,8 +24,7 @@
 	display: inline-block;
 	margin-left: 10px;
 	margin-right: 10px;
-	width:110px;
-	height:50px;
+	width: 110px;
 }
 
 .leftcol {
@@ -101,17 +100,17 @@ h3 {
 		</p>
 		<p style="text-align: center;">
 			<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
-			<img class="footer-img" src="<%=request.getContextPath()%>/resources/images/cc_license.png"></a>
+			<img class="footer-img" style="height:40px;" src="<%=request.getContextPath()%>/resources/images/cc_license.png"></a>
 			<a href="http://www.neh.gov/">			
-			<img class="footer-img" src="http://www.neh.gov/files/neh_at_logo.png"></a>
+			<img class="footer-img" style="height:26px;" src="http://www.neh.gov/files/neh_at_logo.png"></a>
 			<a href="http://digitalhumanities.wlu.edu/">			
-			<img class="footer-img" src="http://ancientgraffiti.wlu.edu/files/2016/07/dh_at_wandl.png"></a>
+			<img class="footer-img" style="height:40px;" src="http://ancientgraffiti.wlu.edu/files/2016/07/dh_at_wandl.png"></a>
 			<a href="https://mellon.org/">			
-			<img class="footer-img" src="http://ancientgraffiti.wlu.edu/files/2015/06/mellon-e1467740285109.jpeg"></a>
+			<img class="footer-img" style="height:40px;" src="http://ancientgraffiti.wlu.edu/files/2015/06/mellon-e1467740285109.jpeg"></a>
 			<a href="http://chs.harvard.edu/">			
-			<img class="footer-img" src="http://ancientgraffiti.org/about/wp-content/uploads/2017/06/CHS.png"></a>
+			<img class="footer-img" style ="height:62px;" src="http://ancientgraffiti.org/about/wp-content/uploads/2017/06/CHS.png"></a>
 			<a href="https://github.com/AncientGraffitiProject/AGP">
-			<img class="footer-img" src="<%=request.getContextPath()%>/resources/images/octocat.png"></a>
+			<img class="footer-img" style="height:40px;" src="<%=request.getContextPath()%>/resources/images/octocat.png"></a>
 		</p>
 	</footer>
 </body>
