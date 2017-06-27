@@ -9,36 +9,56 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@XmlRootElement (name = "inscription")
-
+@JacksonXmlRootElement
 public class Inscription implements Comparable<Inscription> {
 
 	private static final String BASE_EDR_THUMBNAIL_PHOTO_URL = "http://www.edr-edr.it/foto_epigrafi/thumbnails/";
 	private static final String BASE_EDR_IMAGE_PAGE_URL = "http://www.edr-edr.it/edr_programmi/view_img.php?id_nr=";
 	public static final String BASE_EDR_PHOTO_URL = "http://www.edr-edr.it/foto_epigrafi/immagini_uso/";
 	
+	@JacksonXmlProperty
 	private int id;
+	@JacksonXmlProperty
 	private String ancientCity;
+	@JacksonXmlProperty
 	private String findSpot;
+	@JacksonXmlProperty
 	private int findSpotPropertyID;
+	@JacksonXmlProperty
 	private String measurements;
+	@JacksonXmlProperty
 	private String language;
+	@JacksonXmlProperty
 	private String content;
+	@JacksonXmlProperty
 	private String bibliography;
+	@JacksonXmlProperty
 	private String edrId;
+	@JacksonXmlProperty
 	private String writingStyle;
+	@JacksonXmlProperty
 	private String apparatus;
+	@JacksonXmlProperty
 	private String apparatusDisplay;
+	@JacksonXmlProperty
 	private int numberOfImages;
+	@JacksonXmlProperty
 	private int startImageId;
+	@JacksonXmlProperty
 	private int stopImageId;
+	@JacksonXmlProperty
 	private AGPInfo agp;
+	@JacksonXmlProperty
 	private String edrFindSpot;
 
 	public Inscription() {
