@@ -42,6 +42,7 @@
 }
 
 #convention_table th {
+<body>
 	text-align: center;
 	width: 100%;
 }
@@ -105,10 +106,12 @@ function generatePompeii(name) {
 	path = "<%=request.getContextPath()%>/";
 	xmlHttp.open("GET", path +
 			"map?clickedRegion="+name+"&city="+"${i.ancientCity}", false); 
+	
 	xmlHttp.send(null);
 	document.getElementById("pompCityMap").innerHTML = xmlHttp.responseText;
 	start();
-}
+} 
+
 
 function generateHerculaneum(name) {
     xmlHttp = new XMLHttpRequest();
@@ -144,22 +147,28 @@ function backToResults(){
 	//Function to hide measurements on load:
 	//Note: putting these in the head can cause problems, including endless loading
 	$(document).ready(function() {
-		$("#measurements").hide();
+		//$("#measurements").hide();
 		});
+	
+	
+	//Do NOT delete the commented out code in this function. It is for the Show/Hide
+	//measurements button and will be re-implemented when we have the data that we need.  
 	
 	//Toggles Measurements to hide and show the text
 	$(document).ready(function() {
 	$("#showMeasure").click(function(){
-		var button = $(this);
-		if (button.val() == "Show Measurements"){
-			button.val("Hide Measurements");
-			$("#measurements").show();
-		}else{
-			button.val("Show Measurements");
-			$("#measurements").hide();
-		}
-		//button.next().show());
-		});
+		//var button = $(this);
+		//if (button.val() == "Show Measurements"){
+			//button.val("Hide Measurements");
+			//$("#measurements").show();
+		//}else{
+			//button.val("Show Measurements");
+			//$("#measurements").hide();
+		//}
+		button.next().show());
+		//});
+	
+		$("#measurements").show();
 	});
 	</script>
 	<%@include file="/WEB-INF/jsp/header.jsp"%>
@@ -364,11 +373,16 @@ function backToResults(){
 					<c:if test="${not empty i.measurements}">
 
 						<tr>
+							<!-- 
+							
 							<th class="propertyLabel"><input type="button"
-								class="btn btn-agp" id="showMeasure"
-								value="Show Measurements"></th>
+								id="showMeasure" class="btn btn-agp" 
+								value="Measurements:"></th>
+								<!--  value="Show Measurements"></th>-->
+							<th class="propertyLabel">Measurements:</th>
+								
 							<td>
-								<div id="measurements">
+								<!--<div id="measurements"> Again, commented out to remove the button features. Do not delete!-->
 									<ul>
 										<c:if test="${not empty i.agp.graffitoHeight }">
 											<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
@@ -394,7 +408,7 @@ function backToResults(){
 												${i.agp.maxLetterWithFlourishesHeight }</li>
 										</c:if>
 									</ul>
-								</div>
+								<!--</div>-->
 							</td>
 
 						</tr>

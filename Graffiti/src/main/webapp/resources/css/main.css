@@ -10,16 +10,32 @@
     margin: auto;
 }
 
+/*#map {
+	height: 500px;
+	width: 800px;
+}*/
 #map {
 	height: 500px;
 	width: 800px;
 }
 
-.mapdiv {
+
+/*  .mapdiv {
 	height: 500px;
 	width: 800px;
 	float: left;
+} */
+
+
+/*What we want for the results map shown*/
+ .mapdiv {
+	/*height: 200px;*/
+	/*width: 200px;*/
+	height: 600px;
+	width: 800px;
+	/*float: right;*/
 }
+
 
 .propertymapdiv {
 	height: 250px;

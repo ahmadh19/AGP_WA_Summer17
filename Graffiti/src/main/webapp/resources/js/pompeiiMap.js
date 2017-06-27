@@ -6,11 +6,17 @@ function initmap() {
 	northEast = L.latLng(40.754, 14.498),
 	bounds = L.latLngBounds(southWest, northEast);
 	
+	//var map = new L.map('pompeiimap', {
+		//center: [40.750, 14.4884],
+		//zoom: 16,
+		//minZoom: 16,
+		//maxBounds: bounds
+	//}); //this just sets my access token
 	var map = new L.map('pompeiimap', {
-		center: [40.750, 14.4884],
-		zoom: 16,
-		minZoom: 16,
-		maxBounds: bounds
+	center: [40.750, 14.4884],
+	zoom: 16,
+	minZoom: 16,
+	maxBounds: bounds
 	}); //this just sets my access token
 	
 	//Sinks with mapbox(?), why do we need access tokens security?
@@ -43,6 +49,8 @@ function initmap() {
 		} 
 			return { 
 	    	fillColor,
+	    	width:200,
+	    	height:200, 
 	        weight: 2,
 	        opacity: 1,
 	        color: borderColor,
@@ -192,7 +200,7 @@ function initmap() {
 		return propIdsOfClicked;
 	}
 	
-	//I am confused as to the workings of this function. Looks like it is the highest level function
+	//I am confused as to the workings of this function. Looks like it is the hig/results?drawing=allhest level function
 	//for searching after the user clicks the search button. 
 	function DoSubmit() {
 		var highlighted = collectClicked();

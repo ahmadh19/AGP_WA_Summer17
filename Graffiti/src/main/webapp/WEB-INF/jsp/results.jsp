@@ -12,6 +12,20 @@
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/js/filterSearch.js"/>"></script>
+	
+	
+<!-- Resources to display the new map -->	
+
+<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
+
+
+
+	
+	
+	
+	
 <script type="text/javascript">
 
 function start() {
@@ -31,14 +45,27 @@ $('img').mapster({
 }); 
 }
 
+//function generatePompeii(name) {
+	//xmlHttp = new XMLHttpRequest();
+	//xmlHttp.open("GET",
+			//"map?clickedRegion="+name+"&city="+name, false); 
+	//xmlHttp.send(null);
+	//document.getElementById("pompeiiCityMap").innerHTML = xmlHttp.responseText;
+	//start();
+//}
+
+//setTimeout(function(){ map.invalidateSize()}, 1000);
 function generatePompeii(name) {
-	xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("GET",
-			"map?clickedRegion="+name+"&city="+name, false); 
-	xmlHttp.send(null);
-	document.getElementById("pompeiiCityMap").innerHTML = xmlHttp.responseText;
-	start();
+		//xmlHttp = new XMLHttpRequest();
+		//xmlHttp.open("GET",
+			//"map?clickedRegion="+name+"&city="+name, false); 
+		
+		//document.getElementById("pompeiimap").innerHTML = xmlHttp.responseText;
+		//start();
+		window.initmap();
 }
+
+
 
 function generateHerculaneum(name) {
 	xmlHttp = new XMLHttpRequest();
@@ -199,10 +226,17 @@ ul#searchTerms li {
 		<%@include file="sidebarSearchMenu.jsp"%>
 		<!--  SideBar Map  -->
 		<div class="map-override1">
-			<div id="pompeiiCityMap"></div>
 			<div id="herculaneumCityMap"></div>
 
 		</div>
+		
+		<div id="pompeiimap" class="mapdiv" style="border:3px solid #800000; margin-left:715px; margin-top:155px; width: 200px; height:200px;"></div>
+		
+		<div>
+	
+		<!--  <div id="newDiv"></div>-->
+		 </div>
+		
 
 		<div style="margin-left: 200px;">
 			<div style="width: 475px; padding-bottom: 10px;">
@@ -214,9 +248,13 @@ ul#searchTerms li {
 		</div>
 	</div>
 
+	<script type="text/javascript"
+				src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 	<script type="text/javascript">
 			generateHerculaneum("Herculaneum");
 			generatePompeii("Pompeii");
+			
 	</script>
+	
 </body>
 </html>
