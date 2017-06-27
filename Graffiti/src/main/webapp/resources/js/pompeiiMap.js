@@ -13,36 +13,76 @@ function initmap() {
 		maxBounds: bounds
 	}); //this just sets my access token
 	
+	//Sinks with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
 	
+	//Is this the background-most layer? Default for leaflet?(why the map's back is grey?)
 	var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
 	
+	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
 	var clickedAreas = [];
 	
 	map.addLayer(grayscale);
-	L.geoJson(updatedEschebach).addTo(map);
+	L.geoJson(pompeiiPropertyData).addTo(map);
 	
+	//Sets the style of the portions of the map. Color is the outside borders. There are different colors for 
+	//clicked or normal fragments. When clicked, items are stored in a collection. These collections will have the color
+	//contained inside of else. 
 	function style(feature) {
+		
+		var borderColor=makeBorder(feature.properties);
+		var fillColor;
 		if (feature.properties.clicked !== true) {
+			//fillColor = 'red';
 			fillColor = '#ecf0f1';
-		} else {
+			
+		} 
+		else {
 			fillColor = '#3a7ae7';
-		} return { 
+			//fillColor = 'red';
+		} 
+			return { 
 	    	fillColor,
 	        weight: 2,
 	        opacity: 1,
-	        color: 'black',
+	        color: borderColor,
 	        fillOpacity: 0.7,
 	    };
-		L.geoJson(updatedEschebach, {style: style}).addTo(map);
+		L.geoJson(pompeiiPropertyData, {style: style}).addTo(map);
+	}
+	
+	function makeBorder(propertyObject){
+		if(0<=propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=1){
+			return 'yellow';
+		}
+		
+		else if(1<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=5){
+			return 'orange';
+		}
+		
+		else if(5<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=10){
+			return 'green';
+		}
+		else if(10<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=15){
+			return 'blue';
+		}
+		else if(15<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=20){
+			return 'purple';
+		}
+		else{
+			return 'red';
+		}
 	}
 	
 	var geojson;
 	
+	//Sets color for properties which the cursor is moving over. 
 	function highlightFeature(e) {
 		var layer = e.target;
 		layer.setStyle({
-			fillColor: '#3a7ae7'
+			//fillColor: '#3a7ae7'
+			fillColor: 'green'
+			
 		});
 		
 		if (!L.Browser.ie && !L.Browser.opera) {
@@ -51,6 +91,25 @@ function initmap() {
 		info.update(layer.feature.properties);
 	}
 	
+	/*function showDetails(e) {
+		var layer = e.target;
+		if (layer.feature.properties.clicked != null) {
+			layer.feature.properties.clicked = !layer.feature.properties.clicked;
+		} else {
+			layer.feature.properties.clicked = true;
+		}
+		if (!L.Browser.ie && !L.Browser.opera) {
+	        layer.bringToFront();
+	    }
+		clickedAreas.push(layer);
+		info.update(layer.feature.properties);
+	}
+	*/
+	
+	
+	//A central function. Sorts items based on whether they have been clicked or not. If they
+	//have been and are clicked again, sets to false and vice versa. I am confused what pushToFront is
+	//or how it interacts with the wider collection of items if there is one. 
 	function showDetails(e) {
 		var layer = e.target;
 		if (layer.feature.properties.clicked != null) {
@@ -65,11 +124,15 @@ function initmap() {
 		info.update(layer.feature.properties);
 	}
 	
+	
+	
+	//Try: just commenting first line. Then, the map still works but colors remain unchanged when clicked twice. 
+	//Used to reset the color, size, etc of items to their default state(ie. after being clicked twice)
 	function resetHighlight(e) {
 		geojson.resetStyle(e.target);
 	    info.update();
 	}
-	
+	//Calls the functions on their corresponding events for EVERY feature(from tutorial)
 	function onEachFeature(feature, layer) {
 	    layer.on({
 	        mouseover: highlightFeature,
@@ -78,7 +141,8 @@ function initmap() {
 	    });
 	}
 	
-	geojson = L.geoJson(updatedEschebach, {
+	//What does this do?
+	geojson = L.geoJson(pompeiiPropertyData, {
 		style: style,
 	    onEachFeature: onEachFeature
 	}).addTo(map);
@@ -99,6 +163,9 @@ function initmap() {
 
 	info.addTo(map);
 	
+	//Used to acquire all of the items clicked for search(red button "Click here to search).
+	//Does this by iterating through the list of clicked items and adding them to uniqueClicked,
+	//then returning uniqueClicked. 
 	function getUniqueClicked() {
 		var uniqueClicked = [];
 		var length = clickedAreas.length;
@@ -110,7 +177,8 @@ function initmap() {
 		}
 		return uniqueClicked;
 	}
-	
+	//Collects the ids of the clicked item objects(the id property).
+	//I disagree with many of these function names. 
 	function collectClicked() {
 		var propIdsOfClicked = [];
 		
@@ -124,6 +192,8 @@ function initmap() {
 		return propIdsOfClicked;
 	}
 	
+	//I am confused as to the workings of this function. Looks like it is the highest level function
+	//for searching after the user clicks the search button. 
 	function DoSubmit() {
 		var highlighted = collectClicked();
 		var argString = "";
@@ -141,6 +211,9 @@ function initmap() {
 		}
 	}
 	
+	
+	//Displays the Selected Properties and their corresponding information in an HTML table formatted. 
+	//Achieved by mixing html and javascript, accessing text properties of the regions(items). 
 	function displayHighlightedRegions() {
 		var clickedAreasTable = getUniqueClicked();
 		
@@ -150,7 +223,7 @@ function initmap() {
 			var property = clickedAreasTable[i];
 			if (property.feature.properties.clicked === true) {
 				html += "<tr><td>" +property.feature.properties.Property_Name + ", " + 
-						property.feature.properties.PRIMARY_DO + "</td></tr>";
+						property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" Graffiti</p>"+ "</td></tr>";
 			}
 		}
 		html += "</table";
@@ -158,6 +231,8 @@ function initmap() {
 		// when you click anywhere on the map, it updates the table
 	}
 	
+	
+	//Handles the events(they're not handled above??).
 	var el = document.getElementById("search");
 	el.addEventListener("click", DoSubmit, false);
 	
@@ -173,6 +248,12 @@ function initmap() {
 //	function focusOnProperty(propId) {
 //		
 //	} **** this feature is currently in the works
-	
 }
+	
+	
+	
+	
+	
+	
+	
 	
