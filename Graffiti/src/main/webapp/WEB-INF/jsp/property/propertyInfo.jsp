@@ -48,6 +48,7 @@ function generateMap(name) {
 			"map?clickedRegion="+name+"&city="+name, false); 
 	xmlHttp.send(null);
 	document.getElementById("cityMap").innerHTML = xmlHttp.responseText;
+	//document.getElementById("pompeiimap").innerHTML = xmlHttp.responseText;
 	start();
 }
 </script>

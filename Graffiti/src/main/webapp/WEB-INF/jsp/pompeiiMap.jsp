@@ -8,6 +8,7 @@
 <title>Pompeii Map</title>
 <%@ include file="/resources/common_head.txt" %>
 <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
+
  <link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/resources/css/details.css"/>
 <link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
 <script type="text/javascript"
