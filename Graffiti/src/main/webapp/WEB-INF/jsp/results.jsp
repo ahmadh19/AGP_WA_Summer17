@@ -45,25 +45,25 @@ $('img').mapster({
 }); 
 }
 
-//function generatePompeii(name) {
-	//xmlHttp = new XMLHttpRequest();
-	//xmlHttp.open("GET",
-			//"map?clickedRegion="+name+"&city="+name, false); 
-	//xmlHttp.send(null);
-	//document.getElementById("pompeiiCityMap").innerHTML = xmlHttp.responseText;
-	//start();
-//}
+function generatePompeii(name) {
+	xmlHttp = new XMLHttpRequest();
+	xmlHttp.open("GET",
+			"map?clickedRegion="+name+"&city="+name, false); 
+	xmlHttp.send(null);
+	document.getElementById("pompeiiCityMap").innerHTML = xmlHttp.responseText;
+	start();
+}
 
 //setTimeout(function(){ map.invalidateSize()}, 1000);
-function generatePompeii(name) {
+//function generatePompeii(name) {
 		//xmlHttp = new XMLHttpRequest();
 		//xmlHttp.open("GET",
 			//"map?clickedRegion="+name+"&city="+name, false); 
 		
 		//document.getElementById("pompeiimap").innerHTML = xmlHttp.responseText;
 		//start();
-		window.initmap();
-}
+//		window.initmap();
+//}
 
 
 
@@ -227,15 +227,17 @@ ul#searchTerms li {
 		<!--  SideBar Map  -->
 		<div class="map-override1">
 			<div id="herculaneumCityMap"></div>
+			<div id="pompeiiCityMap"></div>
 
 		</div>
 		
+		<!--  
 		<div id="pompeiimap" class="mapdiv" style="border:3px solid #800000; margin-left:715px; margin-top:155px; width: 200px; height:200px;"></div>
-		
 		<div>
+		-->
 	
 		<!--  <div id="newDiv"></div>-->
-		 </div>
+		<!-- </div> --> 
 		
 
 		<div style="margin-left: 200px;">
