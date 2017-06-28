@@ -115,26 +115,21 @@ function generateMap(name) {
 					<td>${prop.commentary }</td>
 				</tr>
 			</c:if>
-			<tr>
-				<th class="propertyLabel">Architectural Context:</th>
-				<td>
-					<!-- 
-					<ul>
-						<li> --> <a
-					href="<%=request.getContextPath()%>/results?property=${ prop.id}">Graffiti
-						in this property</a>
-					 <!-- </li>
-						<li>PBMP Property Info</li>
-						<li>Pleiades Link for this property</li>
-						 --> <!--  	</ul> -->
-				</td>
-			</tr>
+			<!--<c:if test="${prop.graffitiExists}">-->
+				<tr>
+					<th class="propertyLabel">Archaeological Context:</th>
+					<td>
+						<a href="<%=request.getContextPath()%>/results?property=${ prop.id}">
+						Graffiti in this property</a>
+					</td>
+				</tr>
+			<!--</c:if>-->
 			<c:if test="${prop.insula.modernCity=='Pompeii'}">
 				<tr>
-					<th class="propertyLabel" rowspan="2">Links:</th>
+					<th class="propertyLabel">Links:</th>
 					<td>
 						<a href="${prop.pompeiiinPicturesURL}">Pompeii in Pictures</a>
-						<!--<br/><a href="${prop.plodURL}">Linked Open Data</a>-->
+						<!--<br/><a href="${prop.plodURL}">P-LOD Linked Open Data</a>-->
 					</td>
 				</tr>
 			</c:if>
