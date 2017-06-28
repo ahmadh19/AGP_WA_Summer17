@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -96,35 +97,42 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 	}
 	
-	public static void main(String args[]) {
+	public static void main(String args[]) throws JsonProcessingException, IOException {
 		
 		init();
 		
+		storeHerculaneum();
+		 
+		storePompeii();
+		
+		copyToJavascriptFiles();	
+		
+	}
+	
+	/**
+	 * Stores the data for Herculaneum in herculaneumPropertyData.txt
+	 */
+	
+	private static void storeHerculaneum(){
 		try {
 			// creates the file we will later write the updated graffito to
 			//This will write to updated eschebach.txt(where the graffito is the combination of properties with attributes)
 			//Want to add number of graffiti to this. 
-			PrintWriter pompeiiTextWriter = new PrintWriter("src/main/webapp/resources/js/pompeiiPropertyData.txt", "UTF-8");
+			
 			PrintWriter herculaneumTextWriter = new PrintWriter("src/main/webapp/resources/js/herculaneumPropertyData.txt", "UTF-8");
 			
-			// creates necessary objects to parse the original eschebach files
-			ObjectMapper pompeiiMapper = new ObjectMapper();
-			JsonFactory pompeiiJsonFactory = new JsonFactory();			
-			JsonParser pompeiiJsonParser = pompeiiJsonFactory.createParser(new File("src/main/resources/geoJSON/eschebach.json"));
+			
 			
 			ObjectMapper herculaneumMapper = new ObjectMapper();
 			JsonFactory herculaneumJsonFactory = new JsonFactory();			
 			JsonParser herculaneumJsonParser = herculaneumJsonFactory.createParser(new File("src/main/resources/geoJSON/herculaneum.json"));
 			
-			// this accesses the 'features' level of the eschebach document
-			JsonNode pompeiiRoot = pompeiiMapper.readTree(pompeiiJsonParser);
-			JsonNode pompeiiFeaturesNode = pompeiiRoot.path("features");
+			
 			
 			JsonNode herculaneumRoot = herculaneumMapper.readTree(herculaneumJsonParser);
 			JsonNode herculaneumFeaturesNode = herculaneumRoot.path("features");
 			
-			// iterates over the features node
-			Iterator<JsonNode> pompeiiIterator = pompeiiFeaturesNode.elements();
+			
 			Iterator<JsonNode> herculaneumIterator = herculaneumFeaturesNode.elements();
 			
 			while (herculaneumIterator.hasNext()) {
@@ -218,6 +226,41 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			herculaneumTextWriter.close();
 	
 			
+		}
+		
+		catch (JsonParseException e) {e.printStackTrace();}
+		catch (JsonMappingException e) {e.printStackTrace();}
+		catch (IOException e) {e.printStackTrace();}
+		
+	}
+	
+	
+	/**
+	 * Stores the data for Pompeii in herculaneumPropertyData.txt 
+	 * @throws IOException 
+	 * @throws JsonProcessingException 
+	 */
+	private static void storePompeii() throws JsonProcessingException, IOException{
+		
+		try {
+			
+			PrintWriter pompeiiTextWriter = new PrintWriter("src/main/webapp/resources/js/pompeiiPropertyData.txt", "UTF-8");
+
+			
+			// creates necessary objects to parse the original eschebach files
+			ObjectMapper pompeiiMapper = new ObjectMapper();
+			JsonFactory pompeiiJsonFactory = new JsonFactory();			
+			JsonParser pompeiiJsonParser;
+			
+			pompeiiJsonParser = pompeiiJsonFactory.createParser(new File("src/main/resources/geoJSON/eschebach.json"));
+			// this accesses the 'features' level of the eschebach document
+			JsonNode pompeiiRoot = pompeiiMapper.readTree(pompeiiJsonParser);
+			JsonNode pompeiiFeaturesNode = pompeiiRoot.path("features");
+				
+			// iterates over the features node
+			Iterator<JsonNode> pompeiiIterator = pompeiiFeaturesNode.elements();
+			
+			
 			while (pompeiiIterator.hasNext()) {
 				JsonNode field = pompeiiIterator.next();
 				String fieldText = field.toString();
@@ -303,18 +346,22 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 							e.printStackTrace();
 						}
 					}
- 				}
+					}
 			}
 			
 			pompeiiTextWriter.close();
-			
-			copyToJavascriptFiles();
-			
+		} catch (JsonParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
-		catch (JsonParseException e) {e.printStackTrace();}
-		catch (JsonMappingException e) {e.printStackTrace();}
-		catch (IOException e) {e.printStackTrace();}
+		
+		
+		
+		
 	}
 	/**
 	 * An independent function for copying from pompeiiPropertyData.txt to pompeiiPropertyData.js with necessary js-specific components. 
