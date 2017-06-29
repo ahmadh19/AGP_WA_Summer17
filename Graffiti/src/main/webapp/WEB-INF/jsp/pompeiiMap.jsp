@@ -19,8 +19,9 @@
 <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
 
 <div>
-<div id="pompeiimap" class="mapdiv"></div>
 <div id="newDiv"></div>
+<div id="pompeiimap" class="mapdiv"></div>
+
 </div>
 
 <div id="moreInfo"><button id="search" class="btn btn-agp">Click here to search</button></div>

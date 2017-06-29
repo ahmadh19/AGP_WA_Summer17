@@ -125,8 +125,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			
 			ObjectMapper herculaneumMapper = new ObjectMapper();
 			JsonFactory herculaneumJsonFactory = new JsonFactory();			
-			JsonParser herculaneumJsonParser = herculaneumJsonFactory.createParser(new File("src/main/resources/geoJSON/herculaneum.json"));
-			
+			//JsonParser herculaneumJsonParser = herculaneumJsonFactory.createParser(new File("src/main/resources/geoJSON/herculaneum.json"));
+			JsonParser herculaneumJsonParser = herculaneumJsonFactory.createParser(new File("src/main/resources/geoJSON/herculaneumTest.json"));
 			
 			
 			JsonNode herculaneumRoot = herculaneumMapper.readTree(herculaneumJsonParser);
@@ -138,6 +138,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			while (herculaneumIterator.hasNext()) {
 				JsonNode field = herculaneumIterator.next();
 				String fieldText = field.toString();
+				
+				System.out.println("Herc field text    "+fieldText);
 																																																								
 				// converts the above string into an InputStream so I can use it in
 				// the json parser to iterate through the different tokens
@@ -148,11 +150,17 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 				while (parseLine.nextToken() != JsonToken.END_OBJECT) {
 					String fieldname = parseLine.getCurrentName();
 					
+					System.out.println("Herculaneum fieldname:   "+fieldname);
+					
+					System.out.println("PRIMARY_DO");
+					
 					// when the token is the PRIMARY_DO field, we go to the next
 					// token and that is the value
+					//if("PRIMARY_DO".equals(fieldname)) {
 					if("PRIMARY_DO".equals(fieldname)) {
 						parseLine.nextToken();
 						String primarydo = parseLine.getText();
+						System.out.println("Herculaneum primarydo:   "+primarydo);
 						if (!primarydo.contains(".")) {continue;}
 						String[] parts = primarydo.split("\\.");
 						
@@ -277,6 +285,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 					// when the token is the PRIMARY_DO field, we go to the next
 					// token and that is the value
 					if("PRIMARY_DO".equals(fieldname)) {
+						
+						//System.out.println("Pompeii Field Name: "+fieldname);
 						parseLine.nextToken();
 						String primarydo = parseLine.getText();
 						if (!primarydo.contains(".")) {continue;}
@@ -335,7 +345,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								graffito.set("properties", updatedProps);
 								
 								// write the newly updated graffito to text file
-								System.out.println(graffito);
+								//System.out.println(graffito);
 								
 								//jsWriter.println(graffito+",");	
 								pompeiiTextWriter.println(graffito +",");

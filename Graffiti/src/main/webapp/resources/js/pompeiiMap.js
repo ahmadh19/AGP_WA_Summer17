@@ -36,19 +36,14 @@ function initmap() {
 	//contained inside of else. 
 	function style(feature) {
 		
-		var borderColor=makeBorder(feature.properties);
-		var fillColor;
-		if (feature.properties.clicked !== true) {
-			//fillColor = 'red';
-			fillColor = '#ecf0f1';
-			
+		var fillColor=getFillColor(feature.properties);
+		var borderColor='black';
+		if (feature.properties.clicked == true) {
+			borderColor='yellow';
 		} 
-		else {
-			fillColor = '#3a7ae7';
-			//fillColor = 'red';
-		} 
+		
 			return { 
-	    	fillColor,
+	    	fillColor:fillColor,
 	    	width:200,
 	    	height:200, 
 	        weight: 2,
@@ -59,26 +54,32 @@ function initmap() {
 		L.geoJson(pompeiiPropertyData, {style: style}).addTo(map);
 	}
 	
-	function makeBorder(propertyObject){
+	function getFillColor(propertyObject){
 		if(0<=propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=1){
-			return 'yellow';
+			return '#FFEDA0';
+			
 		}
 		
 		else if(1<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=5){
-			return 'orange';
+			return '#FEB24C';
+			
 		}
 		
 		else if(5<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=10){
-			return 'green';
+			return '#FD8D3C';
 		}
 		else if(10<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=15){
-			return 'blue';
+			return '#FC4E2A' ;
 		}
 		else if(15<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=20){
-			return 'purple';
+			return '#E31A1C';
+			
+		}
+		else if(20<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=25){
+			return '#BD0026';
 		}
 		else{
-			return 'red';
+			return '#800026';
 		}
 	}
 	
@@ -88,8 +89,8 @@ function initmap() {
 	function highlightFeature(e) {
 		var layer = e.target;
 		layer.setStyle({
-			//fillColor: '#3a7ae7'
-			fillColor: 'green'
+			color:'yellow',
+			strokeWidth:"100"
 			
 		});
 		
@@ -230,8 +231,8 @@ function initmap() {
 		for (var i=0; i<length; i++) {
 			var property = clickedAreasTable[i];
 			if (property.feature.properties.clicked === true) {
-				html += "<tr><td>" +property.feature.properties.Property_Name + ", " + 
-						property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" Graffiti</p>"+ "</td></tr>";
+				html += "<tr><td><li>" +property.feature.properties.Property_Name + ", " + 
+						property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li></td></tr>";
 			}
 		}
 		html += "</table";

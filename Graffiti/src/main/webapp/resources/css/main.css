@@ -44,6 +44,7 @@
 }
 
 #newDiv {
+	height:800px;
 	width: 350px;
 	float: right;
 }
