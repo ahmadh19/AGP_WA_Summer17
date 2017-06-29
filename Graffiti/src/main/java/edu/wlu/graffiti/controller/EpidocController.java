@@ -35,25 +35,23 @@ public class EpidocController {
 	}
 	
 	@RequestMapping(value = "/all/xml", produces = "application/xml")
-	public List<Inscription> getInscriptions() {
-		return graffitiDao.getAllInscriptions();
+	public String getInscriptions() {
+		return generator.serializeToXML(graffitiDao.getAllInscriptions());
 	}
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/filtered-results/xml", produces = "application/xml")
-	public List<Inscription> getFilteredInscriptions(final HttpServletRequest request) {
+	public String getFilteredInscriptions(final HttpServletRequest request) {
 		HttpSession s = request.getSession();
 		List<Inscription> results = (List<Inscription>) s.getAttribute("filteredList");
-		//System.out.println(results.size());
-		for(Inscription i : results) {
-			//generator.serializeEmployeeToXML(i);
-		}
-		return results;
+		return generator.serializeToXML(results);
 	}
 	
+	/**
 	@RequestMapping("/property/{city}/{insula}/{property}/xml")
 	public Property getProperty(@PathVariable String city, @PathVariable String insula, @PathVariable String property) {
 		return findspotDao.getPropertyByCityAndInsulaAndProperty(city, insula, property);
 	}
+	*/
 
 }

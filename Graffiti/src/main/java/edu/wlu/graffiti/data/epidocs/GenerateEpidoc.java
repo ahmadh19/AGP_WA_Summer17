@@ -3,6 +3,8 @@
  */
 package edu.wlu.graffiti.data.epidocs;
 
+import java.util.List;
+
 import org.jdom2.*;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
@@ -20,7 +22,6 @@ public class GenerateEpidoc {
 	
 	public String serializeToXML(Inscription i) {
 
-		// create all the elements
 		Element root = new Element("TEI");
 		Document doc = new Document(root);
 		
@@ -30,7 +31,96 @@ public class GenerateEpidoc {
 		root.setAttribute(new Attribute("base", "ex-epidoctemplate.xml", Namespace.XML_NAMESPACE));
 		root.addNamespaceDeclaration(ns);
 		
+		generateTEIHeader(i, root);
+		generateFacsimile(i, root);
+		generateBody(i, root);
 		
+		XMLOutputter out = new XMLOutputter();
+		out.setFormat(Format.getPrettyFormat());
+
+		return out.outputString(doc);
+	}
+
+	public String serializeToXML(List<Inscription> inscriptions) {
+		
+		XMLOutputter out = new XMLOutputter();
+		out.setFormat(Format.getPrettyFormat());
+		
+		Element root = new Element("Inscriptions");
+		Document doc = new Document(root);
+		
+		for(Inscription i : inscriptions) {
+
+			Element inscriptionRoot = new Element("TEI");
+
+			Namespace ns = Namespace.getNamespace("ns", "http://www.tei-c.org/ns/1.0");
+			inscriptionRoot.setAttribute(new Attribute("space", "preserve", Namespace.XML_NAMESPACE));
+			inscriptionRoot.setAttribute(new Attribute("lang", "en", Namespace.XML_NAMESPACE));
+			inscriptionRoot.setAttribute(new Attribute("base", "ex-epidoctemplate.xml", Namespace.XML_NAMESPACE));
+			inscriptionRoot.addNamespaceDeclaration(ns);
+			
+			generateTEIHeader(i, inscriptionRoot);
+			generateFacsimile(i, inscriptionRoot);
+			generateBody(i, inscriptionRoot);
+			
+			root.addContent(inscriptionRoot);
+		}
+		
+		return out.outputString(doc);
+		
+	}
+	
+	private void generateBody(Inscription i, Element root) {
+		Element text = new Element("text");
+		Element body = new Element("body");
+		Element div1 = new Element("div");
+		div1.setAttribute("type", "edition");
+		div1.setAttribute("space", "preserve", Namespace.XML_NAMESPACE);
+		div1.setAttribute("lang", "en", Namespace.XML_NAMESPACE);
+		Element ab = new Element("ab");
+		Element lb = new Element("ab").setAttribute("n", "1");
+		ab.addContent(lb);
+		ab.setText(i.getContent());
+		div1.addContent(ab);
+		body.addContent(div1);
+		
+		Element div2 = new Element("div").setAttribute("type", "apparatus");
+		Element p_div2 = new Element("p").setText(i.getApparatus());
+		div2.addContent(p_div2);
+		body.addContent(div2);
+		
+		Element div3 = new Element("div").setAttribute("type", "translation");
+		Element p_div3 = new Element("p").setText(i.getAgp().getContentTranslation());
+		div3.addContent(p_div3);
+		body.addContent(div3);
+		
+		Element div4 = new Element("div").setAttribute("type", "commentary");
+		Element p_div4 = new Element("p").setText(i.getAgp().getCommentary());
+		div4.addContent(p_div4);
+		body.addContent(div4);
+		
+		Element div5 = new Element("div").setAttribute("type", "bibliography");
+		Element p_div5 = new Element("p").setText(i.getBibliography());
+		div5.addContent(p_div5);
+		body.addContent(div5);
+		
+		Element div6 = new Element("div").setAttribute("type", "summary");
+		Element p_div6 = new Element("p").setText(i.getAgp().getSummary());
+		div6.addContent(p_div6);
+		body.addContent(div6);
+		
+		text.addContent(body);
+		root.addContent(text);
+	}
+
+	private void generateFacsimile(Inscription i, Element root) {
+		Element facsimilie = new Element("facsimilie");
+		Element graphic = new Element("graphic").setAttribute("url", "photograph of text or monument");
+		facsimilie.addContent(graphic);
+		root.addContent(facsimilie);
+	}
+
+	private void generateTEIHeader(Inscription i, Element root) {
 		Element teiHeader = new Element("teiHeader");
 		Element fileDesc = new Element("fileDesc");
 		Element titleStmt = new Element("titleStmt");
@@ -147,64 +237,6 @@ public class GenerateEpidoc {
 		
 		teiHeader.addContent(fileDesc);
 		root.addContent(teiHeader);
-		
-		Element facsimilie = new Element("facsimilie");
-		Element graphic = new Element("graphic").setAttribute("url", "photograph of text or monument");
-		facsimilie.addContent(graphic);
-		root.addContent(facsimilie);
-		
-		Element text = new Element("text");
-		Element body = new Element("body");
-		Element div1 = new Element("div");
-		div1.setAttribute("type", "edition");
-		div1.setAttribute("space", "preserve", Namespace.XML_NAMESPACE);
-		div1.setAttribute("lang", "en", Namespace.XML_NAMESPACE);
-		Element ab = new Element("ab");
-		Element lb = new Element("ab").setAttribute("n", "1");
-		ab.addContent(lb);
-		ab.setText(i.getContent());
-		div1.addContent(ab);
-		body.addContent(div1);
-		
-		Element div2 = new Element("div").setAttribute("type", "apparatus");
-		Element p_div2 = new Element("p").setText(i.getApparatus());
-		div2.addContent(p_div2);
-		body.addContent(div2);
-		
-		Element div3 = new Element("div").setAttribute("type", "translation");
-		Element p_div3 = new Element("p").setText(i.getAgp().getContentTranslation());
-		div3.addContent(p_div3);
-		body.addContent(div3);
-		
-		Element div4 = new Element("div").setAttribute("type", "commentary");
-		Element p_div4 = new Element("p").setText(i.getAgp().getCommentary());
-		div4.addContent(p_div4);
-		body.addContent(div4);
-		
-		Element div5 = new Element("div").setAttribute("type", "bibliography");
-		Element p_div5 = new Element("p").setText(i.getBibliography());
-		div5.addContent(p_div5);
-		body.addContent(div5);
-		
-		Element div6 = new Element("div").setAttribute("type", "summary");
-		Element p_div6 = new Element("p").setText(i.getAgp().getSummary());
-		div6.addContent(p_div6);
-		body.addContent(div6);
-		
-		text.addContent(body);
-		root.addContent(text);
-		
-		XMLOutputter out = new XMLOutputter();
-		out.setFormat(Format.getPrettyFormat());
-
-		return out.outputString(doc);
 	}
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
-	}
-
 }

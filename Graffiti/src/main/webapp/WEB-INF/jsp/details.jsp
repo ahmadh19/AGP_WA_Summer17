@@ -179,6 +179,10 @@ function backToResults(){
 		 
 		<button class="btn btn-agp" onclick="backToResults();">Back
 			to Results</button>
+		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/xml"
+			id="json">
+			<button class="btn btn-agp right-align">Export EpiDoc Data</button>
+		</a>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/json"
 			id="json">
 			<button class="btn btn-agp right-align">Export JSON Data</button>

@@ -9,9 +9,9 @@
 		id="bulkJson">
 		<button class="btn btn-agp right-align">Export JSON Data</button>
 	</a>
-	<a href="<%=request.getContextPath()%>/filtered-results/epidocs"
+	<a href="<%=request.getContextPath()%>/filtered-results/xml"
 		id="bulkEpidocs">
-		<button class="btn btn-agp right-align">Export Epidocs Data</button>
+		<button class="btn btn-agp right-align">Export EpiDoc Data</button>
 	</a>
 </p>
 
