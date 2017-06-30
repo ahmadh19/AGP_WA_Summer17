@@ -165,8 +165,8 @@ function backToResults(){
 			//button.val("Show Measurements");
 			//$("#measurements").hide();
 		//}
-		button.next().show());
-		//});
+		button.next().show();
+		});
 	
 		$("#measurements").show();
 	});

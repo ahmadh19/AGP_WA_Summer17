@@ -141,6 +141,8 @@ public class GraffitiController {
 	// Pompeii)
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public String searchForm(final HttpServletRequest request) {
+		
+		
 		String city = request.getParameter("city");
 		String message;
 		HttpSession s = request.getSession();
@@ -220,6 +222,12 @@ public class GraffitiController {
 			request.setAttribute("regionIds", regionIds);
 			request.setAttribute("message", message);
 			request.setAttribute("displayImage", request.getContextPath() + "/resources/images/" + city + ".jpg");
+			
+			//Allows attributes to be set but goes to the pompeiiMap url if the city clicked on is pompeii.
+			if (city.toLowerCase().equals("pompeii")) {
+				//return "pompeiiMap";
+				return "searchPompeii";
+			}
 			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 			return "search";
 		} else {
@@ -541,7 +549,8 @@ public class GraffitiController {
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
-		return "results";
+		//return "results";
+		return "searchResults";
 	}
 	
 	private List<Inscription> searchResults(final HttpServletRequest request) {
