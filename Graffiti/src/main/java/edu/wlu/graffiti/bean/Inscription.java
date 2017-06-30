@@ -34,7 +34,8 @@ public class Inscription implements Comparable<Inscription> {
 	private int stopImageId;
 	private AGPInfo agp;
 	private String edrFindSpot;
-
+	private String date;
+	
 	public Inscription() {
 		
 	}
@@ -46,6 +47,15 @@ public class Inscription implements Comparable<Inscription> {
 
 	public void setId(final int id) {
 		this.id = id;
+	}
+	
+	@JsonIgnore
+	public String getDate() {
+		return this.date;
+	}
+
+	public void setDate(final String date) {
+		this.date = date;
 	}
 
 	@JsonIgnore

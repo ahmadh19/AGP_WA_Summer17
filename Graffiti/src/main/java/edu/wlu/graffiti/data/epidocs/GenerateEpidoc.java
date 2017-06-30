@@ -217,7 +217,7 @@ public class GenerateEpidoc {
 		Element placeName = new Element("placeName");
 		placeName.setAttribute("ref", "URI");
 		placeName.setAttribute("type", "property_number");
-		Element origDate = new Element("origDate").setText("{date_of_origin}"); //TODO: fix this!
+		Element origDate = new Element("origDate").setText(i.getDate());
 		origin.addContent(origPlace);
 		origin.addContent(placeName);
 		origin.addContent(origDate);
@@ -227,7 +227,15 @@ public class GenerateEpidoc {
 		provenance1.setAttribute("type", "found");
 		history.addContent(provenance1);
 		
-		Element provenance2 = new Element("provenance").setText("Modern location(s) (if any from repository, above)");
+		Element provenance2 = new Element("provenance");
+		if(i.getAncientCity().equals("Pompeii")) {
+			provenance2.setText("Pompei");
+		} else if(i.getAncientCity().equals("Herculaneum")) {
+			provenance2.setText("Ercolano");
+		} else if(i.getAncientCity().equals("Smyrna")) {
+			provenance2.setText("Izmir, Turkey");
+		}
+		
 		provenance2.setAttribute("type", "observed");
 		history.addContent(provenance2);
 		msDesc.addContent(history);
