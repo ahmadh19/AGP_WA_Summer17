@@ -27,6 +27,7 @@ public class Property {
 	private String pleiadesId="";
 	private String commentary="";
 	private String locationKey="";
+	private int numberOfGraffiti;
 	private static final Map<String, Integer> numerals = new TreeMap<String, Integer>();
 
 	/**
@@ -45,6 +46,8 @@ public class Property {
 		numerals.put("VIII", 8);
 		numerals.put("IX", 9);
 		numerals.put("X", 10);
+		
+		numberOfGraffiti = 0;
 	}
 	
 	public Property(int id) {
@@ -238,5 +241,19 @@ public class Property {
 		}
 		
 		return "";
+	}
+	
+	/**
+	 * @param count the number of graffiti in the property to set
+	 */
+	public void setNumberOfGraffiti(int count) {
+		numberOfGraffiti = count;
+	}
+	
+	/**
+	 * @return the number of graffiti in the property
+	 */
+	public int getNumberOfGraffiti() {
+		return numberOfGraffiti;
 	}
 }

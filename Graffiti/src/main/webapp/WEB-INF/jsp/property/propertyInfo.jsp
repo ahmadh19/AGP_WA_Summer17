@@ -115,13 +115,15 @@ function generateMap(name) {
 					<td>${prop.commentary }</td>
 				</tr>
 			</c:if>
-			<tr>
-				<th class="propertyLabel">Archaeological Context:</th>
-				<td>
-					<a href="<%=request.getContextPath()%>/results?property=${ prop.id}">
-					Graffiti in this property</a>
-				</td>
-			</tr>
+			<c:if test="${prop.numberOfGraffiti > 0}">
+				<tr>
+					<th class="propertyLabel">Archaeological Context:</th>
+					<td>
+						<a href="<%=request.getContextPath()%>/results?property=${ prop.id}">
+						Graffiti in this property</a>
+					</td>
+				</tr>
+			</c:if>
 			<c:if test="${prop.insula.modernCity=='Pompeii'}">
 				<tr>
 					<th class="propertyLabel">Links:</th>
