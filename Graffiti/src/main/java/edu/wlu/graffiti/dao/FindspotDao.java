@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -84,6 +86,9 @@ public class FindspotDao extends JdbcTemplate {
 
 	public static final String SELECT_CITY_NAMES = "SELECT name from cities ORDER BY name";
 	
+	@Resource
+	private GraffitiDao graffitiDao;
+	
 	private static final class PropertyTypeRowMapper implements RowMapper<PropertyType> {
 		public PropertyType mapRow(final ResultSet resultSet, final int rowNum) throws SQLException {
 			final PropertyType propType = new PropertyType();
@@ -150,6 +155,7 @@ public class FindspotDao extends JdbcTemplate {
 		Property result = queryForObject(SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT, new PropertyRowMapper(),
 				city, insulaName, property_number);
 		result.setPropertyTypes(getPropertyTypeForProperty(result.getId()));
+		result.setNumberOfGraffiti(graffitiDao.getInscriptionCountByFindSpot(result.getId()));
 		return result;
 	}
 	
@@ -159,6 +165,7 @@ public class FindspotDao extends JdbcTemplate {
 			return result;
 		}
 		result.setPropertyTypes(getPropertyTypeForProperty(result.getId()));
+		result.setNumberOfGraffiti(graffitiDao.getInscriptionCountByFindSpot(result.getId()));
 		return result;
 	}
 
@@ -166,6 +173,7 @@ public class FindspotDao extends JdbcTemplate {
 	public Property getPropertyById(int property_id) {
 		Property result = queryForObject(SELECT_BY_PROPERTY_ID_STATEMENT, new PropertyRowMapper(), property_id);
 		result.setPropertyTypes(getPropertyTypeForProperty(property_id));
+		result.setNumberOfGraffiti(graffitiDao.getInscriptionCountByFindSpot(result.getId()));
 		return result;
 	}
 }

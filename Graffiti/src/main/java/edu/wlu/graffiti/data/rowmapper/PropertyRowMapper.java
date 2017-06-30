@@ -3,6 +3,8 @@ package edu.wlu.graffiti.data.rowmapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.annotation.Resource;
+
 import org.springframework.jdbc.core.RowMapper;
 
 import edu.wlu.graffiti.bean.City;

@@ -124,15 +124,21 @@ function generateMap(name) {
 					</td>
 				</tr>
 			</c:if>
-			<c:if test="${prop.insula.modernCity=='Pompeii'}">
-				<tr>
-					<th class="propertyLabel">Links:</th>
-					<td>
+			<tr>
+				<th class="propertyLabel">Links:</th>
+				<td>
+					<c:if test="${prop.insula.modernCity=='Pompeii'}">
 						<a href="${prop.pompeiiinPicturesURL}">Pompeii in Pictures</a>
 						<!--<br/><a href="${prop.plodURL}">P-LOD Linked Open Data</a>-->
-					</td>
-				</tr>
-			</c:if>
+					</c:if>
+					<c:if test="${prop.insula.modernCity=='Herculaneum'}">
+						<a href="http://donovanimages.co.nz/proxima-veritati/Herculaneum/">
+						Herculaneum Panoramas</a>
+						<br/><a href="http://www.pompeiisites.org/Sezione.jsp?titolo=Visita%20agli%20scavi&idSezione=94">
+						Parco Archaeologico</a>
+					</c:if>
+				</td>
+			</tr>
 		</table>
 		<!-- 	<div id="pompeiimap" class="propertymapdiv"></div>  -->
 		<div id="map">

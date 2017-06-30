@@ -118,7 +118,6 @@ public class GraffitiDao extends JdbcTemplate {
 
 	@Resource
 	private FindspotDao propertyDao;
-
 	
 	@Cacheable("inscriptions")
 	public List<Inscription> getAllInscriptions() {
@@ -160,8 +159,7 @@ public class GraffitiDao extends JdbcTemplate {
 	}
 	
 	public int getInscriptionCountByFindSpot(final int property_id) {
-		int count = queryForObject(FIND_COUNT_BY_FIND_SPOT, new Object[]{property_id}, Integer.class);
-		return count;
+		return queryForObject(FIND_COUNT_BY_FIND_SPOT, new Object[]{property_id}, Integer.class);
 	}
 
 	public List<Inscription> getInscriptionsByContent(final String searchArg) {
@@ -232,7 +230,6 @@ public class GraffitiDao extends JdbcTemplate {
 		} else {
 			int id = inscription.getAgp().getProperty().getId();
 			Property property = propertyDao.getPropertyById(id);
-			property.setNumberOfGraffiti(getInscriptionCountByFindSpot(id));
 			inscription.getAgp().setProperty(property);
 		}
 	}
