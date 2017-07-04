@@ -13,6 +13,10 @@
 		id="bulkEpidocs">
 		<button class="btn btn-agp right-align">Export EpiDoc Data</button>
 	</a>
+	<a href="<%=request.getContextPath()%>/filtered-results/csv"
+		id="bulkEpidocs">
+		<button class="btn btn-agp right-align">Export CSV Data</button>
+	</a>
 </p>
 
 <c:if test="${num == 0}">
