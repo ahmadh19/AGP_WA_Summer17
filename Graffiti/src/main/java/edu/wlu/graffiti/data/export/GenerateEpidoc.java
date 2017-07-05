@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.wlu.graffiti.data.epidocs;
+package edu.wlu.graffiti.data.export;
 
 import java.util.List;
 

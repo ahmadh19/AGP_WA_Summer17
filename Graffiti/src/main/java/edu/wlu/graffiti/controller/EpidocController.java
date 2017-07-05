@@ -16,7 +16,7 @@ import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
-import edu.wlu.graffiti.data.epidocs.GenerateEpidoc;
+import edu.wlu.graffiti.data.export.GenerateEpidoc;
 
 @RestController
 public class EpidocController {

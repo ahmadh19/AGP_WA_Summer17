@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.wlu.graffiti.data.epidocs;
+package edu.wlu.graffiti.data.export;
 
 import java.io.FileWriter;
 import java.io.IOException;

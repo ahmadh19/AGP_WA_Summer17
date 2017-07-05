@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
-import edu.wlu.graffiti.data.epidocs.GenerateCSV;
+import edu.wlu.graffiti.data.export.GenerateCSV;
 
 @RestController
 public class CSVController {
