@@ -37,6 +37,9 @@ public class InsertProperties {
 			+ "(insula_id, property_number, additional_properties, property_name, italian_property_name) "
 			+ "VALUES (?,?,?,?,?)";
 
+	private static final String UPDATE_OSM_ID = "UPDATE properties SET osm_id = ? WHERE property_id = ?";
+	private static final String UPDATE_OSM_WAY_ID = "UPDATE properties SET osm_way_id = ? WHERE property_id = ?";
+
 	private static final String LOOKUP_INSULA_ID = "SELECT id from insula WHERE modern_city=? AND short_name=?";
 
 	private static final String LOOKUP_PROP_ID = "SELECT id FROM properties "
@@ -112,7 +115,7 @@ public class InsertProperties {
 				}
 
 				int propID = locatePropertyId(insula_id, propertyNumber);
-
+				
 				// handle property tags
 				if (record.size() > 6) {
 					String[] tagArray = record.get(6).trim().split(",");
@@ -136,6 +139,8 @@ public class InsertProperties {
 						}
 					}
 				}
+				
+				// handle adding OSM ids
 			}
 			br.close();
 			pstmt.close();
