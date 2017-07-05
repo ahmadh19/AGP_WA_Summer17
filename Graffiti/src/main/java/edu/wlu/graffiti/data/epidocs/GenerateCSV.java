@@ -34,13 +34,27 @@ public class GenerateCSV {
 			"cityName", "cityDescription"};
 	
 	public String serializeToCSV(List<Inscription> inscriptions) {
-		String returnString = "";
 		
-		for(Inscription i : inscriptions) {
-			returnString += serializeToCSV(i);
-		}
+		StringBuilder stringBuilder = new StringBuilder();
+		CSVPrinter csvFilePrinter = null;
 		
-		return returnString;
+		CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR);
+		
+		try {
+			csvFilePrinter = new CSVPrinter(stringBuilder, csvFileFormat);
+			csvFilePrinter.printRecord(FILE_HEADER);
+			for(Inscription i : inscriptions) {
+				writeInscriptionToCSV(i, csvFilePrinter);
+			}
+			csvFilePrinter.close();
+			
+			return stringBuilder.toString();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
+		return "";
 	}
 	
 	public String serializeToCSV(Inscription i) {
@@ -53,58 +67,7 @@ public class GenerateCSV {
 		try {
 			csvFilePrinter = new CSVPrinter(stringBuilder, csvFileFormat);
 			csvFilePrinter.printRecord(FILE_HEADER);
-			
-			List<Object> inscriptionRecord = new ArrayList<Object>();
-			
-			inscriptionRecord.add(i.getEdrId());
-			inscriptionRecord.add(i.getEDRFindSpot());
-			inscriptionRecord.add(i.getBibliography());
-			inscriptionRecord.add(i.getContent());
-			inscriptionRecord.add(i.getApparatus());
-			inscriptionRecord.add(i.getDate());
-			inscriptionRecord.add(i.getAgp().getAgpId());
-			inscriptionRecord.add(i.getAgp().getSummary());
-			inscriptionRecord.add(i.getAgp().getCommentary());
-			inscriptionRecord.add(i.getAgp().getContentTranslation());
-			inscriptionRecord.add(i.getAgp().getWritingStyleInEnglish());
-			inscriptionRecord.add(i.getAgp().getLanguageInEnglish());
-			inscriptionRecord.add(i.getAgp().getGraffitoHeight());
-			inscriptionRecord.add(i.getAgp().getGraffitoLength());
-			inscriptionRecord.add(i.getAgp().getMinLetterHeight());
-			inscriptionRecord.add(i.getAgp().getMaxLetterHeight());
-			inscriptionRecord.add(i.getAgp().getMinLetterWithFlourishesHeight());
-			inscriptionRecord.add(i.getAgp().getMaxLetterWithFlourishesHeight());
-			inscriptionRecord.add(i.getAgp().getCil());
-			inscriptionRecord.add(i.getAgp().getLangner());
-			inscriptionRecord.add(i.getAgp().getProperty().getPropertyNumber());
-			inscriptionRecord.add(i.getAgp().getProperty().getPropertyName());
-			inscriptionRecord.add(i.getAgp().getProperty().getPleiadesId());
-			inscriptionRecord.add(i.getAgp().getProperty().getItalianPropertyName());
-			inscriptionRecord.add(i.getAgp().getProperty().getCommentary());
-			inscriptionRecord.add(i.getAgp().getProperty().getInsula().getShortName());
-			inscriptionRecord.add(i.getAgp().getProperty().getInsula().getFullName());
-			inscriptionRecord.add(i.getAgp().getProperty().getInsula().getCity().getName());
-			inscriptionRecord.add(i.getAgp().getProperty().getInsula().getCity().getDescription());
-			
-			/**
-			inscriptionRecord.add(Integer.toString(i.getId()));
-			inscriptionRecord.add(i.getAncientCity());
-			inscriptionRecord.add(i.getFindSpot());
-			inscriptionRecord.add(Integer.toString(i.getFindSpotPropertyID()));
-			inscriptionRecord.add(i.getMeasurements());
-			inscriptionRecord.add(i.getLanguage());
-			inscriptionRecord.add(i.getWritingStyle());
-			inscriptionRecord.add(i.getApparatusDisplay());
-			inscriptionRecord.add(Integer.toString(i.getNumberOfImages()));
-			inscriptionRecord.add("startImageId");
-			inscriptionRecord.add("stopImageId");
-			inscriptionRecord.add("agp");
-			*/
-			
-			csvFilePrinter.printRecord(inscriptionRecord);
-
-			//System.out.print(stringBuilder.toString());
-			//System.out.println("Done!");
+			writeInscriptionToCSV(i, csvFilePrinter);
 			csvFilePrinter.close();
 			
 			return stringBuilder.toString();
@@ -114,6 +77,58 @@ public class GenerateCSV {
 		} 
 		
 		return "";	
+	}
+
+	private void writeInscriptionToCSV(Inscription i, CSVPrinter csvFilePrinter) throws IOException {
+		
+		List<Object> inscriptionRecord = new ArrayList<Object>();
+		
+		inscriptionRecord.add(i.getEdrId());
+		inscriptionRecord.add(i.getEDRFindSpot());
+		inscriptionRecord.add(i.getBibliography());
+		inscriptionRecord.add(i.getContent());
+		inscriptionRecord.add(i.getApparatus());
+		inscriptionRecord.add(i.getDate());
+		inscriptionRecord.add(i.getAgp().getAgpId());
+		inscriptionRecord.add(i.getAgp().getSummary());
+		inscriptionRecord.add(i.getAgp().getCommentary());
+		inscriptionRecord.add(i.getAgp().getContentTranslation());
+		inscriptionRecord.add(i.getAgp().getWritingStyleInEnglish());
+		inscriptionRecord.add(i.getAgp().getLanguageInEnglish());
+		inscriptionRecord.add(i.getAgp().getGraffitoHeight());
+		inscriptionRecord.add(i.getAgp().getGraffitoLength());
+		inscriptionRecord.add(i.getAgp().getMinLetterHeight());
+		inscriptionRecord.add(i.getAgp().getMaxLetterHeight());
+		inscriptionRecord.add(i.getAgp().getMinLetterWithFlourishesHeight());
+		inscriptionRecord.add(i.getAgp().getMaxLetterWithFlourishesHeight());
+		inscriptionRecord.add(i.getAgp().getCil());
+		inscriptionRecord.add(i.getAgp().getLangner());
+		inscriptionRecord.add(i.getAgp().getProperty().getPropertyNumber());
+		inscriptionRecord.add(i.getAgp().getProperty().getPropertyName());
+		inscriptionRecord.add(i.getAgp().getProperty().getPleiadesId());
+		inscriptionRecord.add(i.getAgp().getProperty().getItalianPropertyName());
+		inscriptionRecord.add(i.getAgp().getProperty().getCommentary());
+		inscriptionRecord.add(i.getAgp().getProperty().getInsula().getShortName());
+		inscriptionRecord.add(i.getAgp().getProperty().getInsula().getFullName());
+		inscriptionRecord.add(i.getAgp().getProperty().getInsula().getCity().getName());
+		inscriptionRecord.add(i.getAgp().getProperty().getInsula().getCity().getDescription());
+		
+		/**
+		inscriptionRecord.add(Integer.toString(i.getId()));
+		inscriptionRecord.add(i.getAncientCity());
+		inscriptionRecord.add(i.getFindSpot());
+		inscriptionRecord.add(Integer.toString(i.getFindSpotPropertyID()));
+		inscriptionRecord.add(i.getMeasurements());
+		inscriptionRecord.add(i.getLanguage());
+		inscriptionRecord.add(i.getWritingStyle());
+		inscriptionRecord.add(i.getApparatusDisplay());
+		inscriptionRecord.add(Integer.toString(i.getNumberOfImages()));
+		inscriptionRecord.add("startImageId");
+		inscriptionRecord.add("stopImageId");
+		inscriptionRecord.add("agp");
+		*/
+		
+		csvFilePrinter.printRecord(inscriptionRecord);
 	}
 	
 	public GenerateCSV() {
