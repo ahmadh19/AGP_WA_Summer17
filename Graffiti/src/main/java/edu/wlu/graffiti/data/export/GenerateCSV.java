@@ -18,13 +18,17 @@ import edu.wlu.graffiti.bean.AGPInfo;
 import edu.wlu.graffiti.bean.Inscription;
 
 /**
- * @author hammad
+ * This class serializes Inscription objects and returns a string in CSV format to represent
+ * the objects.
+ * 
+ * @author Hammad Ahmad
  *
  */
 public class GenerateCSV {
 	
 	private static final String NEW_LINE_SEPARATOR = "\n";
 	
+	// the fields
 	private static final Object[] FILE_HEADER = {"edrId", "edrFindspot", "bibliography", 
 			"content", "apparatus", "date", "agpId", "summary", "commentary", 
 			"contentTranslation", "writingStyleInEnglish", "languageInEnglish", "graffitoHeight", 
@@ -33,6 +37,12 @@ public class GenerateCSV {
 			"pleiadesId", "italianPropertyName", "propertyCommentary", "insulaShortName", "insulaFullName",
 			"cityName", "cityDescription"};
 	
+	/**
+	 * Serializes a list of inscriptions to CSV.
+	 * 
+	 * @param inscriptions The list of inscription
+	 * @return the string representation in CSV format
+	 */
 	public String serializeToCSV(List<Inscription> inscriptions) {
 		
 		StringBuilder stringBuilder = new StringBuilder();
@@ -57,6 +67,12 @@ public class GenerateCSV {
 		return "";
 	}
 	
+	/**
+	 * Serializes an inscription to CSV.
+	 * 
+	 * @param i The inscription
+	 * @return the string representation in CSV format
+	 */
 	public String serializeToCSV(Inscription i) {
 		
 		StringBuilder stringBuilder = new StringBuilder();
@@ -79,10 +95,18 @@ public class GenerateCSV {
 		return "";	
 	}
 
+	/**
+	 * Writes individual fields from an inscription to the CSV export.
+	 * 
+	 * @param i The inscription
+	 * @param csvFilePrinter The file printer
+	 * @throws IOException
+	 */
 	private void writeInscriptionToCSV(Inscription i, CSVPrinter csvFilePrinter) throws IOException {
 		
 		List<Object> inscriptionRecord = new ArrayList<Object>();
 		
+		// fill in the fields
 		inscriptionRecord.add(i.getEdrId());
 		inscriptionRecord.add(i.getEDRFindSpot());
 		inscriptionRecord.add(i.getBibliography());
@@ -128,6 +152,7 @@ public class GenerateCSV {
 		inscriptionRecord.add("agp");
 		*/
 		
+		// write the inscription record
 		csvFilePrinter.printRecord(inscriptionRecord);
 	}
 	
