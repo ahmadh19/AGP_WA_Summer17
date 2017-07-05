@@ -1,10 +1,12 @@
 package edu.wlu.graffiti.controller;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,11 @@ import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.data.export.GenerateEpidoc;
 
+/**
+ * 
+ * @author Hammad Ahmad
+ *
+ */
 @RestController
 public class EpidocController {
 	
@@ -30,19 +37,22 @@ public class EpidocController {
 	private FindspotDao findspotDao;
 
 	@RequestMapping(value = "/graffito/AGP-{edrId}/xml", produces = "application/xml" )
-	public String getInscription(@PathVariable String edrId) {
+	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
+		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".xml");
 		return generator.serializeToXML(graffitiDao.getInscriptionByEDR(edrId));
 	}
 	
 	@RequestMapping(value = "/all/xml", produces = "application/xml")
-	public String getInscriptions() {
+	public String getInscriptions(HttpServletResponse response) {
+		response.addHeader("Content-Disposition", "attachment; filename=all.xml");
 		return generator.serializeToXML(graffitiDao.getAllInscriptions());
 	}
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/filtered-results/xml", produces = "application/xml")
-	public String getFilteredInscriptions(final HttpServletRequest request) {
+	public String getFilteredInscriptions(final HttpServletRequest request, HttpServletResponse response) {
 		HttpSession s = request.getSession();
+		response.addHeader("Content-Disposition", "attachment; filename=filtered-results.xml");
 		List<Inscription> results = (List<Inscription>) s.getAttribute("filteredList");
 		return generator.serializeToXML(results);
 	}

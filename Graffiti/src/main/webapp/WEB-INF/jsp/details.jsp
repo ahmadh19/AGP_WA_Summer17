@@ -181,15 +181,15 @@ function backToResults(){
 			to Results</button>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/csv"
 			id="csv">
-			<button class="btn btn-agp right-align">Export CSV Data</button>
+			<button class="btn btn-agp right-align">Export as CSV</button>
 		</a>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/xml"
 			id="xml">
-			<button class="btn btn-agp right-align">Export EpiDoc Data</button>
+			<button class="btn btn-agp right-align">Export as EpiDoc</button>
 		</a>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/json"
 			id="json">
-			<button class="btn btn-agp right-align">Export JSON Data</button>
+			<button class="btn btn-agp right-align">Export as JSON</button>
 		</a>
 	</div>
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,27 +25,30 @@ public class JsonController {
 	@Resource
 	private FindspotDao findspotDao;
 
-	@RequestMapping("/graffito/AGP-{edrId}/json")
-	public Inscription getInscription(@PathVariable String edrId) {
+	@RequestMapping(value = "/graffito/AGP-{edrId}/json", produces = "application/json")
+	public Inscription getInscription(@PathVariable String edrId, HttpServletResponse response) {
+		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".json");
 		return graffitiDao.getInscriptionByEDR(edrId);
 	}
 	
-	@RequestMapping("/all/json")
-	public List<Inscription> getInscriptions() {
+	@RequestMapping(value = "/all/json", produces = "application/json")
+	public List<Inscription> getInscriptions(HttpServletResponse response) {
+		response.addHeader("Content-Disposition", "attachment; filename=all.json");
 		return graffitiDao.getAllInscriptions();
 	}
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping("/filtered-results/json")
-	public List<Inscription> getFilteredInscriptions(final HttpServletRequest request) {
+	@RequestMapping(value = "/filtered-results/json", produces = "application/json")
+	public List<Inscription> getFilteredInscriptions(final HttpServletRequest request, HttpServletResponse response) {
 		HttpSession s = request.getSession();
+		response.addHeader("Content-Disposition", "attachment; filename=filtered-results.json");
 		List<Inscription> results = (List<Inscription>) s.getAttribute("filteredList");
 		//System.out.println(results.size());
 		return results;
 	}
 	
-	@RequestMapping("/property/{city}/{insula}/{property}/json")
-	public Property getProperty(@PathVariable String city, @PathVariable String insula, @PathVariable String property) {
+	@RequestMapping(value = "/property/{city}/{insula}/{property}/json", produces = "application/json")
+	public Property getProperty(@PathVariable String city, @PathVariable String insula, @PathVariable String property, HttpServletResponse response) {
 		return findspotDao.getPropertyByCityAndInsulaAndProperty(city, insula, property);
 	}
 
