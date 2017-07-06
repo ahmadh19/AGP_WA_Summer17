@@ -247,7 +247,7 @@ ul#searchTerms li {
 	generateHerculaneum("Herculaneum");
 </script>
 <script>
-	window.initmap(true,false,false,true);
+	window.initmap(true,false,false,false);
 </script>
 </body>
 </html>

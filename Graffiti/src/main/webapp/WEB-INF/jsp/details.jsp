@@ -307,7 +307,7 @@ function backToResults(){
 							</tr>
 							<tr>
 								<td onclick="displayDefinition('def6')">a&#803;b&#803;</td>
-							</tr>
+							<Anthem/tr>
 							<tr>
 								<td onclick="displayDefinition('def7')"><span
 									style="text-decoration: underline">abc</span></td>

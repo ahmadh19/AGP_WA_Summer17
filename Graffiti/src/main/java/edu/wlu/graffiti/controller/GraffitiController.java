@@ -412,12 +412,13 @@ public class GraffitiController {
 			request.setAttribute("city", city);
 			
 			//Decides which jsp page to travel to when user clicks "More Information" on Search page.
-			if(city.equals("Pompeii")){
-				return "moreGraffitoInformation";
-			}
-			else{
-				return "details";
-			}
+			//if(city.equals("Pompeii")){
+				//return "moreGraffitoInformation";
+			//}
+			//else{
+				//return "details";
+			//}
+			return "details";
 		}
 	}
 	

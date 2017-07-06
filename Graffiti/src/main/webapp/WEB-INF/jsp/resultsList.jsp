@@ -4,6 +4,7 @@
 	/* Used by the filter and stable URIs to display results */
 	session.setAttribute("filteredList", request.getAttribute("resultsLyst"));
 %>
+
 <c:forEach var="i" items="${resultsLyst}" varStatus="graffitoIndex">
 	<h4 id="${i.edrId }">
 		<c:choose>
