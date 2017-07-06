@@ -18,6 +18,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 public class TestSearchQueries {
 	
@@ -25,11 +26,11 @@ public class TestSearchQueries {
 
 	public static void main(String[] args){
 		
-		Settings settings = Settings.settingsBuilder().put("cluster.name", "agp-cluster").build();
+		Settings settings = Settings.builder().put("cluster.name", "agp-cluster").build();
 		
 		try {
-			client = new TransportClient.Builder().settings(settings).build()
-					.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("agp-dev1.ad.wlu.edu"), 9300));
+			client = new PreBuiltTransportClient(settings).addTransportAddress(
+					new InetSocketTransportAddress(InetAddress.getByName("agp-dev1.ad.wlu.edu"), 9300));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -82,7 +83,7 @@ public class TestSearchQueries {
 				response = client.prepareSearch("agp")
 						.setTypes("inscription")
 						.setQuery(query)
-						.addFields("id")
+						.addStoredField("id")
 						.setSize(66)
 						.addSort("id", SortOrder.ASC)
 						.execute()
@@ -114,7 +115,7 @@ public class TestSearchQueries {
 				response = client.prepareSearch("agp")
 						.setTypes("inscription")
 						.setQuery(boolQuery)
-						.addFields("id")
+						.addStoredField("id")
 						.setSize(66)
 						.addSort("id", SortOrder.ASC)
 						.execute()
@@ -125,7 +126,7 @@ public class TestSearchQueries {
 				response = client.prepareSearch("agp")
 						.setTypes("inscription")
 						.setQuery(query)
-						.addFields("id")
+						.addStoredField("id")
 						.setSize(66)
 						.addSort("id", SortOrder.ASC)
 						.execute()
@@ -186,7 +187,7 @@ public class TestSearchQueries {
 		response = client.prepareSearch("agp")
 				.setTypes("inscription")
 				.setQuery(query)
-				.addFields("id")
+				.addStoredField("id")
 				.setSize(66)
 				.addSort("id", SortOrder.ASC)
 				.execute()

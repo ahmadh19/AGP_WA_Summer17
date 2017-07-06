@@ -38,6 +38,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -132,7 +133,7 @@ public class GraffitiController {
 			ES_TYPE_NAME = prop.getProperty("es.type");
 			ES_CLUSTER_NAME = prop.getProperty("es.cluster_name");
 		}
-		settings = Settings.settingsBuilder().put("cluster.name", ES_CLUSTER_NAME).build();
+		settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
 	}
 	
 	// Maps to the search.jsp page currently receives information from
@@ -548,7 +549,7 @@ public class GraffitiController {
 		//System.out.println("We're in FilterController: " + request.getQueryString());
 
 		try {
-			client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
+			client = new PreBuiltTransportClient(settings).addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(ES_HOSTNAME), ES_PORT_NUM));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -682,7 +683,8 @@ public class GraffitiController {
 				}
 			}
 
-			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+			/*
+			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).
 					.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME,
 							PROPERTY_ID_FIELD_NAME, "property.property_number", "property.property_name",
 							PROPERTY_TYPES_FIELD_NAME, "drawing.description_in_english", "drawing.description_in_latin",
@@ -690,12 +692,11 @@ public class GraffitiController {
 							WRITING_STYLE_IN_ENGLISH_FIELD_NAME, LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description",
 							"lagner", "comment", "content_translation", "measurements")
 					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
-
+			*/
 			
-			for (SearchHit hit : response.getHits()) {
-				//System.out.println(hit);
-				inscriptions.add(hitToInscription(hit));
-			}
+			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
+			
 			client.close();
 			HttpSession session = request.getSession();
 			if (inscriptions.size() > 0) {
@@ -731,7 +732,17 @@ public class GraffitiController {
 		}
 
 		private Inscription hitToInscription(SearchHit hit) {
-			String edrID = hit.field("edr_id").value();
+//			System.out.println(hit);
+//			System.out.println(hit.getId());
+//			System.out.println(hit.getField("edr_id"));
+			
+			System.out.println(hit.getSourceAsString());
+			
+			for(String field : hit.getFields().keySet()) {
+				System.out.println(field);
+			}
+			
+			String edrID = hit.getField("edr_id").getValue();
 			//System.out.println("EDR ID: " + edrID);
 		
 

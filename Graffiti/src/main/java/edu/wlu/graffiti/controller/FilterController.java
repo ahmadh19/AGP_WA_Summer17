@@ -23,6 +23,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -95,7 +96,7 @@ public class FilterController {
 			ES_TYPE_NAME = prop.getProperty("es.type");
 			ES_CLUSTER_NAME = prop.getProperty("es.cluster_name");
 		}
-		settings = Settings.settingsBuilder().put("cluster.name", ES_CLUSTER_NAME).build();
+		settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
 	}
 
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
@@ -129,7 +130,7 @@ public class FilterController {
 		//System.out.println("We're in FilterController: " + request.getQueryString());
 
 		try {
-			client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
+			client = new PreBuiltTransportClient(settings).addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(ES_HOSTNAME), ES_PORT_NUM));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -267,6 +268,7 @@ public class FilterController {
 				}
 			}
 
+			/*
 			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
 					.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME,
 							PROPERTY_ID_FIELD_NAME, "property.property_number", "property.property_name",
@@ -275,7 +277,12 @@ public class FilterController {
 							WRITING_STYLE_IN_ENGLISH_FIELD_NAME, LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description",
 							"lagner", "comment", "content_translation", "measurements")
 					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
+			*/
+			
+			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
 
+			
 			for (SearchHit hit : response.getHits()) {
 				inscriptions.add(hitToInscription(hit));
 			}
@@ -300,7 +307,8 @@ public class FilterController {
 	}
 
 	private Inscription hitToInscription(SearchHit hit) {
-		String edrID = hit.field("edr_id").value();
+		System.out.println(hit.getSourceAsString());
+		String edrID = hit.getField("edr_id").getValue();
 
 		Inscription inscription = graffitiDao.getInscriptionByEDR(edrID);
 

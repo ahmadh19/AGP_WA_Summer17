@@ -24,6 +24,8 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import edu.wlu.graffiti.bean.DrawingTag;
 import edu.wlu.graffiti.bean.Inscription;
@@ -133,7 +135,7 @@ public class AddInscriptionsToElasticSearch {
 
 				// System.out.println(inscriptionBuilder.string());
 
-				if (response.isCreated()) {
+				if (response.status().equals(RestStatus.CREATED)) {
 					count++;
 					// System.out.println(response.getId() + " " +
 					// response.getVersion());
@@ -318,10 +320,12 @@ public class AddInscriptionsToElasticSearch {
 
 		getConfigurationProperties();
 
-		Settings settings = Settings.settingsBuilder().put("cluster.name", ES_CLUSTER_NAME).build();
+		Settings settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
 
 		try {
-			client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
+			//client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
+					//new InetSocketTransportAddress(InetAddress.getByName(ELASTIC_SEARCH_LOC), ES_PORT));
+			client = new PreBuiltTransportClient(settings).addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(ELASTIC_SEARCH_LOC), ES_PORT));
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
@@ -349,32 +353,32 @@ public class AddInscriptionsToElasticSearch {
 	 */
 	private static void createMapping() throws IOException {
 		XContentBuilder mapping = jsonBuilder().startObject().startObject(ES_TYPE_NAME).startObject("properties")
-				.startObject("id").field("type", "long").endObject().startObject("city").field("type", "string")
+				.startObject("id").field("type", "long").endObject().startObject("city").field("type", "text")
 				.field("index", "not_analyzed").endObject().startObject("insula") // insula
 																					// (name
 																					// not
 																					// analyzed)
 				.startObject("properties").startObject("insula_id").field("type", "long").endObject()
-				.startObject("insula_name").field("type", "string").field("index", "not_analyzed").endObject()
+				.startObject("insula_name").field("type", "text").field("index", "not_analyzed").endObject()
 				.endObject().endObject().startObject("property") // property
 				.startObject("properties").startObject("property_id").field("type", "long").endObject()
-				.startObject("property_name").field("type", "string").endObject().startObject("property_number")
-				.field("type", "string").endObject().startObject("property_types").field("type", "integer").endObject()
+				.startObject("property_name").field("type", "text").endObject().startObject("property_number")
+				.field("type", "text").endObject().startObject("property_types").field("type", "integer").endObject()
 				.endObject().endObject().startObject("drawing") // drawing
-				.startObject("properties").startObject("description_in_english").field("type", "string").endObject()
-				.startObject("description_in_latin").field("type", "string").endObject().startObject("drawing_tags")
-				.field("type", "string").endObject().startObject("drawing_tag_ids").field("type", "integer").endObject()
-				.endObject().endObject().startObject("writing_style_in_english").field("type", "string")
+				.startObject("properties").startObject("description_in_english").field("type", "text").endObject()
+				.startObject("description_in_latin").field("type", "text").endObject().startObject("drawing_tags")
+				.field("type", "text").endObject().startObject("drawing_tag_ids").field("type", "integer").endObject()
+				.endObject().endObject().startObject("writing_style_in_english").field("type", "text")
 				.field("index", "not_analyzed").endObject().startObject("language_in_english") // language,
 				// not
 				// analyzed
-				.field("type", "string").field("index", "not_analyzed").endObject().startObject("content")
-				.field("type", "string").endObject().startObject("summary").field("type", "string").endObject()
-				.startObject("edr_id").field("type", "string").endObject().startObject("bibliography")
-				.field("type", "string").endObject().startObject("cil").field("type", "string").endObject()
-				.startObject("comment").field("type", "string").endObject().startObject("content_translation")
-				.field("type", "string").endObject().startObject("description_in_english").field("type", "string")
-				.endObject().startObject("measurements").field("type", "string").endObject().endObject().endObject()
+				.field("type", "text").field("index", "not_analyzed").endObject().startObject("content")
+				.field("type", "text").endObject().startObject("summary").field("type", "text").endObject()
+				.startObject("edr_id").field("type", "keyword").endObject().startObject("bibliography")
+				.field("type", "text").endObject().startObject("cil").field("type", "text").endObject()
+				.startObject("comment").field("type", "text").endObject().startObject("content_translation")
+				.field("type", "text").endObject().startObject("description_in_english").field("type", "text")
+				.endObject().startObject("measurements").field("type", "text").endObject().endObject().endObject()
 				.endObject();
 
 		client.admin().indices().preparePutMapping(ES_INDEX_NAME).setType(ES_TYPE_NAME).setSource(mapping).execute()
