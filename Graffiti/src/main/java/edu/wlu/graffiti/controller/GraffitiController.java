@@ -526,14 +526,22 @@ public class GraffitiController {
 			for (DrawingTag tag : tags) {
 				names.add(tag.getName());
 			}
+			String city=i.getAncientCity();
 			request.setAttribute("drawingCategories", names);
 			request.setAttribute("images", i.getImages());
 			request.setAttribute("imagePages", i.getPages());
 			request.setAttribute("thumbnails", i.getThumbnails());
 			request.setAttribute("findLocationKeys", findLocationKeys(i));
 			request.setAttribute("inscription", i);
-			request.setAttribute("city", i.getAncientCity());
-			return "details";
+			request.setAttribute("city", city);
+			
+			//Decides which jsp page to travel to when user clicks "More Information" on Search page.
+			if(city.equals("Pompeii")){
+				return "moreGraffitoInformation";
+			}
+			else{
+				return "details";
+			}
 		}
 	}
 	
