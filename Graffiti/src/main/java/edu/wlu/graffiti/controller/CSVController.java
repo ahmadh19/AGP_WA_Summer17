@@ -34,20 +34,20 @@ public class CSVController {
 	@Resource
 	private FindspotDao findspotDao;
 
-	@RequestMapping(value = "/graffito/AGP-{edrId}/csv", produces = "text/csv")
+	@RequestMapping(value = "/graffito/AGP-{edrId}/csv", produces = "text/csv;charset=UTF-8")
 	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".csv");
 		return generator.serializeToCSV(graffitiDao.getInscriptionByEDR(edrId));
 	}
 	
-	@RequestMapping(value = "/all/csv", produces = "text/csv")
+	@RequestMapping(value = "/all/csv", produces = "text/csv;charset=UTF-8")
 	public String getInscriptions(HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=all-inscriptions.csv");
 		return generator.serializeToCSV(graffitiDao.getAllInscriptions());
 	}
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/filtered-results/csv", produces = "text/csv")
+	@RequestMapping(value = "/filtered-results/csv", produces = "text/csv;charset=UTF-8")
 	public String getFilteredInscriptions(final HttpServletRequest request, HttpServletResponse response) {
 		HttpSession s = request.getSession();
 		List<Inscription> results = (List<Inscription>) s.getAttribute("filteredList");
