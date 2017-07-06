@@ -36,6 +36,21 @@ public class MapController {
 	public String viewMap(final HttpServletRequest request) {
 		return "pompeiiMap";
 	}
+	
+	@RequestMapping(value = "/searchPompeii", method = RequestMethod.GET)
+	public String searchMap(final HttpServletRequest request) {
+		return "searchPompeii";
+	}
+	
+	@RequestMapping(value = "/searchResults", method = RequestMethod.GET)
+	public String viewSearchResults(final HttpServletRequest request) {
+		return "searchResults";
+	}
+	
+	@RequestMapping(value = "/moreInformation", method = RequestMethod.GET)
+	public String viewMoreInformation(final HttpServletRequest request) {
+		return "moreGraffitoInformation";
+	}
 
 	@RequestMapping(value = "/map", method = RequestMethod.GET)
 	public String processMap(final HttpServletRequest request) {

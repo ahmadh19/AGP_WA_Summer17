@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%-- <%@ include file="/resources/common_head.txt" %> --%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +14,15 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <c:set var="i" value="${requestScope.inscription}" />
+
+<link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
+<script type="text/javascript"
+src="<c:url value="/resources/js/pompeiiPropertyData.js"/>">
+src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"
+</script>
+	
+	
 <style type="text/css">
 #pompCityMap {
 	margin-top: 0px;
@@ -165,8 +175,8 @@ function backToResults(){
 			//button.val("Show Measurements");
 			//$("#measurements").hide();
 		//}
-		button.next().show());
-		//});
+		button.next().show();
+		});
 	
 		$("#measurements").show();
 	});
@@ -179,13 +189,17 @@ function backToResults(){
 		 
 		<button class="btn btn-agp" onclick="backToResults();">Back
 			to Results</button>
+		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/csv"
+			id="csv">
+			<button class="btn btn-agp right-align">Export as CSV</button>
+		</a>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/xml"
-			id="json">
-			<button class="btn btn-agp right-align">Export EpiDoc Data</button>
+			id="xml">
+			<button class="btn btn-agp right-align">Export as EpiDoc</button>
 		</a>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/json"
 			id="json">
-			<button class="btn btn-agp right-align">Export JSON Data</button>
+			<button class="btn btn-agp right-align">Export as JSON</button>
 		</a>
 	</div>
 
@@ -501,18 +515,27 @@ function backToResults(){
 			<div id="maps">
 				<h4>Findspot on map:</h4>
 				<div id="hercCityMap"></div>
-				<div id="pompCityMap"></div>
+				<!-- <div id="pompCityMap"></div> -->
+				<div id="pompeiiMap"></div>
 			</div>
+			
+			<script>src="<c:url value="/resources/js/pompeiiMap.js"/>"</script>
 
 			<script type="text/javascript">
 				hideConventions();
 				if ("${i.ancientCity}" == "Herculaneum") {
 					generateHerculaneum("${i.ancientCity}");
 				} else if ("${i.ancientCity}" == "Pompeii") {
-					generatePompeii("${i.ancientCity}");
+					
+				
 				} 
 			</script>
 		</div>
 	</div>
+	<script>
+	
+					
+	window.initmap(true,false,false,true);
+	</script>
 </body>
 </html>

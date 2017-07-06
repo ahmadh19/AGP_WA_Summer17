@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.wlu.graffiti.data.epidocs;
+package edu.wlu.graffiti.data.export;
 
 import java.util.List;
 
@@ -12,6 +12,8 @@ import org.jdom2.output.XMLOutputter;
 import edu.wlu.graffiti.bean.Inscription;
 
 /**
+ * This class serializes Inscription objects and returns a string in XML format to represent
+ * the objects.
  * @author Hammad Ahmad
  *
  */
@@ -20,6 +22,12 @@ public class GenerateEpidoc {
 	public GenerateEpidoc() {
 	}
 	
+	/**
+	 * Serializes an inscription to XML.
+	 * 
+	 * @param i The inscription
+	 * @return the string representation in CML format
+	 */
 	public String serializeToXML(Inscription i) {
 
 		Element root = new Element("TEI");
@@ -41,6 +49,12 @@ public class GenerateEpidoc {
 		return out.outputString(doc);
 	}
 
+	/**
+	 * Serializes a list of inscriptions to XML.
+	 * 
+	 * @param inscriptions The list of inscription
+	 * @return the string representation in XML format
+	 */
 	public String serializeToXML(List<Inscription> inscriptions) {
 		
 		XMLOutputter out = new XMLOutputter();
@@ -70,6 +84,12 @@ public class GenerateEpidoc {
 		
 	}
 	
+	/**
+	 * Generate the body section of the XML.
+	 * 
+	 * @param i
+	 * @param root
+	 */
 	private void generateBody(Inscription i, Element root) {
 		Element text = new Element("text");
 		Element body = new Element("body");
@@ -113,6 +133,12 @@ public class GenerateEpidoc {
 		root.addContent(text);
 	}
 
+	/**
+	 * Generate the facsimilie section of the XML.
+	 * 
+	 * @param i
+	 * @param root
+	 */
 	private void generateFacsimile(Inscription i, Element root) {
 		Element facsimilie = new Element("facsimilie");
 		Element graphic = new Element("graphic").setAttribute("url", "photograph of text or monument");
@@ -120,6 +146,12 @@ public class GenerateEpidoc {
 		root.addContent(facsimilie);
 	}
 
+	/**
+	 * Generate the TEI header section of the XML.
+	 * 
+	 * @param i
+	 * @param root
+	 */
 	private void generateTEIHeader(Inscription i, Element root) {
 		Element teiHeader = new Element("teiHeader");
 		Element fileDesc = new Element("fileDesc");

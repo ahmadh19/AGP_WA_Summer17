@@ -142,6 +142,8 @@ public class GraffitiController {
 	// Pompeii)
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public String searchForm(final HttpServletRequest request) {
+		
+		
 		String city = request.getParameter("city");
 		String message;
 		HttpSession s = request.getSession();
@@ -221,16 +223,17 @@ public class GraffitiController {
 			request.setAttribute("regionIds", regionIds);
 			request.setAttribute("message", message);
 			request.setAttribute("displayImage", request.getContextPath() + "/resources/images/" + city + ".jpg");
+			
+			//Allows attributes to be set but goes to the pompeiiMap url if the city clicked on is pompeii.
+			if (city.toLowerCase().equals("pompeii")) {
+				//return "pompeiiMap";
+				return "searchPompeii";
+			}
 			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 			return "search";
 		} else {
 			return "index";
 		}
-	}
-
-	@RequestMapping(value = "/AdminFunctions", method = RequestMethod.GET)
-	public String adminFunctions(final HttpServletRequest request) {
-		return "admin/AdminFunctions";
 	}
 
 	@RequestMapping(value = "/featured-graffiti", method = RequestMethod.GET)
@@ -255,125 +258,6 @@ public class GraffitiController {
 
 		return "New_Featured_Graffiti";
 		
-	}
-
-	@RequestMapping(value = "/admin/editGraffito", method = RequestMethod.GET)
-	public String editGraffito(final HttpServletRequest request) {
-
-		return "admin/editGraffito";
-
-	}
-
-	// Update a graffito page - sharmas
-	@RequestMapping(value = "/admin/updateGraffito", method = RequestMethod.GET)
-	public String updateGraffito(final HttpServletRequest request) {
-
-		String id = request.getParameter("edrID");
-		if (id == null || id.equals("")) {
-			request.setAttribute("msg", "Please enter an EDR number");
-			return "admin/editGraffito";
-		}
-
-		request.getSession().setAttribute("edrID", id);
-
-		Inscription element = graffitiDao.getInscriptionByEDR(id);
-
-		if (element == null) {
-			request.setAttribute("msg", "Not a valid EDR number");
-			return "admin/editGraffito";
-		}
-
-		request.setAttribute("graffito", element);
-
-		return "admin/updateGraffito";
-
-	}
-
-	// Update a graffito controller
-	@RequestMapping(value = "/admin/updateGraffito", method = RequestMethod.POST)
-	public String adminUpdateGraffito(final HttpServletRequest request) {
-
-		// updating AGP Inscription Information
-		String edrID = (String) request.getSession().getAttribute("edrID");
-
-		// updating AGP Inscriptions
-		String summary = request.getParameter("summary");
-		String commentary = request.getParameter("commentary");
-		String cil = request.getParameter("cil");
-		String langner = request.getParameter("langner");
-		String floor_to_graffito_height = request.getParameter("floor_to_graffito_height");
-		String content_translation = request.getParameter("content_translation");
-		String graffito_height = request.getParameter("graffito_height");
-		String graffito_length = request.getParameter("graffito_length");
-		String letter_height_min = request.getParameter("letter_height_min");
-		String letter_height_max = request.getParameter("letter_height_max");
-		String charHeights = request.getParameter("character_heights");
-		String figural = request.getParameter("figural");
-		String ghFig = request.getParameter("gh_fig");
-		String ghTrans = request.getParameter("gh_trans");
-
-		boolean hasFiguralComponent = false;
-		boolean isfeaturedHitFig = false;
-		boolean isfeaturedHitTrans = false;
-
-		if (figural != null) {
-			hasFiguralComponent = true;
-		}
-		if (ghFig != null) {
-			isfeaturedHitFig = true;
-		}
-		if (ghTrans != null) {
-			isfeaturedHitTrans = true;
-		}
-
-		List<Object> agpOneDimArrList = new ArrayList<Object>();
-		agpOneDimArrList.add(summary);
-		agpOneDimArrList.add(content_translation);
-		agpOneDimArrList.add(cil);
-		agpOneDimArrList.add(langner);
-		agpOneDimArrList.add(floor_to_graffito_height);
-		agpOneDimArrList.add(graffito_height);
-		agpOneDimArrList.add(graffito_length);
-		agpOneDimArrList.add(letter_height_min);
-		agpOneDimArrList.add(letter_height_max);
-		agpOneDimArrList.add(charHeights);
-		agpOneDimArrList.add(commentary);
-		agpOneDimArrList.add(hasFiguralComponent);
-		agpOneDimArrList.add(isfeaturedHitFig);
-		agpOneDimArrList.add(isfeaturedHitTrans);
-
-		graffitiDao.updateAgpInscription(agpOneDimArrList, edrID);
-
-		if (hasFiguralComponent) {
-			String drawingDescriptionLatin = request.getParameter("drawing_description_latin");
-			String drawingDescriptionEnglish = request.getParameter("drawing_description_english");
-
-			graffitiDao.updateDrawingInfo(drawingDescriptionLatin, drawingDescriptionEnglish, edrID);
-
-		}
-
-		if (isfeaturedHitFig || isfeaturedHitTrans) {
-			String ghCommentary = request.getParameter("gh_commentary");
-			String ghPreferredImage = request.getParameter("gh_preferred_image");
-			graffitiDao.updateGreatestHitsInfo(edrID, ghCommentary, ghPreferredImage);
-		}
-
-		// updating drawing tags
-		String[] drawingTags = request.getParameterValues("drawingCategory");
-		graffitiDao.clearDrawingTags(edrID);
-
-		if (drawingTags != null) {
-			graffitiDao.insertDrawingTags(edrID, drawingTags);
-		}
-
-		request.setAttribute("msg", "The graffito has been successfully updated in the database");
-
-		Inscription element = graffitiDao.getInscriptionByEDR(edrID);
-
-		request.setAttribute("graffito", element);
-
-		return "admin/updateGraffito";
-
 	}
 
 	// maps to inputData.jsp page which is used to input inscription to the
@@ -519,14 +403,22 @@ public class GraffitiController {
 			for (DrawingTag tag : tags) {
 				names.add(tag.getName());
 			}
+			String city=i.getAncientCity();
 			request.setAttribute("drawingCategories", names);
 			request.setAttribute("images", i.getImages());
 			request.setAttribute("imagePages", i.getPages());
 			request.setAttribute("thumbnails", i.getThumbnails());
 			request.setAttribute("findLocationKeys", findLocationKeys(i));
 			request.setAttribute("inscription", i);
-			request.setAttribute("city", i.getAncientCity());
-			return "details";
+			request.setAttribute("city", city);
+			
+			//Decides which jsp page to travel to when user clicks "More Information" on Search page.
+			if(city.equals("Pompeii")){
+				return "moreGraffitoInformation";
+			}
+			else{
+				return "details";
+			}
 		}
 	}
 	
@@ -542,7 +434,8 @@ public class GraffitiController {
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
-		return "results";
+		//return "results";
+		return "searchResults";
 	}
 	
 	private List<Inscription> searchResults(final HttpServletRequest request) {

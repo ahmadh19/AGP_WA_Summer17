@@ -1,29 +1,20 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+ <%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<%@include file="../../resources/common_head.txt"%>
-<link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
-
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Ancient Graffiti Project :: Search Results</title>
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/js/filterSearch.js"/>"></script>
-
-	
-<!-- Resources to display the new map -->	
-
-<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+<%@ include file="/resources/common_head.txt" %>
+<link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
-
-	
 	
 <script type="text/javascript">
 
@@ -44,14 +35,6 @@ $('img').mapster({
 }); 
 }
 
-function generatePompeii(name) {
-	xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("GET",
-			"map?clickedRegion="+name+"&city="+name, false); 
-	xmlHttp.send(null);
-	document.getElementById("pompeiiCityMap").innerHTML = xmlHttp.responseText;
-	start();
-}
 
 //setTimeout(function(){ map.invalidateSize()}, 1000);
 //function generatePompeii(name) {
@@ -176,7 +159,8 @@ function updatePage(){
 	document.getElementById("${requestScope.returnFromEDR}").scrollIntoView();
 	</c:if>
 }
-</script>
+</script>	
+
 <style>
 th {
 	vertical-align: top;
@@ -199,6 +183,9 @@ hr.main-table {
 	cursor: pointer;
 	align: right;
 	display: inline;
+Graffito
+
+	
 	margin: 225px 0px 0px 560px;
 }
 
@@ -215,19 +202,19 @@ ul#searchTerms li {
     margin: 0 0 7px 0;
 }
 </style>
+	
 </head>
+
 <body onload="updatePage();">
+<%@include file="header.jsp"%>
 
-	<%@include file="header.jsp"%>
-
-	<div id="contain" class="container" style="margin-bottom: 50px;">
+<div id="contain" class="container" style="margin-bottom: 50px;">
 
 		<%@include file="sidebarSearchMenu.jsp"%>
 		<!--  SideBar Map  -->
 		<div class="map-override1">
+			<div id="pompeiimap" class="searchResultsPompeii"></div>
 			<div id="herculaneumCityMap"></div>
-			<div id="pompeiiCityMap"></div>
-
 		</div>
 		
 		<!--  
@@ -249,13 +236,18 @@ ul#searchTerms li {
 		</div>
 	</div>
 
-	<script type="text/javascript"
-				src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
-	<script type="text/javascript">
-			generateHerculaneum("Herculaneum");
-			generatePompeii("Pompeii");
-			
-	</script>
+
+<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+
+
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 	
+<script type="text/javascript">
+	generateHerculaneum("Herculaneum");
+</script>
+<script>
+	window.initmap(true,false,false,true);
+</script>
 </body>
 </html>

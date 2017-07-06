@@ -5,32 +5,41 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Pompeii Map</title>
+<title>More Graffito Information</title>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <%@ include file="/resources/common_head.txt" %>
 <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
-
- <link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/resources/css/details.css"/>
 <link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
+
+
+	
 </head>
 
-<body>
-<p></p>
-<p></p>
-<p></p>
+<body onload="updatePage();">
+<%@include file="header.jsp"%>
+
+
+
+<div id="pompeiimap" class="findspotMap"></div>
+
+
 <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
 
-<div>
-<div id="newDiv"></div>
-<div id="pompeiimap" class="mapdiv"></div>
-
-</div>
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
+
+<h4>Findspot on map:</h4>
 <script>
-	window.initmap();
+	window.initmap(true,false,true,false);
+	
+	document.write(document.getElementById("imgLink").href = hrefs[ind-1]+" imgLink");
+	document.write(document.getElementById("imgSrc").src = srcs[ind-1]+" imgSrc");
 </script>
+
+
 </body>
 </html>

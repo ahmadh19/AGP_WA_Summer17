@@ -49,6 +49,26 @@
 	float: right;
 }
 
+.searchResultsPompeii{
+	height:150px;
+	width:200px;
+	margin-top:160px;
+	margin-left:715px;
+	float:right;
+	border: 3px solid #800000;
+	position:absolute;
+}
+
+.findspotMap{
+	height:200px;
+	width:250px;
+	margin-top:160px;
+	margin-left:715px;
+	float:right;
+	border: 3px solid #800000;
+	position:absolute;
+}
+
 .info {
 	padding: 6px 8px;
 	font: 14px/16px Arial, Helvetica, sans-serif;

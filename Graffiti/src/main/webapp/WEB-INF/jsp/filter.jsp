@@ -7,11 +7,15 @@
 	</br> </br>
 	<a href="<%=request.getContextPath()%>/filtered-results/json"
 		id="bulkJson">
-		<button class="btn btn-agp right-align">Export JSON Data</button>
+		<button class="btn btn-agp right-align">Export as JSON</button>
 	</a>
 	<a href="<%=request.getContextPath()%>/filtered-results/xml"
 		id="bulkEpidocs">
-		<button class="btn btn-agp right-align">Export EpiDoc Data</button>
+		<button class="btn btn-agp right-align">Export as EpiDoc</button>
+	</a>
+	<a href="<%=request.getContextPath()%>/filtered-results/csv"
+		id="bulkEpidocs">
+		<button class="btn btn-agp right-align">Export as CSV</button>
 	</a>
 </p>
 

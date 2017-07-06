@@ -113,7 +113,8 @@
 			<td><a
 				href="<%=request.getContextPath() %>/graffito/AGP-${i.edrId}"
 				id="${i.edrId}"> See more information
-					&#10140;</a></td>
+					&#10140;</a>
+					</td>
 		</tr>
 
 		<%
