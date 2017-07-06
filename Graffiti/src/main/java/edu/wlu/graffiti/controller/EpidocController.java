@@ -39,14 +39,12 @@ public class EpidocController {
 	@RequestMapping(value = "/graffito/AGP-{edrId}/xml", produces = "application/xml;charset=UTF-8")
 	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".xml");
-		response.addHeader("charset", "UTF-8");
 		return generator.serializeToXML(graffitiDao.getInscriptionByEDR(edrId));
 	}
 	
 	@RequestMapping(value = "/all/xml", produces = "application/xml;charset=UTF-8")
 	public String getInscriptions(HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=all.xml");
-		response.addHeader("charset", "UTF-8");
 		return generator.serializeToXML(graffitiDao.getAllInscriptions());
 	}
 	
