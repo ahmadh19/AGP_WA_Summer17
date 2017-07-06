@@ -1,9 +1,11 @@
 
-function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true) {
+function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,selectedPropertyId=null,selectedPropertyIdList=null) {
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
 	
 	//I don't know if it is actually necessary to declare these parameters.
 	//These allow dynamic customization of the new map based on it's page. 
+	var selectedPropertyIdList=selectedPropertyIdList;
+	var selectedPropertyIds=selectedPropertyIds;
 	var moreZoom=moreZoom;
 	var showHover=showHover;
 	var colorDensity=colorDensity;
@@ -48,6 +50,7 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	
 	map.addLayer(grayscale);
 	L.geoJson(pompeiiPropertyData).addTo(map);
+	
 	
 	//Sets the style of the portions of the map. Color is the outside borders. There are different colors for 
 	//clicked or normal fragments. When clicked, items are stored in a collection. These collections will have the color
@@ -178,6 +181,10 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	        mouseout: resetHighlight,
 	        click: showDetails
 	    });
+	    //Does this call the function on every feature?
+	    if(selectedPropertyId){
+	    	highlightPropertieById();
+	    }
 	}
 	
 	//What does this do?
@@ -231,6 +238,13 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 			propIdsOfClicked.push(propertyID);
 		}
 		return propIdsOfClicked;
+	}
+	
+	//highlights a single property on the map with the given property id. 
+	function highlightPropertieById(){
+		//Assumes that the property id is not null.
+		var propertyID = property.feature.properties.Property_Id;
+		
 	}
 	
 	//I am confused as to the workings of this function. Looks like it is the hig/results?drawing=allhest level function
