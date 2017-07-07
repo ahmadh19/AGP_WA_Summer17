@@ -36,7 +36,14 @@ public class GraffitiDao extends JdbcTemplate {
 			+ "LEFT JOIN greatest_hits_info ON edr_inscriptions.edr_id=greatest_hits_info.edr_id "
 			+ "LEFT JOIN properties ON agp_inscription_info.property_id=properties.id "
 			+ "LEFT JOIN insula ON properties.insula_id=insula.id";
-
+	
+	public static final String SELECT_COUNT = "SELECT COUNT(*) " + "FROM edr_inscriptions "
+			+ "LEFT JOIN agp_inscription_info ON edr_inscriptions.edr_id=agp_inscription_info.edr_id "
+			+ "LEFT JOIN figural_graffiti_info ON edr_inscriptions.edr_id=figural_graffiti_info.edr_id "
+			+ "LEFT JOIN greatest_hits_info ON edr_inscriptions.edr_id=greatest_hits_info.edr_id "
+			+ "LEFT JOIN properties ON agp_inscription_info.property_id=properties.id "
+			+ "LEFT JOIN insula ON properties.insula_id=insula.id";
+	
 	private static final String FIND_BY_ALL = SELECT_STATEMENT + " WHERE UPPER(edr_inscriptions.edr_id) "
 			+ "LIKE UPPER(?) OR UPPER(ANCIENT_CITY) LIKE UPPER(?) OR " + "UPPER(FIND_SPOT) LIKE UPPER(?) OR "
 			+ "UPPER(MEASUREMENTS) LIKE UPPER(?) OR " + "UPPER(edr_inscriptions.WRITING_STYLE) LIKE UPPER(?) OR "
@@ -44,8 +51,10 @@ public class GraffitiDao extends JdbcTemplate {
 			+ "UPPER(lang_in_english) LIKE UPPER(?) OR " + "UPPER(CONTENT) LIKE UPPER(?) OR "
 			+ "UPPER(BIBLIOGRAPHY) LIKE UPPER(?) OR " + "NUMBEROFIMAGES = ? " + ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
 
-	private static final String FIND_BY_FIND_SPOT = SELECT_STATEMENT + " WHERE insula.id = ? AND properties.id = ?  "
+	private static final String FIND_BY_FIND_SPOT = SELECT_STATEMENT + " WHERE properties.id = ?  "
 			+ ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
+	
+	private static final String FIND_COUNT_BY_FIND_SPOT = SELECT_COUNT + " WHERE properties.id = ?";
 
 	// need to assign property ids to the inscriptions and cross with that info.
 
@@ -55,7 +64,7 @@ public class GraffitiDao extends JdbcTemplate {
 			+ "where propertyTypes.id=? and propertyTypes.id=propertytopropertytype.property_type "
 			+ "and properties.id=propertytopropertytype.property_id and properties.id=agp_inscription_info.property_id "
 			+ "and edr_inscriptions.edr_id=agp_inscription_info.edr_id and properties.insula_id = insula.id "
-			+ "AND edr_inscriptions.edr_id=figural_graffiti_info.edr_id " + ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
+			+ "AND edr_inscriptions.edr_id=figural_graffiti_info.edr_id ";
 
 	private static final String FIND_BY_CITY = SELECT_STATEMENT + " WHERE UPPER(ANCIENT_CITY) LIKE UPPER(?) "
 			+ ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
@@ -66,6 +75,12 @@ public class GraffitiDao extends JdbcTemplate {
 	private static final String FIND_BY_CITY_AND_INSULA_AND_PROPERTY = SELECT_STATEMENT
 			+ " WHERE UPPER(ANCIENT_CITY) = UPPER(?) " + "AND insula.id = ? and properties.id = ? "
 			+ ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
+	
+	public static final String FIND_BY_PROPERTY = "SELECT COUNT(*) FROM edr_inscriptions "
+			+ "LEFT JOIN agp_inscription_info ON edr_inscriptions.edr_id=agp_inscription_info.edr_id "
+			+ "LEFT JOIN properties ON agp_inscription_info.property_id=properties.id "
+			+ "LEFT JOIN insula ON properties.insula_id=insula.id"
+			+ " WHERE properties.id = ? ";
 
 	private static final String FIND_BY_CONTENT = SELECT_STATEMENT + " WHERE UPPER(CONTENT) LIKE UPPER(?) "
 			+ ORDER_BY_EDR_INSCRIPTIONS_ID_ASC;
@@ -103,7 +118,6 @@ public class GraffitiDao extends JdbcTemplate {
 
 	@Resource
 	private FindspotDao propertyDao;
-
 	
 	@Cacheable("inscriptions")
 	public List<Inscription> getAllInscriptions() {
@@ -138,10 +152,14 @@ public class GraffitiDao extends JdbcTemplate {
 		return results;
 	}
 
-	public List<Inscription> getInscriptionsByFindSpot(final int insula_id, final int property_id) {
-		List<Inscription> results = query(FIND_BY_FIND_SPOT, new InscriptionRowMapper(), insula_id, property_id);
+	public List<Inscription> getInscriptionsByFindSpot(final int property_id) {
+		List<Inscription> results = query(FIND_BY_FIND_SPOT, new InscriptionRowMapper(), property_id);
 		addOtherInfo(results);
 		return results;
+	}
+	
+	public int getInscriptionCountByFindSpot(final int property_id) {
+		return queryForObject(FIND_COUNT_BY_FIND_SPOT, new Object[]{property_id}, Integer.class);
 	}
 
 	public List<Inscription> getInscriptionsByContent(final String searchArg) {
@@ -210,7 +228,8 @@ public class GraffitiDao extends JdbcTemplate {
 			property.setInsula(insula);
 			inscription.getAgp().setProperty(property);
 		} else {
-			Property property = propertyDao.getPropertyById(inscription.getAgp().getProperty().getId());
+			int id = inscription.getAgp().getProperty().getId();
+			Property property = propertyDao.getPropertyById(id);
 			inscription.getAgp().setProperty(property);
 		}
 	}
@@ -228,7 +247,7 @@ public class GraffitiDao extends JdbcTemplate {
 		addOtherInfo(results);
 		return results;
 	}
-
+	
 	//@Cacheable("inscriptions")
 	public List<Inscription> getInscriptionsByCityAndInsulaAndPropertyNumber(String city, int insula_id,
 			int property_id) {

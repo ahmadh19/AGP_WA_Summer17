@@ -10,16 +10,32 @@
     margin: auto;
 }
 
+/*#map {
+	height: 500px;
+	width: 800px;
+}*/
 #map {
 	height: 500px;
 	width: 800px;
 }
+
 
 .mapdiv {
 	height: 500px;
 	width: 800px;
 	float: left;
 }
+
+
+/*What we want for the results map shown*/
+/* .mapdiv {
+	/*height: 200px;*/
+	/*width: 200px;*/
+	height: 600px;
+	width: 800px;
+	/*float: right;*/
+}*/
+
 
 .propertymapdiv {
 	height: 250px;
@@ -28,8 +44,29 @@
 }
 
 #newDiv {
+	height:800px;
 	width: 350px;
 	float: right;
+}
+
+.searchResultsPompeii{
+	height:150px;
+	width:200px;
+	margin-top:160px;
+	margin-left:715px;
+	float:right;
+	border: 3px solid #800000;
+	position:absolute;
+}
+
+.findspotMap{
+	height:200px;
+	width:250px;
+	margin-top:160px;
+	margin-left:715px;
+	float:right;
+	border: 3px solid #800000;
+	position:absolute;
 }
 
 .info {

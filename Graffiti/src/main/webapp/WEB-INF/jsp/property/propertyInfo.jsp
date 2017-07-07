@@ -15,7 +15,7 @@
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/resources/css/main.css" />
 <script type="text/javascript"
-	src="<c:url value="/resources/js/updatedEschebach.js"/>"></script>
+	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
@@ -48,6 +48,7 @@ function generateMap(name) {
 			"map?clickedRegion="+name+"&city="+name, false); 
 	xmlHttp.send(null);
 	document.getElementById("cityMap").innerHTML = xmlHttp.responseText;
+	//document.getElementById("pompeiimap").innerHTML = xmlHttp.responseText;
 	start();
 }
 </script>
@@ -114,29 +115,30 @@ function generateMap(name) {
 					<td>${prop.commentary }</td>
 				</tr>
 			</c:if>
-			<tr>
-				<th class="propertyLabel">Architectural Context:</th>
-				<td>
-					<!-- 
-					<ul>
-						<li> --> <a
-					href="<%=request.getContextPath()%>/results?property=${ prop.id}">Graffiti
-						in this property</a>
-					 <!-- </li>
-						<li>PBMP Property Info</li>
-						<li>Pleiades Link for this property</li>
-						 --> <!--  	</ul> -->
-				</td>
-			</tr>
-			<c:if test="${prop.insula.modernCity=='Pompeii'}">
+			<c:if test="${prop.numberOfGraffiti > 0}">
 				<tr>
-					<th class="propertyLabel" rowspan="2">Links:</th>
+					<th class="propertyLabel">Archaeological Context:</th>
 					<td>
-						<a href="${prop.pompeiiinPicturesURL}">Pompeii in Pictures</a>
-						<!--<br/><a href="${prop.plodURL}">Linked Open Data</a>-->
+						<a href="<%=request.getContextPath()%>/results?property=${ prop.id}">
+						Graffiti in this property</a>
 					</td>
 				</tr>
 			</c:if>
+			<tr>
+				<th class="propertyLabel">Links:</th>
+				<td>
+					<c:if test="${prop.insula.modernCity=='Pompeii'}">
+						<a href="${prop.pompeiiinPicturesURL}">Pompeii in Pictures</a>
+						<!--<br/><a href="${prop.plodURL}">P-LOD Linked Open Data</a>-->
+					</c:if>
+					<c:if test="${prop.insula.modernCity=='Herculaneum'}">
+						<a href="http://donovanimages.co.nz/proxima-veritati/Herculaneum/">
+						Herculaneum Panoramas</a>
+						<br/><a href="http://www.pompeiisites.org/Sezione.jsp?titolo=Visita%20agli%20scavi&idSezione=94">
+						Parco Archaeologico</a>
+					</c:if>
+				</td>
+			</tr>
 		</table>
 		<!-- 	<div id="pompeiimap" class="propertymapdiv"></div>  -->
 		<div id="map">
