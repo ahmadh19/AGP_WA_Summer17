@@ -32,8 +32,8 @@ import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.bean.PropertyType;
 import edu.wlu.graffiti.dao.DrawingTagsDao;
-import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.dao.FindspotDao;
+import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.data.rowmapper.DrawingTagRowMapper;
 import edu.wlu.graffiti.data.rowmapper.InscriptionRowMapper;
 import edu.wlu.graffiti.data.rowmapper.PropertyRowMapper;
@@ -323,8 +323,6 @@ public class AddInscriptionsToElasticSearch {
 		Settings settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
 
 		try {
-			//client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
-					//new InetSocketTransportAddress(InetAddress.getByName(ELASTIC_SEARCH_LOC), ES_PORT));
 			client = new PreBuiltTransportClient(settings).addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(ELASTIC_SEARCH_LOC), ES_PORT));
 		} catch (UnknownHostException e1) {
@@ -353,7 +351,7 @@ public class AddInscriptionsToElasticSearch {
 	 */
 	private static void createMapping() throws IOException {
 		XContentBuilder mapping = jsonBuilder().startObject().startObject(ES_TYPE_NAME).startObject("properties")
-				.startObject("id").field("type", "long").endObject().startObject("city").field("type", "text")
+				.startObject("id").field("type", "long").endObject().startObject("city").field("type", "keyword")
 				.field("index", "not_analyzed").endObject().startObject("insula") // insula
 																					// (name
 																					// not
@@ -369,10 +367,10 @@ public class AddInscriptionsToElasticSearch {
 				.startObject("description_in_latin").field("type", "text").endObject().startObject("drawing_tags")
 				.field("type", "text").endObject().startObject("drawing_tag_ids").field("type", "integer").endObject()
 				.endObject().endObject().startObject("writing_style_in_english").field("type", "text")
-				.field("index", "not_analyzed").endObject().startObject("language_in_english") // language,
+				.field("index", "not_analyzed").endObject().startObject("language_in_english").field("type", "keyword") // language,
 				// not
 				// analyzed
-				.field("type", "text").field("index", "not_analyzed").endObject().startObject("content")
+				.field("index", "not_analyzed").endObject().startObject("content")
 				.field("type", "text").endObject().startObject("summary").field("type", "text").endObject()
 				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject().startObject("bibliography")
 				.field("type", "text").endObject().startObject("cil").field("type", "text").endObject()

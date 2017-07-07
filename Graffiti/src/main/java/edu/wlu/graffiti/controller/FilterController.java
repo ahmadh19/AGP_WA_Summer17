@@ -267,19 +267,9 @@ public class FilterController {
 					query.must(otherQuery);
 				}
 			}
-
-			/*
-			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
-					.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME,
-							PROPERTY_ID_FIELD_NAME, "property.property_number", "property.property_name",
-							PROPERTY_TYPES_FIELD_NAME, "drawing.description_in_english", "drawing.description_in_latin",
-							"drawing.drawing_tag_ids", "content", "summary", "edr_id", "bibliography",
-							WRITING_STYLE_IN_ENGLISH_FIELD_NAME, LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description",
-							"lagner", "comment", "content_translation", "measurements")
-					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
-			*/
 			
-			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+			System.out.println(query);
+			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
 
 			
@@ -307,7 +297,6 @@ public class FilterController {
 	}
 
 	private Inscription hitToInscription(SearchHit hit) {
-		System.out.println(hit.getSourceAsString());
 		String edrID = hit.getField("edr_id").getValue();
 
 		Inscription inscription = graffitiDao.getInscriptionByEDR(edrID);
