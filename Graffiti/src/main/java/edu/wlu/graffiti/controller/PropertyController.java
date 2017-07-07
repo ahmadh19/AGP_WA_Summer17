@@ -51,7 +51,7 @@ public class PropertyController {
 	@RequestMapping(value = "/property/{city}/{insula}", method = RequestMethod.GET)
 	public String insulaPage(@PathVariable String city, @PathVariable String insula, HttpServletRequest request,
 			HttpServletResponse response) {
-		System.out.println("insulaPage: " + insula);
+		//System.out.println("insulaPage: " + insula);
 		int insula_id = getInsulaId(city, insula);
 		// final List<Inscription> inscriptions =
 		// this.graffitiDao.getInscriptionsByCityAndInsula(city, insula_id);
@@ -66,13 +66,13 @@ public class PropertyController {
 	@RequestMapping(value = "/property/{city}/{insula}/{property}", method = RequestMethod.GET)
 	public String propertyPage(@PathVariable String city, @PathVariable String property, @PathVariable String insula,
 			HttpServletRequest request) {
-		System.out.println("propertyPage: " + property);
+		//System.out.println("propertyPage: " + property);
 		try {
 			final Property prop = this.propertyDao.getPropertyByCityAndInsulaAndProperty(city, insula, property);
 			request.setAttribute("prop", prop);
 			List<String> locationKeys = new ArrayList<>();
 			locationKeys.add(prop.getLocationKey());
-			System.out.println("Loc Key: " + prop.getLocationKey());
+			//System.out.println("Loc Key: " + prop.getLocationKey());
 			// request.setAttribute("findLocationKeys", prop.getId());
 			// request.setAttribute("findLocationKeys", prop.getLocationKey());
 			request.setAttribute("findLocationKeys", locationKeys);

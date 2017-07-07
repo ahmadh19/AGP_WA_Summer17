@@ -47,7 +47,7 @@ public class MapController {
 		return "searchResults";
 	}
 	
-	@RequestMapping(value = "/moreInformation", method = RequestMethod.GET)
+	@RequestMapping(value = "/moreGraffitoInformation", method = RequestMethod.GET)
 	public String viewMoreInformation(final HttpServletRequest request) {
 		return "moreGraffitoInformation";
 	}

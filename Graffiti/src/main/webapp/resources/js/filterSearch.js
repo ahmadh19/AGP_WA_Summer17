@@ -305,10 +305,8 @@ function createURL(baseURL) {
 
 	var myUrl = baseURL;
 
-	if (currentParams.length == 0) {
-		myUrl += "?query_all=true";
-	} else {
-		myUrl += "?query_all=false"
+	if (currentParams.length != 0) {
+		myUrl += "?";
 		for (var i = 0; i < currentParams.length; i++) {
 			desc = currentParams[i].split(": ");
 			myUrl += "&" + desc[0].toLowerCase() + "=" + desc[1];

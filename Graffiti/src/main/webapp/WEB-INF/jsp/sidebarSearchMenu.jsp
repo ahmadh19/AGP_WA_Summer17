@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<%@ page import="edu.wlu.graffiti.controller.FilterController"%>
+<%@ page import="edu.wlu.graffiti.controller.GraffitiController"%>
 
 <script>
 $(document).ready(function(){
@@ -239,16 +239,16 @@ button:disabled {
 		<div id="collapse7" class="panel-collapse collapse">
 			<div class="panel-body">
 				<div class="checkbox"
-					id="<%=FilterController.WRITING_STYLE_PARAM_NAME%>">
+					id="<%=GraffitiController.WRITING_STYLE_PARAM_NAME%>">
 					<label class="checkbox-label"><input id="ws1"
 						type="checkbox" value=""
-						onclick="filterBy('<%=FilterController.WRITING_STYLE_SEARCH_DESC%>', 'Inscribed/Scratched', '<%=FilterController.WRITING_STYLE_GRAFFITI_INSCRIBED%>', 'ws1');" />Inscribed/Scratched</label>
+						onclick="filterBy('<%=GraffitiController.WRITING_STYLE_SEARCH_DESC%>', 'Inscribed/Scratched', '<%=GraffitiController.WRITING_STYLE_GRAFFITI_INSCRIBED%>', 'ws1');" />Inscribed/Scratched</label>
 					<label class="checkbox-label"><input id="ws2"
 						type="checkbox" value=""
-						onclick="filterBy('<%=FilterController.WRITING_STYLE_SEARCH_DESC%>', 'charcoal', 'charcoal', 'ws2');" />Charcoal</label>
+						onclick="filterBy('<%=GraffitiController.WRITING_STYLE_SEARCH_DESC%>', 'charcoal', 'charcoal', 'ws2');" />Charcoal</label>
 					<label class="checkbox-label"><input id="ws3"
 						type="checkbox" value=""
-						onclick="filterBy('<%=FilterController.WRITING_STYLE_SEARCH_DESC%>', 'other', 'other', 'ws3');" />Other</label>
+						onclick="filterBy('<%=GraffitiController.WRITING_STYLE_SEARCH_DESC%>', 'other', 'other', 'ws3');" />Other</label>
 				</div>
 			</div>
 		</div>

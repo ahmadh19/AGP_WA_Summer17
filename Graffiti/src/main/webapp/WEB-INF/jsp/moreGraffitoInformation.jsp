@@ -14,11 +14,12 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 
+<c:set var="i" value="${requestScope.inscription}" />
 
 	
 </head>
 
-<body onload="updatePage();">
+<body>
 <%@include file="header.jsp"%>
 
 
@@ -33,11 +34,14 @@
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 
 <h4>Findspot on map:</h4>
+<p>Selected property id is:</p>
+<c:out value = "${i.agp.property.id}"/>
+<c:out value = "${i.content}"/>
 <script>
+	
 	window.initmap(true,false,true,false);
 	
-	document.write(document.getElementById("imgLink").href = hrefs[ind-1]+" imgLink");
-	document.write(document.getElementById("imgSrc").src = srcs[ind-1]+" imgSrc");
+	
 </script>
 
 

@@ -27,22 +27,8 @@
 	
 <script type="text/javascript">
 
-function start() {
-$('img').mapster({
-	areas: [
-		<c:forEach var="locKey" items="${requestScope.findLocationKeys}">
-		{
-			key: '${locKey}',
-			fillColor: '0000FF',
-			staticState: true
-		},
-		</c:forEach>
-	], 
-	isSelectable: false,
-	mapKey: 'data-key',
-	clickNavigate: false,
-}); 
-}
+
+
 
 function generatePompeii(name) {
 	xmlHttp = new XMLHttpRequest();
@@ -172,9 +158,11 @@ function checkboxesAfterBack() {
 function updatePage(){
 	checkboxesAfterBack();
 	
-	<c:if test="${requestScope.returnFromEDR} not empty">
-	document.getElementById("${requestScope.returnFromEDR}").scrollIntoView();
+	<c:if test="${not empty sessionScope.returnFromEDR}">
+	document.getElementById("${sessionScope.returnFromEDR}").scrollIntoView();
+	<c:set var="returnFromEDR" value="" scope="session" />
 	</c:if>
+	
 }
 </script>
 <style>
