@@ -4,7 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
 <head>
 <link rel="stylesheet" type="text/css" href="New-featured-graffiti.css" />
 		
@@ -42,18 +42,17 @@ body {
 	height: 100%;
 	background-color: #f2f2f2;
 }
-
 .portfolio-grid {
 	list-style: none;
 	padding: 0;
 	margin: 0 auto;
 	text-align: center;
-	width: 100%;
+	width: 75%;
 }
 
 .portfolio-grid li {
 	display: inline-block;
-	margin: 5px 5px 5px 5px;
+	margin: 25px 25px 25px 25px;
 	vertical-align: top;
     width:212px;
 }
@@ -186,35 +185,60 @@ body {
 	<div class="container">
 		<div id="selectors">
 			<input type="button" id="showOriginal" value="Graffiti Translations"
-				class="btn btn-agp"> <input type="button" id="showGallery"
-				value="Figural Graffiti Gallery" class="btn btn-agp">
+				class="btn btn-agp"> 
+			<input type="button" id="showGallery" value="Figural Graffiti Gallery" class="btn btn-agp">
+			<input type="button" id="showGallery2" value="Teaching Resources" class="btn btn-agp"> 
 		</div>
+		
+		<form method="get" action="http://agp-dev1.wlu.edu/about/teaching-resources/" target="_blank">
+    <button type="submit">Continue </button> 
+</form>
+
 
 		<h2>Featured Graffiti</h2>
 
-		<c:set var="figuralHits" value="${figuralHits}" />
-		<c:set var="translationHits" value="${translationHits}" />
 		<div id="portfolio">
     <ul class="portfolio-grid">
-                    <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                      
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/Food.png" alt="Food Graffiti"/>
+    				
+       				<li>
+                        <a href="http://localhost:8080/Graffiti/RoughDraftThemeMockUp.jsp" target="_blank" class="animated flipInX">
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/PompeiiJustBlack.png" alt="Pompeii"/>
                         </a>
                     </li>
                     <li>
                         <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/Gladiators.png" alt="Gladiator Graffiti"/>
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/HeculaneumBlack.png" alt="Herculaneum"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/SmyrnaBolded.png" alt="Smyrna"/>
+                        </a>
+                    </li>
+                     <li>
+                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/FiguralGraffiti.png" alt="Figural Graffiti"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                      
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/Love.png" alt="Love"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/Baths.png" alt="Baths"/>
                         </a>
                     </li>
                     <li>
                         <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank"  class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/Baths.png" alt="Baths Graffiti"/>
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/Gladiators.png" alt="Gladiators"/>
                         </a>
                     </li>
                     <li>
                         <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/Love.png" alt="Love Graffiti"/>
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/Food.png" alt="Food"/>
                         </a>
                     </li>
                     <li>
@@ -227,26 +251,8 @@ body {
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Grammar.png" alt="Grammar Graffiti"/>
                         </a>
                     </li>
-                    <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/Example.png" alt="Example"/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/Example.png" alt="Example"/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/Example.png" alt="Example"/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/Example.png" alt="Example"/>
-                        </a>
-                    </li>
+                 
+                   
                 </ul>
  
 		</div>
