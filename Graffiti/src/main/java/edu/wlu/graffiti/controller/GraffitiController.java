@@ -142,11 +142,9 @@ public class GraffitiController {
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public String searchForm(final HttpServletRequest request) {
 		
-		
 		String city = request.getParameter("city");
 		String message;
 		HttpSession s = request.getSession();
-		s.setAttribute("returnFromEDR", "");
 
 		if (city != null && !city.isEmpty()) {
 			if (city.toLowerCase().equals("pompeii")) {
@@ -307,27 +305,25 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", resultsList);
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("backToResults", false);
 		return "displayData";
 	}
 
 	@RequestMapping(value = "/region/{city}/{insula}", method = RequestMethod.GET)
 	public String insulaPage(@PathVariable String city, @PathVariable String insula, HttpServletRequest request,
 			HttpServletResponse response) {
-		System.out.println("insulaPage: " + insula);
+		//System.out.println("insulaPage: " + insula);
 		int insula_id = getInsulaId(city, insula);
 		final List<Inscription> inscriptions = this.graffitiDao.getInscriptionsByCityAndInsula(city, insula_id);
 		request.setAttribute("resultsLyst", inscriptions);
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("backToResults", false);
 		return "displayData";
 	}
 
 	@RequestMapping(value = "/region/{city}/{insula}/{property}", method = RequestMethod.GET)
 	public String propertyPage(@PathVariable String city, @PathVariable String property, @PathVariable String insula,
 			HttpServletRequest request) {
-		System.out.println("propertyPage: " + property);
+		//System.out.println("propertyPage: " + property);
 		int insula_id = getInsulaId(city, insula);
 		int property_id = getPropertyId(city, insula, property);
 		final List<Inscription> inscriptions = this.graffitiDao.getInscriptionsByCityAndInsulaAndPropertyNumber(city,
@@ -335,7 +331,6 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", inscriptions);
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("backToResults", false);
 		return "displayData";
 	}
 
@@ -355,7 +350,6 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", resultsList2);
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("backToResults", false);
 		return "displayData";
 	}
 
@@ -410,14 +404,9 @@ public class GraffitiController {
 			request.setAttribute("findLocationKeys", findLocationKeys(i));
 			request.setAttribute("inscription", i);
 			request.setAttribute("city", city);
+			request.getSession().setAttribute("returnFromEDR", edr);
 			
 			//Decides which jsp page to travel to when user clicks "More Information" on Search page.
-			//if(city.equals("Pompeii")){
-				//return "moreGraffitoInformation";
-			//}
-			//else{
-				//return "details";
-			//}
 			return "details";
 		}
 	}
@@ -427,10 +416,7 @@ public class GraffitiController {
 		init();
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("returnFromEDR", "");
 		List<Inscription> inscriptions = searchResults(request);
-		// request.setAttribute("findLocationKeys",
-		// findLocationKeys(inscriptions));
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
@@ -498,7 +484,7 @@ public class GraffitiController {
 			// searches; all others are simple match queries
 			for (int i = 0; i < searchTerms.size(); i++) {
 
-				System.out.println(searchTerms.get(i) + ": " + parameters.get(i));
+				//System.out.println(searchTerms.get(i) + ": " + parameters.get(i));
 
 				// Searches has_figural_component if user selected "All"
 				// drawings
@@ -569,7 +555,7 @@ public class GraffitiController {
 					String[] params = parameters.get(i).split(" ");
 
 					for (String param : params) {
-						System.out.println(searchTerms.get(i) + ": match " + param + " in " + fieldNames.get(i));
+						//System.out.println(searchTerms.get(i) + ": match " + param + " in " + fieldNames.get(i));
 						otherQuery.should(termQuery(fieldNames.get(i), param));
 					}
 					query.must(otherQuery);
@@ -613,7 +599,7 @@ public class GraffitiController {
 
 	}
 	
-	// Turns an array like ["Pompeii", "Herculaneum"] into a string like
+		// Turns an array like ["Pompeii", "Herculaneum"] into a string like
 		// "Pompeii Herculaneum" for Elasticsearch match query
 		private static String arrayToString(String[] parameters) {
 			StringBuilder sb = new StringBuilder();
@@ -626,35 +612,9 @@ public class GraffitiController {
 
 		private Inscription hitToInscription(SearchHit hit) {
 			String edrID = hit.field("edr_id").value();
-			//System.out.println("EDR ID: " + edrID);
-		
-
 			Inscription inscription = graffitiDao.getInscriptionByEDR(edrID);
-			//System.out.println(inscription);
-
 			return inscription;
 		}
-
-	@RequestMapping(value = "/backToResults", method = RequestMethod.GET)
-	public void backToResults(final HttpServletRequest request) {
-		System.out.println("Back to Results: " + request.getParameter("edr"));
-		HttpSession s = request.getSession();
-		s.setAttribute("backToResults", true);
-		s.setAttribute("returnFromEDR", request.getParameter("edr"));
-	}
-
-	private static List<String> findLocationKeys(final List<Inscription> inscriptions) {
-		final List<String> locationKeys = new ArrayList<String>();
-		if (inscriptions != null) {
-			final Set<String> locationKeysSet = new TreeSet<String>();
-			for (final Inscription inscription : inscriptions) {
-				locationKeysSet.add(inscription.getSpotKey());
-				locationKeysSet.add(inscription.getGenSpotKey());
-			}
-			locationKeys.addAll(locationKeysSet);
-		}
-		return locationKeys;
-	}
 
 	private static List<String> findLocationKeys(final Inscription inscription) {
 		final List<String> locationKeys = new ArrayList<String>();
@@ -683,4 +643,28 @@ public class GraffitiController {
 	public void setGraffitiDao(final GraffitiDao graffitiDao) {
 		this.graffitiDao = graffitiDao;
 	}
+	
+	@RequestMapping(value = "/filter", method = RequestMethod.GET)
+	public String filterResults(final HttpServletRequest request) {
+		init();
+		HttpSession s = request.getSession();
+		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
+		List<Inscription> inscriptions = searchResults(request);
+
+		request.setAttribute("resultsLyst", inscriptions);
+		request.setAttribute("searchQueryDesc", "filtering");
+		return "filter";
+	}
+
+	@RequestMapping(value = "/admin/report", method = RequestMethod.GET)
+	public String reportResults(final HttpServletRequest request) {
+		init();
+		HttpSession s = request.getSession();
+		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
+		List<Inscription> inscriptions = searchResults(request);
+		request.setAttribute("resultsLyst", inscriptions);
+		request.setAttribute("searchQueryDesc", "filtering");
+		return "admin/report";
+	}
+		
 }

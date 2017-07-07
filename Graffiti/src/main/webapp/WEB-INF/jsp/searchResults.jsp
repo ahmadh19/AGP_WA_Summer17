@@ -155,9 +155,11 @@ function checkboxesAfterBack() {
 function updatePage(){
 	checkboxesAfterBack();
 	
-	<c:if test="${requestScope.returnFromEDR} not empty">
-	document.getElementById("${requestScope.returnFromEDR}").scrollIntoView();
+	<c:if test="${not empty sessionScope.returnFromEDR}">
+	document.getElementById("${sessionScope.returnFromEDR}").scrollIntoView();
+	<c:set var="returnFromEDR" value="" scope="session" />
 	</c:if>
+	
 }
 </script>	
 

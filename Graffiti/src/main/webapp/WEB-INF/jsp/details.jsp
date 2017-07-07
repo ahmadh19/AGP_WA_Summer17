@@ -2,7 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%-- <%@ include file="/resources/common_head.txt" %> --%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,9 +140,6 @@ function selectImg(ind) {
 }
 
 function backToResults(){
-	xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("GET", "<%=request.getContextPath()%>/backToResults?edr=" + "${inscription.edrId}", false);
-	xmlHttp.send(null);
 	var url = "${sessionScope.returnURL}";
 	url = url.replace("filter", "results"); // generate the results page--makes sure the page is formatted
 	window.location.href = url;
