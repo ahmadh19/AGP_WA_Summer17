@@ -438,167 +438,162 @@ public class GraffitiController {
 		String searchedDrawings = "";
 		
 		List<Inscription> inscriptions = new ArrayList<Inscription>();
+		
+		// List of parameter strings for each given search term
+		List<String> parameters = new ArrayList<String>();
+		// List of search terms
+		List<String> searchTerms = new ArrayList<String>();
+		// List of field names to search for each different search term
+		List<String> fieldNames = new ArrayList<String>();
 
-		String queryAll = request.getParameter("browse");
+		// Gather all of the request parameters and make an array of those
+		// arrays to loop through and check if null
+		String[] content = request.getParameterValues("content");
+		String[] global = request.getParameterValues("global");
+		String[] city = request.getParameterValues("city");
+		String[] insula = request.getParameterValues("insula");
+		String[] property = request.getParameterValues("property");
+		String[] propertyType = request.getParameterValues("property_type");
+		String[] drawingCategory = request.getParameterValues("drawing_category");
+		String[] writingStyle = request.getParameterValues(WRITING_STYLE_PARAM_NAME);
+		String[] language = request.getParameterValues("language");
 
-		if (queryAll != null && queryAll.equals("true")) {
-			return graffitiDao.getAllInscriptions();
-		} else {
-			// List of parameter strings for each given search term
-			List<String> parameters = new ArrayList<String>();
-			// List of search terms
-			List<String> searchTerms = new ArrayList<String>();
-			// List of field names to search for each different search term
-			List<String> fieldNames = new ArrayList<String>();
+		String[][] searches = { content, global, city, insula, property, propertyType, drawingCategory,
+				writingStyle, language };
 
-			// Gather all of the request parameters and make an array of those
-			// arrays to loop through and check if null
-			String[] content = request.getParameterValues("content");
-			String[] global = request.getParameterValues("global");
-			String[] city = request.getParameterValues("city");
-			String[] insula = request.getParameterValues("insula");
-			String[] property = request.getParameterValues("property");
-			String[] propertyType = request.getParameterValues("property_type");
-			String[] drawingCategory = request.getParameterValues("drawing_category");
-			String[] writingStyle = request.getParameterValues(WRITING_STYLE_PARAM_NAME);
-			String[] language = request.getParameterValues("language");
-
-			String[][] searches = { content, global, city, insula, property, propertyType, drawingCategory,
-					writingStyle, language };
-
-			// Determine which parameters have been given; populate the
-			// parameters, searchTerms, and fieldNames lists accordingly
-			for (int i = 0; i < searches.length; i++) {
-				if (searches[i] != null) {
-					parameters.add(arrayToString(searches[i]));
-					searchTerms.add(searchDescs[i]);
-					fieldNames.add(searchFields[i]);
-				}
+		// Determine which parameters have been given; populate the
+		// parameters, searchTerms, and fieldNames lists accordingly
+		for (int i = 0; i < searches.length; i++) {
+			if (searches[i] != null) {
+				parameters.add(arrayToString(searches[i]));
+				searchTerms.add(searchDescs[i]);
+				fieldNames.add(searchFields[i]);
 			}
-
-			// This is the main query; does an AND of all sub-queries
-			BoolQueryBuilder query = boolQuery();
-
-			// For each given search term, we build a sub-query
-			// Special cases are Global Keyword, Content Keyword, and Property
-			// searches; all others are simple match queries
-			for (int i = 0; i < searchTerms.size(); i++) {
-
-				//System.out.println(searchTerms.get(i) + ": " + parameters.get(i));
-
-				// Searches has_figural_component if user selected "All"
-				// drawings
-				if (searchTerms.get(i).equals(DRAWING_CATEGORY_SEARCH_DESC) && parameters.get(i).contains("All")) {
-					// SES: I think that query should be okay because the other
-					// drawing categories are numbers.
-					// As soon as we have the query "All", then we get all the
-					// figural graffiti and we can skip
-					// the rest of the drawing-related query.
-					BoolQueryBuilder allDrawingsQuery = boolQuery();
-					allDrawingsQuery.should(matchQuery("has_figural_component", true));
-					query.must(allDrawingsQuery);
-				} else if (searchTerms.get(i).equals("Global Keyword")) {
-					// Checks content, city, insula name, property name,
-					// property types, drawing description, drawing tags,
-					// writing style, language, EAGLE id, and bibliography for a
-					// keyword match
-					BoolQueryBuilder globalQuery;
-					QueryBuilder fuzzyQuery;
-					QueryBuilder exactQuery;
-
-					String[] a = fieldNames.get(i).split(" ");
-					
-					globalQuery = boolQuery();
-					fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7],
-							a[8]).fuzziness("AUTO");
-					exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
-
-					// For EDR id and bibliography, users want exact results.
-
-					globalQuery.should(fuzzyQuery);
-					globalQuery.should(exactQuery);
-
-					query.must(globalQuery);
-				} else if (searchTerms.get(i).equals("Content Keyword")) {
-					BoolQueryBuilder contentQuery = boolQuery();
-					String[] params = parameters.get(i).split(" ");
-
-					for (String param : params) {
-						contentQuery.must(matchQuery(fieldNames.get(i), param).fuzziness("AUTO"));
-					}
-					query.must(contentQuery);
-				} else if (searchTerms.get(i).equals("Property")) {
-					BoolQueryBuilder propertiesQuery = boolQuery();
-
-					String[] properties = parameters.get(i).split(" ");
-
-					for (int j = 0; j < properties.length; j++) {
-						QueryBuilder propertyIdQuery;
-						BoolQueryBuilder propertyQuery;
-
-						String propertyID = properties[j];
-
-						propertyIdQuery = termQuery(fieldNames.get(i), propertyID);
-
-						propertyQuery = boolQuery().must(propertyIdQuery);
-
-						propertiesQuery.should(propertyQuery);
-					}
-					query.must(propertiesQuery);
-				} else if (searchTerms.get(i).equals(WRITING_STYLE_SEARCH_DESC)
-						&& parameters.get(i).equalsIgnoreCase("other")) {
-					// special handling of the writing style being "other"
-					query.mustNot(termQuery(fieldNames.get(i), "charcoal"));
-					query.mustNot(termQuery(fieldNames.get(i), WRITING_STYLE_GRAFFITI_INSCRIBED));
-				} else {
-					BoolQueryBuilder otherQuery = boolQuery();
-					String[] params = parameters.get(i).split(" ");
-
-					for (String param : params) {
-						//System.out.println(searchTerms.get(i) + ": match " + param + " in " + fieldNames.get(i));
-						otherQuery.should(termQuery(fieldNames.get(i), param));
-					}
-					query.must(otherQuery);
-				}
-			}
-
-			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
-					.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME,
-							PROPERTY_ID_FIELD_NAME, "property.property_number", "property.property_name",
-							PROPERTY_TYPES_FIELD_NAME, "drawing.description_in_english", "drawing.description_in_latin",
-							"drawing.drawing_tag_ids", "content", "summary", "edr_id", "bibliography",
-							WRITING_STYLE_IN_ENGLISH_FIELD_NAME, LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description",
-							"lagner", "comment", "content_translation", "measurements")
-					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
-
-			
-			for (SearchHit hit : response.getHits()) {
-				//System.out.println(hit);
-				inscriptions.add(hitToInscription(hit));
-			}
-			client.close();
-			HttpSession session = request.getSession();
-			if (inscriptions.size() > 0) {
-				//System.out.println(inscriptions.get(0));
-				request.setAttribute("mapName", inscriptions.get(0).getAncientCity());
-			}
-			request.setAttribute("searchedProperties", searchedProperties);
-			request.setAttribute("searchedDrawings", searchedDrawings);
-
-			// Used in sidebarSearchMenu.jsp
-			request.setAttribute("cities", findspotDao.getCityNames());
-			request.setAttribute("drawingCategories", drawingTagsDao.getDrawingTags());
-			request.setAttribute("propertyTypes", findspotDao.getPropertyTypes());
-			request.setAttribute("insulaList", insulaDao.getInsula());
-			request.setAttribute("propertiesList", findspotDao.getProperties());
-
-			session.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-
-			return inscriptions;
 		}
 
+		// This is the main query; does an AND of all sub-queries
+		BoolQueryBuilder query = boolQuery();
+
+		// For each given search term, we build a sub-query
+		// Special cases are Global Keyword, Content Keyword, and Property
+		// searches; all others are simple match queries
+		for (int i = 0; i < searchTerms.size(); i++) {
+
+			//System.out.println(searchTerms.get(i) + ": " + parameters.get(i));
+
+			// Searches has_figural_component if user selected "All"
+			// drawings
+			if (searchTerms.get(i).equals(DRAWING_CATEGORY_SEARCH_DESC) && parameters.get(i).contains("All")) {
+				// SES: I think that query should be okay because the other
+				// drawing categories are numbers.
+				// As soon as we have the query "All", then we get all the
+				// figural graffiti and we can skip
+				// the rest of the drawing-related query.
+				BoolQueryBuilder allDrawingsQuery = boolQuery();
+				allDrawingsQuery.should(matchQuery("has_figural_component", true));
+				query.must(allDrawingsQuery);
+			} else if (searchTerms.get(i).equals("Global Keyword")) {
+				// Checks content, city, insula name, property name,
+				// property types, drawing description, drawing tags,
+				// writing style, language, EAGLE id, and bibliography for a
+				// keyword match
+				BoolQueryBuilder globalQuery;
+				QueryBuilder fuzzyQuery;
+				QueryBuilder exactQuery;
+
+				String[] a = fieldNames.get(i).split(" ");
+
+				globalQuery = boolQuery();
+				fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7],
+						a[8]).fuzziness("AUTO");
+				exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
+
+				// For EDR id and bibliography, users want exact results.
+
+				globalQuery.should(fuzzyQuery);
+				globalQuery.should(exactQuery);
+
+				query.must(globalQuery);
+			} else if (searchTerms.get(i).equals("Content Keyword")) {
+				BoolQueryBuilder contentQuery = boolQuery();
+				String[] params = parameters.get(i).split(" ");
+
+				for (String param : params) {
+					contentQuery.must(matchQuery(fieldNames.get(i), param).fuzziness("AUTO"));
+				}
+				query.must(contentQuery);
+			} else if (searchTerms.get(i).equals("Property")) {
+				BoolQueryBuilder propertiesQuery = boolQuery();
+
+				String[] properties = parameters.get(i).split(" ");
+
+				for (int j = 0; j < properties.length; j++) {
+					QueryBuilder propertyIdQuery;
+					BoolQueryBuilder propertyQuery;
+
+					String propertyID = properties[j];
+
+					propertyIdQuery = termQuery(fieldNames.get(i), propertyID);
+
+					propertyQuery = boolQuery().must(propertyIdQuery);
+
+					propertiesQuery.should(propertyQuery);
+				}
+				query.must(propertiesQuery);
+			} else if (searchTerms.get(i).equals(WRITING_STYLE_SEARCH_DESC)
+					&& parameters.get(i).equalsIgnoreCase("other")) {
+				// special handling of the writing style being "other"
+				query.mustNot(termQuery(fieldNames.get(i), "charcoal"));
+				query.mustNot(termQuery(fieldNames.get(i), WRITING_STYLE_GRAFFITI_INSCRIBED));
+			} else {
+				BoolQueryBuilder otherQuery = boolQuery();
+				String[] params = parameters.get(i).split(" ");
+
+				for (String param : params) {
+					//System.out.println(searchTerms.get(i) + ": match " + param + " in " + fieldNames.get(i));
+					otherQuery.should(termQuery(fieldNames.get(i), param));
+				}
+				query.must(otherQuery);
+			}
+		}
+
+		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+				.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME,
+						PROPERTY_ID_FIELD_NAME, "property.property_number", "property.property_name",
+						PROPERTY_TYPES_FIELD_NAME, "drawing.description_in_english", "drawing.description_in_latin",
+						"drawing.drawing_tag_ids", "content", "summary", "edr_id", "bibliography",
+						WRITING_STYLE_IN_ENGLISH_FIELD_NAME, LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description",
+						"lagner", "comment", "content_translation", "measurements")
+				.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
+
+
+		for (SearchHit hit : response.getHits()) {
+			//System.out.println(hit);
+			inscriptions.add(hitToInscription(hit));
+		}
+		client.close();
+		HttpSession session = request.getSession();
+		if (inscriptions.size() > 0) {
+			//System.out.println(inscriptions.get(0));
+			request.setAttribute("mapName", inscriptions.get(0).getAncientCity());
+		}
+		request.setAttribute("searchedProperties", searchedProperties);
+		request.setAttribute("searchedDrawings", searchedDrawings);
+
+		// Used in sidebarSearchMenu.jsp
+		request.setAttribute("cities", findspotDao.getCityNames());
+		request.setAttribute("drawingCategories", drawingTagsDao.getDrawingTags());
+		request.setAttribute("propertyTypes", findspotDao.getPropertyTypes());
+		request.setAttribute("insulaList", insulaDao.getInsula());
+		request.setAttribute("propertiesList", findspotDao.getProperties());
+
+		session.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
+
+		return inscriptions;
 	}
-	
+
+
+
 		// Turns an array like ["Pompeii", "Herculaneum"] into a string like
 		// "Pompeii Herculaneum" for Elasticsearch match query
 		private static String arrayToString(String[] parameters) {
