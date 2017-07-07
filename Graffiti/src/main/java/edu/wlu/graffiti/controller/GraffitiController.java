@@ -625,10 +625,6 @@ public class GraffitiController {
 		}
 
 		private Inscription hitToInscription(SearchHit hit) {
-//			System.out.println(hit);
-//			System.out.println(hit.getId());
-//			System.out.println(hit.getField("edr_id"));
-			
 			System.out.println(hit.getSourceAsString());
 			
 			for(String field : hit.getFields().keySet()) {

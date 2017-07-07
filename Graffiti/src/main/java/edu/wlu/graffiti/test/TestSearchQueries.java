@@ -30,7 +30,7 @@ public class TestSearchQueries {
 		
 		try {
 			client = new PreBuiltTransportClient(settings).addTransportAddress(
-					new InetSocketTransportAddress(InetAddress.getByName("agp-dev1.ad.wlu.edu"), 9300));
+					new InetSocketTransportAddress(InetAddress.getByName("carl.cs.wlu.edu"), 9300));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,7 +126,7 @@ public class TestSearchQueries {
 				response = client.prepareSearch("agp")
 						.setTypes("inscription")
 						.setQuery(query)
-						.addStoredField("id")
+						//.addStoredField("id")
 						.setSize(66)
 						.addSort("id", SortOrder.ASC)
 						.execute()
@@ -135,7 +135,8 @@ public class TestSearchQueries {
 
 			int count = 1;
 			for (SearchHit hit : response.getHits()){
-				int id = hit.field("id").value();
+				System.out.println(hit.getSourceAsString());
+				int id = hit.getField("id").getValue();
 				System.out.println("Result " + count + ": id=" + id);
 				count++;
 			}

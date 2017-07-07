@@ -374,7 +374,7 @@ public class AddInscriptionsToElasticSearch {
 				// analyzed
 				.field("type", "text").field("index", "not_analyzed").endObject().startObject("content")
 				.field("type", "text").endObject().startObject("summary").field("type", "text").endObject()
-				.startObject("edr_id").field("type", "keyword").endObject().startObject("bibliography")
+				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject().startObject("bibliography")
 				.field("type", "text").endObject().startObject("cil").field("type", "text").endObject()
 				.startObject("comment").field("type", "text").endObject().startObject("content_translation")
 				.field("type", "text").endObject().startObject("description_in_english").field("type", "text")
