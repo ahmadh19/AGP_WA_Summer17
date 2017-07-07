@@ -62,11 +62,11 @@
 .findspotMap{
 	height:200px;
 	width:250px;
-	margin-top:160px;
-	margin-left:715px;
 	float:right;
+	position:relative;
 	border: 3px solid #800000;
-	position:absolute;
+    
+    
 }
 
 .info {
@@ -81,7 +81,8 @@
 
 .info h4 {
 	margin: 0 0 5px;
-	color: #777;
+	 color: #777; 
+	
 }
 
 #moreInfo {
