@@ -38,7 +38,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -133,7 +132,7 @@ public class GraffitiController {
 			ES_TYPE_NAME = prop.getProperty("es.type");
 			ES_CLUSTER_NAME = prop.getProperty("es.cluster_name");
 		}
-		settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
+		settings = Settings.settingsBuilder().put("cluster.name", ES_CLUSTER_NAME).build();
 	}
 	
 	// Maps to the search.jsp page currently receives information from
@@ -143,11 +142,9 @@ public class GraffitiController {
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public String searchForm(final HttpServletRequest request) {
 		
-		
 		String city = request.getParameter("city");
 		String message;
 		HttpSession s = request.getSession();
-		s.setAttribute("returnFromEDR", "");
 
 		if (city != null && !city.isEmpty()) {
 			if (city.toLowerCase().equals("pompeii")) {
@@ -308,27 +305,25 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", resultsList);
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("backToResults", false);
 		return "displayData";
 	}
 
 	@RequestMapping(value = "/region/{city}/{insula}", method = RequestMethod.GET)
 	public String insulaPage(@PathVariable String city, @PathVariable String insula, HttpServletRequest request,
 			HttpServletResponse response) {
-		System.out.println("insulaPage: " + insula);
+		//System.out.println("insulaPage: " + insula);
 		int insula_id = getInsulaId(city, insula);
 		final List<Inscription> inscriptions = this.graffitiDao.getInscriptionsByCityAndInsula(city, insula_id);
 		request.setAttribute("resultsLyst", inscriptions);
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("backToResults", false);
 		return "displayData";
 	}
 
 	@RequestMapping(value = "/region/{city}/{insula}/{property}", method = RequestMethod.GET)
 	public String propertyPage(@PathVariable String city, @PathVariable String property, @PathVariable String insula,
 			HttpServletRequest request) {
-		System.out.println("propertyPage: " + property);
+		//System.out.println("propertyPage: " + property);
 		int insula_id = getInsulaId(city, insula);
 		int property_id = getPropertyId(city, insula, property);
 		final List<Inscription> inscriptions = this.graffitiDao.getInscriptionsByCityAndInsulaAndPropertyNumber(city,
@@ -336,7 +331,6 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", inscriptions);
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("backToResults", false);
 		return "displayData";
 	}
 
@@ -356,7 +350,6 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", resultsList2);
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("backToResults", false);
 		return "displayData";
 	}
 
@@ -411,14 +404,10 @@ public class GraffitiController {
 			request.setAttribute("findLocationKeys", findLocationKeys(i));
 			request.setAttribute("inscription", i);
 			request.setAttribute("city", city);
+			request.getSession().setAttribute("returnFromEDR", edr);
 			
 			//Decides which jsp page to travel to when user clicks "More Information" on Search page.
-			if(city.equals("Pompeii")){
-				return "moreGraffitoInformation";
-			}
-			else{
-				return "details";
-			}
+			return "details";
 		}
 	}
 	
@@ -427,10 +416,7 @@ public class GraffitiController {
 		init();
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		s.setAttribute("returnFromEDR", "");
 		List<Inscription> inscriptions = searchResults(request);
-		// request.setAttribute("findLocationKeys",
-		// findLocationKeys(inscriptions));
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
@@ -442,7 +428,7 @@ public class GraffitiController {
 		//System.out.println("We're in FilterController: " + request.getQueryString());
 
 		try {
-			client = new PreBuiltTransportClient(settings).addTransportAddress(
+			client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(ES_HOSTNAME), ES_PORT_NUM));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -452,157 +438,163 @@ public class GraffitiController {
 		String searchedDrawings = "";
 		
 		List<Inscription> inscriptions = new ArrayList<Inscription>();
+		
+		// List of parameter strings for each given search term
+		List<String> parameters = new ArrayList<String>();
+		// List of search terms
+		List<String> searchTerms = new ArrayList<String>();
+		// List of field names to search for each different search term
+		List<String> fieldNames = new ArrayList<String>();
 
-		String queryAll = request.getParameter("browse");
+		// Gather all of the request parameters and make an array of those
+		// arrays to loop through and check if null
+		String[] content = request.getParameterValues("content");
+		String[] global = request.getParameterValues("global");
+		String[] city = request.getParameterValues("city");
+		String[] insula = request.getParameterValues("insula");
+		String[] property = request.getParameterValues("property");
+		String[] propertyType = request.getParameterValues("property_type");
+		String[] drawingCategory = request.getParameterValues("drawing_category");
+		String[] writingStyle = request.getParameterValues(WRITING_STYLE_PARAM_NAME);
+		String[] language = request.getParameterValues("language");
 
-		if (queryAll != null && queryAll.equals("true")) {
-			return graffitiDao.getAllInscriptions();
-		} else {
-			// List of parameter strings for each given search term
-			List<String> parameters = new ArrayList<String>();
-			// List of search terms
-			List<String> searchTerms = new ArrayList<String>();
-			// List of field names to search for each different search term
-			List<String> fieldNames = new ArrayList<String>();
+		String[][] searches = { content, global, city, insula, property, propertyType, drawingCategory,
+				writingStyle, language };
 
-			// Gather all of the request parameters and make an array of those
-			// arrays to loop through and check if null
-			String[] content = request.getParameterValues("content");
-			String[] global = request.getParameterValues("global");
-			String[] city = request.getParameterValues("city");
-			String[] insula = request.getParameterValues("insula");
-			String[] property = request.getParameterValues("property");
-			String[] propertyType = request.getParameterValues("property_type");
-			String[] drawingCategory = request.getParameterValues("drawing_category");
-			String[] writingStyle = request.getParameterValues(WRITING_STYLE_PARAM_NAME);
-			String[] language = request.getParameterValues("language");
-
-			String[][] searches = { content, global, city, insula, property, propertyType, drawingCategory,
-					writingStyle, language };
-
-			// Determine which parameters have been given; populate the
-			// parameters, searchTerms, and fieldNames lists accordingly
-			for (int i = 0; i < searches.length; i++) {
-				if (searches[i] != null) {
-					parameters.add(arrayToString(searches[i]));
-					searchTerms.add(searchDescs[i]);
-					fieldNames.add(searchFields[i]);
-				}
+		// Determine which parameters have been given; populate the
+		// parameters, searchTerms, and fieldNames lists accordingly
+		for (int i = 0; i < searches.length; i++) {
+			if (searches[i] != null) {
+				parameters.add(arrayToString(searches[i]));
+				searchTerms.add(searchDescs[i]);
+				fieldNames.add(searchFields[i]);
 			}
-
-			// This is the main query; does an AND of all sub-queries
-			BoolQueryBuilder query = boolQuery();
-
-			// For each given search term, we build a sub-query
-			// Special cases are Global Keyword, Content Keyword, and Property
-			// searches; all others are simple match queries
-			for (int i = 0; i < searchTerms.size(); i++) {
-
-				System.out.println(searchTerms.get(i) + ": " + parameters.get(i));
-
-				// Searches has_figural_component if user selected "All"
-				// drawings
-				if (searchTerms.get(i).equals(DRAWING_CATEGORY_SEARCH_DESC) && parameters.get(i).contains("All")) {
-					// SES: I think that query should be okay because the other
-					// drawing categories are numbers.
-					// As soon as we have the query "All", then we get all the
-					// figural graffiti and we can skip
-					// the rest of the drawing-related query.
-					BoolQueryBuilder allDrawingsQuery = boolQuery();
-					allDrawingsQuery.should(matchQuery("has_figural_component", true));
-					query.must(allDrawingsQuery);
-				} else if (searchTerms.get(i).equals("Global Keyword")) {
-					// Checks content, city, insula name, property name,
-					// property types, drawing description, drawing tags,
-					// writing style, language, EAGLE id, and bibliography for a
-					// keyword match
-					BoolQueryBuilder globalQuery;
-					QueryBuilder fuzzyQuery;
-					QueryBuilder exactQuery;
-
-					String[] a = fieldNames.get(i).split(" ");
-					
-					globalQuery = boolQuery();
-					fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7],
-							a[8]).fuzziness("AUTO");
-					exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
-
-					// For EDR id and bibliography, users want exact results.
-
-					globalQuery.should(fuzzyQuery);
-					globalQuery.should(exactQuery);
-
-					query.must(globalQuery);
-				} else if (searchTerms.get(i).equals("Content Keyword")) {
-					BoolQueryBuilder contentQuery = boolQuery();
-					String[] params = parameters.get(i).split(" ");
-
-					for (String param : params) {
-						contentQuery.must(matchQuery(fieldNames.get(i), param).fuzziness("AUTO"));
-					}
-					query.must(contentQuery);
-				} else if (searchTerms.get(i).equals("Property")) {
-					BoolQueryBuilder propertiesQuery = boolQuery();
-
-					String[] properties = parameters.get(i).split(" ");
-
-					for (int j = 0; j < properties.length; j++) {
-						QueryBuilder propertyIdQuery;
-						BoolQueryBuilder propertyQuery;
-
-						String propertyID = properties[j];
-
-						propertyIdQuery = termQuery(fieldNames.get(i), propertyID);
-
-						propertyQuery = boolQuery().must(propertyIdQuery);
-
-						propertiesQuery.should(propertyQuery);
-					}
-					query.must(propertiesQuery);
-				} else if (searchTerms.get(i).equals(WRITING_STYLE_SEARCH_DESC)
-						&& parameters.get(i).equalsIgnoreCase("other")) {
-					// special handling of the writing style being "other"
-					query.mustNot(termQuery(fieldNames.get(i), "charcoal"));
-					query.mustNot(termQuery(fieldNames.get(i), WRITING_STYLE_GRAFFITI_INSCRIBED));
-				} else {
-					BoolQueryBuilder otherQuery = boolQuery();
-					String[] params = parameters.get(i).split(" ");
-
-					for (String param : params) {
-						System.out.println(searchTerms.get(i) + ": match " + param + " in " + fieldNames.get(i));
-						otherQuery.should(termQuery(fieldNames.get(i), param));
-					}
-					query.must(otherQuery);
-				}
-			}
-			
-			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
-					.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
-			
-			client.close();
-			HttpSession session = request.getSession();
-			if (inscriptions.size() > 0) {
-				//System.out.println(inscriptions.get(0));
-				request.setAttribute("mapName", inscriptions.get(0).getAncientCity());
-			}
-			request.setAttribute("searchedProperties", searchedProperties);
-			request.setAttribute("searchedDrawings", searchedDrawings);
-
-			// Used in sidebarSearchMenu.jsp
-			request.setAttribute("cities", findspotDao.getCityNames());
-			request.setAttribute("drawingCategories", drawingTagsDao.getDrawingTags());
-			request.setAttribute("propertyTypes", findspotDao.getPropertyTypes());
-			request.setAttribute("insulaList", insulaDao.getInsula());
-			request.setAttribute("propertiesList", findspotDao.getProperties());
-
-			session.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-
-			return inscriptions;
 		}
 
+		// This is the main query; does an AND of all sub-queries
+		BoolQueryBuilder query = boolQuery();
+
+		// For each given search term, we build a sub-query
+		// Special cases are Global Keyword, Content Keyword, and Property
+		// searches; all others are simple match queries
+		for (int i = 0; i < searchTerms.size(); i++) {
+
+			//System.out.println(searchTerms.get(i) + ": " + parameters.get(i));
+
+			// Searches has_figural_component if user selected "All"
+			// drawings
+			if (searchTerms.get(i).equals(DRAWING_CATEGORY_SEARCH_DESC) && parameters.get(i).contains("All")) {
+				// SES: I think that query should be okay because the other
+				// drawing categories are numbers.
+				// As soon as we have the query "All", then we get all the
+				// figural graffiti and we can skip
+				// the rest of the drawing-related query.
+				BoolQueryBuilder allDrawingsQuery = boolQuery();
+				allDrawingsQuery.should(matchQuery("has_figural_component", true));
+				query.must(allDrawingsQuery);
+			} else if (searchTerms.get(i).equals("Global Keyword")) {
+				// Checks content, city, insula name, property name,
+				// property types, drawing description, drawing tags,
+				// writing style, language, EAGLE id, and bibliography for a
+				// keyword match
+				BoolQueryBuilder globalQuery;
+				QueryBuilder fuzzyQuery;
+				QueryBuilder exactQuery;
+
+				String[] a = fieldNames.get(i).split(" ");
+
+				globalQuery = boolQuery();
+				fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7],
+						a[8]).fuzziness("AUTO");
+				exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
+
+				// For EDR id and bibliography, users want exact results.
+
+				globalQuery.should(fuzzyQuery);
+				globalQuery.should(exactQuery);
+
+				query.must(globalQuery);
+			} else if (searchTerms.get(i).equals("Content Keyword")) {
+				BoolQueryBuilder contentQuery = boolQuery();
+				String[] params = parameters.get(i).split(" ");
+
+				for (String param : params) {
+					contentQuery.must(matchQuery(fieldNames.get(i), param).fuzziness("AUTO"));
+				}
+				query.must(contentQuery);
+			} else if (searchTerms.get(i).equals("Property")) {
+				BoolQueryBuilder propertiesQuery = boolQuery();
+
+				String[] properties = parameters.get(i).split(" ");
+
+				for (int j = 0; j < properties.length; j++) {
+					QueryBuilder propertyIdQuery;
+					BoolQueryBuilder propertyQuery;
+
+					String propertyID = properties[j];
+
+					propertyIdQuery = termQuery(fieldNames.get(i), propertyID);
+
+					propertyQuery = boolQuery().must(propertyIdQuery);
+
+					propertiesQuery.should(propertyQuery);
+				}
+				query.must(propertiesQuery);
+			} else if (searchTerms.get(i).equals(WRITING_STYLE_SEARCH_DESC)
+					&& parameters.get(i).equalsIgnoreCase("other")) {
+				// special handling of the writing style being "other"
+				query.mustNot(termQuery(fieldNames.get(i), "charcoal"));
+				query.mustNot(termQuery(fieldNames.get(i), WRITING_STYLE_GRAFFITI_INSCRIBED));
+			} else {
+				BoolQueryBuilder otherQuery = boolQuery();
+				String[] params = parameters.get(i).split(" ");
+
+				for (String param : params) {
+					//System.out.println(searchTerms.get(i) + ": match " + param + " in " + fieldNames.get(i));
+					otherQuery.should(termQuery(fieldNames.get(i), param));
+				}
+				query.must(otherQuery);
+			}
+		}
+
+		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+				.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME,
+						PROPERTY_ID_FIELD_NAME, "property.property_number", "property.property_name",
+						PROPERTY_TYPES_FIELD_NAME, "drawing.description_in_english", "drawing.description_in_latin",
+						"drawing.drawing_tag_ids", "content", "summary", "edr_id", "bibliography",
+						WRITING_STYLE_IN_ENGLISH_FIELD_NAME, LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description",
+						"lagner", "comment", "content_translation", "measurements")
+				.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
+
+
+		for (SearchHit hit : response.getHits()) {
+			//System.out.println(hit);
+			inscriptions.add(hitToInscription(hit));
+		}
+		client.close();
+		HttpSession session = request.getSession();
+		if (inscriptions.size() > 0) {
+			//System.out.println(inscriptions.get(0));
+			request.setAttribute("mapName", inscriptions.get(0).getAncientCity());
+		}
+		request.setAttribute("searchedProperties", searchedProperties);
+		request.setAttribute("searchedDrawings", searchedDrawings);
+
+		// Used in sidebarSearchMenu.jsp
+		request.setAttribute("cities", findspotDao.getCityNames());
+		request.setAttribute("drawingCategories", drawingTagsDao.getDrawingTags());
+		request.setAttribute("propertyTypes", findspotDao.getPropertyTypes());
+		request.setAttribute("insulaList", insulaDao.getInsula());
+		request.setAttribute("propertiesList", findspotDao.getProperties());
+
+		session.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
+
+		return inscriptions;
 	}
-	
-	// Turns an array like ["Pompeii", "Herculaneum"] into a string like
+
+
+
+		// Turns an array like ["Pompeii", "Herculaneum"] into a string like
 		// "Pompeii Herculaneum" for Elasticsearch match query
 		private static String arrayToString(String[] parameters) {
 			StringBuilder sb = new StringBuilder();
@@ -614,36 +606,10 @@ public class GraffitiController {
 		}
 
 		private Inscription hitToInscription(SearchHit hit) {
-			String edrID = hit.getField("edr_id").getValue();
-			//System.out.println("EDR ID: " + edrID);
-		
-
+			String edrID = hit.field("edr_id").value();
 			Inscription inscription = graffitiDao.getInscriptionByEDR(edrID);
-			//System.out.println(inscription);
-
 			return inscription;
 		}
-
-	@RequestMapping(value = "/backToResults", method = RequestMethod.GET)
-	public void backToResults(final HttpServletRequest request) {
-		System.out.println("Back to Results: " + request.getParameter("edr"));
-		HttpSession s = request.getSession();
-		s.setAttribute("backToResults", true);
-		s.setAttribute("returnFromEDR", request.getParameter("edr"));
-	}
-
-	private static List<String> findLocationKeys(final List<Inscription> inscriptions) {
-		final List<String> locationKeys = new ArrayList<String>();
-		if (inscriptions != null) {
-			final Set<String> locationKeysSet = new TreeSet<String>();
-			for (final Inscription inscription : inscriptions) {
-				locationKeysSet.add(inscription.getSpotKey());
-				locationKeysSet.add(inscription.getGenSpotKey());
-			}
-			locationKeys.addAll(locationKeysSet);
-		}
-		return locationKeys;
-	}
 
 	private static List<String> findLocationKeys(final Inscription inscription) {
 		final List<String> locationKeys = new ArrayList<String>();
@@ -672,4 +638,28 @@ public class GraffitiController {
 	public void setGraffitiDao(final GraffitiDao graffitiDao) {
 		this.graffitiDao = graffitiDao;
 	}
+	
+	@RequestMapping(value = "/filter", method = RequestMethod.GET)
+	public String filterResults(final HttpServletRequest request) {
+		init();
+		HttpSession s = request.getSession();
+		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
+		List<Inscription> inscriptions = searchResults(request);
+
+		request.setAttribute("resultsLyst", inscriptions);
+		request.setAttribute("searchQueryDesc", "filtering");
+		return "filter";
+	}
+
+	@RequestMapping(value = "/admin/report", method = RequestMethod.GET)
+	public String reportResults(final HttpServletRequest request) {
+		init();
+		HttpSession s = request.getSession();
+		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
+		List<Inscription> inscriptions = searchResults(request);
+		request.setAttribute("resultsLyst", inscriptions);
+		request.setAttribute("searchQueryDesc", "filtering");
+		return "admin/report";
+	}
+		
 }
