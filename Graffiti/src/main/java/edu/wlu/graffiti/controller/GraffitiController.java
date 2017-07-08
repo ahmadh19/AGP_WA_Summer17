@@ -61,6 +61,8 @@ import edu.wlu.graffiti.data.setup.Utils;
 @Controller
 public class GraffitiController {
 
+	
+	
 	@Resource
 	// The @Resource injects an instance of the GraffitiDao at runtime. The
 	// GraffitiDao instance is defined in graffiti-servlet.xml.
@@ -532,6 +534,7 @@ public class GraffitiController {
 			request.setAttribute("imagePages", i.getPages());
 			request.setAttribute("thumbnails", i.getThumbnails());
 			request.setAttribute("findLocationKeys", findLocationKeys(i));
+			System.out.println("Location keys set in G Controller");
 			request.setAttribute("inscription", i);
 			request.setAttribute("city", city);
 			
@@ -549,6 +552,7 @@ public class GraffitiController {
 	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	public String search(final HttpServletRequest request) {
 		init();
+		
 		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 		s.setAttribute("returnFromEDR", "");
@@ -558,6 +562,8 @@ public class GraffitiController {
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
+		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
+		System.out.println("Location keys set in G Controller");
 		//return "results";
 		return "searchResults";
 	}

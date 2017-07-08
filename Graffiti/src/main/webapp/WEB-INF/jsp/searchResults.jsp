@@ -16,7 +16,10 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 	
+<%@ page import= "java.util.*" %>
+	
 <script type="text/javascript">
+
 
 function start() {
 $('img').mapster({
@@ -140,7 +143,7 @@ function checkboxesAfterBack() {
 				}
 				var id = typeToken+value;
 				//type = type.replace("_", " ");
-				//alert(id);
+				//alert(id);import java.util.List;
 				$("#"+id).click();
 			} else if (type == "content") {
 				addSearchTerm("Content", value, value);
@@ -159,6 +162,7 @@ function updatePage(){
 	document.getElementById("${requestScope.returnFromEDR}").scrollIntoView();
 	</c:if>
 }
+
 </script>	
 
 <style>
@@ -246,8 +250,15 @@ ul#searchTerms li {
 <script type="text/javascript">
 	generateHerculaneum("Herculaneum");
 </script>
+<%
+	List<String> locationKeys=(List<String>)request.getAttribute("findLocationKeys");
+%>
 <script>
-	window.initmap(true,false,false,false);
+    var locationKeys = "<%=locationKeys%>";
+	window.initmap(true,false,false,false,0,locationKeys);
 </script>
 </body>
+
+
+
 </html>

@@ -169,6 +169,15 @@ function checkboxesAfterBack() {
 }
 
 
+function getLocationKeys(){
+	var locationKeys=request.getAttribute("findLocationKeys");
+	for(i=0;i<locationKeys.length;i++){
+		alert(locationKeys[i]);
+	}
+}
+
+
+
 function updatePage(){
 	checkboxesAfterBack();
 	
@@ -219,6 +228,8 @@ ul#searchTerms li {
 <body onload="updatePage();">
 
 	<%@include file="header.jsp"%>
+	
+	<script>getLocationKeys();</script>
 
 	<div id="contain" class="container" style="margin-bottom: 50px;">
 
