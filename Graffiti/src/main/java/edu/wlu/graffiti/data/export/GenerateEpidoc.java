@@ -275,9 +275,12 @@ public class GenerateEpidoc {
 	 * @param root
 	 */
 	private void generateFacsimile(Inscription i, Element root) {
+		List<String> images = i.getImages(); // get all image URLs
 		Element facsimilie = new Element("facsimilie");
-		Element graphic = new Element("graphic").setAttribute("url", "photograph of text or monument");
-		facsimilie.addContent(graphic);
+		for(String url : images) {
+			Element graphic = new Element("graphic").setAttribute("url", url);
+			facsimilie.addContent(graphic);
+		}
 		root.addContent(facsimilie);
 	}
 
