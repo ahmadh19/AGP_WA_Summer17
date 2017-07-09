@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import edu.wlu.graffiti.bean.Insula;
 import edu.wlu.graffiti.bean.Property;
+import edu.wlu.graffiti.bean.PropertyType;
 import edu.wlu.graffiti.dao.InsulaDao;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.PropertyTypesDao;
@@ -81,6 +82,37 @@ public class PropertyController {
 			request.setAttribute("message", "No property with address " + city + " " + insula + " " + property);
 			return "property/error";
 		}
+	}
+	
+	@RequestMapping(value = "/allProperties", method = RequestMethod.GET)
+	public String searchProperties(final HttpServletRequest request) {
+		// get all the property types, all the properties and their mappings to
+		// property types
+
+		//final List<PropertyType> propertyTypes = propertyDao.getPropertyTypes();
+
+		final List<Property> properties = propertyDao.getProperties();
+
+		//final List<Insula> insula = insulaDao.getInsula();
+
+		for (Property p : properties) {
+			p.setPropertyTypes(propertyDao.getPropertyTypeForProperty(p.getId()));
+			p.setUrl( "ancientgraffiti.org/Graffiti/property/" + p.getInsula().getCity().getName() + 
+					"/" + p.getInsula().getShortName() + "/" + p.getPropertyNumber());
+		}
+
+		/**
+		 "ancientgraffiti.org/Graffiti/property/" + 
+		i.getAgp().getProperty().getInsula().getCity().getName() + 
+		"/" + i.getAgp().getProperty().getInsula().getShortName() + "/" + 
+		i.getAgp().getProperty().getPropertyNumber();
+		*/
+		
+		//request.setAttribute("insula", insula);
+		request.setAttribute("properties", properties);
+		//request.setAttribute("propertyTypes", propertyTypes);
+
+		return "property/propertyList";
 	}
 
 	// helper method to get insula id for given insula name

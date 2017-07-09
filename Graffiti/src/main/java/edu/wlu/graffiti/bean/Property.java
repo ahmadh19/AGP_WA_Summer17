@@ -29,6 +29,21 @@ public class Property {
 	private String locationKey="";
 	private int numberOfGraffiti;
 	private static final Map<String, Integer> numerals = new TreeMap<String, Integer>();
+	private String url; // the URL of the property page on the AGP website... (hard-coded; fix this?)
+
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 	/**
 	 * 

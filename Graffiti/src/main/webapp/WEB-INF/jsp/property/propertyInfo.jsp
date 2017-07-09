@@ -64,7 +64,7 @@ function generateMap(name) {
 		<div class="button_bar">
 			<a
 				href="<%=request.getContextPath() %>/property/${prop.insula.city.name}/${prop.insula.shortName}/${prop.propertyNumber }/json"
-				id="json"><button class="btn btn-agp right-align">Download
+				id="json"><button class="btn btn-agp right-align">Export
 					JSON Data</button></a>
 		</div>
 
