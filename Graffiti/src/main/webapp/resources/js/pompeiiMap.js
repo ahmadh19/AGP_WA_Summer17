@@ -59,16 +59,16 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	function style(feature) {
 		
 		var fillColor=getFillColor(feature.properties);
-		var borderColor='black';
+		var borderColor='white';
 		if (feature.properties.clicked == true || feature.properties.Property_Id==propertyIdToHighlight || propertyIdListToHighlight.indexOf(feature.properties.Property_Id)>=0) {
-			borderColor='yellow';
+			borderColor='black';
 		} 
 		
 			return { 
 	    	fillColor:fillColor,
 	    	width:200,
 	    	height:200, 
-	        weight: 2,
+	        weight: 1,
 	        opacity: 1,
 	        color: borderColor,
 	        fillOpacity: 0.7,
@@ -77,36 +77,36 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	}
 	
 	function getFillColor(propertyObject){
+		//Hex darkens color as number it represents decreases
 		if(colorDensity){
+
+			if(0<=propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=2){
+				return '#FFEDA0';
+				
+			}
 			
-		
-		if(0<=propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=1){
-			return '#FFEDA0';
+			else if(2<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=5){
+				return '#FEB24C';
+				
+			}
 			
-		}
-		
-		else if(1<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=5){
-			return '#FEB24C';
-			
-		}
-		
-		else if(5<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=10){
-			return '#FD8D3C';
-		}
-		else if(10<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=15){
-			return '#FC4E2A' ;
-		}
-		else if(15<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=20){
-			return '#E31A1C';
-			
-		}
-		else if(20<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=25){
-			return '#BD0026';
-		}
-		else{
-			return '#800026';
-		}
-		}
+			else if(5<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=15){
+				return '#FD8D3C';
+			}
+			else if(15<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=30){
+				return '#FC4E2A' ;
+			}
+			else if(30<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=60){
+				return '#E31A1C';
+				
+			}
+			else if(60<propertyObject.Number_Of_Graffiti && propertyObject.Number_Of_Graffiti<=100){
+				return '#BD0026';
+			}
+			else{
+				return '#800026';
+			}
+			}
 		//What should this be?
 		//return '#800026';
 		//return 'green';
@@ -274,7 +274,12 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 			}
 		}
 		html += "</table";
-		document.getElementById("newDiv").innerHTML = html;
+		//Checks to avoid error for element is null.
+		var elem = document.getElementById("newDiv");
+		  if(typeof elem !== 'undefined' && elem !== null) {
+			  document.getElementById("newDiv").innerHTML = html;
+		  }
+			
 		// when you click anywhere on the map, it updates the table
 	}
 	

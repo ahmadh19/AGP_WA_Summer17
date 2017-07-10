@@ -1,24 +1,17 @@
 @CHARSET "UTF-8";
 
-#mapid {
-	height: 450px;
-	width: 800px;
-}
 
-#container {
-    width: 1200px;
-    margin: auto;
-}
 
-/*#map {
-	height: 500px;
-	width: 800px;
-}*/
+
+/*Used in propertyInfo.js,vii.12_map.xml(?),pompeiiMap.xml,i.8_map.xml,
+herculaneum_map.xml,search.jsp(really? No stylesheet link here shown)*/
+
 #map {
 	height: 500px;
 	width: 800px;
 }
 
+/*Used in pompeiiMap.jsp,searchPompeii.jsp*/
 
 .mapdiv {
 	height: 500px;
@@ -26,22 +19,7 @@
 	float: left;
 }
 
-
-/*What we want for the results map shown*/
-/* .mapdiv {
-	/*height: 200px;*/
-	/*width: 200px;*/
-	height: 600px;
-	width: 800px;
-	/*float: right;*/
-}*/
-
-
-.propertymapdiv {
-	height: 250px;
-	width: 35%;
-	float: right;
-}
+/*Used in pompeiiMap.jsp,and searchPompeii.jsp */
 
 #newDiv {
 	height:800px;
@@ -50,6 +28,8 @@
 	margin-left:850px;
 	position:absolute;
 }
+
+/*Used in */
 
 .searchResultsPompeii{
 	height:150px;
@@ -61,6 +41,8 @@
 	position:absolute;
 }
 
+/*Used in */
+
 .findspotMap{
 	height:200px;
 	width:250px;
@@ -70,6 +52,8 @@
     
     
 }
+
+/*Used in */
 
 .info {
 	padding: 6px 8px;
@@ -81,11 +65,15 @@
 	max-width: 100%;
 }
 
+/*Used in */
+
 .info h4 {
 	margin: 0 0 5px;
 	 color: #777; 
 	
 }
+
+/*Used in */
 
 #moreInfo {
 	height: 100px;

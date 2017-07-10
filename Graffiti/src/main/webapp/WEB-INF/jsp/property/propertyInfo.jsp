@@ -140,7 +140,6 @@ function generateMap(name) {
 				</td>
 			</tr>
 		</table>
-		<!-- 	<div id="pompeiimap" class="propertymapdiv"></div>  -->
 		<div id="map">
 			<div id="cityMap"></div>
 		</div>

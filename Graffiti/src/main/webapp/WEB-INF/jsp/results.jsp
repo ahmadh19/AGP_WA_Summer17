@@ -241,14 +241,6 @@ ul#searchTerms li {
 
 		</div>
 		
-		<!--  
-		<div id="pompeiimap" class="mapdiv" style="border:3px solid #800000; margin-left:715px; margin-top:155px; width: 200px; height:200px;"></div>
-		<div>
-		-->
-	
-		<!--  <div id="newDiv"></div>-->
-		<!-- </div> --> 
-		
 
 		<div style="margin-left: 200px;">
 			<div style="width: 475px; padding-bottom: 10px;">
