@@ -352,10 +352,7 @@ public class AddInscriptionsToElasticSearch {
 	private static void createMapping() throws IOException {
 		XContentBuilder mapping = jsonBuilder().startObject().startObject(ES_TYPE_NAME).startObject("properties")
 				.startObject("id").field("type", "long").endObject().startObject("city").field("type", "keyword")
-				.field("index", "not_analyzed").endObject().startObject("insula") // insula
-																					// (name
-																					// not
-																					// analyzed)
+				.field("index", "not_analyzed").endObject().startObject("insula")
 				.startObject("properties").startObject("insula_id").field("type", "long").endObject()
 				.startObject("insula_name").field("type", "text").field("index", "not_analyzed").endObject()
 				.endObject().endObject().startObject("property") // property
@@ -367,9 +364,7 @@ public class AddInscriptionsToElasticSearch {
 				.startObject("description_in_latin").field("type", "text").endObject().startObject("drawing_tags")
 				.field("type", "text").endObject().startObject("drawing_tag_ids").field("type", "integer").endObject()
 				.endObject().endObject().startObject("writing_style_in_english").field("type", "text")
-				.field("index", "not_analyzed").endObject().startObject("language_in_english").field("type", "keyword") // language,
-				// not
-				// analyzed
+				.field("index", "not_analyzed").endObject().startObject("language_in_english").field("type", "keyword") 
 				.field("index", "not_analyzed").endObject().startObject("content")
 				.field("type", "text").endObject().startObject("summary").field("type", "text").endObject()
 				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject().startObject("bibliography")
