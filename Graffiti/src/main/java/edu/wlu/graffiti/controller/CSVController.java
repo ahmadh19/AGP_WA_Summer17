@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.wlu.graffiti.bean.Inscription;
+import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.data.export.GenerateCSV;
@@ -32,6 +33,9 @@ public class CSVController {
 
 	@Resource
 	private FindspotDao findspotDao;
+	
+	@Resource
+	private FindspotDao propertyDao;
 
 	@RequestMapping(value = "/graffito/AGP-{edrId}/csv", produces = "text/csv;charset=UTF-8")
 	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
@@ -53,6 +57,22 @@ public class CSVController {
 		response.addHeader("Content-Disposition", "attachment; filename=filtered-results.csv");
 		return generator.serializeToCSV(results);
 	}
+	
+	@RequestMapping(value = "/allProperties/download/csv", produces = "text/csv;charset=UTF-8")
+	public String downloadProperties(final HttpServletRequest request, HttpServletResponse response) {
+		
+		final List<Property> properties = propertyDao.getProperties();
+
+		for (Property p : properties) {
+			p.setPropertyTypes(propertyDao.getPropertyTypeForProperty(p.getId()));
+			p.setUrl( "ancientgraffiti.org/Graffiti/property/" + p.getInsula().getCity().getName() + 
+					"/" + p.getInsula().getShortName() + "/" + p.getPropertyNumber());
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=all-properties.csv");
+		return generator.serializePropertiesToCSV(properties);
+	}
+
 	
 	/**
 	@RequestMapping("/property/{city}/{insula}/{property}/csv")

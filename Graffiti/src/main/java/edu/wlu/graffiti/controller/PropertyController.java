@@ -90,30 +90,23 @@ public class PropertyController {
 		// property types
 
 		//final List<PropertyType> propertyTypes = propertyDao.getPropertyTypes();
+		//final List<Insula> insula = insulaDao.getInsula();
 
 		final List<Property> properties = propertyDao.getProperties();
-
-		//final List<Insula> insula = insulaDao.getInsula();
 
 		for (Property p : properties) {
 			p.setPropertyTypes(propertyDao.getPropertyTypeForProperty(p.getId()));
 			p.setUrl( "ancientgraffiti.org/Graffiti/property/" + p.getInsula().getCity().getName() + 
 					"/" + p.getInsula().getShortName() + "/" + p.getPropertyNumber());
 		}
-
-		/**
-		 "ancientgraffiti.org/Graffiti/property/" + 
-		i.getAgp().getProperty().getInsula().getCity().getName() + 
-		"/" + i.getAgp().getProperty().getInsula().getShortName() + "/" + 
-		i.getAgp().getProperty().getPropertyNumber();
-		*/
 		
 		//request.setAttribute("insula", insula);
-		request.setAttribute("properties", properties);
 		//request.setAttribute("propertyTypes", propertyTypes);
+		request.setAttribute("properties", properties);
 
 		return "property/propertyList";
 	}
+	
 
 	// helper method to get insula id for given insula name
 	private int getInsulaId(String city, String insula) {

@@ -11,6 +11,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
 import edu.wlu.graffiti.bean.Inscription;
+import edu.wlu.graffiti.bean.Property;
+import edu.wlu.graffiti.bean.PropertyType;
 
 /**
  * This class serializes Inscription objects and returns a string in CSV format to represent
@@ -26,6 +28,9 @@ public class GenerateCSV {
 	// the fields	
 	private static final Object[] FILE_HEADER = {"agpId","cityName","cityPleiadesId","content",
 			"edrFindspot","date","languageInEnglish","writingStyleInEnglish"};
+	
+	private static final Object[] FILE_HEADER_PROPERTY = {"city", "insula", " number", "name",
+			"type", "link"};
 	
 	/**
 	 * Serializes a list of inscriptions to CSV.
@@ -146,6 +151,92 @@ public class GenerateCSV {
 		// write the inscription record
 		csvFilePrinter.printRecord(inscriptionRecord);
 	}
+	
+	/**
+	 * Serializes a list of properties to CSV.
+	 * 
+	 * @param properties The list of properties
+	 * @return the string representation in CSV format
+	 */
+	public String serializePropertiesToCSV(List<Property> properties) {
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		CSVPrinter csvFilePrinter = null;
+		
+		CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR);
+		
+		try {
+			csvFilePrinter = new CSVPrinter(stringBuilder, csvFileFormat);
+			csvFilePrinter.printRecord(FILE_HEADER_PROPERTY);
+			for(Property p : properties) {
+				writePropertyToCSV(p, csvFilePrinter);
+			}
+			csvFilePrinter.close();
+			
+			return stringBuilder.toString();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
+		return "";
+	}
+	
+	/**
+	 * Serializes an property to CSV.
+	 * 
+	 * @param p The property
+	 * @return the string representation in CSV format
+	 */
+	public String serializeToCSV(Property p) {
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		CSVPrinter csvFilePrinter = null;
+		
+		CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR);
+		
+		try {
+			csvFilePrinter = new CSVPrinter(stringBuilder, csvFileFormat);
+			csvFilePrinter.printRecord(FILE_HEADER_PROPERTY);
+			writePropertyToCSV(p, csvFilePrinter);
+			csvFilePrinter.close();
+			
+			return stringBuilder.toString();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
+		return "";	
+	}
+
+	/**
+	 * Writes individual fields from an property to the CSV export.
+	 * 
+	 * @param p The property
+	 * @param csvFilePrinter The file printer
+	 * @throws IOException
+	 */
+	private void writePropertyToCSV(Property p, CSVPrinter csvFilePrinter) throws IOException {
+		
+		List<Object> propertyRecord = new ArrayList<Object>();
+		
+		// fill in the fields
+		propertyRecord.add(p.getInsula().getCity().getName());
+		propertyRecord.add(p.getInsula().getShortName());
+		propertyRecord.add(p.getPropertyNumber());
+		propertyRecord.add(p.getPropertyName());
+		String propTypes = "";
+		for(PropertyType pType : p.getPropertyTypes()) {
+			propTypes += pType.getName() + ", ";
+		}
+		propertyRecord.add(propTypes);
+		propertyRecord.add(p.getUrl());
+		
+		// write the inscription record
+		csvFilePrinter.printRecord(propertyRecord);
+	}
+	
 	
 	public GenerateCSV() {
 		
