@@ -184,15 +184,17 @@ body {
 
 	<div class="container">
 		<div id="selectors">
-			<input type="button" id="showOriginal" value="Graffiti Translations"
-				class="btn btn-agp"> 
-			<input type="button" id="showGallery" value="Figural Graffiti Gallery" class="btn btn-agp">
-			<input type="button" id="showGallery2" value="Teaching Resources" class="btn btn-agp"> 
+			<a href="http://agp-dev1.wlu.edu/about/teaching-resources/" target="_blank"
+			id="csv">
+			<button class="btn btn-agp right-align">Translation Quiz</button>
+		</a>
+				<a href="http://agp-dev1.wlu.edu/about/teaching-resources/" target="_blank"
+			id="csv">
+			<button class="btn btn-agp right-align">Teaching Resources</button>
+		</a>
 		</div>
+			
 		
-		<form method="get" action="http://agp-dev1.wlu.edu/about/teaching-resources/" target="_blank">
-    <button type="submit">Continue </button> 
-</form>
 
 
 		<h2>Featured Graffiti</h2>
@@ -201,29 +203,30 @@ body {
     <ul class="portfolio-grid">
     				
        				<li>
-                        <a href="http://localhost:8080/Graffiti/RoughDraftThemeMockUp.jsp" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/PompeiiJustBlack.png" alt="Pompeii"/>
+                        <a href="http://localhost:8080/Graffiti/ThemeGraffiti" target="_blank" class="animated flipInX">
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/PompeiiCity.png" alt="Pompeii"/>
                         </a>
                     </li>
                     <li>
                         <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/HeculaneumBlack.png" alt="Herculaneum"/>
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/HerculaneumCity.png" alt="Herculaneum"/>
                         </a>
                     </li>
                     <li>
                         <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/SmyrnaBolded.png" alt="Smyrna"/>
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/SmyrnaCity.png" alt="Smyrna"/>
                         </a>
                     </li>
-                     <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
-                            <img src="/Graffiti/resources/images/New_featured_graffiti/FiguralGraffiti.png" alt="Figural Graffiti"/>
-                        </a>
-                    </li>
+    
                     <li>
                         <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
                       
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Love.png" alt="Love"/>
+                        </a>
+                    </li>
+                                     <li>
+                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                            <img src="/Graffiti/resources/images/New_featured_graffiti/FG.png" alt="Figural Graffiti"/>
                         </a>
                     </li>
                     <li>
@@ -251,7 +254,7 @@ body {
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Grammar.png" alt="Grammar Graffiti"/>
                         </a>
                     </li>
-                 
+              
                    
                 </ul>
  

@@ -6,6 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <link rel="stylesheet" type="text/css" href="New-featured-graffiti.css" />
 		
 <meta charset="UTF-8">
@@ -75,8 +76,11 @@ body {
     border-radius: 50%;
     z-index: 9999;
 }
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+</style>
+</head>
+<body>
+<div id="blackOverlay" class="blackOverlay"></div>
+	<%@include file="header.jsp"%>
 
 <div id="original">
 	<!--  <h3>Graffiti from Herculaneum</h3>  -->
