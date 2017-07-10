@@ -15,7 +15,12 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/filterSearch.js"/>"></script>
 
-
+<style>
+th {
+	font-weight: bold;
+	color: maroon;
+}
+</style>
 </head>
 <body>
 	<%@include file="/WEB-INF/jsp/header.jsp"%>
@@ -34,8 +39,7 @@
 		
 		<h1>Property List</h1>
 		
-		<table class="table table-bordered table-striped" style="margin-bottom: 30px;" cellpadding="5"
-			cellspacing="5" border="1">
+		<table class="table table-bordered table-striped" style="margin-bottom: 30px;">
 			<tr>
 				<th>City</th>
 				<th>Insula</th>
