@@ -34,7 +34,7 @@
 		
 		<h1>Property List</h1>
 		
-		<table class="main-table" style="margin-bottom: 30px;" cellpadding="5"
+		<table class="table table-bordered table-striped" style="margin-bottom: 30px;" cellpadding="5"
 			cellspacing="5" border="1">
 			<tr>
 				<th>City</th>
