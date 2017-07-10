@@ -42,7 +42,7 @@
 				<th>Number</th>
 				<th>Name</th>
 				<th>Type</th>
-				<th>Link</th>
+				<th>Property Metadata Page</th>
 			</tr>
 			<c:forEach var="k" begin="${1}" end="${fn:length(requestScope.properties)}">
 				<c:set var="prop" value="${requestScope.properties[k-1]}"/>
@@ -57,7 +57,7 @@
 							${pt.name}
 						</c:forEach>
 					</td>
-					<td>${prop.uri}</td>
+					<td><a href="http://${prop.uri}">${prop.uri}</a></td>
 				</tr>
 			</c:forEach>
 		</table>
