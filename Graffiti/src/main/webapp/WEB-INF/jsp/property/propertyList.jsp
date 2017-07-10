@@ -25,7 +25,9 @@ th {
 <body>
 	<%@include file="/WEB-INF/jsp/header.jsp"%>
 	<div class="container">
-
+		
+		<h1>Property List</h1>
+		
 		<div class="button_bar">
 		<a href="<%=request.getContextPath() %>/allProperties/download/csv"
 			id="csv">
@@ -36,8 +38,6 @@ th {
 			<button class="btn btn-agp right-align">Export as JSON</button>
 		</a>
 		</div>
-		
-		<h1>Property List</h1>
 		
 		<table class="table table-bordered table-striped" style="margin-bottom: 30px;">
 			<tr>
