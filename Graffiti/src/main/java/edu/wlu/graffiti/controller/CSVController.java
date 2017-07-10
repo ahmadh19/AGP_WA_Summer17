@@ -34,8 +34,6 @@ public class CSVController {
 	@Resource
 	private FindspotDao findspotDao;
 	
-	@Resource
-	private FindspotDao propertyDao;
 
 	@RequestMapping(value = "/graffito/AGP-{edrId}/csv", produces = "text/csv;charset=UTF-8")
 	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
@@ -61,12 +59,11 @@ public class CSVController {
 	@RequestMapping(value = "/allProperties/download/csv", produces = "text/csv;charset=UTF-8")
 	public String downloadProperties(final HttpServletRequest request, HttpServletResponse response) {
 		
-		final List<Property> properties = propertyDao.getProperties();
+		final List<Property> properties = findspotDao.getProperties();
 
 		for (Property p : properties) {
-			p.setPropertyTypes(propertyDao.getPropertyTypeForProperty(p.getId()));
-			p.setUrl( "ancientgraffiti.org/Graffiti/property/" + p.getInsula().getCity().getName() + 
-					"/" + p.getInsula().getShortName() + "/" + p.getPropertyNumber());
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+			
 		}
 		
 		response.addHeader("Content-Disposition", "attachment; filename=all-properties.csv");

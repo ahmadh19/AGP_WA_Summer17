@@ -96,8 +96,6 @@ public class PropertyController {
 
 		for (Property p : properties) {
 			p.setPropertyTypes(propertyDao.getPropertyTypeForProperty(p.getId()));
-			p.setUrl( "ancientgraffiti.org/Graffiti/property/" + p.getInsula().getCity().getName() + 
-					"/" + p.getInsula().getShortName() + "/" + p.getPropertyNumber());
 		}
 		
 		//request.setAttribute("insula", insula);

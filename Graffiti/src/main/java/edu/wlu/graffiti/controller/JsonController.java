@@ -24,6 +24,7 @@ public class JsonController {
 
 	@Resource
 	private FindspotDao findspotDao;
+	
 
 	@RequestMapping(value = "/graffito/AGP-{edrId}/json", produces = "application/json;charset=UTF-8")
 	public Inscription getInscription(@PathVariable String edrId, HttpServletResponse response) {
@@ -50,6 +51,19 @@ public class JsonController {
 	@RequestMapping(value = "/property/{city}/{insula}/{property}/json", produces = "application/json")
 	public Property getProperty(@PathVariable String city, @PathVariable String insula, @PathVariable String property, HttpServletResponse response) {
 		return findspotDao.getPropertyByCityAndInsulaAndProperty(city, insula, property);
+	}
+	
+	@RequestMapping(value = "/allProperties/download/json", produces = "application/json")
+	public List<Property> getPropertyList(HttpServletResponse response) {
+		final List<Property> properties = findspotDao.getProperties();
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=all-properties.json");
+		
+		return properties;
 	}
 
 }

@@ -231,7 +231,7 @@ public class GenerateCSV {
 			propTypes += pType.getName() + ", ";
 		}
 		propertyRecord.add(propTypes);
-		propertyRecord.add(p.getUrl());
+		propertyRecord.add(p.getUri());
 		
 		// write the inscription record
 		csvFilePrinter.printRecord(propertyRecord);
