@@ -346,7 +346,7 @@ function backToResults(){
 							href="<%=request.getContextPath() %>/results?property=${i.agp.property.id}">
 								(${i.agp.property.insula.shortName}.${i.agp.property.propertyNumber})</a>
 							<br /> <a
-							href="<%=request.getContextPath() %>/property/${i.agp.property.insula.city.name}/${i.agp.property.insula.shortName}/${i.agp.property.propertyNumber}">property
+							href="<%=request.getContextPath() %>/properties/${i.agp.property.insula.city.name}/${i.agp.property.insula.shortName}/${i.agp.property.propertyNumber}">property
 								metadata &#10140;</a></td>
 					</tr>
 					<!-- defining key words -->

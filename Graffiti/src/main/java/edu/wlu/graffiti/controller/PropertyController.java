@@ -35,36 +35,7 @@ public class PropertyController {
 	@Resource
 	private InsulaDao insulaDao;
 
-	// Used for mapping the URI to show property information.
-	@RequestMapping(value = "/property/{city}/", method = RequestMethod.GET)
-	public String cityPage(@PathVariable String city, HttpServletRequest request) {
-		// String searches = city;
-		// final List<Inscription> resultsList =
-		// this.graffitiDao.getInscriptionsByCity(searches);
-		// request.setAttribute("resultsLyst", resultsList);
-		HttpSession s = request.getSession();
-		String returnURL = "/Graffiti/region/" + city;
-		s.setAttribute("returnURL", returnURL);
-		s.setAttribute("backToResults", false);
-		return "displayData";
-	}
-
-	@RequestMapping(value = "/property/{city}/{insula}", method = RequestMethod.GET)
-	public String insulaPage(@PathVariable String city, @PathVariable String insula, HttpServletRequest request,
-			HttpServletResponse response) {
-		//System.out.println("insulaPage: " + insula);
-		int insula_id = getInsulaId(city, insula);
-		// final List<Inscription> inscriptions =
-		// this.graffitiDao.getInscriptionsByCityAndInsula(city, insula_id);
-		// request.setAttribute("resultsLyst", inscriptions);
-		HttpSession s = request.getSession();
-		String returnURL = "/Graffiti/region/" + city + "/" + insula;
-		s.setAttribute("returnURL", returnURL);
-		s.setAttribute("backToResults", false);
-		return "displayData";
-	}
-
-	@RequestMapping(value = "/property/{city}/{insula}/{property}", method = RequestMethod.GET)
+	@RequestMapping(value = "/properties/{city}/{insula}/{property}", method = RequestMethod.GET)
 	public String propertyPage(@PathVariable String city, @PathVariable String property, @PathVariable String insula,
 			HttpServletRequest request) {
 		//System.out.println("propertyPage: " + property);
@@ -130,16 +101,6 @@ public class PropertyController {
 		request.setAttribute("herculaneumProperties", properties);
 
 		return "property/propertyList";
-	}
-	
-
-	// helper method to get insula id for given insula name
-	private int getInsulaId(String city, String insula) {
-		final List<Insula> ins = this.insulaDao.getInsulaByCityAndInsula(city, insula.toUpperCase());
-		if (ins != null && !ins.isEmpty()) {
-			return ins.get(0).getId();
-		}
-		return -1;
 	}
 
 	// Maps to the details page once an individual result has been selected in

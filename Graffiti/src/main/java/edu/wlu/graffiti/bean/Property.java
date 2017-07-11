@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -75,6 +77,27 @@ public class Property {
 
 	public List<PropertyType> getPropertyTypes() {
 		return propertyTypes;
+	}
+	
+	@JsonIgnore
+	public String getPropertyTypesAsString() {
+		String returnStr = "";
+		String separator = "";
+		if(this.propertyTypes.size() > 1) {
+			// change the separator to a comma if there are multiple property types
+			separator = ", ";
+		}
+		
+		for(int i = 0 ; i < this.propertyTypes.size(); i++) {
+			PropertyType pt = this.propertyTypes.get(i);
+			if(i < this.propertyTypes.size() - 1) {
+				returnStr += pt.getName() + separator;
+			} else {
+				returnStr += pt.getName(); // don't add the separator for the last element.
+			}
+		}
+		
+		return returnStr;
 	}
 
 	public void setPropertyTypes(List<PropertyType> propertyTypes) {
