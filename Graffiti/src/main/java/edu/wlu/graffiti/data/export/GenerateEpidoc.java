@@ -171,19 +171,22 @@ public class GenerateEpidoc {
 		Element handDesc = new Element("handDesc");
 		
 		if(i.getAgp().getMinLetterHeight() != null && i.getAgp().getMaxLetterHeight() != null 
-				&& !i.getAgp().getMinLetterHeight().equals("") && !i.getAgp().getMaxLetterHeight().equals("")) { 
+				&& !i.getAgp().getMinLetterHeight().equals("") && !i.getAgp().getMaxLetterHeight().equals("")
+				&& !i.getAgp().getMinLetterHeight().equals("null") && !i.getAgp().getMaxLetterHeight().equals("null")) { 
 			Element handNote1 = new Element("handNote").setText("Letter heights: ");
 			Element height_handNote1 = new Element("height");
 			height_handNote1.setAttribute("min", i.getAgp().getMinLetterHeight());
 			height_handNote1.setAttribute("max", i.getAgp().getMaxLetterHeight());
 			height_handNote1.setAttribute("scope", "letter");
-			height_handNote1.setText(Integer.toString(Integer.valueOf(i.getAgp().getMinLetterHeight()) - 
-					Integer.valueOf(i.getAgp().getMaxLetterHeight()))); 
+			height_handNote1.setText(Float.toString(Float.valueOf(i.getAgp().getMinLetterHeight()) - 
+					Float.valueOf(i.getAgp().getMaxLetterHeight()))); 
+			//System.out.println(i.getAgp().getMinLetterHeight());
 			handNote1.addContent(height_handNote1);
 			handDesc.addContent(handNote1);
 		}
 		
-		if(i.getAgp().getIndividualLetterHeights() != null && !i.getAgp().getIndividualLetterHeights().equals("")) { 
+		if(i.getAgp().getIndividualLetterHeights() != null && !i.getAgp().getIndividualLetterHeights().equals("")
+				&& !i.getAgp().getIndividualLetterHeights().equals("null")) { 
 			Element handNote2 = new Element("handNote").setText("[Specific letter] height: ");
 			Element height_handNote2 = new Element("height");
 			height_handNote2.setAttribute("min", "0.01");
@@ -195,7 +198,8 @@ public class GenerateEpidoc {
 		}
 		
 		if(i.getAgp().getMinLetterWithFlourishesHeight() != null && i.getAgp().getMaxLetterWithFlourishesHeight() != null
-				&& !i.getAgp().getMinLetterWithFlourishesHeight().equals("") && !i.getAgp().getMaxLetterWithFlourishesHeight().equals("")) { 
+				&& !i.getAgp().getMinLetterWithFlourishesHeight().equals("") && !i.getAgp().getMaxLetterWithFlourishesHeight().equals("")
+				&& !i.getAgp().getMinLetterWithFlourishesHeight().equals("null") && !i.getAgp().getMaxLetterWithFlourishesHeight().equals("null")) { 
 			Element handNote3 = new Element("handNote").setText("Flourish height: ");
 			Element height_handNote3 = new Element("height");
 			height_handNote3.setAttribute("min", "0.01");

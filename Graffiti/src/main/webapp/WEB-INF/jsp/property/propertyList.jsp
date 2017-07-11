@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">	
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Ancient Graffiti Project :: Filter Results</title>
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
@@ -25,46 +25,95 @@ th {
 <body>
 	<%@include file="/WEB-INF/jsp/header.jsp"%>
 	<div class="container">
-		
-		<h1>Property List</h1>
-		
-		<div class="button_bar">
-		<a href="<%=request.getContextPath() %>/allProperties/download/csv"
-			id="csv">
-			<button class="btn btn-agp right-align">Export as CSV</button>
-		</a>
-		<a href="<%=request.getContextPath() %>/allProperties/download/json"
-			id="csv">
-			<button class="btn btn-agp right-align">Export as JSON</button>
-		</a>
-		</div>
-		
-		<table class="table table-bordered table-striped" style="margin-bottom: 30px;">
-			<tr>
-				<th>City</th>
-				<th>Insula</th>
-				<th>Number</th>
-				<th>Name</th>
-				<th>Type</th>
-				<th>Property Metadata Page</th>
-			</tr>
-			<c:forEach var="k" begin="${1}" end="${fn:length(requestScope.properties)}">
-				<c:set var="prop" value="${requestScope.properties[k-1]}"/>
+
+		<%
+		if (request.getAttribute("pompeiiProperties") != null) {
+		%>
+			<h1>Pompeii Properties</h1>
+			<div class="button_bar">
+				<a href="<%=request.getContextPath()%>/properties/Pompeii/csv"
+					id="pompeiiCSV">
+					<button class="btn btn-agp right-align">Export as CSV</button>
+				</a> <a href="<%=request.getContextPath()%>/properties/Pompeii/json"
+					id="pompeiiJSON">
+					<button class="btn btn-agp right-align">Export as JSON</button>
+				</a>
+			</div>
+	
+			<table class="table table-bordered table-striped" id="pompeiiTable"
+				style="margin-bottom: 30px;">
 				<tr>
-					<td>${prop.insula.modernCity }</td>
-					<td>${prop.insula.shortName}</td>
-					<td>${prop.propertyNumber}</td>
-					<td>${prop.propertyName}</td>
-					<td>
-						<c:forEach var="l" begin="${1}" end="${fn:length(prop.propertyTypes)}">
-							<c:set var="pt" value="${prop.propertyTypes[l-1]}"/>
-							${pt.name}
-						</c:forEach>
-					</td>
-					<td><a href="http://${prop.uri}">${prop.uri}</a></td>
+					<th>City</th>
+					<th>Insula</th>
+					<th>Number</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>URI</th>
 				</tr>
-			</c:forEach>
-		</table>
+				<c:forEach var="k" begin="${1}"
+					end="${fn:length(requestScope.pompeiiProperties)}">
+					<c:set var="prop" value="${requestScope.pompeiiProperties[k-1]}" />
+					<tr>
+						<td>${prop.insula.modernCity }</td>
+						<td>${prop.insula.shortName}</td>
+						<td>${prop.propertyNumber}</td>
+						<td>${prop.propertyName}</td>
+						<td><c:forEach var="l" begin="${1}"
+								end="${fn:length(prop.propertyTypes)}">
+								<c:set var="pt" value="${prop.propertyTypes[l-1]}" />
+								${pt.name}
+							</c:forEach></td>
+						<td><a href="http://${prop.uri}">http://${prop.uri}</a></td>
+					</tr>
+				</c:forEach>
+			</table>
+		<%
+		}
+		if(request.getAttribute("herculaneumProperties") != null) {
+		%>
+		<h2>Herculaneum Properties</h2>
+		<div class="button_bar">
+				<a href="<%=request.getContextPath()%>/properties/Herculaneum/csv"
+					id="csv">
+					<button class="btn btn-agp right-align">Export as CSV</button>
+				</a> <a href="<%=request.getContextPath()%>/properties/Herculaneum/json"
+					id="csv">
+					<button class="btn btn-agp right-align">Export as JSON</button>
+				</a>
+			</div>
+	
+			<table class="table table-bordered table-striped" id="herculaneumTable"
+				style="margin-bottom: 30px;">
+				<tr>
+					<th>City</th>
+					<th>Insula</th>
+					<th>Number</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>URI</th>
+				</tr>
+				<c:forEach var="m" begin="${1}"
+					end="${fn:length(requestScope.herculaneumProperties)}">
+					<c:set var="prop" value="${requestScope.herculaneumProperties[m-1]}" />
+					<tr>
+						<td>${prop.insula.modernCity }</td>
+						<td>${prop.insula.shortName}</td>
+						<td>${prop.propertyNumber}</td>
+						<td>${prop.propertyName}</td>
+						<td><c:forEach var="n" begin="${1}"
+								end="${fn:length(prop.propertyTypes)}">
+								<c:set var="pt" value="${prop.propertyTypes[n-1]}" />
+								${pt.name}
+							</c:forEach></td>
+						<td><a href="http://${prop.uri}">http://${prop.uri}</a></td>
+					</tr>
+				</c:forEach>
+			</table>
+		<%
+		}	
+		%>
+
+
 	</div>
 
 </body>

@@ -84,23 +84,50 @@ public class PropertyController {
 		}
 	}
 	
-	@RequestMapping(value = "/allProperties", method = RequestMethod.GET)
+	@RequestMapping(value = "/properties", method = RequestMethod.GET)
 	public String searchProperties(final HttpServletRequest request) {
 		// get all the property types, all the properties and their mappings to
 		// property types
 
-		//final List<PropertyType> propertyTypes = propertyDao.getPropertyTypes();
-		//final List<Insula> insula = insulaDao.getInsula();
+		final List<Property> pompeiiProperties = propertyDao.getPropertiesByCity("Pompeii");
 
-		final List<Property> properties = propertyDao.getProperties();
-
-		for (Property p : properties) {
+		for (Property p : pompeiiProperties) {
 			p.setPropertyTypes(propertyDao.getPropertyTypeForProperty(p.getId()));
 		}
 		
-		//request.setAttribute("insula", insula);
-		//request.setAttribute("propertyTypes", propertyTypes);
-		request.setAttribute("properties", properties);
+		request.setAttribute("pompeiiProperties", pompeiiProperties);
+		
+		final List<Property> herculaneumProperties = propertyDao.getPropertiesByCity("Herculaneum");
+
+		for (Property p : herculaneumProperties) {
+			p.setPropertyTypes(propertyDao.getPropertyTypeForProperty(p.getId()));
+		}
+		
+		request.setAttribute("herculaneumProperties", herculaneumProperties);
+
+		return "property/propertyList";
+	}
+	
+	@RequestMapping(value = "/properties/Pompeii", method = RequestMethod.GET)
+	public String searchPompeiiProperties(final HttpServletRequest request) {
+		// get all the property types, all the properties and their mappings to
+		// property types
+		
+		final List<Property> properties = propertyDao.getPropertiesByCity("Pompeii");
+		
+		request.setAttribute("pompeiiProperties", properties);
+
+		return "property/propertyList";
+	}
+	
+	@RequestMapping(value = "/properties/Herculaneum", method = RequestMethod.GET)
+	public String searchHerculaneumProperties(final HttpServletRequest request) {
+		// get all the property types, all the properties and their mappings to
+		// property types
+		
+		final List<Property> properties = propertyDao.getPropertiesByCity("Herculaneum");
+		
+		request.setAttribute("herculaneumProperties", properties);
 
 		return "property/propertyList";
 	}

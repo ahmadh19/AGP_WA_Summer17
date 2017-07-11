@@ -46,14 +46,16 @@ public class FindspotDao extends JdbcTemplate {
 	private static final String SELECT_BY_CITY_STATEMENT = "SELECT *, " + "cities.name as city_name, "
 			+ "cities.pleiades_id as city_pleiades_id, " + "insula.pleiades_id as insula_pleiades_id, "
 			+ "properties.pleiades_id as property_pleiades_id " + " FROM properties "
-			+ "LEFT JOIN insula ON properties.insula_id=insula.id WHERE UPPER(modern_city) = UPPER(?) "
-			+ "LEFT JOIN cities ON insula.modern_city=cities.name " + ORDER_BY_CLAUSE;
+			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
+			+ "LEFT JOIN cities ON insula.modern_city=cities.name " 
+			+ "WHERE UPPER(modern_city) = UPPER(?) " + ORDER_BY_CLAUSE;
 
 	private static final String SELECT_BY_CITY_AND_INSULA_STATEMENT = "SELECT *, " + "cities.name as city_name, "
 			+ "cities.pleiades_id as city_pleiades_id, " + "insula.pleiades_id as insula_pleiades_id, "
 			+ "properties.pleiades_id as property_pleiades_id " + " FROM properties "
-			+ "LEFT JOIN insula ON properties.insula_id=insula.id WHERE UPPER(modern_city) = UPPER(?) and name = ? "
-			+ "LEFT JOIN cities ON insula.modern_city=cities.name " + ORDER_BY_CLAUSE;
+			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
+			+ "LEFT JOIN cities ON insula.modern_city=cities.name " 
+			+ "WHERE UPPER(modern_city) = UPPER(?) and name = ? " + ORDER_BY_CLAUSE;
 
 	public static final String SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT = "SELECT *, "
 			+ "cities.name as city_name, " + "cities.pleiades_id as city_pleiades_id, "

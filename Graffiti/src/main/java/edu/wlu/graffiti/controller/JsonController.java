@@ -53,7 +53,7 @@ public class JsonController {
 		return findspotDao.getPropertyByCityAndInsulaAndProperty(city, insula, property);
 	}
 	
-	@RequestMapping(value = "/allProperties/download/json", produces = "application/json")
+	@RequestMapping(value = "/properties/json", produces = "application/json")
 	public List<Property> getPropertyList(HttpServletResponse response) {
 		final List<Property> properties = findspotDao.getProperties();
 
@@ -62,6 +62,32 @@ public class JsonController {
 		}
 		
 		response.addHeader("Content-Disposition", "attachment; filename=all-properties.json");
+		
+		return properties;
+	}
+	
+	@RequestMapping(value = "/properties/Pompeii/json", produces = "application/json")
+	public List<Property> getPompeiiPropertyList(HttpServletResponse response) {
+		final List<Property> properties = findspotDao.getPropertiesByCity("Pompeii");
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=pompeii-properties.json");
+		
+		return properties;
+	}
+	
+	@RequestMapping(value = "/properties/Herculaneum/json", produces = "application/json")
+	public List<Property> getHerculaneumPropertyList(HttpServletResponse response) {
+		final List<Property> properties = findspotDao.getPropertiesByCity("Herculaneum");
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=herculaneum-properties.json");
 		
 		return properties;
 	}

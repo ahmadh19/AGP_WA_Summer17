@@ -56,7 +56,7 @@ public class CSVController {
 		return generator.serializeToCSV(results);
 	}
 	
-	@RequestMapping(value = "/allProperties/download/csv", produces = "text/csv;charset=UTF-8")
+	@RequestMapping(value = "/properties/csv", produces = "text/csv;charset=UTF-8")
 	public String downloadProperties(final HttpServletRequest request, HttpServletResponse response) {
 		
 		final List<Property> properties = findspotDao.getProperties();
@@ -67,6 +67,35 @@ public class CSVController {
 		}
 		
 		response.addHeader("Content-Disposition", "attachment; filename=all-properties.csv");
+		return generator.serializePropertiesToCSV(properties);
+	}
+
+	
+	@RequestMapping(value = "/properties/Pompeii/csv", produces = "text/csv;charset=UTF-8")
+	public String downloadPompeiiProperties(final HttpServletRequest request, HttpServletResponse response) {
+		
+		final List<Property> properties = findspotDao.getPropertiesByCity("Pompeii");
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+			
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=pompeii-properties.csv");
+		return generator.serializePropertiesToCSV(properties);
+	}
+	
+	@RequestMapping(value = "/properties/Herculaneum/csv", produces = "text/csv;charset=UTF-8")
+	public String downloadHerculaneumProperties(final HttpServletRequest request, HttpServletResponse response) {
+		
+		final List<Property> properties = findspotDao.getPropertiesByCity("Herculaneum");
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+			
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=herculaneum-properties.csv");
 		return generator.serializePropertiesToCSV(properties);
 	}
 
