@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.index.IndexResponse;
@@ -100,8 +99,8 @@ public class AddInscriptionsToElasticSearch {
 					System.out.println(ES_INDEX_NAME + " index successfully deleted");
 				}
 			}
-
-			client.admin().indices().create(new CreateIndexRequest(ES_INDEX_NAME)).actionGet();
+			
+			createIndexAndAnalyzer();
 			createMapping();
 
 			PreparedStatement getInscriptions = newDBCon.prepareStatement(SELECT_ALL_INSCRIPTIONS);
@@ -157,6 +156,28 @@ public class AddInscriptionsToElasticSearch {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Implements a custom analyzer to fold (normalize) special characters and creates
+	 * the index
+	 * @throws IOException 
+	 */
+	private static void createIndexAndAnalyzer() throws IOException {
+		XContentBuilder settingsBuilder = jsonBuilder()
+				.startObject()
+					.startObject("analysis")
+						.startObject("analyzer")
+							.startObject("folding")
+								.field("type", "custom")
+								.field("tokenizer", "standard")
+								.field("filter", new String[]{"lowercase", "asciifolding"})
+							.endObject()
+						.endObject()
+					.endObject()
+				.endObject();
+				
+		client.admin().indices().prepareCreate(ES_INDEX_NAME).setSettings(settingsBuilder).execute().actionGet();
+	}
 
 	private static XContentBuilder createContentBuilder(Inscription i) throws IOException {
 		Map<String, Object> property = new HashMap<String, Object>();
@@ -166,7 +187,7 @@ public class AddInscriptionsToElasticSearch {
 		if (i.getAgp().getProperty() != null && i.getAgp().getProperty().getInsula() != null ) {
 			propertyTypes = getPropertyTypes(i.getAgp().getProperty().getId());
 			insula.put("insula_id", i.getAgp().getProperty().getInsula().getId());
-			insula.put("insula_name", i.getAgp().getProperty().getInsula().getShortName());
+			insula.put("insula_name", i.getAgp().getProperty().getInsula().getFullName());
 
 			property.put("property_id", i.getAgp().getProperty().getId());
 			property.put("property_name", i.getAgp().getProperty().getPropertyName());
@@ -188,9 +209,9 @@ public class AddInscriptionsToElasticSearch {
 				.field("city", i.getAncientCity()).field("insula", insula).field("property", property)
 				.field("drawing", drawing).field("summary", i.getAgp().getSummary())
 				.field("writing_style", i.getWritingStyle()).field("language", i.getLanguage())
-				.field("content", i.getContent()).field("edr_id", i.getEdrId())
+				.field("content", i.getPreprocessedContent(i.getContent())).field("edr_id", i.getEdrId())
 				.field("bibliography", i.getBibliography()).field("comment", i.getAgp().getCommentary())
-				.field("content_translation", i.getAgp().getContentTranslation())
+				.field("content_translation", i.getPreprocessedContent(i.getAgp().getContentTranslation()))
 				.field("cil", i.getAgp().getCil())
 				.field("has_figural_component", i.getAgp().hasFiguralComponent())
 				.field("langner", i.getAgp().getLangner()).field("measurements", i.getMeasurements())
@@ -352,9 +373,8 @@ public class AddInscriptionsToElasticSearch {
 	private static void createMapping() throws IOException {
 		XContentBuilder mapping = jsonBuilder().startObject().startObject(ES_TYPE_NAME).startObject("properties")
 				.startObject("id").field("type", "long").endObject().startObject("city").field("type", "keyword")
-				.field("index", "not_analyzed").endObject().startObject("insula")
-				.startObject("properties").startObject("insula_id").field("type", "long").endObject()
-				.startObject("insula_name").field("type", "text").field("index", "not_analyzed").endObject()
+				.endObject().startObject("insula").startObject("properties").startObject("insula_id")
+				.field("type", "long").endObject().startObject("insula_name").field("type", "text").endObject()
 				.endObject().endObject().startObject("property") // property
 				.startObject("properties").startObject("property_id").field("type", "long").endObject()
 				.startObject("property_name").field("type", "text").endObject().startObject("property_number")
@@ -363,16 +383,16 @@ public class AddInscriptionsToElasticSearch {
 				.startObject("properties").startObject("description_in_english").field("type", "text").endObject()
 				.startObject("description_in_latin").field("type", "text").endObject().startObject("drawing_tags")
 				.field("type", "text").endObject().startObject("drawing_tag_ids").field("type", "integer").endObject()
-				.endObject().endObject().startObject("writing_style_in_english").field("type", "text")
-				.field("index", "not_analyzed").endObject().startObject("language_in_english").field("type", "keyword") 
-				.field("index", "not_analyzed").endObject().startObject("content")
-				.field("type", "text").endObject().startObject("summary").field("type", "text").endObject()
-				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject().startObject("bibliography")
-				.field("type", "text").endObject().startObject("cil").field("type", "text").endObject()
+				.endObject().endObject().startObject("writing_style_in_english").field("type", "keyword")
+				.endObject().startObject("language_in_english").field("type", "keyword") 
+				.endObject().startObject("content").field("type", "text").endObject()
+				.startObject("summary").field("type", "text").endObject()
+				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject()
+				.startObject("bibliography").field("type", "text").endObject()
+				.startObject("cil").field("type", "text").endObject()
 				.startObject("comment").field("type", "text").endObject().startObject("content_translation")
-				.field("type", "text").endObject().startObject("description_in_english").field("type", "text")
-				.endObject().startObject("measurements").field("type", "text").endObject().endObject().endObject()
-				.endObject();
+				.field("type", "text").endObject().startObject("description_in_english").field("type", "text").endObject()
+				.startObject("measurements").field("type", "text").endObject().endObject().endObject().endObject();
 
 		client.admin().indices().preparePutMapping(ES_INDEX_NAME).setType(ES_TYPE_NAME).setSource(mapping).execute()
 				.actionGet();

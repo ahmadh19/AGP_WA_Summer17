@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -53,9 +52,9 @@ import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Insula;
 import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.dao.DrawingTagsDao;
+import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.dao.InsulaDao;
-import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.PropertyTypesDao;
 import edu.wlu.graffiti.data.setup.Utils;
 
@@ -116,7 +115,7 @@ public class GraffitiController {
 			PROPERTY_TYPE_SEARCH_DESC, DRAWING_CATEGORY_SEARCH_DESC, WRITING_STYLE_SEARCH_DESC, "Language" };
 
 	private static String[] searchFields = { "content",
-			"content summary city insula.insula_name property.property_name property.property_types"
+			"content content_translation summary city insula.insula_name property.property_name property.property_types"
 					+ "cil description writing_style language edr_id bibliography"
 					+ " drawing.description_in_english drawing.description_in_latin drawing.drawing_tags",
 			CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, PROPERTY_ID_FIELD_NAME, PROPERTY_TYPES_FIELD_NAME,
@@ -499,12 +498,15 @@ public class GraffitiController {
 				// writing style, language, EAGLE id, and bibliography for a
 				// keyword match
 				BoolQueryBuilder globalQuery;
-				QueryBuilder fuzzyQuery;
-				QueryBuilder exactQuery;
+				//QueryBuilder fuzzyQuery;
+				//QueryBuilder exactQuery;
+				QueryBuilder myTestQuery;
 
 				String[] a = fieldNames.get(i).split(" ");
 
 				globalQuery = boolQuery();
+				
+				/*
 				fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7],
 						a[8]).fuzziness("AUTO");
 				exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
@@ -513,6 +515,10 @@ public class GraffitiController {
 
 				globalQuery.should(fuzzyQuery);
 				globalQuery.should(exactQuery);
+				*/
+				
+				myTestQuery = multiMatchQuery(parameters.get(i), a);
+				globalQuery.should(myTestQuery);
 
 				query.must(globalQuery);
 			} else if (searchTerms.get(i).equals("Content Keyword")) {
@@ -520,7 +526,7 @@ public class GraffitiController {
 				String[] params = parameters.get(i).split(" ");
 
 				for (String param : params) {
-					contentQuery.must(matchQuery(fieldNames.get(i), param).fuzziness("AUTO"));
+					contentQuery.must(matchQuery(fieldNames.get(i), param));//.fuzziness("AUTO"));
 				}
 				query.must(contentQuery);
 			} else if (searchTerms.get(i).equals("Property")) {
