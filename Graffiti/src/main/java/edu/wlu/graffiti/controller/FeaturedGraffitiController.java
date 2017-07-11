@@ -41,4 +41,14 @@ public class FeaturedGraffitiController {
 	public String themeGraffiti(final HttpServletRequest request) {
 		return "Rough_Draft_Theme_Mock_Up";
 	}
+	
+	@RequestMapping(value = "/TranslationQuiz", method = RequestMethod.GET)
+	public String featuredHits(final HttpServletRequest request) {
+
+		final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
+		request.setAttribute("translationHits", greatestTranslationHits);
+
+		return "newTranslationQuiz";
+
+	}
 }

@@ -184,7 +184,7 @@ body {
 
 	<div class="container">
 		<div id="selectors">
-			<a href="http://agp-dev1.wlu.edu/about/teaching-resources/" target="_blank"
+			<a href="http://localhost:8080/Graffiti/TranslationQuiz" target="_blank"
 			id="csv">
 			<button class="btn btn-agp right-align">Translation Quiz</button>
 		</a>
