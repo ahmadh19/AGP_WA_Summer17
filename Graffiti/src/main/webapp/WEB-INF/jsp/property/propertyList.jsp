@@ -37,19 +37,41 @@ th {
 			%>
 		<h1>Herculaneum Properties</h1>
 		<div class="button_bar">
-				<a href="<%=request.getContextPath()%>/properties/Herculaneum/csv"
-					id="herculaneumCSV">
-					<button class="btn btn-agp right-align">Export as CSV</button>
-				</a> <a href="<%=request.getContextPath()%>/properties/Herculaneum/json"
-					id="herculaneumJSON">
-					<button class="btn btn-agp right-align">Export as JSON</button>
-				</a>
-			</div>
-	
-			<table class="table table-bordered table-striped" id="herculaneumTable"
+			<%
+				if (request.getAttribute("filterByInsula") != null) {
+			%>
+			<a
+				href="<%=request.getContextPath()%>/properties/Herculaneum/<%=request.getAttribute("filterByInsula")%>/csv"
+				id="herculaneumCSV">
+				<button class="btn btn-agp right-align">Export as CSV</button>
+			</a> <a
+				href="<%=request.getContextPath()%>/properties/Herculaneum/<%=request.getAttribute("filterByInsula")%>/json"
+				id="herculaneumJSON">
+				<button class="btn btn-agp right-align">Export as JSON</button>
+			</a>
+			<%
+				} else {
+			%>
+			<a href="<%=request.getContextPath()%>/properties/Herculaneum/csv"
+				id="herculaneumCSV">
+				<button class="btn btn-agp right-align">Export as CSV</button>
+			</a> <a href="<%=request.getContextPath()%>/properties/Herculaneum/json"
+				id="herculaneumJSON">
+				<button class="btn btn-agp right-align">Export as JSON</button>
+			</a>
+			<%
+				}
+			%>
+		</div>
+
+		<table class="table table-bordered table-striped" id="herculaneumTable"
 				style="margin-bottom: 30px;">
 				<tr>
+					<%
+					if (request.getAttribute("filterByInsula") == null) {
+					%>
 					<th>Insula</th>
+					<% } %>
 					<th>Number</th>
 					<th>Name</th>
 					<th>Type</th>
@@ -59,7 +81,11 @@ th {
 					end="${fn:length(requestScope.herculaneumProperties)}">
 					<c:set var="prop" value="${requestScope.herculaneumProperties[m-1]}" />
 					<tr>
+						<%
+							if (request.getAttribute("filterByInsula") == null) {
+						%>
 						<td>${prop.insula.shortName}</td>
+						<% } %>
 						<td>${prop.propertyNumber}</td>
 						<td>${prop.propertyName}</td>
 						<td>${prop.propertyTypesAsString}</td>
@@ -72,42 +98,68 @@ th {
 		%>
 
 		<%
-		if (request.getAttribute("pompeiiProperties") != null) {
+			if (request.getAttribute("pompeiiProperties") != null) {
 		%>
-			<h2 id="pompeii">Pompeii Properties</h2>
-			<div class="button_bar">
-				<a href="<%=request.getContextPath()%>/properties/Pompeii/csv"
-					id="pompeiiCSV">
-					<button class="btn btn-agp right-align">Export as CSV</button>
-				</a> <a href="<%=request.getContextPath()%>/properties/Pompeii/json"
-					id="pompeiiJSON">
-					<button class="btn btn-agp right-align">Export as JSON</button>
-				</a>
-			</div>
-	
-			<table class="table table-bordered table-striped" id="pompeiiTable"
-				style="margin-bottom: 30px;">
+		<h2 id="pompeii">Pompeii Properties</h2>
+		<div class="button_bar">
+			<%
+				if (request.getAttribute("filterByInsula") != null) {
+			%>
+			<a
+				href="<%=request.getContextPath()%>/properties/Pompeii/<%=request.getAttribute("filterByInsula")%>/csv"
+				id="pompeiiCSV">
+				<button class="btn btn-agp right-align">Export as CSV</button>
+			</a> <a
+				href="<%=request.getContextPath()%>/properties/Pompeii/<%=request.getAttribute("filterByInsula")%>/json"
+				id="pompeiiJSON">
+				<button class="btn btn-agp right-align">Export as JSON</button>
+			</a>
+			<%
+				} else {
+			%>
+			<a href="<%=request.getContextPath()%>/properties/Pompeii/csv"
+				id="pompeiiCSV">
+				<button class="btn btn-agp right-align">Export as CSV</button>
+			</a> <a href="<%=request.getContextPath()%>/properties/Pompeii/json"
+				id="pompeiiSON">
+				<button class="btn btn-agp right-align">Export as JSON</button>
+			</a>
+			<%
+				}
+			%>
+		</div>
+
+		<table class="table table-bordered table-striped" id="pompeiiTable"
+			style="margin-bottom: 30px;">
+			<tr>
+				<%
+					if (request.getAttribute("filterByInsula") == null) {
+				%>
+				<th>Insula</th>
+				<% } %>
+				<th>Number</th>
+				<th>Name</th>
+				<th>Type</th>
+				<th>URI</th>
+			</tr>
+			<c:forEach var="k" begin="${1}"
+				end="${fn:length(requestScope.pompeiiProperties)}">
+				<c:set var="prop" value="${requestScope.pompeiiProperties[k-1]}" />
 				<tr>
-					<th>Insula</th>
-					<th>Number</th>
-					<th>Name</th>
-					<th>Type</th>
-					<th>URI</th>
+					<%
+					if (request.getAttribute("filterByInsula") == null) {
+					%>
+					<td>${prop.insula.shortName}</td>
+					<% } %>
+					<td>${prop.propertyNumber}</td>
+					<td>${prop.propertyName}</td>
+					<td>${prop.propertyTypesAsString}</td>
+					<td><a href="http://${prop.uri}">http://${prop.uri}</a></td>
 				</tr>
-				<c:forEach var="k" begin="${1}"
-					end="${fn:length(requestScope.pompeiiProperties)}">
-					<c:set var="prop" value="${requestScope.pompeiiProperties[k-1]}" />
-					<tr>
-						<td>${prop.insula.shortName}</td>
-						<td>${prop.propertyNumber}</td>
-						<td>${prop.propertyName}</td>
-						<td>${prop.propertyTypesAsString}</td>
-						<td><a href="http://${prop.uri}">http://${prop.uri}</a></td>
-					</tr>
-				</c:forEach>
-			</table>
+			</c:forEach>
+		</table>
 		<%
-		} 
+			}
 		%>
 
 	</div>

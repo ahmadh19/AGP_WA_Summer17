@@ -72,7 +72,7 @@ public class CSVController {
 
 	
 	@RequestMapping(value = "/properties/{city}/csv", produces = "text/csv;charset=UTF-8")
-	public String downloadPompeiiProperties(@PathVariable String city, final HttpServletRequest request, HttpServletResponse response) {
+	public String downloadPropertiesByCity(@PathVariable String city, final HttpServletRequest request, HttpServletResponse response) {
 		
 		final List<Property> properties = findspotDao.getPropertiesByCity(city);
 
@@ -82,6 +82,20 @@ public class CSVController {
 		}
 		
 		response.addHeader("Content-Disposition", "attachment; filename=" + city +"-properties.csv");
+		return generator.serializePropertiesToCSV(properties);
+	}
+	
+	@RequestMapping(value = "/properties/{city}/{insula}/csv", produces = "text/csv;charset=UTF-8")
+	public String downloadPropertiesByCityInsula(@PathVariable String city, @PathVariable String insula, final HttpServletRequest request, HttpServletResponse response) {
+		
+		final List<Property> properties = findspotDao.getPropertiesByCityAndInsula(city, insula);
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+			
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=" + city + "-" + insula + "-properties.csv");
 		return generator.serializePropertiesToCSV(properties);
 	}
 	

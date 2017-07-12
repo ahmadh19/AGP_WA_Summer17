@@ -55,7 +55,7 @@ public class FindspotDao extends JdbcTemplate {
 			+ "properties.pleiades_id as property_pleiades_id " + " FROM properties "
 			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
 			+ "LEFT JOIN cities ON insula.modern_city=cities.name " 
-			+ "WHERE UPPER(modern_city) = UPPER(?) and name = ? " + ORDER_BY_CLAUSE;
+			+ "WHERE UPPER(modern_city) = UPPER(?) and insula.short_name = ? " + ORDER_BY_CLAUSE;
 
 	public static final String SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT = "SELECT *, "
 			+ "cities.name as city_name, " + "cities.pleiades_id as city_pleiades_id, "

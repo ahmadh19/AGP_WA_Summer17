@@ -76,7 +76,7 @@ public class PropertyController {
 	}
 	
 	@RequestMapping(value = "/properties/{city}", method = RequestMethod.GET)
-	public String searchPompeiiProperties(@PathVariable String city, final HttpServletRequest request) {
+	public String searchByCityProperties(@PathVariable String city, final HttpServletRequest request) {
 		// get all the property types, all the properties and their mappings to
 		// property types
 		
@@ -87,6 +87,27 @@ public class PropertyController {
 		
 		final List<Property> properties = propertyDao.getPropertiesByCity(city);
 		request.setAttribute(city.toLowerCase() + "Properties", properties);
+
+		return "property/propertyList";
+	}
+	
+	@RequestMapping(value = "/properties/{city}/{insula}", method = RequestMethod.GET)
+	public String searchPropertiesByCityInsula(@PathVariable String city, @PathVariable String insula, final HttpServletRequest request) {
+		// get all the property types, all the properties and their mappings to
+		// property types
+		
+		if(!propertyDao.getCityNames().contains(city)) {
+			request.setAttribute("message", city + " is not a valid city.");
+			return "property/error";
+		}
+		
+		// add checks for invalid insula ID.
+		
+		final List<Property> properties = propertyDao.getPropertiesByCityAndInsula(city, insula);
+		request.setAttribute(city.toLowerCase() + "Properties", properties);
+		request.setAttribute("filterByInsula", insula);
+		System.out.println(properties.size());
+		System.out.println("City: " + city + "\nInsula: " + insula);
 
 		return "property/propertyList";
 	}
