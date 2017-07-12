@@ -38,15 +38,11 @@ public class PropertyController {
 	@RequestMapping(value = "/properties/{city}/{insula}/{property}", method = RequestMethod.GET)
 	public String propertyPage(@PathVariable String city, @PathVariable String property, @PathVariable String insula,
 			HttpServletRequest request) {
-		//System.out.println("propertyPage: " + property);
 		try {
 			final Property prop = this.propertyDao.getPropertyByCityAndInsulaAndProperty(city, insula, property);
 			request.setAttribute("prop", prop);
 			List<String> locationKeys = new ArrayList<>();
 			locationKeys.add(prop.getLocationKey());
-			//System.out.println("Loc Key: " + prop.getLocationKey());
-			// request.setAttribute("findLocationKeys", prop.getId());
-			// request.setAttribute("findLocationKeys", prop.getLocationKey());
 			request.setAttribute("findLocationKeys", locationKeys);
 			return "property/propertyInfo";
 		} catch (Exception e) {
