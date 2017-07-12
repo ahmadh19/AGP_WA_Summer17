@@ -226,11 +226,7 @@ public class GenerateCSV {
 		propertyRecord.add(p.getInsula().getShortName());
 		propertyRecord.add(p.getPropertyNumber());
 		propertyRecord.add(p.getPropertyName());
-		String propTypes = "";
-		for(PropertyType pType : p.getPropertyTypes()) {
-			propTypes += pType.getName() + ", ";
-		}
-		propertyRecord.add(propTypes);
+		propertyRecord.add(p.getPropertyTypesAsString());
 		propertyRecord.add(p.getUri());
 		
 		// write the inscription record

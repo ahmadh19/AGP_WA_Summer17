@@ -103,11 +103,7 @@ function generateMap(name) {
 			</c:if>
 			<tr>
 				<th class="propertyLabel">Property Type:</th>
-				<td><c:forEach var="k" begin="${1}"
-						end="${fn:length(prop.propertyTypes)}">
-						<c:set var="pt" value="${prop.propertyTypes[k-1]}" />
-						${pt.name} <!-- link to the vocab info about this property type -->
-					</c:forEach></td>
+				<td>${prop.propertyTypesAsString}</td>
 			</tr>
 			<c:if test="{not empty prop.commentary}">
 				<tr>

@@ -79,53 +79,20 @@ public class PropertyController {
 		return "property/propertyList";
 	}
 	
-	@RequestMapping(value = "/properties/Pompeii", method = RequestMethod.GET)
-	public String searchPompeiiProperties(final HttpServletRequest request) {
+	@RequestMapping(value = "/properties/{city}", method = RequestMethod.GET)
+	public String searchPompeiiProperties(@PathVariable String city, final HttpServletRequest request) {
 		// get all the property types, all the properties and their mappings to
 		// property types
 		
-		final List<Property> properties = propertyDao.getPropertiesByCity("Pompeii");
+		if(!propertyDao.getCityNames().contains(city)) {
+			request.setAttribute("message", city + " is not a valid city.");
+			return "property/error";
+		}
 		
-		request.setAttribute("pompeiiProperties", properties);
+		final List<Property> properties = propertyDao.getPropertiesByCity(city);
+		request.setAttribute(city.toLowerCase() + "Properties", properties);
 
 		return "property/propertyList";
 	}
-	
-	@RequestMapping(value = "/properties/Herculaneum", method = RequestMethod.GET)
-	public String searchHerculaneumProperties(final HttpServletRequest request) {
-		// get all the property types, all the properties and their mappings to
-		// property types
-		
-		final List<Property> properties = propertyDao.getPropertiesByCity("Herculaneum");
-		
-		request.setAttribute("herculaneumProperties", properties);
-
-		return "property/propertyList";
-	}
-
-	// Maps to the details page once an individual result has been selected in
-	// the results page
-	/*
-	 * @RequestMapping(value = "/property/{pleiadesid}", method =
-	 * RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE) public
-	 * String graffitoXML(final HttpServletRequest request, HttpServletResponse
-	 * response,
-	 * 
-	 * @PathVariable String edr) { response.setContentType("application/xml");
-	 * final List<Inscription> results =
-	 * this.graffitiDao.getInscriptionByEDR(edr); Inscription i = null; if
-	 * (results.isEmpty()) { request.setAttribute("error", "Error: " + edr +
-	 * " is not a valid EAGLE id."); return "index"; } else { i =
-	 * results.get(0); Set<DrawingTag> tags = i.getDrawingTags(); List<String>
-	 * names = new ArrayList<String>(); for (DrawingTag tag : tags) {
-	 * names.add(tag.getName()); } int num = i.getNumberOfImages();
-	 * request.setAttribute("drawingCategories", names);
-	 * request.setAttribute("images", getImages(i, num));
-	 * request.setAttribute("imagePages", getPages(i, num));
-	 * request.setAttribute("thumbnails", getThumbnails(i, num));
-	 * request.setAttribute("findLocationKeys", findLocationKeys(results));
-	 * request.setAttribute("inscription", i); request.setAttribute("city",
-	 * i.getAncientCity()); return "details"; } }
-	 */
 
 }

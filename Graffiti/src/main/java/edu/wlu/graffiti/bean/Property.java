@@ -81,23 +81,18 @@ public class Property {
 	
 	@JsonIgnore
 	public String getPropertyTypesAsString() {
-		String returnStr = "";
-		String separator = "";
+		StringBuilder returnStr = new StringBuilder();
 		if(this.propertyTypes.size() > 1) {
 			// change the separator to a comma if there are multiple property types
-			separator = ", ";
-		}
-		
-		for(int i = 0 ; i < this.propertyTypes.size(); i++) {
-			PropertyType pt = this.propertyTypes.get(i);
-			if(i < this.propertyTypes.size() - 1) {
-				returnStr += pt.getName() + separator;
-			} else {
-				returnStr += pt.getName(); // don't add the separator for the last element.
+			for(int i = 0 ; i < this.propertyTypes.size() - 1 ; i++) {
+				PropertyType pt = this.propertyTypes.get(i);
+				returnStr.append(pt.getName() +  ", ");
 			}
+			returnStr.append(this.propertyTypes.get(this.propertyTypes.size() - 1).getName()); 
+		} else if(this.propertyTypes.size() == 1) {
+			returnStr.append(this.propertyTypes.get(0).getName());
 		}
-		
-		return returnStr;
+		return returnStr.toString();
 	}
 
 	public void setPropertyTypes(List<PropertyType> propertyTypes) {
@@ -108,7 +103,7 @@ public class Property {
 	 * @return the uri
 	 */
 	public String getUri() {
-		uri = "ancientgraffiti.org/Graffiti/property/" + this.getInsula().getCity().getName() + 
+		uri = "agp-dev1.wlu.edu/Graffiti/properties/" + this.getInsula().getCity().getName() + 
 		"/" + this.getInsula().getShortName() + "/" + this.getPropertyNumber();
 		return uri;
 	}
