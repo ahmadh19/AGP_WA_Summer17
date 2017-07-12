@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Inscription implements Comparable<Inscription> {
@@ -387,8 +389,10 @@ public class Inscription implements Comparable<Inscription> {
 	 */
 	public String getPreprocessedContent(String myContent) {
 		if(myContent != null) {
+			String newContent = StringEscapeUtils.unescapeHtml4(myContent);
+			
 			Pattern p = Pattern.compile("\\p{Punct}");
-			Matcher m = p.matcher(myContent);
+			Matcher m = p.matcher(newContent);
 			StringBuffer sb = new StringBuffer();
 			
 			while(m.find())

@@ -88,7 +88,7 @@ public class AddInscriptionsToElasticSearch {
 		try {
 			// Clear out index before adding inscriptions
 
-			boolean exists = client.admin().indices().prepareExists(ES_INDEX_NAME).execute().actionGet().isExists();
+			boolean exists = client.admin().indices().prepareExists(ES_INDEX_NAME).get().isExists();
 
 			if (exists) {
 				DeleteIndexResponse delete = client.admin().indices().delete(new DeleteIndexRequest(ES_INDEX_NAME))
@@ -130,7 +130,7 @@ public class AddInscriptionsToElasticSearch {
 				XContentBuilder inscriptionBuilder = createContentBuilder(i);
 
 				IndexResponse response = client.prepareIndex(ES_INDEX_NAME, ES_TYPE_NAME).setSource(inscriptionBuilder)
-						.execute().actionGet();
+						.get();
 
 				// System.out.println(inscriptionBuilder.string());
 
@@ -176,7 +176,7 @@ public class AddInscriptionsToElasticSearch {
 					.endObject()
 				.endObject();
 				
-		client.admin().indices().prepareCreate(ES_INDEX_NAME).setSettings(settingsBuilder).execute().actionGet();
+		client.admin().indices().prepareCreate(ES_INDEX_NAME).setSettings(settingsBuilder).get();
 	}
 
 	private static XContentBuilder createContentBuilder(Inscription i) throws IOException {
@@ -385,7 +385,7 @@ public class AddInscriptionsToElasticSearch {
 				.field("type", "text").endObject().startObject("drawing_tag_ids").field("type", "integer").endObject()
 				.endObject().endObject().startObject("writing_style_in_english").field("type", "keyword")
 				.endObject().startObject("language_in_english").field("type", "keyword") 
-				.endObject().startObject("content").field("type", "text").endObject()
+				.endObject().startObject("content").field("analyzer", "folding").field("type", "text").endObject()
 				.startObject("summary").field("type", "text").endObject()
 				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject()
 				.startObject("bibliography").field("type", "text").endObject()
@@ -394,8 +394,7 @@ public class AddInscriptionsToElasticSearch {
 				.field("type", "text").endObject().startObject("description_in_english").field("type", "text").endObject()
 				.startObject("measurements").field("type", "text").endObject().endObject().endObject().endObject();
 
-		client.admin().indices().preparePutMapping(ES_INDEX_NAME).setType(ES_TYPE_NAME).setSource(mapping).execute()
-				.actionGet();
+		client.admin().indices().preparePutMapping(ES_INDEX_NAME).setType(ES_TYPE_NAME).setSource(mapping).get();
 	}
 
 }
