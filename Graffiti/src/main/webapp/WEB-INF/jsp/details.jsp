@@ -340,7 +340,8 @@ function backToResults(){
 					 -->
 					<tr>
 						<th class="propertyLabel">Findspot:</th>
-						<td><a
+						<td>
+							<a
 							href="http://pleiades.stoa.org/places/${i.agp.property.insula.city.pleiadesId}">${city}</a>,
 							${findspot}<a
 							href="<%=request.getContextPath() %>/results?property=${i.agp.property.id}">
@@ -403,7 +404,7 @@ function backToResults(){
 										</c:if>
 										<c:if test="${not empty i.agp.graffitoLength }">
 											<li>Graffito Length: ${i.agp.graffitoLength }</li>
-										</c:if>
+										</c:if>generatePompeii("${i.ancientCity}");
 										<c:if test="${not empty i.agp.heightFromGround }">
 											<li>Height from Ground: ${i.agp.heightFromGround }</li>
 										</c:if>
@@ -522,16 +523,11 @@ function backToResults(){
 				if ("${i.ancientCity}" == "Herculaneum") {
 					generateHerculaneum("${i.ancientCity}");
 				} else if ("${i.ancientCity}" == "Pompeii") {
-					
+					generatePompeii("${i.ancientCity}");
 				
 				} 
 			</script>
 		</div>
 	</div>
-	<script>
-	
-					
-	window.initmap(true,false,false,true);
-	</script>
 </body>
 </html>
