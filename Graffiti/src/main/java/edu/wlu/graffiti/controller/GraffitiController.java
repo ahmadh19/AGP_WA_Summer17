@@ -78,7 +78,6 @@ public class GraffitiController {
 	@Resource
 	private InsulaDao insulaDao;
 
-
 	public static final String WRITING_STYLE_PARAM_NAME = "writing_style";
 	public static final String WRITING_STYLE_SEARCH_DESC = "Writing Style";
 	public static final String DRAWING_CATEGORY_SEARCH_DESC = "Drawing Category";
@@ -134,14 +133,14 @@ public class GraffitiController {
 		}
 		settings = Settings.settingsBuilder().put("cluster.name", ES_CLUSTER_NAME).build();
 	}
-	
+
 	// Maps to the search.jsp page currently receives information from
 	// regions.txt file for the dropdown menu
 	// that holds the information for each property in an ancient city (i.e.
 	// Pompeii)
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public String searchForm(final HttpServletRequest request) {
-		
+
 		String city = request.getParameter("city");
 		String message;
 		HttpSession s = request.getSession();
@@ -220,10 +219,11 @@ public class GraffitiController {
 			request.setAttribute("regionIds", regionIds);
 			request.setAttribute("message", message);
 			request.setAttribute("displayImage", request.getContextPath() + "/resources/images/" + city + ".jpg");
-			
-			//Allows attributes to be set but goes to the pompeiiMap url if the city clicked on is pompeii.
+
+			// Allows attributes to be set but goes to the pompeiiMap url if the
+			// city clicked on is pompeii.
 			if (city.toLowerCase().equals("pompeii")) {
-				//return "pompeiiMap";
+				// return "pompeiiMap";
 				return "searchPompeii";
 			}
 			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
@@ -254,7 +254,7 @@ public class GraffitiController {
 		request.setAttribute("translationHits", greatestTranslationHits);
 
 		return "New_Featured_Graffiti";
-		
+
 	}
 
 	// maps to inputData.jsp page which is used to input inscription to the
@@ -311,7 +311,7 @@ public class GraffitiController {
 	@RequestMapping(value = "/region/{city}/{insula:.+}", method = RequestMethod.GET)
 	public String insulaPage(@PathVariable String city, @PathVariable String insula, HttpServletRequest request,
 			HttpServletResponse response) {
-		//System.out.println("insulaPage: " + insula);
+		// System.out.println("insulaPage: " + insula);
 		int insula_id = getInsulaId(city, insula);
 		final List<Inscription> inscriptions = this.graffitiDao.getInscriptionsByCityAndInsula(city, insula_id);
 		request.setAttribute("resultsLyst", inscriptions);
@@ -323,7 +323,7 @@ public class GraffitiController {
 	@RequestMapping(value = "/region/{city}/{insula}/{property}", method = RequestMethod.GET)
 	public String propertyPage(@PathVariable String city, @PathVariable String property, @PathVariable String insula,
 			HttpServletRequest request) {
-		//System.out.println("propertyPage: " + property);
+		// System.out.println("propertyPage: " + property);
 		int insula_id = getInsulaId(city, insula);
 		int property_id = getPropertyId(city, insula, property);
 		final List<Inscription> inscriptions = this.graffitiDao.getInscriptionsByCityAndInsulaAndPropertyNumber(city,
@@ -396,7 +396,7 @@ public class GraffitiController {
 			for (DrawingTag tag : tags) {
 				names.add(tag.getName());
 			}
-			String city=i.getAncientCity();
+			String city = i.getAncientCity();
 			request.setAttribute("drawingCategories", names);
 			request.setAttribute("images", i.getImages());
 			request.setAttribute("imagePages", i.getPages());
@@ -405,19 +405,18 @@ public class GraffitiController {
 			request.setAttribute("inscription", i);
 			request.setAttribute("city", city);
 			request.getSession().setAttribute("returnFromEDR", edr);
-			
-			//Decides which jsp page to travel to when user clicks "More Information" on Search page.
-			return "details";
-			if(city.equals("Pompeii")){
+
+			// Decides which jsp page to travel to when user clicks "More
+			// Information" on Search page.
+			if (city.equals("Pompeii")) {
 				return "moreGraffitoInformation";
-			}
-			else{
+			} else {
 				return "details";
 			}
-			//return "details";
+			// return "details";
 		}
 	}
-	
+
 	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	public String search(final HttpServletRequest request) {
 		init();
@@ -429,12 +428,13 @@ public class GraffitiController {
 		request.setAttribute("searchQueryDesc", "filtering");
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
 		System.out.println("Location keys set in G Controller");
-		//return "results";
+		// return "results";
 		return "searchResults";
 	}
-	
+
 	private List<Inscription> searchResults(final HttpServletRequest request) {
-		//System.out.println("We're in FilterController: " + request.getQueryString());
+		// System.out.println("We're in FilterController: " +
+		// request.getQueryString());
 
 		try {
 			client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
@@ -445,9 +445,9 @@ public class GraffitiController {
 		SearchResponse response;
 		String searchedProperties = "";
 		String searchedDrawings = "";
-		
+
 		List<Inscription> inscriptions = new ArrayList<Inscription>();
-		
+
 		// List of parameter strings for each given search term
 		List<String> parameters = new ArrayList<String>();
 		// List of search terms
@@ -467,8 +467,8 @@ public class GraffitiController {
 		String[] writingStyle = request.getParameterValues(WRITING_STYLE_PARAM_NAME);
 		String[] language = request.getParameterValues("language");
 
-		String[][] searches = { content, global, city, insula, property, propertyType, drawingCategory,
-				writingStyle, language };
+		String[][] searches = { content, global, city, insula, property, propertyType, drawingCategory, writingStyle,
+				language };
 
 		// Determine which parameters have been given; populate the
 		// parameters, searchTerms, and fieldNames lists accordingly
@@ -488,7 +488,8 @@ public class GraffitiController {
 		// searches; all others are simple match queries
 		for (int i = 0; i < searchTerms.size(); i++) {
 
-			//System.out.println(searchTerms.get(i) + ": " + parameters.get(i));
+			// System.out.println(searchTerms.get(i) + ": " +
+			// parameters.get(i));
 
 			// Searches has_figural_component if user selected "All"
 			// drawings
@@ -513,8 +514,8 @@ public class GraffitiController {
 				String[] a = fieldNames.get(i).split(" ");
 
 				globalQuery = boolQuery();
-				fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7],
-						a[8]).fuzziness("AUTO");
+				fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8])
+						.fuzziness("AUTO");
 				exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
 
 				// For EDR id and bibliography, users want exact results.
@@ -559,7 +560,8 @@ public class GraffitiController {
 				String[] params = parameters.get(i).split(" ");
 
 				for (String param : params) {
-					//System.out.println(searchTerms.get(i) + ": match " + param + " in " + fieldNames.get(i));
+					// System.out.println(searchTerms.get(i) + ": match " +
+					// param + " in " + fieldNames.get(i));
 					otherQuery.should(termQuery(fieldNames.get(i), param));
 				}
 				query.must(otherQuery);
@@ -567,23 +569,22 @@ public class GraffitiController {
 		}
 
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
-				.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME,
-						PROPERTY_ID_FIELD_NAME, "property.property_number", "property.property_name",
-						PROPERTY_TYPES_FIELD_NAME, "drawing.description_in_english", "drawing.description_in_latin",
-						"drawing.drawing_tag_ids", "content", "summary", "edr_id", "bibliography",
-						WRITING_STYLE_IN_ENGLISH_FIELD_NAME, LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description",
-						"lagner", "comment", "content_translation", "measurements")
+				.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME, PROPERTY_ID_FIELD_NAME,
+						"property.property_number", "property.property_name", PROPERTY_TYPES_FIELD_NAME,
+						"drawing.description_in_english", "drawing.description_in_latin", "drawing.drawing_tag_ids",
+						"content", "summary", "edr_id", "bibliography", WRITING_STYLE_IN_ENGLISH_FIELD_NAME,
+						LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description", "lagner", "comment",
+						"content_translation", "measurements")
 				.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
 
-
 		for (SearchHit hit : response.getHits()) {
-			//System.out.println(hit);
+			// System.out.println(hit);
 			inscriptions.add(hitToInscription(hit));
 		}
 		client.close();
 		HttpSession session = request.getSession();
 		if (inscriptions.size() > 0) {
-			//System.out.println(inscriptions.get(0));
+			// System.out.println(inscriptions.get(0));
 			request.setAttribute("mapName", inscriptions.get(0).getAncientCity());
 		}
 		request.setAttribute("searchedProperties", searchedProperties);
@@ -601,24 +602,35 @@ public class GraffitiController {
 		return inscriptions;
 	}
 
+	// Turns an array like ["Pompeii", "Herculaneum"] into a string like
+	// "Pompeii Herculaneum" for Elasticsearch match query
+	private static String arrayToString(String[] parameters) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(parameters[0].replace("_", " "));
+		for (int i = 1; i < parameters.length; i++) {
+			sb.append(" ").append(parameters[i].replace("_", " "));
+		}
+		return sb.toString();
+	}
 
+	private Inscription hitToInscription(SearchHit hit) {
+		String edrID = hit.field("edr_id").value();
+		Inscription inscription = graffitiDao.getInscriptionByEDR(edrID);
+		return inscription;
+	}
 
-		// Turns an array like ["Pompeii", "Herculaneum"] into a string like
-		// "Pompeii Herculaneum" for Elasticsearch match query
-		private static String arrayToString(String[] parameters) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(parameters[0].replace("_", " "));
-			for (int i = 1; i < parameters.length; i++) {
-				sb.append(" ").append(parameters[i].replace("_", " "));
+	static List<String> findLocationKeys(final List<Inscription> inscriptions) {
+		final List<String> locationKeys = new ArrayList<String>();
+		if (inscriptions != null) {
+			final Set<String> locationKeysSet = new TreeSet<String>();
+			for (final Inscription inscription : inscriptions) {
+				locationKeysSet.add(inscription.getSpotKey());
+				locationKeysSet.add(inscription.getGenSpotKey());
 			}
-			return sb.toString();
+			locationKeys.addAll(locationKeysSet);
 		}
-
-		private Inscription hitToInscription(SearchHit hit) {
-			String edrID = hit.field("edr_id").value();
-			Inscription inscription = graffitiDao.getInscriptionByEDR(edrID);
-			return inscription;
-		}
+		return locationKeys;
+	}
 
 	private static List<String> findLocationKeys(final Inscription inscription) {
 		final List<String> locationKeys = new ArrayList<String>();
@@ -647,7 +659,7 @@ public class GraffitiController {
 	public void setGraffitiDao(final GraffitiDao graffitiDao) {
 		this.graffitiDao = graffitiDao;
 	}
-	
+
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
 	public String filterResults(final HttpServletRequest request) {
 		init();
@@ -670,5 +682,5 @@ public class GraffitiController {
 		request.setAttribute("searchQueryDesc", "filtering");
 		return "admin/report";
 	}
-		
+
 }
