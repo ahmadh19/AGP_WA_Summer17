@@ -16,7 +16,10 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 	
+<%@ page import= "java.util.*" %>
+
 <script type="text/javascript">
+
 
 function start() {
 $('img').mapster({
@@ -35,6 +38,18 @@ $('img').mapster({
 }); 
 }
 
+var locationKeys; 
+
+function setLocationKeys(){
+	<%
+	List<String> locationKeys=(List<String>)request.getAttribute("findLocationKeys");
+	if(locationKeys==null){
+		locationKeys=new ArrayList();
+	}
+	System.out.println("Location keys reset!");
+	%>
+	locationKeys = "<%=locationKeys%>";
+}
 
 //setTimeout(function(){ map.invalidateSize()}, 1000);
 //function generatePompeii(name) {
@@ -135,12 +150,12 @@ function checkboxesAfterBack() {
 					value = languages[value];
 				} else if (typeToken == "dc" && value == 0) {
 					// do nothing if All is selected
-				} else {
+					var locationKeys = "<%=locationKeys%>";		} else {
 				value = value.replace("_", " ");
 				}
 				var id = typeToken+value;
 				//type = type.replace("_", " ");
-				//alert(id);
+				//alert(id);import java.util.List;
 				$("#"+id).click();
 			} else if (type == "content") {
 				addSearchTerm("Content", value, value);
@@ -161,6 +176,7 @@ function updatePage(){
 	</c:if>
 	
 }
+
 </script>	
 
 <style>
@@ -211,28 +227,19 @@ ul#searchTerms li {
 <%@include file="header.jsp"%>
 
 <div id="contain" class="container" style="margin-bottom: 50px;">
-
 		<%@include file="sidebarSearchMenu.jsp"%>
 		<!--  SideBar Map  -->
-		<div class="map-override1">
-			<div id="pompeiimap" class="searchResultsPompeii"></div>
-			<div id="herculaneumCityMap"></div>
-		</div>
 		
-		<!--  
-		<div id="pompeiimap" class="mapdiv" style="border:3px solid #800000; margin-left:715px; margin-top:155px; width: 200px; height:200px;"></div>
-		<div>
-		-->
-	
-		<!--  <div id="newDiv"></div>-->
-		<!-- </div> --> 
+		<div id="pompeiimap" class="searchResultsPompeii"></div>
+		<div id="herculaneumCityMap" class="searchResultsHerculaneum"></div>
+		
 		
 
 		<div style="margin-left: 200px;">
 			<div style="width: 475px; padding-bottom: 10px;">
 				<ul id="searchTerms" style="width: 525px; margin-left: -40px;"></ul>
 			</div>
-			<div id="search-results">
+			<div id="search-results"> 
 				<%@include file="filter.jsp"%>
 			</div>
 		</div>
@@ -248,8 +255,14 @@ ul#searchTerms li {
 <script type="text/javascript">
 	generateHerculaneum("Herculaneum");
 </script>
+
 <script>
-	window.initmap(true,false,false,false);
+	setLocationKeys();
+    
+	window.initmap(true,false,false,false,0,locationKeys);
 </script>
 </body>
+
+
+
 </html>

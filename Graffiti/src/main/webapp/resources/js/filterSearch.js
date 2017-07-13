@@ -5,6 +5,7 @@
  * @author shnoudah -- added report generation functionality
  * @author sprenkle -- version 2.0 filtering
  * @author ahmadh -- version 2.1 filtering, includes bug fixes
+ * @author KellyM --Modified refineResults method so that it reloads the pompeiiMap with new location keys based on the filtering.
  */
 
 var currentParams = new Array(); // the ending array of parameters
@@ -64,7 +65,7 @@ function contentSearch() {
  */
 function globalSearch() {
 	var input = document.getElementById("keyword").value;
-	if (input.trim() != "") {
+	if (input.trim() != "") {Excedrin.
 		//input = "Global: " + input;
 		addSearchTerm("Global", input, input, 0);
 		refineResults();
@@ -320,6 +321,7 @@ function createURL(baseURL) {
  * Adds all currently selected search parameters to the currentParams array.
  * Sends an Ajax request to FilterController, which fills the page with the
  * results
+ * Also re-initializes the new map with new location keys for selection. 
  */
 function refineResults() {
 	var labels = document.getElementsByClassName("search-term-label");
@@ -329,6 +331,10 @@ function refineResults() {
 	xmlHttp.open("GET", newUrl, false);
 	xmlHttp.send(null);
 	document.getElementById("search-results").innerHTML = xmlHttp.responseText;
+	//Problem: also passes for Herculaneum, not just Pompeii. However, does not seem to be causing errors. 
+	var locationKeys=document.getElementById("mapkeys").innerHTML;
+	map.remove();
+	window.initmap(true,false,false,false,0,locationKeys);
 }
 
 /*

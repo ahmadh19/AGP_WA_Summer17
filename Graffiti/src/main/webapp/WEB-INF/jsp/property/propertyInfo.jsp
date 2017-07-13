@@ -64,7 +64,7 @@ function generateMap(name) {
 		<div class="button_bar">
 			<a
 				href="<%=request.getContextPath() %>/property/${prop.insula.city.name}/${prop.insula.shortName}/${prop.propertyNumber }/json"
-				id="json"><button class="btn btn-agp right-align">Download
+				id="json"><button class="btn btn-agp right-align">Export
 					JSON Data</button></a>
 		</div>
 
@@ -103,11 +103,7 @@ function generateMap(name) {
 			</c:if>
 			<tr>
 				<th class="propertyLabel">Property Type:</th>
-				<td><c:forEach var="k" begin="${1}"
-						end="${fn:length(prop.propertyTypes)}">
-						<c:set var="pt" value="${prop.propertyTypes[k-1]}" />
-						${pt.name} <!-- link to the vocab info about this property type -->
-					</c:forEach></td>
+				<td>${prop.propertyTypesAsString}</td>
 			</tr>
 			<c:if test="{not empty prop.commentary}">
 				<tr>
@@ -140,7 +136,6 @@ function generateMap(name) {
 				</td>
 			</tr>
 		</table>
-		<!-- 	<div id="pompeiimap" class="propertymapdiv"></div>  -->
 		<div id="map">
 			<div id="cityMap"></div>
 		</div>
