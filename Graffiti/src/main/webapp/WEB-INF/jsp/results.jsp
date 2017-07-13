@@ -8,7 +8,7 @@
 <meta charset="UTF-8">
 <%@include file="../../resources/common_head.txt"%>
 <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
-
+<%@ page import= "java.util.*" %>
 
 <title>Ancient Graffiti Project :: Search Results</title>
 <script type="text/javascript"
@@ -155,6 +155,15 @@ function checkboxesAfterBack() {
 }
 
 
+function getLocationKeys(){
+	var locationKeys=request.getAttribute("findLocationKeys");
+	for(i=0;i<locationKeys.length;i++){
+		alert(locationKeys[i]);
+	}
+}
+
+
+
 function updatePage(){
 	checkboxesAfterBack();
 	
@@ -207,6 +216,8 @@ ul#searchTerms li {
 <body onload="updatePage();">
 
 	<%@include file="header.jsp"%>
+	
+	<script>getLocationKeys();</script>
 
 	<div id="contain" class="container" style="margin-bottom: 50px;">
 
@@ -217,14 +228,6 @@ ul#searchTerms li {
 			<div id="pompeiiCityMap"></div>
 
 		</div>
-		
-		<!--  
-		<div id="pompeiimap" class="mapdiv" style="border:3px solid #800000; margin-left:715px; margin-top:155px; width: 200px; height:200px;"></div>
-		<div>
-		-->
-	
-		<!--  <div id="newDiv"></div>-->
-		<!-- </div> --> 
 		
 
 		<div style="margin-left: 200px;">
