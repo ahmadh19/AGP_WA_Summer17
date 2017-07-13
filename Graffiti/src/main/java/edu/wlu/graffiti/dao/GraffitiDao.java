@@ -111,6 +111,8 @@ public class GraffitiDao extends JdbcTemplate {
 			+ "FROM graffititothemes, edr_inscriptions "
 			+ "LEFT JOIN agp_inscription_info ON edr_inscriptions.edr_id=agp_inscription_info.edr_id "
 			+ "LEFT JOIN properties ON agp_inscription_info.property_id=properties.id "
+			+ "LEFT JOIN figural_graffiti_info ON edr_inscriptions.edr_id=figural_graffiti_info.edr_id "
+			+ "LEFT JOIN greatest_hits_info ON edr_inscriptions.edr_id=greatest_hits_info.edr_id "
 			+ "WHERE is_themed = true AND theme_id=(?) AND edr_inscriptions.edr_id=graffititothemes.graffito_id AND "
 			+ "edr_inscriptions.edr_id=agp_inscription_info.edr_id";
 
