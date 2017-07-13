@@ -158,19 +158,32 @@ public class AddInscriptionsToElasticSearch {
 	}
 	
 	/**
-	 * Implements a custom analyzer to fold (normalize) special characters and creates
-	 * the index
+	 * Implements a custom analyzer to fold special characters (like accents) to unicode
+	 * and strips punctuation, then creates the index
 	 * @throws IOException 
 	 */
 	private static void createIndexAndAnalyzer() throws IOException {
 		XContentBuilder settingsBuilder = jsonBuilder()
 				.startObject()
 					.startObject("analysis")
+						.startObject("filter")
+							.startObject("punct_remove")
+								.field("type", "pattern_replace")
+								.field("pattern", "\\p{Punct}")
+								.field("replacement", "")
+							.endObject()
+						.endObject()
+						.startObject("tokenizer")
+							.startObject("custom_tokenizer")
+								.field("type", "pattern")
+								.field("pattern", "\\s|-(?![^\\[]*\\])") // splits at whitespace and hyphen if not in parentheses
+							.endObject()
+						.endObject()
 						.startObject("analyzer")
 							.startObject("folding")
 								.field("type", "custom")
-								.field("tokenizer", "standard")
-								.field("filter", new String[]{"lowercase", "asciifolding"})
+								.field("tokenizer", "custom_tokenizer")
+								.field("filter", new String[]{"lowercase", "icu_folding", "punct_remove"})
 							.endObject()
 						.endObject()
 					.endObject()
@@ -211,7 +224,7 @@ public class AddInscriptionsToElasticSearch {
 				.field("writing_style", i.getWritingStyle()).field("language", i.getLanguage())
 				.field("content", i.getPreprocessedContent(i.getContent())).field("edr_id", i.getEdrId())
 				.field("bibliography", i.getBibliography()).field("comment", i.getAgp().getCommentary())
-				.field("content_translation", i.getPreprocessedContent(i.getAgp().getContentTranslation()))
+				.field("content_translation", i.getAgp().getContentTranslation())
 				.field("cil", i.getAgp().getCil())
 				.field("has_figural_component", i.getAgp().hasFiguralComponent())
 				.field("langner", i.getAgp().getLangner()).field("measurements", i.getMeasurements())
@@ -389,9 +402,9 @@ public class AddInscriptionsToElasticSearch {
 				.startObject("summary").field("type", "text").endObject()
 				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject()
 				.startObject("bibliography").field("type", "text").endObject()
-				.startObject("cil").field("type", "text").endObject()
-				.startObject("comment").field("type", "text").endObject().startObject("content_translation")
-				.field("type", "text").endObject().startObject("description_in_english").field("type", "text").endObject()
+				.startObject("cil").field("type", "text").endObject().startObject("comment").field("type", "text").endObject()
+				.startObject("content_translation").field("analyzer", "folding").field("type", "text").endObject()
+				.startObject("description_in_english").field("type", "text").endObject()
 				.startObject("measurements").field("type", "text").endObject().endObject().endObject().endObject();
 
 		client.admin().indices().preparePutMapping(ES_INDEX_NAME).setType(ES_TYPE_NAME).setSource(mapping).get();

@@ -385,23 +385,11 @@ public class Inscription implements Comparable<Inscription> {
 	
 	/**
 	 * @param myContent the content to pre-process
-	 * @return myContent stripped of punctuation
+	 * @return myContent html characters converted to unicode
 	 */
 	public String getPreprocessedContent(String myContent) {
-		if(myContent != null) {
-			String newContent = StringEscapeUtils.unescapeHtml4(myContent);
-			
-			Pattern p = Pattern.compile("\\p{Punct}");
-			Matcher m = p.matcher(newContent);
-			StringBuffer sb = new StringBuffer();
-			
-			while(m.find())
-				m.appendReplacement(sb, "");
-			 
-			m.appendTail(sb);
-			 
-			return sb.toString();
-		}
+		if(myContent != null)
+			return StringEscapeUtils.unescapeHtml4(myContent);
 		
 		return null;
 	}
