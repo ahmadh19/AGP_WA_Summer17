@@ -101,7 +101,7 @@ public class PropertyController {
 			return "property/error";
 		}
 		
-		// add checks for invalid insula ID.
+		// TODO: add checks for invalid insula ID.
 		
 		final List<Property> properties = propertyDao.getPropertiesByCityAndInsula(city, insula);
 		request.setAttribute(city.toLowerCase() + "Properties", properties);

@@ -105,6 +105,14 @@ public class GraffitiDao extends JdbcTemplate {
 			+ "LEFT JOIN greatest_hits_info ON edr_inscriptions.edr_id=greatest_hits_info.edr_id "
 			+ "WHERE has_figural_component = true AND drawing_tag_id=(?) AND edr_inscriptions.edr_id=graffitotodrawingtags.graffito_id AND "
 			+ "edr_inscriptions.edr_id=agp_inscription_info.edr_id";
+	
+	private static final String SELECT_INSCRIPTIONS_BY_THEME = "SELECT *, " + "edr_inscriptions.id AS local_id, "
+			+ "properties.id AS property_id "
+			+ "FROM graffititothemes, edr_inscriptions "
+			+ "LEFT JOIN agp_inscription_info ON edr_inscriptions.edr_id=agp_inscription_info.edr_id "
+			+ "LEFT JOIN properties ON agp_inscription_info.property_id=properties.id "
+			+ "WHERE is_themed = true AND theme_id=(?) AND edr_inscriptions.edr_id=graffititothemes.graffito_id AND "
+			+ "edr_inscriptions.edr_id=agp_inscription_info.edr_id";
 
 	private static final String SELECT_DRAWING_TAGS = "SELECT drawing_tags.id, name, description "
 			+ "FROM graffitotodrawingtags, drawing_tags "
@@ -193,6 +201,13 @@ public class GraffitiDao extends JdbcTemplate {
 		return results;
 	}
 
+	public List<Inscription> getInscriptionByTheme(String themeId) {
+		List<Inscription> results = null;
+		results = query(SELECT_INSCRIPTIONS_BY_THEME, new InscriptionRowMapper(),
+				Integer.parseInt(themeId));
+		return results;
+	}
+	
 	/* Possibly should be removed; no longer used?
 	public List<Inscription> getInscriptionById(String id) {
 		List<Inscription> results = query(FIND_BY_ID, new InscriptionRowMapper(), id);
