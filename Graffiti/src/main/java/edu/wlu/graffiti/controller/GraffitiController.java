@@ -669,6 +669,8 @@ public class GraffitiController {
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
+		request.setAttribute("findLocationKeys", inscriptions);
+		System.out.println("Here location keys is: "+request.getAttribute("findLocationKeys"));
 		return "filter";
 	}
 
