@@ -408,6 +408,13 @@ public class GraffitiController {
 			
 			//Decides which jsp page to travel to when user clicks "More Information" on Search page.
 			return "details";
+			if(city.equals("Pompeii")){
+				return "moreGraffitoInformation";
+			}
+			else{
+				return "details";
+			}
+			//return "details";
 		}
 	}
 	
@@ -420,6 +427,8 @@ public class GraffitiController {
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
+		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
+		System.out.println("Location keys set in G Controller");
 		//return "results";
 		return "searchResults";
 	}
