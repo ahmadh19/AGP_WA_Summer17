@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -38,6 +37,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,9 +52,9 @@ import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Insula;
 import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.dao.DrawingTagsDao;
+import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.dao.InsulaDao;
-import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.PropertyTypesDao;
 import edu.wlu.graffiti.data.setup.Utils;
 
@@ -114,7 +114,7 @@ public class GraffitiController {
 			PROPERTY_TYPE_SEARCH_DESC, DRAWING_CATEGORY_SEARCH_DESC, WRITING_STYLE_SEARCH_DESC, "Language" };
 
 	private static String[] searchFields = { "content",
-			"content summary city insula.insula_name property.property_name property.property_types"
+			"content content_translation summary city insula.insula_name property.property_name property.property_types"
 					+ "cil description writing_style language edr_id bibliography"
 					+ " drawing.description_in_english drawing.description_in_latin drawing.drawing_tags",
 			CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, PROPERTY_ID_FIELD_NAME, PROPERTY_TYPES_FIELD_NAME,
@@ -131,7 +131,7 @@ public class GraffitiController {
 			ES_TYPE_NAME = prop.getProperty("es.type");
 			ES_CLUSTER_NAME = prop.getProperty("es.cluster_name");
 		}
-		settings = Settings.settingsBuilder().put("cluster.name", ES_CLUSTER_NAME).build();
+		settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
 	}
 
 	// Maps to the search.jsp page currently receives information from
@@ -308,7 +308,7 @@ public class GraffitiController {
 		return "displayData";
 	}
 
-	@RequestMapping(value = "/region/{city}/{insula:.+}", method = RequestMethod.GET)
+	@RequestMapping(value = "/region/{city}/{insula}", method = RequestMethod.GET)
 	public String insulaPage(@PathVariable String city, @PathVariable String insula, HttpServletRequest request,
 			HttpServletResponse response) {
 		// System.out.println("insulaPage: " + insula);
@@ -437,7 +437,7 @@ public class GraffitiController {
 		// request.getQueryString());
 
 		try {
-			client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
+			client = new PreBuiltTransportClient(settings).addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(ES_HOSTNAME), ES_PORT_NUM));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -508,20 +508,27 @@ public class GraffitiController {
 				// writing style, language, EAGLE id, and bibliography for a
 				// keyword match
 				BoolQueryBuilder globalQuery;
-				QueryBuilder fuzzyQuery;
-				QueryBuilder exactQuery;
+				// QueryBuilder fuzzyQuery;
+				// QueryBuilder exactQuery;
+				QueryBuilder myTestQuery;
 
 				String[] a = fieldNames.get(i).split(" ");
 
 				globalQuery = boolQuery();
-				fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8])
-						.fuzziness("AUTO");
-				exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
 
-				// For EDR id and bibliography, users want exact results.
+				/*
+				 * fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1],
+				 * a[2], a[3], a[4], a[5], a[6], a[7], a[8]).fuzziness("AUTO");
+				 * exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
+				 * 
+				 * // For EDR id and bibliography, users want exact results.
+				 * 
+				 * globalQuery.should(fuzzyQuery);
+				 * globalQuery.should(exactQuery);
+				 */
 
-				globalQuery.should(fuzzyQuery);
-				globalQuery.should(exactQuery);
+				myTestQuery = multiMatchQuery(parameters.get(i), a);
+				globalQuery.should(myTestQuery);
 
 				query.must(globalQuery);
 			} else if (searchTerms.get(i).equals("Content Keyword")) {
@@ -529,7 +536,7 @@ public class GraffitiController {
 				String[] params = parameters.get(i).split(" ");
 
 				for (String param : params) {
-					contentQuery.must(matchQuery(fieldNames.get(i), param).fuzziness("AUTO"));
+					contentQuery.must(matchQuery(fieldNames.get(i), param));// .fuzziness("AUTO"));
 				}
 				query.must(contentQuery);
 			} else if (searchTerms.get(i).equals("Property")) {
@@ -568,13 +575,7 @@ public class GraffitiController {
 			}
 		}
 
-		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
-				.addFields("id", CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, INSULA_NAME_FIELD_NAME, PROPERTY_ID_FIELD_NAME,
-						"property.property_number", "property.property_name", PROPERTY_TYPES_FIELD_NAME,
-						"drawing.description_in_english", "drawing.description_in_latin", "drawing.drawing_tag_ids",
-						"content", "summary", "edr_id", "bibliography", WRITING_STYLE_IN_ENGLISH_FIELD_NAME,
-						LANGUAGE_IN_ENGLISH_FIELD_NAME, "cil", "description", "lagner", "comment",
-						"content_translation", "measurements")
+		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 				.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
 
 		for (SearchHit hit : response.getHits()) {
@@ -614,12 +615,12 @@ public class GraffitiController {
 	}
 
 	private Inscription hitToInscription(SearchHit hit) {
-		String edrID = hit.field("edr_id").value();
+		String edrID = hit.getField("edr_id").getValue();
 		Inscription inscription = graffitiDao.getInscriptionByEDR(edrID);
 		return inscription;
 	}
 
-	static List<String> findLocationKeys(final List<Inscription> inscriptions) {
+	private static List<String> findLocationKeys(final List<Inscription> inscriptions) {
 		final List<String> locationKeys = new ArrayList<String>();
 		if (inscriptions != null) {
 			final Set<String> locationKeysSet = new TreeSet<String>();
@@ -631,7 +632,7 @@ public class GraffitiController {
 		}
 		return locationKeys;
 	}
-
+	
 	private static List<String> findLocationKeys(final Inscription inscription) {
 		final List<String> locationKeys = new ArrayList<String>();
 		final Set<String> locationKeysSet = new TreeSet<String>();

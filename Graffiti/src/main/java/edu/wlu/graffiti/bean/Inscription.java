@@ -8,6 +8,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -378,5 +382,16 @@ public class Inscription implements Comparable<Inscription> {
 		
 		return "AGP-"+edrId+", <i>The Ancient Graffiti Project</i>, &lt;http://ancientgraffiti.org/Graffiti/graffito/AGP-"+edrId+"&gt; [accessed: "+dateString+"]";
 	}
-
+	
+	/**
+	 * @param myContent the content to pre-process
+	 * @return myContent html characters converted to unicode
+	 */
+	public String getPreprocessedContent(String myContent) {
+		if(myContent != null)
+			return StringEscapeUtils.unescapeHtml4(myContent);
+		
+		return null;
+	}
+	
 }
