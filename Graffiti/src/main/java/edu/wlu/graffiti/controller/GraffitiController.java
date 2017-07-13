@@ -308,7 +308,7 @@ public class GraffitiController {
 		return "displayData";
 	}
 
-	@RequestMapping(value = "/region/{city}/{insula}", method = RequestMethod.GET)
+	@RequestMapping(value = "/region/{city}/{insula:.+}", method = RequestMethod.GET)
 	public String insulaPage(@PathVariable String city, @PathVariable String insula, HttpServletRequest request,
 			HttpServletResponse response) {
 		//System.out.println("insulaPage: " + insula);

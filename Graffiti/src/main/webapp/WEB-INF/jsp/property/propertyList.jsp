@@ -35,11 +35,12 @@ th {
 				</a>
 			<% } 
 			%>
-		<h1>Herculaneum Properties</h1>
-		<div class="button_bar">
+			
 			<%
 				if (request.getAttribute("filterByInsula") != null) {
 			%>
+			<h1>Herculaneum Insula <%=request.getAttribute("filterByInsula")%> Properties</h1>
+			<div class="button_bar">
 			<a
 				href="<%=request.getContextPath()%>/properties/Herculaneum/<%=request.getAttribute("filterByInsula")%>/csv"
 				id="herculaneumCSV">
@@ -49,9 +50,12 @@ th {
 				id="herculaneumJSON">
 				<button class="btn btn-agp right-align">Export as JSON</button>
 			</a>
+			</div>
 			<%
 				} else {
 			%>
+			<h1>Herculaneum Properties</h1>
+			<div class="button_bar">
 			<a href="<%=request.getContextPath()%>/properties/Herculaneum/csv"
 				id="herculaneumCSV">
 				<button class="btn btn-agp right-align">Export as CSV</button>
@@ -59,10 +63,10 @@ th {
 				id="herculaneumJSON">
 				<button class="btn btn-agp right-align">Export as JSON</button>
 			</a>
+			</div>
 			<%
 				}
 			%>
-		</div>
 
 		<table class="table table-bordered table-striped" id="herculaneumTable"
 				style="margin-bottom: 30px;">
@@ -100,11 +104,12 @@ th {
 		<%
 			if (request.getAttribute("pompeiiProperties") != null) {
 		%>
-		<h2 id="pompeii">Pompeii Properties</h2>
-		<div class="button_bar">
 			<%
 				if (request.getAttribute("filterByInsula") != null) {
 			%>
+			<h2 id="pompeii">Pompeii Insula <%=request.getAttribute("filterByInsula")%> Properties</h2>
+			<div class="button_bar">
+			
 			<a
 				href="<%=request.getContextPath()%>/properties/Pompeii/<%=request.getAttribute("filterByInsula")%>/csv"
 				id="pompeiiCSV">
@@ -114,9 +119,12 @@ th {
 				id="pompeiiJSON">
 				<button class="btn btn-agp right-align">Export as JSON</button>
 			</a>
+			</div>
 			<%
 				} else {
 			%>
+			<h2 id="pompeii">Pompeii Properties</h2>
+			<div class="button_bar">
 			<a href="<%=request.getContextPath()%>/properties/Pompeii/csv"
 				id="pompeiiCSV">
 				<button class="btn btn-agp right-align">Export as CSV</button>
@@ -124,10 +132,10 @@ th {
 				id="pompeiiSON">
 				<button class="btn btn-agp right-align">Export as JSON</button>
 			</a>
+			</div>
 			<%
 				}
 			%>
-		</div>
 
 		<table class="table table-bordered table-striped" id="pompeiiTable"
 			style="margin-bottom: 30px;">

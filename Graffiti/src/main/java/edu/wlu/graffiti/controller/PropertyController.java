@@ -91,7 +91,7 @@ public class PropertyController {
 		return "property/propertyList";
 	}
 	
-	@RequestMapping(value = "/properties/{city}/{insula}", method = RequestMethod.GET)
+	@RequestMapping(value = "/properties/{city}/{insula:.+}", method = RequestMethod.GET)
 	public String searchPropertiesByCityInsula(@PathVariable String city, @PathVariable String insula, final HttpServletRequest request) {
 		// get all the property types, all the properties and their mappings to
 		// property types
@@ -106,8 +106,6 @@ public class PropertyController {
 		final List<Property> properties = propertyDao.getPropertiesByCityAndInsula(city, insula);
 		request.setAttribute(city.toLowerCase() + "Properties", properties);
 		request.setAttribute("filterByInsula", insula);
-		System.out.println(properties.size());
-		System.out.println("City: " + city + "\nInsula: " + insula);
 
 		return "property/propertyList";
 	}
