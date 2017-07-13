@@ -28,7 +28,7 @@ $(document).ready(function(){
 
 .btn-custom {
 	width: 70px;
-	font-size: 12px;
+	font-size: 12px;Property: Pompeii I.8.15 Caupona and Officina di Fufidius Successus ×
 	background-color: #ddd;
 }
 
@@ -36,7 +36,7 @@ $(document).ready(function(){
 	border: 2px solid #428bca;
 	margin-right: 1px;
 	font-size: 12px;
-}
+}.WEB_0
 
 .large-font {
 	font-size: 18px;

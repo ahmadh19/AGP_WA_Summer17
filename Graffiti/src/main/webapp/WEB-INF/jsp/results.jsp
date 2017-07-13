@@ -8,7 +8,7 @@
 <meta charset="UTF-8">
 <%@include file="../../resources/common_head.txt"%>
 <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
-
+<%@ page import= "java.util.*" %>
 
 <title>Ancient Graffiti Project :: Search Results</title>
 <script type="text/javascript"

@@ -1,31 +1,7 @@
-#property_names {
-	display: none;
-}
 
-#property_names_chosen {
-	margin-left: 100px;
-}
 
 #property_names_chosen .chosen-choices, #property_names_chosen .chosen-drop {
 	width: 500px !important;
-}
-
-#property_names_chosen .default {
-	padding: 0 !important;
-	width: 500px !important;
-}
-
-.jumbotron {
-	/* background-image: url("/resources/images/herculaneum_banner.jpg"); */
-	background-image:
-		url("/Graffiti/resources/images/herculaneum_banner.jpg");
-	padding-top: 44px;
-	padding-bottom: 30px;
-	text-shadow: black 0.1em 0.1em 0.2em;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-	color: white;
 }
 
 @media only screen and (max-width: 450px) {
@@ -75,12 +51,6 @@ img.thumbnail {
 	width: 200px;
 }
 
-#results {
-	width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-}
-
 #results h4 {
 	border-top-style: solid;
 	border-top-color: gold;
@@ -88,19 +58,6 @@ img.thumbnail {
 
 #results ul {
 	padding-bottom: 15px;
-}
-
-#person {
-	height: 300px;
-}
-
-.pic {
-	float: left;
-}
-
-.info {
-	margin-left: 250px;
-	postion: absolute;
 }
 
 th, td {
@@ -163,12 +120,7 @@ th, td {
 	height: auto;
 }
 
-#herculaneumCityMap {
-	width: 200px;
-	position: absolute;
-	margin-left: 715px;
-	border: 3px solid #800000;
-}
+
 
 #herculaneumCityMap img {
 	width: 190px;

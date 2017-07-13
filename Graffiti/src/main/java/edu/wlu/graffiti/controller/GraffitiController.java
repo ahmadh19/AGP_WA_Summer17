@@ -534,7 +534,8 @@ public class GraffitiController {
 			request.setAttribute("imagePages", i.getPages());
 			request.setAttribute("thumbnails", i.getThumbnails());
 			request.setAttribute("findLocationKeys", findLocationKeys(i));
-			System.out.println("Location keys set in G Controller");
+			System.out.println("Original location keys: "+request.getAttribute("findLocationKeys"));
+			//System.out.println("Location keys set in G Controller");
 			request.setAttribute("inscription", i);
 			request.setAttribute("city", city);
 			
@@ -773,7 +774,7 @@ public class GraffitiController {
 		s.setAttribute("returnFromEDR", request.getParameter("edr"));
 	}
 
-	private static List<String> findLocationKeys(final List<Inscription> inscriptions) {
+	static List<String> findLocationKeys(final List<Inscription> inscriptions) {
 		final List<String> locationKeys = new ArrayList<String>();
 		if (inscriptions != null) {
 			final Set<String> locationKeysSet = new TreeSet<String>();

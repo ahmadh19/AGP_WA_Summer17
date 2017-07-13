@@ -105,11 +105,11 @@ public class FilterController {
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 		s.setAttribute("returnFromEDR", "");
 		List<Inscription> inscriptions = searchResults(request);
-		// request.setAttribute("findLocationKeys",
-		// findLocationKeys(inscriptions));
+		request.setAttribute("findLocationKeys",GraffitiController.findLocationKeys(inscriptions));
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
+	
 		return "filter";
 	}
 

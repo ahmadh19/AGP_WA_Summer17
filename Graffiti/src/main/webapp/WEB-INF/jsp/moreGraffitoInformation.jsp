@@ -509,7 +509,8 @@ function backToResults(){
 				if ("${i.ancientCity}" == "Herculaneum") {
 					generateHerculaneum("${i.ancientCity}");
 				} else if ("${i.ancientCity}" == "Pompeii") {
-					window.initmap(true,false,true,false,<c:out value = "${i.agp.property.id}"/>);
+					window.initmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>);
+					
 				
 				} 
 			</script>
