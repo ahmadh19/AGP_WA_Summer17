@@ -17,6 +17,8 @@ herculaneum_map.xml,search.jsp(really? No stylesheet link here shown)*/
 	height: 500px;
 	width: 800px;
 	float: left;
+	position:absolute;
+	margin-left:auto;
 }
 
 /*Used in pompeiiMap.jsp,and searchPompeii.jsp */
@@ -52,8 +54,6 @@ herculaneum_map.xml,search.jsp(really? No stylesheet link here shown)*/
 	border: 3px solid #800000;
 	position:absolute;
 }
-
-
 
 
 /*Used in moreGraffitoInformation.jsp*/

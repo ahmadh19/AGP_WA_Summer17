@@ -24,6 +24,9 @@
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 
 
+<%-- <a
+href="<%=request.getContextPath() %>/properties/${i.agp.property.insula.city.name}/${i.agp.property.insula.shortName}/${i.agp.property.propertyNumber}">property
+metadata &#10140;</a></td> --%>
 
 
 <style type="text/css">
