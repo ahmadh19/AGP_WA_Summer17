@@ -37,10 +37,6 @@ public class FeaturedGraffitiController {
 	@Resource
 	private InsulaDao insulaDao;
 	
-	@RequestMapping(value = "/ThemeGraffiti", method = RequestMethod.GET)
-	public String themeGraffiti(final HttpServletRequest request) {
-		return "Rough_Draft_Theme_Mock_Up";
-	}
 	
 	@RequestMapping(value = "/TranslationQuiz", method = RequestMethod.GET)
 	public String featuredHits(final HttpServletRequest request) {
@@ -51,4 +47,12 @@ public class FeaturedGraffitiController {
 		return "newTranslationQuiz";
 
 	}
-}
+	@RequestMapping(value = "/ThemeGraffiti", method = RequestMethod.GET)
+	public String featuredHits2(final HttpServletRequest request) {
+
+		final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
+		request.setAttribute("translationHits", greatestTranslationHits);
+		return "Rough_Draft_Theme_Mock_Up";
+
+	}
+	}

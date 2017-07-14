@@ -184,7 +184,7 @@ body {
 
 	<div class="container">
 		<div id="selectors">
-			<a href="http://localhost:8080/Graffiti/TranslationQuiz" target="_blank"
+			<a href="<%=request.getContextPath()%>/TranslationQuiz" target="_blank"
 			id="csv">
 			<button class="btn btn-agp right-align">Translation Quiz</button>
 		</a>
@@ -203,54 +203,54 @@ body {
     <ul class="portfolio-grid">
     				
        				<li>
-                        <a href="http://localhost:8080/Graffiti/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/PompeiiCity.png" alt="Pompeii"/>
                         </a>
                     </li>
                     <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/HerculaneumCity.png" alt="Herculaneum"/>
                         </a>
                     </li>
                     <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/SmyrnaCity.png" alt="Smyrna"/>
                         </a>
                     </li>
     
                     <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
                       
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Love.png" alt="Love"/>
                         </a>
                     </li>
                                      <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/FG.png" alt="Figural Graffiti"/>
                         </a>
                     </li>
                     <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Baths.png" alt="Baths"/>
                         </a>
                     </li>
                     <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank"  class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank"  class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Gladiators.png" alt="Gladiators"/>
                         </a>
                     </li>
                     <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Food.png" alt="Food"/>
                         </a>
                     </li>
                     <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Inns.jpg" alt="Inns and Travel Graffiti"/>
                         </a>
                     </li>
                     <li>
-                        <a href="http://ancientgraffiti.org/Graffiti/featured-graffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Grammar.png" alt="Grammar Graffiti"/>
                         </a>
                     </li>
