@@ -24,6 +24,7 @@ public class JsonController {
 
 	@Resource
 	private FindspotDao findspotDao;
+	
 
 	@RequestMapping(value = "/graffito/AGP-{edrId}/json", produces = "application/json;charset=UTF-8")
 	public Inscription getInscription(@PathVariable String edrId, HttpServletResponse response) {
@@ -51,5 +52,44 @@ public class JsonController {
 	public Property getProperty(@PathVariable String city, @PathVariable String insula, @PathVariable String property, HttpServletResponse response) {
 		return findspotDao.getPropertyByCityAndInsulaAndProperty(city, insula, property);
 	}
+	
+	@RequestMapping(value = "/properties/json", produces = "application/json")
+	public List<Property> getPropertyList(HttpServletResponse response) {
+		final List<Property> properties = findspotDao.getProperties();
 
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=all-properties.json");
+		
+		return properties;
+	}
+	
+	@RequestMapping(value = "/properties/{city}/json", produces = "application/json")
+	public List<Property> getPropertyListByCity(@PathVariable String city, HttpServletResponse response) {
+		final List<Property> properties = findspotDao.getPropertiesByCity(city);
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=" + city + "-properties.json");
+		
+		return properties;
+	}
+	
+	@RequestMapping(value = "/properties/{city}/{insula}/json", produces = "application/json")
+	public List<Property> getPropertyListByCityInsula(@PathVariable String city, @PathVariable String insula, HttpServletResponse response) {
+		final List<Property> properties = findspotDao.getPropertiesByCityAndInsula(city, insula);
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=" + city + "-" + insula + "-properties.json");
+		
+		return properties;
+	}
+	
 }

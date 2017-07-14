@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.wlu.graffiti.bean.Inscription;
+import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.data.export.GenerateCSV;
@@ -32,6 +33,7 @@ public class CSVController {
 
 	@Resource
 	private FindspotDao findspotDao;
+	
 
 	@RequestMapping(value = "/graffito/AGP-{edrId}/csv", produces = "text/csv;charset=UTF-8")
 	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
@@ -52,6 +54,49 @@ public class CSVController {
 		List<Inscription> results = (List<Inscription>) s.getAttribute("filteredList");
 		response.addHeader("Content-Disposition", "attachment; filename=filtered-results.csv");
 		return generator.serializeToCSV(results);
+	}
+	
+	@RequestMapping(value = "/properties/csv", produces = "text/csv;charset=UTF-8")
+	public String downloadProperties(final HttpServletRequest request, HttpServletResponse response) {
+		
+		final List<Property> properties = findspotDao.getProperties();
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+			
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=all-properties.csv");
+		return generator.serializePropertiesToCSV(properties);
+	}
+
+	
+	@RequestMapping(value = "/properties/{city}/csv", produces = "text/csv;charset=UTF-8")
+	public String downloadPropertiesByCity(@PathVariable String city, final HttpServletRequest request, HttpServletResponse response) {
+		
+		final List<Property> properties = findspotDao.getPropertiesByCity(city);
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+			
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=" + city +"-properties.csv");
+		return generator.serializePropertiesToCSV(properties);
+	}
+	
+	@RequestMapping(value = "/properties/{city}/{insula}/csv", produces = "text/csv;charset=UTF-8")
+	public String downloadPropertiesByCityInsula(@PathVariable String city, @PathVariable String insula, final HttpServletRequest request, HttpServletResponse response) {
+		
+		final List<Property> properties = findspotDao.getPropertiesByCityAndInsula(city, insula);
+
+		for (Property p : properties) {
+			p.setPropertyTypes(findspotDao.getPropertyTypeForProperty(p.getId()));
+			
+		}
+		
+		response.addHeader("Content-Disposition", "attachment; filename=" + city + "-" + insula + "-properties.csv");
+		return generator.serializePropertiesToCSV(properties);
 	}
 	
 	/**

@@ -163,12 +163,6 @@ th, td {
 	height: auto;
 }
 
-#herculaneumCityMap {
-	width: 200px;
-	position: absolute;
-	margin-left: 715px;
-	border: 3px solid #800000;
-}
 
 #herculaneumCityMap img {
 	width: 190px;

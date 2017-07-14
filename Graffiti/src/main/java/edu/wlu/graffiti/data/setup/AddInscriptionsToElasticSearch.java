@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.index.IndexResponse;
@@ -24,14 +23,16 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import edu.wlu.graffiti.bean.DrawingTag;
 import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.bean.PropertyType;
 import edu.wlu.graffiti.dao.DrawingTagsDao;
-import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.dao.FindspotDao;
+import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.data.rowmapper.DrawingTagRowMapper;
 import edu.wlu.graffiti.data.rowmapper.InscriptionRowMapper;
 import edu.wlu.graffiti.data.rowmapper.PropertyRowMapper;
@@ -87,7 +88,7 @@ public class AddInscriptionsToElasticSearch {
 		try {
 			// Clear out index before adding inscriptions
 
-			boolean exists = client.admin().indices().prepareExists(ES_INDEX_NAME).execute().actionGet().isExists();
+			boolean exists = client.admin().indices().prepareExists(ES_INDEX_NAME).get().isExists();
 
 			if (exists) {
 				DeleteIndexResponse delete = client.admin().indices().delete(new DeleteIndexRequest(ES_INDEX_NAME))
@@ -98,8 +99,8 @@ public class AddInscriptionsToElasticSearch {
 					System.out.println(ES_INDEX_NAME + " index successfully deleted");
 				}
 			}
-
-			client.admin().indices().create(new CreateIndexRequest(ES_INDEX_NAME)).actionGet();
+			
+			createIndexAndAnalyzer();
 			createMapping();
 
 			PreparedStatement getInscriptions = newDBCon.prepareStatement(SELECT_ALL_INSCRIPTIONS);
@@ -129,11 +130,11 @@ public class AddInscriptionsToElasticSearch {
 				XContentBuilder inscriptionBuilder = createContentBuilder(i);
 
 				IndexResponse response = client.prepareIndex(ES_INDEX_NAME, ES_TYPE_NAME).setSource(inscriptionBuilder)
-						.execute().actionGet();
+						.get();
 
 				// System.out.println(inscriptionBuilder.string());
 
-				if (response.isCreated()) {
+				if (response.status().equals(RestStatus.CREATED)) {
 					count++;
 					// System.out.println(response.getId() + " " +
 					// response.getVersion());
@@ -155,6 +156,41 @@ public class AddInscriptionsToElasticSearch {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Implements a custom analyzer to fold special characters (like accents) to unicode
+	 * and strips punctuation, then creates the index
+	 * @throws IOException 
+	 */
+	private static void createIndexAndAnalyzer() throws IOException {
+		XContentBuilder settingsBuilder = jsonBuilder()
+				.startObject()
+					.startObject("analysis")
+						.startObject("filter")
+							.startObject("punct_remove")
+								.field("type", "pattern_replace")
+								.field("pattern", "\\p{Punct}")
+								.field("replacement", "")
+							.endObject()
+						.endObject()
+						.startObject("tokenizer")
+							.startObject("custom_tokenizer")
+								.field("type", "pattern")
+								.field("pattern", "\\s|-(?![^\\[]*\\])") // splits at whitespace and hyphen if not in parentheses
+							.endObject()
+						.endObject()
+						.startObject("analyzer")
+							.startObject("folding")
+								.field("type", "custom")
+								.field("tokenizer", "custom_tokenizer")
+								.field("filter", new String[]{"lowercase", "icu_folding", "punct_remove"})
+							.endObject()
+						.endObject()
+					.endObject()
+				.endObject();
+				
+		client.admin().indices().prepareCreate(ES_INDEX_NAME).setSettings(settingsBuilder).get();
+	}
 
 	private static XContentBuilder createContentBuilder(Inscription i) throws IOException {
 		Map<String, Object> property = new HashMap<String, Object>();
@@ -164,7 +200,7 @@ public class AddInscriptionsToElasticSearch {
 		if (i.getAgp().getProperty() != null && i.getAgp().getProperty().getInsula() != null ) {
 			propertyTypes = getPropertyTypes(i.getAgp().getProperty().getId());
 			insula.put("insula_id", i.getAgp().getProperty().getInsula().getId());
-			insula.put("insula_name", i.getAgp().getProperty().getInsula().getShortName());
+			insula.put("insula_name", i.getAgp().getProperty().getInsula().getFullName());
 
 			property.put("property_id", i.getAgp().getProperty().getId());
 			property.put("property_name", i.getAgp().getProperty().getPropertyName());
@@ -186,7 +222,7 @@ public class AddInscriptionsToElasticSearch {
 				.field("city", i.getAncientCity()).field("insula", insula).field("property", property)
 				.field("drawing", drawing).field("summary", i.getAgp().getSummary())
 				.field("writing_style", i.getWritingStyle()).field("language", i.getLanguage())
-				.field("content", i.getContent()).field("edr_id", i.getEdrId())
+				.field("content", i.getPreprocessedContent(i.getContent())).field("edr_id", i.getEdrId())
 				.field("bibliography", i.getBibliography()).field("comment", i.getAgp().getCommentary())
 				.field("content_translation", i.getAgp().getContentTranslation())
 				.field("cil", i.getAgp().getCil())
@@ -318,10 +354,10 @@ public class AddInscriptionsToElasticSearch {
 
 		getConfigurationProperties();
 
-		Settings settings = Settings.settingsBuilder().put("cluster.name", ES_CLUSTER_NAME).build();
+		Settings settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
 
 		try {
-			client = new TransportClient.Builder().settings(settings).build().addTransportAddress(
+			client = new PreBuiltTransportClient(settings).addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(ELASTIC_SEARCH_LOC), ES_PORT));
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
@@ -349,36 +385,29 @@ public class AddInscriptionsToElasticSearch {
 	 */
 	private static void createMapping() throws IOException {
 		XContentBuilder mapping = jsonBuilder().startObject().startObject(ES_TYPE_NAME).startObject("properties")
-				.startObject("id").field("type", "long").endObject().startObject("city").field("type", "string")
-				.field("index", "not_analyzed").endObject().startObject("insula") // insula
-																					// (name
-																					// not
-																					// analyzed)
-				.startObject("properties").startObject("insula_id").field("type", "long").endObject()
-				.startObject("insula_name").field("type", "string").field("index", "not_analyzed").endObject()
+				.startObject("id").field("type", "long").endObject().startObject("city").field("type", "keyword")
+				.endObject().startObject("insula").startObject("properties").startObject("insula_id")
+				.field("type", "long").endObject().startObject("insula_name").field("type", "text").endObject()
 				.endObject().endObject().startObject("property") // property
 				.startObject("properties").startObject("property_id").field("type", "long").endObject()
-				.startObject("property_name").field("type", "string").endObject().startObject("property_number")
-				.field("type", "string").endObject().startObject("property_types").field("type", "integer").endObject()
+				.startObject("property_name").field("type", "text").endObject().startObject("property_number")
+				.field("type", "text").endObject().startObject("property_types").field("type", "integer").endObject()
 				.endObject().endObject().startObject("drawing") // drawing
-				.startObject("properties").startObject("description_in_english").field("type", "string").endObject()
-				.startObject("description_in_latin").field("type", "string").endObject().startObject("drawing_tags")
-				.field("type", "string").endObject().startObject("drawing_tag_ids").field("type", "integer").endObject()
-				.endObject().endObject().startObject("writing_style_in_english").field("type", "string")
-				.field("index", "not_analyzed").endObject().startObject("language_in_english") // language,
-				// not
-				// analyzed
-				.field("type", "string").field("index", "not_analyzed").endObject().startObject("content")
-				.field("type", "string").endObject().startObject("summary").field("type", "string").endObject()
-				.startObject("edr_id").field("type", "string").endObject().startObject("bibliography")
-				.field("type", "string").endObject().startObject("cil").field("type", "string").endObject()
-				.startObject("comment").field("type", "string").endObject().startObject("content_translation")
-				.field("type", "string").endObject().startObject("description_in_english").field("type", "string")
-				.endObject().startObject("measurements").field("type", "string").endObject().endObject().endObject()
-				.endObject();
+				.startObject("properties").startObject("description_in_english").field("type", "text").endObject()
+				.startObject("description_in_latin").field("type", "text").endObject().startObject("drawing_tags")
+				.field("type", "text").endObject().startObject("drawing_tag_ids").field("type", "integer").endObject()
+				.endObject().endObject().startObject("writing_style_in_english").field("type", "keyword")
+				.endObject().startObject("language_in_english").field("type", "keyword") 
+				.endObject().startObject("content").field("analyzer", "folding").field("type", "text").endObject()
+				.startObject("summary").field("type", "text").endObject()
+				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject()
+				.startObject("bibliography").field("type", "text").endObject()
+				.startObject("cil").field("type", "text").endObject().startObject("comment").field("type", "text").endObject()
+				.startObject("content_translation").field("analyzer", "folding").field("type", "text").endObject()
+				.startObject("description_in_english").field("type", "text").endObject()
+				.startObject("measurements").field("type", "text").endObject().endObject().endObject().endObject();
 
-		client.admin().indices().preparePutMapping(ES_INDEX_NAME).setType(ES_TYPE_NAME).setSource(mapping).execute()
-				.actionGet();
+		client.admin().indices().preparePutMapping(ES_INDEX_NAME).setType(ES_TYPE_NAME).setSource(mapping).get();
 	}
 
 }

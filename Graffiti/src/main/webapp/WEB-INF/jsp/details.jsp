@@ -2,7 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%-- <%@ include file="/resources/common_head.txt" %> --%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,9 +140,6 @@ function selectImg(ind) {
 }
 
 function backToResults(){
-	xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("GET", "<%=request.getContextPath()%>/backToResults?edr=" + "${inscription.edrId}", false);
-	xmlHttp.send(null);
 	var url = "${sessionScope.returnURL}";
 	url = url.replace("filter", "results"); // generate the results page--makes sure the page is formatted
 	window.location.href = url;
@@ -344,13 +340,14 @@ function backToResults(){
 					 -->
 					<tr>
 						<th class="propertyLabel">Findspot:</th>
-						<td><a
+						<td>
+							<a
 							href="http://pleiades.stoa.org/places/${i.agp.property.insula.city.pleiadesId}">${city}</a>,
 							${findspot}<a
 							href="<%=request.getContextPath() %>/results?property=${i.agp.property.id}">
 								(${i.agp.property.insula.shortName}.${i.agp.property.propertyNumber})</a>
 							<br /> <a
-							href="<%=request.getContextPath() %>/property/${i.agp.property.insula.city.name}/${i.agp.property.insula.shortName}/${i.agp.property.propertyNumber}">property
+							href="<%=request.getContextPath() %>/properties/${i.agp.property.insula.city.name}/${i.agp.property.insula.shortName}/${i.agp.property.propertyNumber}">property
 								metadata &#10140;</a></td>
 					</tr>
 					<!-- defining key words -->
@@ -407,7 +404,7 @@ function backToResults(){
 										</c:if>
 										<c:if test="${not empty i.agp.graffitoLength }">
 											<li>Graffito Length: ${i.agp.graffitoLength }</li>
-										</c:if>
+										</c:if>generatePompeii("${i.ancientCity}");
 										<c:if test="${not empty i.agp.heightFromGround }">
 											<li>Height from Ground: ${i.agp.heightFromGround }</li>
 										</c:if>
@@ -526,16 +523,11 @@ function backToResults(){
 				if ("${i.ancientCity}" == "Herculaneum") {
 					generateHerculaneum("${i.ancientCity}");
 				} else if ("${i.ancientCity}" == "Pompeii") {
-					
+					generatePompeii("${i.ancientCity}");
 				
 				} 
 			</script>
 		</div>
 	</div>
-	<script>
-	
-					
-	window.initmap(true,false,false,true);
-	</script>
 </body>
 </html>

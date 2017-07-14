@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -24,18 +26,13 @@ public class Property {
 	private String italianPropertyName;
 	private Insula insula;
 	private List<PropertyType> propertyTypes;
-	private String pleiadesId="";
-	private String commentary="";
-	private String locationKey="";
+	private String pleiadesId = "";
+	private String commentary = "";
+	private String locationKey = "";
 	private int numberOfGraffiti;
+	private String uri;
 	private static final Map<String, Integer> numerals = new TreeMap<String, Integer>();
-
-	/**
-	 * 
-	 */
-	public Property() {
-		super();
-		
+	static {
 		numerals.put("I", 1);
 		numerals.put("II", 2);
 		numerals.put("III", 3);
@@ -46,10 +43,16 @@ public class Property {
 		numerals.put("VIII", 8);
 		numerals.put("IX", 9);
 		numerals.put("X", 10);
-		
+	}
+
+	/**
+	 * 
+	 */
+	public Property() {
+
 		numberOfGraffiti = 0;
 	}
-	
+
 	public Property(int id) {
 		this();
 		this.id = id;
@@ -62,9 +65,8 @@ public class Property {
 	 * @param property_name
 	 * @param insula
 	 */
-	public Property(int id, String property_number, 
-			String property_name, Insula insula) {
-		super();
+	public Property(int id, String property_number, String property_name, Insula insula) {
+		this();
 		this.id = id;
 		this.property_number = property_number;
 		this.property_name = property_name;
@@ -76,9 +78,42 @@ public class Property {
 	public List<PropertyType> getPropertyTypes() {
 		return propertyTypes;
 	}
+	
+	@JsonIgnore
+	public String getPropertyTypesAsString() {
+		StringBuilder returnStr = new StringBuilder();
+		if(this.propertyTypes.size() > 1) {
+			// change the separator to a comma if there are multiple property types
+			for(int i = 0 ; i < this.propertyTypes.size() - 1 ; i++) {
+				PropertyType pt = this.propertyTypes.get(i);
+				returnStr.append(pt.getName() +  ", ");
+			}
+			returnStr.append(this.propertyTypes.get(this.propertyTypes.size() - 1).getName()); 
+		} else if(this.propertyTypes.size() == 1) {
+			returnStr.append(this.propertyTypes.get(0).getName());
+		}
+		return returnStr.toString();
+	}
 
 	public void setPropertyTypes(List<PropertyType> propertyTypes) {
 		this.propertyTypes = propertyTypes;
+	}
+
+	/**
+	 * @return the uri
+	 */
+	public String getUri() {
+		uri = "agp-dev1.wlu.edu/Graffiti/properties/" + this.getInsula().getCity().getName() + 
+		"/" + this.getInsula().getShortName() + "/" + this.getPropertyNumber();
+		return uri;
+	}
+
+	/**
+	 * @param uri
+	 *            the URI to set
+	 */
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
 	/**
@@ -151,7 +186,8 @@ public class Property {
 	}
 
 	/**
-	 * @param pleiadesId the pleiadesId to set
+	 * @param pleiadesId
+	 *            the pleiadesId to set
 	 */
 	public void setPleiadesId(String pleiadesId) {
 		this.pleiadesId = pleiadesId;
@@ -165,7 +201,8 @@ public class Property {
 	}
 
 	/**
-	 * @param italianPropertyName the italianPropertyName to set
+	 * @param italianPropertyName
+	 *            the italianPropertyName to set
 	 */
 	public void setItalianPropertyName(String italianPropertyName) {
 		this.italianPropertyName = italianPropertyName;
@@ -179,12 +216,13 @@ public class Property {
 	}
 
 	/**
-	 * @param commentary the commentary to set
+	 * @param commentary
+	 *            the commentary to set
 	 */
 	public void setCommentary(String commentary) {
 		this.commentary = commentary;
 	}
-	
+
 	/**
 	 * @return the locationKey
 	 */
@@ -192,7 +230,7 @@ public class Property {
 	public String getLocationKey() {
 		return locationKey;
 	}
-	
+
 	/**
 	 * @return the data (region and insula num) to be used in generating URLs
 	 */
@@ -200,56 +238,62 @@ public class Property {
 		String shortName = insula.getShortName();
 		int periodIndex = shortName.indexOf('.');
 		String numeral = shortName.substring(0, periodIndex).trim();
-		String region = String.valueOf(numerals.get(numeral)); // convert roman numeral to integer
+		String region = String.valueOf(numerals.get(numeral)); // convert roman
+																// numeral to
+																// integer
 		String insulaNum = shortName.substring(periodIndex + 1);
-		
-		return new String[]{region, insulaNum};
+
+		return new String[] { region, insulaNum };
 	}
-	
+
 	/**
-	 * @return the URL of the PompeiiianPictures for the specific region, insula, and property number
+	 * @return the URL of the PompeiiianPictures for the specific region,
+	 *         insula, and property number
 	 */
 	public String getPompeiiinPicturesURL() {
-		if(insula.getCity().getName().equals("Pompeii")) {
+		if (insula.getCity().getName().equals("Pompeii")) {
 			String data[] = parseData();
 			String region = data[0];
 			String insulaNum = data[1];
-			
-			if(insulaNum.length() == 1)
+
+			if (insulaNum.length() == 1)
 				insulaNum = "0" + insulaNum;
 
 			String propertyNumber = property_number;
-			if(propertyNumber.length() == 1)
+			if (propertyNumber.length() == 1)
 				propertyNumber = "0" + propertyNumber;
 
-			return "http://pompeiiinpictures.com/pompeiiinpictures/R"+region+"/"+region+" "+insulaNum+" "+propertyNumber+".htm";
+			return "http://pompeiiinpictures.com/pompeiiinpictures/R" + region + "/" + region + " " + insulaNum + " "
+					+ propertyNumber + ".htm";
 		}
-		
+
 		return "";
 	}
-	
+
 	/**
 	 * @return the URL to P-LOD linked open data for a Pompeii property
 	 */
 	public String getPlodURL() {
-		if(insula.getCity().getName().equals("Pompeii")) {
+		if (insula.getCity().getName().equals("Pompeii")) {
 			String data[] = parseData();
 			String region = data[0];
 			String insulaNum = data[1];
-			
-			return "http://digitalhumanities.umass.edu/p-lod/entities/r"+region+"-i"+insulaNum+"-p"+property_number;
+
+			return "http://digitalhumanities.umass.edu/p-lod/entities/r" + region + "-i" + insulaNum + "-p"
+					+ property_number;
 		}
-		
+
 		return "";
 	}
-	
+
 	/**
-	 * @param count the number of graffiti in the property to set
+	 * @param count
+	 *            the number of graffiti in the property to set
 	 */
 	public void setNumberOfGraffiti(int count) {
 		numberOfGraffiti = count;
 	}
-	
+
 	/**
 	 * @return the number of graffiti in the property
 	 */
