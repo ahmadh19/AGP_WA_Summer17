@@ -65,7 +65,7 @@ function contentSearch() {
  */
 function globalSearch() {
 	var input = document.getElementById("keyword").value;
-	if (input.trim() != "") {Excedrin.
+	if (input.trim() != "") {
 		//input = "Global: " + input;
 		addSearchTerm("Global", input, input, 0);
 		refineResults();
