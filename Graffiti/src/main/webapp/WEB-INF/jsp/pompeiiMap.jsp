@@ -22,7 +22,7 @@
 <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
 
 <div>
-<div id="newDiv"></div>
+<div id="newDiv "></div>
 <div id="pompeiimap" class="mapdiv"></div>
 
 </div>

@@ -30,6 +30,7 @@
 
 </head>
 <body>
+	
 	<div id="blackOverlay" class="blackOverlay"></div>
 	<%@include file="header.jsp"%>
 

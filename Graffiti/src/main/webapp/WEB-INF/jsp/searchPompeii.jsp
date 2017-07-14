@@ -13,34 +13,25 @@
 <link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
-	
-<style>
-h1{
-	margin-left:40%;
-}
 
-p{
-	margin-left:35%;
-}
+<style>
 
 button{
-	margin-top:100%;
-	margin-left:30%;
+	margin-top:200%;
 }
-
 </style>
 </head>
 
 <body>
+<%@include file="header.jsp"%>\
 
 <script>
 //Adjusts the positions of each element on-load based on the size of the window.
 //This should be sufficient for most screens(most people do not use double screens like we have in the lab)
-function centerElements(){
+function setButton(){
 	if(window.innerWidth!='undefined' && window.innerWidth!=null){
-		var elementWidth=document.getElementById("pompeiimap").offsetWidth;
-		var windowWidth=window.innerWidth;
-		var newLeftMargin = (windowWidth/2)-(elementWidth/2);
+		var mapHeight=document.getElementById("pompeiimap").offsetHeight;
+		var windowHeight=
 		
 		document.getElementById("pompeiimap").style.marginLeft=newLeftMargin.toString()+"px";
 		
@@ -48,88 +39,31 @@ function centerElements(){
 		newLeftMargin = windowWidth-(elementWidth/2);
 		document.getElementById("newDiv").style.marginLeft=newLeftMargin.toString()+"px";
 		
-		document.getElementById("search").style.marginBottom="0px";
-		document.getElementById("btn btn-agp").style.marginBottom="0px";
-		document.getElementById("moreInfo").style.marginBottom="100px";
-		document.getElementById("moreInfo").style.marginLeft="500px";
-		
 	}
 	
 }
 
 </script>
 
-
-<header id="top" class="navbar navbar-static-top bs-docs-nav" role="banner">
-<div class="navbar navbar-inverse navbar-fixed-top">
-<div class="container-fluid" style="padding: 0 25px;">
-<div class="navbar-header">
-<button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse" style="width: 45px;">
-</div>
-<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-<ul id="nav" class="nav navbar-nav">
-<li>
-<a href="/Graffiti/">Home</a>
-</li>
-<li>
-<a href="/Graffiti/results?query_all=true">Browse All Inscriptions</a>
-</li>
-<li>
-<a href="/Graffiti/results?drawing_category=All">Browse Figural Graffiti (Drawings)</a>
-</li>
-<li>
-<a href="/Graffiti/search?city=Pompeii">Search Pompeii</a>
-</li>
-<li>
-<a href="/Graffiti/search?city=Herculaneum">Search Herculaneum</a>
-</li>
-<li>
-<a href="/Graffiti/featured-graffiti">Featured Graffiti</a>
-</li>
-<li>
-<a href="/Graffiti/New-featured-graffiti">New Featured Graffiti</a>
-</li>
-<li>
-<a href="/about">About the Project</a>
-</li>
-</ul>
-</nav>
-</div>
-</div>
-<div id="Jumbo" class="block">
-<div class="jumbotron">
 <div class="container">
-<h1>The Ancient Graffiti Project Search Engine</h1>
-<p>A digital resource for studying the graffiti of Herculaneum and Pompeii</p>
+	<h2>Search Pompeii by Map</h2>
+	<p>Click on one or more properties within the map, then hit the "Search" button below.</p>
+	<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+	
+	
+	<div>
+	<div id="newDiv"></div>
+	<div id="pompeiimap" class="mapdiv"></div>
+	
+	</div>
+	
+	<div id="moreInfo"><button id="search" class="btn btn-agp">Search Properties</button></div>
 </div>
-</div>
-</div>
-</header>
-
-<h1>Search Pompeii by Map</h1>
-<p>Click on one or more properties within the map, then hit the "Search" button below.</p>
-<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
-
-
-<div>
-<div id="newDiv"></div>
-<div id="pompeiimap" class="mapdiv">
-
-</div>
-
-</div>
-
-
-
-
-<div id="moreInfo"><button id="search" class="btn btn-agp">Search Properties</button></div>
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 <script>
 	window.initmap();
-	window.onresize=centerElements();
-	centerElements();
 	
 </script>
 </body>

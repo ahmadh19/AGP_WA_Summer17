@@ -266,9 +266,9 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		}
 		html += "</table";
 		//Checks to avoid error for element is null.
-		var elem = document.getElementById("newDiv");
+		var elem = document.getElementById("newDiv ");
 		  if(typeof elem !== 'undefined' && elem !== null) {
-			  document.getElementById("newDiv").innerHTML = html;
+			  document.getElementById("newDiv ").innerHTML = html;
 		  }
 			
 		// when you click anywhere on the map, it updates the table
