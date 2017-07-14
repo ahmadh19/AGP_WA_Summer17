@@ -309,7 +309,7 @@ public class GraffitiDao extends JdbcTemplate {
 		String sql = "UPDATE agp_inscription_info "
 				+ "SET summary=?, content_translation= ?, cil=?, langner=?, height_from_ground=(?),graffito_height=(?), "
 				+ "graffito_length=?, letter_height_min=?, letter_height_max=?, individual_letter_heights=?, "
-				+ " comment=?, has_figural_component = ?,  is_greatest_hit_figural=?, is_greatest_hit_translation=? "
+				+ " comment=?, has_figural_component = ?,  is_greatest_hit_figural=?, is_greatest_hit_translation=?, is_themed=? "
 				+ "where edr_id=(?)";
 		fields.add(edrID);
 		update(sql, fields.toArray());
@@ -339,6 +339,11 @@ public class GraffitiDao extends JdbcTemplate {
 		String sql = "UPDATE graffito2drawingtags " + "SET drawing_tag_id=(?) " + "where edr_id=(?)";
 		update(sql, fields.toArray());
 	}
+	
+	public void updateThemes(List<String> fields) {
+		String sql = "UPDATE graffititothemes " + "SET theme_id=(?) " + "where graffito_id=(?)";
+		update(sql, fields.toArray());
+	}
 
 	// insert edr inscription
 	public void insertEdrInscription(List<ArrayList<String>> inscriptions) {
@@ -366,12 +371,26 @@ public class GraffitiDao extends JdbcTemplate {
 		update(sql, edr);
 
 	}
+	
+	public void clearThemes(String edr) {
+		String sql = "DELETE FROM graffititothemes " + "WHERE graffito_id=(?)";
+
+		update(sql, edr);
+
+	}
 
 	// insert drawing tags
 	public void insertDrawingTags(String edr, String[] dts) {
 		String sql = "INSERT INTO graffitotodrawingtags " + "(graffito_id,drawing_tag_id)" + " VALUES (?,?)";
 		for (String dt : dts) {
 			update(sql, new Object[] { edr, Integer.parseInt(dt) });
+		}
+	}
+	
+	public void insertThemes(String edr, String[] themes) {
+		String sql = "INSERT INTO graffititothemes " + "(graffito_id,theme_id)" + " VALUES (?,?)";
+		for (String theme : themes) {
+			update(sql, new Object[] { edr, Integer.parseInt(theme) });
 		}
 	}
 

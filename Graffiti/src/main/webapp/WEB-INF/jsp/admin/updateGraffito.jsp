@@ -309,7 +309,7 @@ input[name*="image"] {
 					<div class="col-sm-1">
 						<input type="checkbox" name="gh_fig" id="gh_fig"
 							class="form-control"
-							<%=inscription.getAgp().isGreatestHitFigural() ? "checked" : ""%> />
+							<%=inscription.getAgp().getHasFiguralComponent() ? "checked" : ""%> />
 					</div>
 				</div>
 
@@ -320,6 +320,15 @@ input[name*="image"] {
 						<input type="checkbox" name="gh_trans" id="gh_trans"
 							class="form-control"
 							<%=inscription.getAgp().isGreatestHitTranslation() ? "checked" : ""%> />
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="themed" class="col-sm-3 control-label">Themed Graffiti?</label>
+					<div class="col-sm-1">
+						<input type="checkbox" name="themed" id="themed"
+							class="form-control"
+							<%=inscription.getAgp().isThemed() ? "checked" : ""%> />
 					</div>
 				</div>
 						<!-- Sprenkle's Comment to be deleted -->

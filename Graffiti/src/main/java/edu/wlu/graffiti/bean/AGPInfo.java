@@ -35,6 +35,7 @@ public class AGPInfo implements Comparable<AGPInfo> {
 	private boolean hasFiguralComponent = false;
 	private boolean isGreatestHitTranslation = false;
 	private boolean isGreatestHitFigural = false;
+	private boolean isThemed = false;
 	private GreatestHitsInfo ghInfo;
 
 	public AGPInfo() {
@@ -59,6 +60,21 @@ public class AGPInfo implements Comparable<AGPInfo> {
 		return "AGP-" + edrId;
 	}
 
+	/**
+	 * @return the isThemed
+	 */
+	@JsonIgnore
+	public boolean isThemed() {
+		return isThemed;
+	}
+
+	/**
+	 * @param isThemed the isThemed to set
+	 */
+	public void setThemed(boolean isThemed) {
+		this.isThemed = isThemed;
+	}
+	
 	public String getSummary() {
 		return summary;
 	}

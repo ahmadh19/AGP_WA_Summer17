@@ -97,10 +97,12 @@ public class AdminController {
 		String figural = request.getParameter("figural");
 		String ghFig = request.getParameter("gh_fig");
 		String ghTrans = request.getParameter("gh_trans");
+		String theme = request.getParameter("themed");
 
 		boolean hasFiguralComponent = false;
 		boolean isfeaturedHitFig = false;
 		boolean isfeaturedHitTrans = false;
+		boolean isThemed = false;
 
 		if (figural != null) {
 			hasFiguralComponent = true;
@@ -110,6 +112,9 @@ public class AdminController {
 		}
 		if (ghTrans != null) {
 			isfeaturedHitTrans = true;
+		}
+		if (theme != null) {
+			isThemed = true;
 		}
 
 		List<Object> agpOneDimArrList = new ArrayList<Object>();
@@ -127,6 +132,7 @@ public class AdminController {
 		agpOneDimArrList.add(hasFiguralComponent);
 		agpOneDimArrList.add(isfeaturedHitFig);
 		agpOneDimArrList.add(isfeaturedHitTrans);
+		agpOneDimArrList.add(isThemed);
 
 		graffitiDao.updateAgpInscription(agpOneDimArrList, edrID);
 
