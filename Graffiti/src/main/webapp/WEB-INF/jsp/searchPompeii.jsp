@@ -34,10 +34,10 @@
 <a href="/Graffiti/results?drawing_category=All">Browse Figural Graffiti (Drawings)</a>
 </li>
 <li>
-<a href="/Graffiti/search?city=Pompeii">Search Pompeii</a>
+<a href="/Graffiti/search?city=Herculaneum">Search Herculaneum</a>
 </li>
 <li>
-<a href="/Graffiti/search?city=Herculaneum">Search Herculaneum</a>
+<a href="/Graffiti/search?city=Pompeii">Search Pompeii</a>
 </li>
 <li>
 <a href="/Graffiti/featured-graffiti">Featured Graffiti</a>
