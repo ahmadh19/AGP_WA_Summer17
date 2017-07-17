@@ -158,8 +158,8 @@ public class AddInscriptionsToElasticSearch {
 	}
 	
 	/**
-	 * Implements a custom analyzer to fold special characters (like accents) to unicode
-	 * and strips punctuation, then creates the index
+	 * Implements a custom analyzer to fold special characters (like accents) to unicode,
+	 * to stem english words, and to strip punctuation. Then, the index is created.
 	 * @throws IOException 
 	 */
 	private static void createIndexAndAnalyzer() throws IOException {
@@ -172,18 +172,31 @@ public class AddInscriptionsToElasticSearch {
 								.field("pattern", "\\p{Punct}")
 								.field("replacement", "")
 							.endObject()
+							.startObject("english_stop")
+								.field("type", "stop")
+								.field("stopwords", "_english_")
+							.endObject()
+							.startObject("light_english_stemmer")
+								.field("type", "stemmer")
+								.field("language", "light_english")
+							.endObject()
+							.startObject("english_possessive_stemmer")
+								.field("type", "stemmer")
+								.field("language", "possessive_english")
+							.endObject()
 						.endObject()
 						.startObject("tokenizer")
 							.startObject("custom_tokenizer")
 								.field("type", "pattern")
-								.field("pattern", "\\s|-(?![^\\[]*\\])") // splits at whitespace and hyphen if not in parentheses
+								.field("pattern", "\\s|-(?![^\\[]*\\])") // splits at whitespace, and hyphen if not in square brackets
 							.endObject()
 						.endObject()
 						.startObject("analyzer")
 							.startObject("folding")
 								.field("type", "custom")
 								.field("tokenizer", "custom_tokenizer")
-								.field("filter", new String[]{"lowercase", "icu_folding", "punct_remove"})
+								.field("filter", new String[]{"punct_remove", "english_possessive_stemmer","lowercase", 
+										"english_stop", "light_english_stemmer", "icu_folding"})
 							.endObject()
 						.endObject()
 					.endObject()
