@@ -25,8 +25,16 @@
 }
 
 
-.searchResultsPompeii{
+.propertyMetadataMap{
+	width: 300px;
+	position: absolute;
+	margin-left: 500px;
+	border: 3px solid #800000;
 	height:250px;
+}
+
+.searchResultsPompeii{
+	height:300px;
 	width:300px;
 	margin-top:0px;
 	margin-left:715px;

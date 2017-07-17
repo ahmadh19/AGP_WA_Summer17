@@ -165,6 +165,7 @@ function backToResults(){
 <body>
 <%@include file="header.jsp"%>
 
+
 <c:set var="i" value="${requestScope.inscription}" />
 
 
@@ -501,18 +502,21 @@ function backToResults(){
 				<div id="pompeiimap" class="findspotMap"></div>
 			</div>
 			
-			<script>src="<c:url value="/resources/js/pompeiiMap.js"/>"</script>
+			<script src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 
 			<script type="text/javascript">
 				hideConventions();
 				if ("${i.ancientCity}" == "Herculaneum") {
+					
 					generateHerculaneum("${i.ancientCity}");
+					
 				} else if ("${i.ancientCity}" == "Pompeii") {
+					
 					window.initmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>);
 					
-				
 				} 
 			</script>
+			
 		</div>
 	</div>
 
