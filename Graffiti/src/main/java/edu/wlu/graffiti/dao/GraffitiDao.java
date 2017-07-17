@@ -16,6 +16,7 @@ import edu.wlu.graffiti.bean.GreatestHitsInfo;
 import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Insula;
 import edu.wlu.graffiti.bean.Property;
+import edu.wlu.graffiti.bean.Theme;
 import edu.wlu.graffiti.data.rowmapper.DrawingTagRowMapper;
 import edu.wlu.graffiti.data.rowmapper.GreatestHItsInfoRowMapper;
 import edu.wlu.graffiti.data.rowmapper.InscriptionRowMapper;
@@ -129,6 +130,9 @@ public class GraffitiDao extends JdbcTemplate {
 	@Resource
 	private FindspotDao propertyDao;
 	
+	@Resource
+	private ThemeDao themeDao;
+	
 	@Cacheable("inscriptions")
 	public List<Inscription> getAllInscriptions() {
 		List<Inscription> results = query(SELECT_STATEMENT + DURING_TEST_LIMIT, new InscriptionRowMapper());
@@ -227,6 +231,15 @@ public class GraffitiDao extends JdbcTemplate {
 		List<DrawingTag> drawingTags = query(SELECT_DRAWING_TAGS, new DrawingTagRowMapper(), inscription.getEdrId());
 		inscription.getAgp().getFiguralInfo().addDrawingTags(drawingTags);
 	}
+	
+	/**
+	 * Gets the themes associated with an inscription.
+	 * @param inscription
+	 */
+	private void retrieveThemesForInscription(Inscription inscription) {
+		List<Theme> themes = themeDao.getThemesByEDR(inscription.getEdrId());
+		inscription.getAgp().setThemes(themes);
+	}
 
 	private void addPropertyToInscription(Inscription inscription) {
 		// TODO: SPECIAL HANDLING until we have the info fixed.
@@ -281,6 +294,7 @@ public class GraffitiDao extends JdbcTemplate {
 	private void addOtherInfo(Inscription inscription) {
 		retrieveDrawingTagsForInscription(inscription);
 		addPropertyToInscription(inscription);
+		retrieveThemesForInscription(inscription);
 	}
 
 	/**

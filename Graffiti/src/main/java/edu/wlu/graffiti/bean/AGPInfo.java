@@ -6,6 +6,8 @@
  */
 package edu.wlu.graffiti.bean;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -37,6 +39,7 @@ public class AGPInfo implements Comparable<AGPInfo> {
 	private boolean isGreatestHitFigural = false;
 	private boolean isThemed = false;
 	private GreatestHitsInfo ghInfo;
+	private List<Theme> themes;
 
 	public AGPInfo() {
 
@@ -381,6 +384,22 @@ public class AGPInfo implements Comparable<AGPInfo> {
 	 */
 	public void setProperty(Property property) {
 		this.property = property;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setThemes(List<Theme> themes) {
+		this.themes = themes;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@JsonIgnore
+	public List<Theme> getThemes() {
+		return themes;
 	}
 
 }

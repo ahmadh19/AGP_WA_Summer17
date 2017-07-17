@@ -404,7 +404,7 @@ function backToResults(){
 										</c:if>
 										<c:if test="${not empty i.agp.graffitoLength }">
 											<li>Graffito Length: ${i.agp.graffitoLength }</li>
-										</c:if>generatePompeii("${i.ancientCity}");
+										</c:if>
 										<c:if test="${not empty i.agp.heightFromGround }">
 											<li>Height from Ground: ${i.agp.heightFromGround }</li>
 										</c:if>

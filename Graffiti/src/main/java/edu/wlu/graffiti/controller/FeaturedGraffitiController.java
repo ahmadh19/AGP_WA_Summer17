@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import edu.wlu.graffiti.bean.Inscription;
+import edu.wlu.graffiti.bean.Theme;
 import edu.wlu.graffiti.dao.DrawingTagsDao;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.dao.InsulaDao;
 import edu.wlu.graffiti.dao.PropertyTypesDao;
+import edu.wlu.graffiti.dao.ThemeDao;
 
 @Controller
 public class FeaturedGraffitiController {
@@ -37,6 +39,8 @@ public class FeaturedGraffitiController {
 	@Resource
 	private InsulaDao insulaDao;
 	
+	@Resource
+	private ThemeDao themeDao;
 	
 	@RequestMapping(value = "/TranslationQuiz", method = RequestMethod.GET)
 	public String featuredHits(final HttpServletRequest request) {
