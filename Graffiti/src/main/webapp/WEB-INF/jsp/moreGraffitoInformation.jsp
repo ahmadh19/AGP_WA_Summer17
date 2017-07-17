@@ -73,7 +73,7 @@ h4{
 	position:relative;
 	 margin-bottom: 10px;
     margin-top: 10px;
-    margin-right:200px;
+    margin-right:78%;
 }
 
 .btn-agp {
@@ -496,7 +496,7 @@ function backToResults(){
 			</c:choose>
 			
 			<div id="maps">
-				<h4>Findspot on map:</h4>
+				<h4>Findspot:</h4>
 				<!-- <div id="pompCityMap"></div> -->
 				<div id="pompeiimap" class="findspotMap"></div>
 			</div>
