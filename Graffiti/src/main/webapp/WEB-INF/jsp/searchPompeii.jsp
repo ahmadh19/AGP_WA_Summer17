@@ -23,7 +23,7 @@ button{
 </head>
 
 <body>
-<%@include file="header.jsp"%>\
+<%@include file="header.jsp"%>
 
 <script>
 //Adjusts the positions of each element on-load based on the size of the window.
@@ -35,10 +35,6 @@ function setButton(){
 		
 		document.getElementById("pompeiimap").style.marginLeft=newLeftMargin.toString()+"px";
 		
-		elementWidth=document.getElementById("newDiv").offsetWidth;
-		newLeftMargin = windowWidth-(elementWidth/2);
-		document.getElementById("newDiv").style.marginLeft=newLeftMargin.toString()+"px";
-		
 	}
 	
 }
@@ -48,8 +44,9 @@ function setButton(){
 <div class="container">
 	<h2>Search Pompeii by Map</h2>
 	<p>Click on one or more properties within the map, then hit the "Search" button below.</p>
-	<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+	<div id="moreInfo"><button id="search" class="btn btn-agp">Search Properties</button></div>
 	
+	<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
 	
 	<div>
 	<div id="newDiv"></div>
@@ -57,8 +54,9 @@ function setButton(){
 	
 	</div>
 	
-	<div id="moreInfo"><button id="search" class="btn btn-agp">Search Properties</button></div>
+	
 </div>
+
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
