@@ -65,6 +65,10 @@ public class ImportEDRData {
 
 	private static final String SELECT_INSULA_AND_PROPERTIES = "select *, insula.id as insula_id, properties.id as property_id from insula, properties where insula_id = insula.id";
 
+	private static final String INSERT_PHOTO_STATEMENT = "INSERT INTO photos (edr_id, photo_id) " + "VALUES (?, ?)";
+
+	
+	
 	private static Connection dbCon;
 
 	private static PreparedStatement insertAGPMetaStmt;
@@ -76,6 +80,7 @@ public class ImportEDRData {
 	private static PreparedStatement updateContentStmt;
 	private static PreparedStatement updateBibStmt;
 	private static PreparedStatement updateApparatusStmt;
+	private static PreparedStatement insertPhotoStmt;
 
 	private static Map<String, HashMap<String, Insula>> cityToInsulaMap;
 
@@ -448,6 +453,43 @@ public class ImportEDRData {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Insert the photo information into database 
+	 * @param string
+	 */
+	private static void updatePhotoInformation(String dataFileName) {
+		try {
+			Reader in = new FileReader(dataFileName);
+			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+			for (CSVRecord record : records) {
+				String eagleID = Utils.cleanData(record.get(0));
+				String photoID = Utils.cleanData(record.get(21));
+				insertPhotoInformation(eagleID, photoID);
+			}
+
+			in.close();
+			insertPStmt.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void insertPhotoInformation(String eagleID, String photoID) throws SQLException {
+		insertPhotoStmt.setString(1, eagleID);
+		insertPhotoStmt.setString(2, photoID);
+
+		try {
+			insertPhotoStmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private static String createMeasurementField(String alt, String lat, String littAlt) {
 		// Example: alt.: 2.50 lat.: 7.50 litt. alt.: 2-2,5
@@ -463,33 +505,6 @@ public class ImportEDRData {
 		return sb.toString();
 	}
 	
-	/**
-	 * Insert the photo information into database 
-	 * @param string
-	 */
-	private static void updatePhotoInformation(String dataFileName) {
-		try {
-			Reader in = new FileReader(dataFileName);
-			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
-			for (CSVRecord record : records) {
-				String eagleID = Utils.cleanData(record.get(0));
-				String photoID = Utils.cleanData(record.get(21));
-
-			}
-
-			in.close();
-			insertPStmt.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
-
 	private static void init() {
 		getConfigurationProperties();
 
@@ -513,6 +528,8 @@ public class ImportEDRData {
 			// dbCon.prepareStatement(UPDATE_DESCRIPTION);
 			updateBibStmt = dbCon.prepareStatement(UPDATE_BIB);
 			updateApparatusStmt = dbCon.prepareStatement(UPDATE_APPARATUS);
+			
+			insertPhotoStmt = dbCon.prepareStatement(INSERT_PHOTO_STATEMENT);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
