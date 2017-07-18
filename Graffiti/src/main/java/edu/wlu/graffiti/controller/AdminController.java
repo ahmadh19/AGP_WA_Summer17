@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -68,6 +69,8 @@ public class AdminController {
 		}
 
 		request.getSession().setAttribute("edrID", id);
+		
+		System.out.println("The EDR-ID is: " +id);
 
 		Inscription inscription = graffitiDao.getInscriptionByEDR(id);
 
@@ -78,6 +81,14 @@ public class AdminController {
 
 		request.setAttribute("graffito", inscription);
 
+		addDrawingTagsAndThemesToRequest(request, inscription);
+
+		return "admin/updateGraffito";
+
+	}
+
+
+	private void addDrawingTagsAndThemesToRequest(final HttpServletRequest request, Inscription inscription) {
 		Set<DrawingTag> drawingTags = inscription.getAgp().getFiguralInfo().getDrawingTags();
 		List<Integer> drawingTagIds = new ArrayList<Integer>();
 
@@ -100,13 +111,10 @@ public class AdminController {
 		request.setAttribute("themes", themeDao.getThemes());
 		request.setAttribute("inscriptionThemeIds", themeIds);
 		request.setAttribute("allThemeIds", allThemeIds);
-
-		return "admin/updateGraffito";
-
 	}
 
 	// Update a graffito controller
-	@RequestMapping(value = "/admin/updateGraffito", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/updateGraffito" , method = RequestMethod.POST)
 	public String adminUpdateGraffito(final HttpServletRequest request) {
 
 		// updating AGP Inscription Information
@@ -201,6 +209,8 @@ public class AdminController {
 		Inscription element = graffitiDao.getInscriptionByEDR(edrID);
 
 		request.setAttribute("graffito", element);
+		
+		addDrawingTagsAndThemesToRequest(request, element);
 
 		return "admin/updateGraffito";
 
