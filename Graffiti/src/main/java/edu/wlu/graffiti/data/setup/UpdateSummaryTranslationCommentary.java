@@ -15,7 +15,7 @@ import org.apache.commons.csv.CSVRecord;
 
 public class UpdateSummaryTranslationCommentary {
 
-	private static final String CSV_LOCATION = "/home/sprenkle/translations.csv";
+	private static final String CSV_LOCATION = "data/EDRData/summaryTranslationCommentary.csv";
 
 	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_info "
 			+ "SET summary = ?, content_translation = ?, comment = ?, langner = ? WHERE edr_id = ? ";
