@@ -16,7 +16,7 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 
-
+<script type="text/javascript" src="/resources/js/geojson.min.js"></script>
 <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
 
 

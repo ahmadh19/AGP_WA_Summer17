@@ -3,7 +3,7 @@ var map;
 
 
 
-function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomCoordinatesList=null) {
+function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomOnOneProperty) {
 	//this just sets my access token
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
 	
@@ -21,23 +21,35 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		zoomLevel=15;
 	}
 	
-	if(! zoomCoordinatesList){
-		map = new L.map('pompeiimap', {
-			center: [40.750, 14.4884],
-			zoom: zoomLevel,
-			minZoom: zoomLevel,
-			maxBounds: bounds
-		})
+	
+	if(zoomOnOneProperty&&propertyIdToHighlight!=0){
+		var x=0;
 	}
-	//Allows the map to start with a single selected property in plain view. 
-	else{
-		map = new L.map('pompeiimap', {
-			center: [zoomCoordinatesList[0], zoomCoordinatesList[1]],
-			zoom: 14,
-			minZoom: zoomLevel,
-			maxBounds: bounds
-		})
-	}
+	
+	
+	//Converts geoJson data to normal coordinate settings:
+	
+	//const decode = require('geojson-polyline').decode;
+	//const newData = decode(pompeiiPropertyData);
+	//var parser=require('geojson');
+	
+	
+	//var idsAndCoords=GeoJSON.parse(pompeiiPropertyData,{Point:['lat','lng'],include:[Property_Id]});
+	//alert("Here are the ids and coordinates:"+idsAndCoords);*/
+	
+	
+	
+	/*alert(property.feature.geometry.coordinates);*/
+	/*var propertyID = property.feature.properties.Property_Id;*/
+	
+	
+	map = new L.map('pompeiimap', {
+		center: [40.750, 14.4884],
+		zoom: zoomLevel,
+		minZoom: zoomLevel,
+		maxBounds: bounds
+	})
+	
 	
 	
 	//Sinks with mapbox(?), why do we need access tokens security?
@@ -221,7 +233,9 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		var selectedProps = getUniqueClicked();
 		var length = selectedProps.length;
 		for (var i=0; i<length; i++) {
+			
 			var property = selectedProps[i];
+			
 			var propertyID = property.feature.properties.Property_Id;
 			propIdsOfClicked.push(propertyID);
 		}
@@ -258,7 +272,9 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		var length = clickedAreasTable.length;
 		for (var i=0; i<length; i++) {
 			var property = clickedAreasTable[i];
+			/*alert(property.feature.geometry.coordinates);*/
 			if (property.feature.properties.clicked === true) {
+				
 				html += "<tr><td><li>" +property.feature.properties.Property_Name + ", " + 
 						property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li></td></tr>";
 			}
