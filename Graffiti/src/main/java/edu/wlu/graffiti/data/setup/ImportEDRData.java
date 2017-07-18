@@ -92,6 +92,7 @@ public class ImportEDRData {
 			updateContent("data/EDRData/testo_epigr.csv");
 			updateBibliography("data/EDRData/editiones.csv");
 			updateApparatus("data/EDRData/apparatus.csv");
+			updatePhotoInformation("data/EDRData/foto.csv");
 			dbCon.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -142,6 +143,10 @@ public class ImportEDRData {
 
 	}
 
+	/**
+	 * Update the apparatus information in each of the inscription entries.
+	 * @param apparatusFileName
+	 */
 	private static void updateApparatus(String apparatusFileName) {
 		String eagleID="";
 		try {
@@ -209,20 +214,6 @@ public class ImportEDRData {
 				String eagleID = Utils.cleanData(record.get(0));
 				String content = Utils.cleanData(record.get(1));
 
-				// this needs to be generalized
-
-				/*
-				 * if (content.startsWith("((:")) { String desc =
-				 * content.substring(3, content.length() - 2); try {
-				 * updateDescriptionStmt.setString(1, desc);
-				 * updateDescriptionStmt.setString(2, eagleID); int updated =
-				 * updateDescriptionStmt.executeUpdate(); if (updated != 1) {
-				 * System.out.println("Something went wrong with " + eagleID);
-				 * System.out.println(desc); } } catch (SQLException e) {
-				 * e.printStackTrace(); }
-				 * 
-				 * } else {
-				 */
 				try {
 					content = cleanContent(content);
 
@@ -470,6 +461,33 @@ public class ImportEDRData {
 		sb.append(littAlt);
 
 		return sb.toString();
+	}
+	
+	/**
+	 * Insert the photo information into database 
+	 * @param string
+	 */
+	private static void updatePhotoInformation(String dataFileName) {
+		try {
+			Reader in = new FileReader(dataFileName);
+			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+			for (CSVRecord record : records) {
+				String eagleID = Utils.cleanData(record.get(0));
+				String photoID = Utils.cleanData(record.get(21));
+
+			}
+
+			in.close();
+			insertPStmt.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private static void init() {
