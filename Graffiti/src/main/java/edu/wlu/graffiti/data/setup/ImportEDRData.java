@@ -66,7 +66,7 @@ public class ImportEDRData {
 
 	private static final String SELECT_INSULA_AND_PROPERTIES = "select *, insula.id as insula_id, properties.id as property_id from insula, properties where insula_id = insula.id";
 
-	static Connection dbCon;
+	private static Connection dbCon;
 
 	private static PreparedStatement insertAGPMetaStmt;
 	private static PreparedStatement insertPStmt;
