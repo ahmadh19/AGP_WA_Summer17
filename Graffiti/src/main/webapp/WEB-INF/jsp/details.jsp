@@ -14,6 +14,9 @@
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <c:set var="i" value="${requestScope.inscription}" />
 
+
+
+
 <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
 <link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
 <script type="text/javascript"

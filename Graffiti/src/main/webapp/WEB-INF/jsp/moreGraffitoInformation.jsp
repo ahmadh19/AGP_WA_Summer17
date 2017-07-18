@@ -16,13 +16,12 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 
-
+<script type="text/javascript" src="/resources/js/geojson.min.js"></script>
 <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
 
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
-
 
 
 
@@ -74,7 +73,7 @@ h4{
 	position:relative;
 	 margin-bottom: 10px;
     margin-top: 10px;
-    margin-right:200px;
+    margin-right:78%;
 }
 
 .btn-agp {
@@ -165,6 +164,7 @@ function backToResults(){
 
 <body>
 <%@include file="header.jsp"%>
+
 
 <c:set var="i" value="${requestScope.inscription}" />
 
@@ -334,7 +334,7 @@ function backToResults(){
 							href="<%=request.getContextPath() %>/results?property=${i.agp.property.id}">
 								(${i.agp.property.insula.shortName}.${i.agp.property.propertyNumber})</a>
 							<br /> <a
-							href="<%=request.getContextPath() %>/property/${i.agp.property.insula.city.name}/${i.agp.property.insula.shortName}/${i.agp.property.propertyNumber}">property
+							href="<%=request.getContextPath() %>/properties/${i.agp.property.insula.city.name}/${i.agp.property.insula.shortName}/${i.agp.property.propertyNumber}">property
 								metadata &#10140;</a></td>
 					</tr>
 					<!-- defining key words -->
@@ -497,23 +497,26 @@ function backToResults(){
 			</c:choose>
 			
 			<div id="maps">
-				<h4>Findspot on map:</h4>
+				<h4>Findspot:</h4>
 				<!-- <div id="pompCityMap"></div> -->
 				<div id="pompeiimap" class="findspotMap"></div>
 			</div>
 			
-			<script>src="<c:url value="/resources/js/pompeiiMap.js"/>"</script>
+			<script src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 
 			<script type="text/javascript">
 				hideConventions();
 				if ("${i.ancientCity}" == "Herculaneum") {
+					
 					generateHerculaneum("${i.ancientCity}");
+					
 				} else if ("${i.ancientCity}" == "Pompeii") {
+					
 					window.initmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>);
 					
-				
 				} 
 			</script>
+			
 		</div>
 	</div>
 

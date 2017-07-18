@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,11 +34,13 @@ import edu.wlu.graffiti.bean.Property;
  */
 public class ImportEDRData {
 
-	final static String DB_URL = "jdbc:postgresql://hopper.cs.wlu.edu/graffiti3";
-
+	private static String DB_DRIVER;
+	private static String DB_URL;
+	private static String DB_USER;
+	private static String DB_PASSWORD;
+	
 	private static final String INSERT_INSCRIPTION_STATEMENT = "INSERT INTO edr_inscriptions "
-			+ "(edr_id, ancient_city, find_spot, measurements, writing_style, \"language\") "
-			+ "VALUES (?,?,?,?,?,?)";
+			+ "(edr_id, ancient_city, find_spot, measurements, writing_style, \"language\") " + "VALUES (?,?,?,?,?,?)";
 
 	private static final String UPDATE_INSCRIPTION_STATEMENT = "UPDATE edr_inscriptions SET "
 			+ "ancient_city=?, find_spot=?, measurements=?, writing_style=?, \"language\"=? " + "WHERE edr_id = ?";
@@ -45,22 +48,22 @@ public class ImportEDRData {
 	private static final String CHECK_INSCRIPTION_STATEMENT = "SELECT COUNT(*) FROM edr_inscriptions"
 			+ " WHERE edr_id = ?";
 
-	private static final String INSERT_AGP_METADATA = "INSERT INTO agp_inscription_annotations (edr_id) "
+	private static final String INSERT_AGP_METADATA = "INSERT INTO agp_inscription_info (edr_id) "
 			+ "VALUES (?)";
 
-	private static final String UPDATE_PROPERTY = "UPDATE agp_inscription_annotations SET "
+	private static final String UPDATE_PROPERTY = "UPDATE agp_inscription_info SET "
 			+ "property_id = ? WHERE edr_id = ?";
 
 	private static final String UPDATE_CONTENT = "UPDATE edr_inscriptions SET " + "content = ? WHERE edr_id = ?";
 
 	private static final String UPDATE_BIB = "UPDATE edr_inscriptions SET " + "bibliography = ? WHERE edr_id = ?";
 
-	private static final String UPDATE_APPARATUS = "UPDATE edr_inscriptions SET "
-			+ "apparatus = ? WHERE edr_id = ?";
+	private static final String UPDATE_APPARATUS = "UPDATE edr_inscriptions SET " + "apparatus = ? WHERE edr_id = ?";
 
-	//private static final String UPDATE_DESCRIPTION = "UPDATE agp_inscription_annotations SET "
-	//		+ "description = ? WHERE edr_id = ?";
-	
+	// private static final String UPDATE_DESCRIPTION = "UPDATE
+	// agp_inscription_annotations SET "
+	// + "description = ? WHERE edr_id = ?";
+
 	private static final String SELECT_INSULA_AND_PROPERTIES = "select *, insula.id as insula_id, properties.id as property_id from insula, properties where insula_id = insula.id";
 
 	static Connection dbCon;
@@ -107,7 +110,7 @@ public class ImportEDRData {
 
 		while (rs.next()) {
 			String modernCity = rs.getString("modern_city");
-			String insName = rs.getString("name");
+			String insName = rs.getString("short_name");
 			String propNum = rs.getString("property_number");
 			String propName = rs.getString("property_name");
 			int insID = rs.getInt("insula_id");
@@ -133,7 +136,7 @@ public class ImportEDRData {
 
 		for (String city : cityToInsulaMap.keySet()) {
 			System.out.println("city: " + city);
-			for( String s: cityToInsulaMap.get(city).keySet()) {
+			for (String s : cityToInsulaMap.get(city).keySet()) {
 				System.out.println("    - " + s + ": " + cityToInsulaMap.get(city).get(s));
 			}
 		}
@@ -261,7 +264,7 @@ public class ImportEDRData {
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
 				String ancient_city = Utils.cleanData(record.get(4));
-				String findSpot = Utils.cleanData(record.get(6));
+				String findSpot = Utils.cleanData(record.get(5));
 				String alt = Utils.cleanData(record.get(18));
 				String lat = Utils.cleanData(record.get(19));
 				String littAlt = Utils.cleanData(record.get(21));
@@ -333,7 +336,7 @@ public class ImportEDRData {
 		// we're going to skip these because I can't handle them yet.
 
 		if (!address.contains(".")) {
-			System.err.println("Couldn't handle " + address);
+			System.err.println("Couldn't handle address " + address);
 			return;
 		}
 
@@ -348,8 +351,9 @@ public class ImportEDRData {
 			insula = address.substring(0, address.lastIndexOf('.'));
 			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		} else {
-			//int indexOfComma = address.indexOf(',');
-			//insula = address.substring(indexOfComma + 2, address.indexOf(',', indexOfComma));
+			// int indexOfComma = address.indexOf(',');
+			// insula = address.substring(indexOfComma + 2, address.indexOf(',',
+			// indexOfComma));
 			insula = address.substring(0, address.indexOf('.'));
 			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		}
@@ -365,7 +369,7 @@ public class ImportEDRData {
 
 		if (!cityToInsulaMap.get(ancient_city).containsKey(insula)) {
 			System.err.println();
-			System.err.println("Insula " + insula + " not found in " + ancient_city + "*" );
+			System.err.println("Insula " + insula + " not found in " + ancient_city + "*");
 			System.err.println();
 			return;
 		}
@@ -407,8 +411,8 @@ public class ImportEDRData {
 		Matcher matcher = patternList.get(0).matcher(findSpot);
 		if (matcher.matches()) {
 			return matcher.group(1);
-		} 
-		
+		}
+
 		matcher = patternList.get(1).matcher(findSpot);
 		if (matcher.matches()) {
 			return matcher.group(2);
@@ -464,14 +468,16 @@ public class ImportEDRData {
 	}
 
 	private static void init() {
+		getConfigurationProperties();
+
 		try {
-			Class.forName("org.postgresql.Driver");
+			Class.forName(DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			dbCon = DriverManager.getConnection(DB_URL, "web", "");
+			dbCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
 			insertAGPMetaStmt = dbCon.prepareStatement(INSERT_AGP_METADATA);
 			insertPStmt = dbCon.prepareStatement(INSERT_INSCRIPTION_STATEMENT);
@@ -480,7 +486,8 @@ public class ImportEDRData {
 
 			updatePropertyStmt = dbCon.prepareStatement(UPDATE_PROPERTY);
 			updateContentStmt = dbCon.prepareStatement(UPDATE_CONTENT);
-			//updateDescriptionStmt = dbCon.prepareStatement(UPDATE_DESCRIPTION);
+			// updateDescriptionStmt =
+			// dbCon.prepareStatement(UPDATE_DESCRIPTION);
 			updateBibStmt = dbCon.prepareStatement(UPDATE_BIB);
 			updateApparatusStmt = dbCon.prepareStatement(UPDATE_APPARATUS);
 
@@ -489,8 +496,18 @@ public class ImportEDRData {
 		}
 		patternList = new ArrayList<Pattern>();
 		patternList.add(Pattern.compile("^\\.* \\((\\w*\\.\\w*)\\) \\w*"));
-		
-		patternList.add(Pattern.compile("^\\w+ \\(\\w+\\),? ([\\w'.-]* )* ?\\(?([\\w'.-]*+)\\)?(,[\\w\\s-,'.\\(\\)]*)?"));
+
+		patternList
+				.add(Pattern.compile("^\\w+ \\(\\w+\\),? ([\\w'.-]* )* ?\\(?([\\w'.-]*+)\\)?(,[\\w\\s-,'.\\(\\)]*)?"));
 		// TODO: Need to update the pattern to handle Insula Orientalis I
+	}
+
+	public static void getConfigurationProperties() {
+		Properties prop = Utils.getConfigurationProperties();
+
+		DB_DRIVER = prop.getProperty("db.driverClassName");
+		DB_URL = prop.getProperty("db.url");
+		DB_USER = prop.getProperty("db.user");
+		DB_PASSWORD = prop.getProperty("db.password");
 	}
 }
