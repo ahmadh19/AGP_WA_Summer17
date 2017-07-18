@@ -55,13 +55,13 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	//Sinks with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
 	
-	//Is this the background-most layer? Default for leaflet?(why the map's back is grey?)
-	var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
-	
+	//This adds more realistic features to the background like streets. Commented out bc/shape files are off positionally and more details shows it to users. 
+	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
+
 	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
 	var clickedAreas = [];
 	
-	map.addLayer(grayscale);
+	//map.addLayer(grayscale);
 	L.geoJson(pompeiiPropertyData).addTo(map);
 	
 	//Sets the style of the portions of the map. Color is the outside borders. There are different colors for 

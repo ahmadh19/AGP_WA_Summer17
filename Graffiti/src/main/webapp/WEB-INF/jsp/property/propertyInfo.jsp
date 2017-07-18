@@ -115,7 +115,7 @@ function generateMap(name) {
 					<th class="propertyLabel">Commentary:</th>
 					<td>${prop.commentary }</td>
 				</tr>
-			</c:if>class="propertyMetadataMap"
+			</c:if>
 			<c:if test="${prop.numberOfGraffiti > 0}">
 				<tr>
 					<th class="propertyLabel">Archaeological Context:</th>

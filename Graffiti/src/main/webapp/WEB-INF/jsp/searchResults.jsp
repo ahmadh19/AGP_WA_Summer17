@@ -230,8 +230,9 @@ ul#searchTerms li {
 		<%@include file="sidebarSearchMenu.jsp"%>
 		<!--  SideBar Map  -->
 		
-		<div id="pompeiimap" class="searchResultsPompeii"></div>
 		<div id="herculaneumCityMap" class="searchResultsHerculaneum"></div>
+		<div id="pompeiimap" class="searchResultsPompeii"></div>
+		
 		
 		
 
@@ -249,12 +250,14 @@ ul#searchTerms li {
 <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
 
 
-<script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
+
 	
 <script type="text/javascript">
 	generateHerculaneum("Herculaneum");
 </script>
+
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 
 <script>
 	setLocationKeys();
