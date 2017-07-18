@@ -11,11 +11,13 @@ import java.util.Properties;
 
 public class InsertDrawingTags {
 
-	private static final String INSERT_DRAWING_TAG = "INSERT INTO drawing_tags "
-			+ "(name, description) " + "VALUES (?,?)";
+	private static final String INSERT_DRAWING_TAG = "INSERT INTO drawing_tags " + "(name, description) "
+			+ "VALUES (?,?)";
 
-	final static String newDBURL = "jdbc:postgresql://hopper.cs.wlu.edu/graffiti3";
-
+	private static String DB_DRIVER;
+	private static String DB_URL;
+	private static String DB_USER;
+	private static String DB_PASSWORD;
 	static Connection newDBCon;
 
 	public static void main(String[] args) {
@@ -33,8 +35,7 @@ public class InsertDrawingTags {
 
 	private static void insertDrawingTags() {
 		try {
-			PreparedStatement pstmt = newDBCon
-					.prepareStatement(INSERT_DRAWING_TAG);
+			PreparedStatement pstmt = newDBCon.prepareStatement(INSERT_DRAWING_TAG);
 			Properties drawingTags = new Properties();
 
 			drawingTags.load(new FileReader("data/drawingTags.prop"));
@@ -59,19 +60,29 @@ public class InsertDrawingTags {
 	}
 
 	private static void init() {
+		getConfigurationProperties();
+
 		try {
-			Class.forName("org.postgresql.Driver");
+			Class.forName(DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			newDBCon = DriverManager.getConnection(newDBURL, "web", "");
-
+			newDBCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
+	
+	public static void getConfigurationProperties() {
+		Properties prop = Utils.getConfigurationProperties();
+
+		DB_DRIVER = prop.getProperty("db.driverClassName");
+		DB_URL = prop.getProperty("db.url");
+		DB_USER = prop.getProperty("db.user");
+		DB_PASSWORD = prop.getProperty("db.password");
+	}
+
 
 }

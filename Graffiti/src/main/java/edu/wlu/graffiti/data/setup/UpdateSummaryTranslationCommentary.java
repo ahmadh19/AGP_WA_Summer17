@@ -15,19 +15,15 @@ import org.apache.commons.csv.CSVRecord;
 
 public class UpdateSummaryTranslationCommentary {
 
-	private static final String CSV_LOCATION = "/home/sprenkle/translations.csv";
+	private static final String CSV_LOCATION = "data/EDRData/summaryTranslationCommentary.csv";
 
 	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_info "
 			+ "SET summary = ?, content_translation = ?, comment = ?, langner = ? WHERE edr_id = ? ";
 
-	static Connection newDBCon;
-	
+	private static Connection newDBCon;
 	private static String DB_DRIVER;
-
 	private static String DB_URL;
-
 	private static String DB_USER;
-
 	private static String DB_PASSWORD;
 
 	public static void main(String[] args) {
@@ -43,6 +39,10 @@ public class UpdateSummaryTranslationCommentary {
 		}
 	}
 
+	/**
+	 * 
+	 * @param datafileName CSV file containing the info in the required format
+	 */
 	private static void updateInscriptions(String datafileName) {
 		try {
 			PreparedStatement pstmt = newDBCon.prepareStatement(UPDATE_ANNOTATION_STMT);
@@ -62,16 +62,15 @@ public class UpdateSummaryTranslationCommentary {
 
 			for (CSVRecord record : records) {
 				String edrID = Utils.cleanData(record.get(0));
-				
-				if( edrID.equals(""))
+
+				if (edrID.equals(""))
 					continue;
-				
+
 				String langner = Utils.cleanData(record.get(3));
 				String summary = Utils.cleanData(record.get(6));
 				String translation = Utils.cleanData(record.get(7));
 				String commentary = Utils.cleanData(record.get(8));
 				System.out.println(edrID + ":" + summary);
-				
 
 				pstmt.setString(1, summary);
 				pstmt.setString(2, translation);
@@ -108,7 +107,7 @@ public class UpdateSummaryTranslationCommentary {
 		}
 
 	}
-	
+
 	public static void getConfigurationProperties() {
 		Properties prop = Utils.getConfigurationProperties();
 
