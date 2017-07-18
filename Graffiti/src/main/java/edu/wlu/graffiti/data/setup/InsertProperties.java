@@ -1,10 +1,9 @@
 package edu.wlu.graffiti.data.setup;
 
-import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -27,15 +27,11 @@ import edu.wlu.graffiti.bean.PropertyType;
  */
 public class InsertProperties {
 
-	final static String newDBURL = "jdbc:postgresql://hopper.cs.wlu.edu/graffiti3";
-
-	// private static final String DELIMITER = ",";
-
 	private static final String INSERT_PROPERTY_STMT = "INSERT INTO properties "
 			+ "(insula_id, property_number, additional_properties, property_name, italian_property_name) "
 			+ "VALUES (?,?,?,?,?)";
 
-	private static final String LOOKUP_INSULA_ID = "SELECT id from insula WHERE modern_city=? AND name=?";
+	private static final String LOOKUP_INSULA_ID = "SELECT id from insula WHERE modern_city=? AND short_Name=?";
 
 	private static final String LOOKUP_PROP_ID = "SELECT id FROM properties "
 			+ "WHERE insula_id=? AND property_number = ?";
@@ -45,14 +41,19 @@ public class InsertProperties {
 	private static PreparedStatement selectInsulaStmt;
 	private static PreparedStatement selectPropStmt;
 
-	static Connection newDBCon;
+	private static Connection newDBCon;
+
+	private static String DB_DRIVER;
+	private static String DB_URL;
+	private static String DB_USER;
+	private static String DB_PASSWORD;
 
 	public static void main(String[] args) {
 		init();
 
 		try {
-			insertProperties("data/pompeii_properties.csv");
-			insertProperties("data/herculaneum_properties2.csv");
+			// insertProperties("data/pompeii_properties.csv");
+			insertProperties("data/herculaneum_properties.csv");
 
 			newDBCon.close();
 		} catch (SQLException e1) {
@@ -68,7 +69,8 @@ public class InsertProperties {
 
 			List<PropertyType> propertyTypes = getPropertyTypes();
 
-			Reader in = new FileReader(datafileName);
+			// Reader in = new FileReader(datafileName);
+			InputStreamReader in = new InputStreamReader(new FileInputStream(datafileName), "UTF-8");
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				String modernCity = record.get(0).trim();
@@ -205,22 +207,32 @@ public class InsertProperties {
 
 		return propTypes;
 	}
-
+	
 	private static void init() {
+		getConfigurationProperties();
+
 		try {
-			Class.forName("org.postgresql.Driver");
+			Class.forName(DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			newDBCon = DriverManager.getConnection(newDBURL, "web", "");
+			newDBCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 			selectInsulaStmt = newDBCon.prepareStatement(LOOKUP_INSULA_ID);
 			selectPropStmt = newDBCon.prepareStatement(LOOKUP_PROP_ID);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
 
+	public static void getConfigurationProperties() {
+		Properties prop = Utils.getConfigurationProperties();
+
+		DB_DRIVER = prop.getProperty("db.driverClassName");
+		DB_URL = prop.getProperty("db.url");
+		DB_USER = prop.getProperty("db.user");
+		DB_PASSWORD = prop.getProperty("db.password");
 	}
 
 }

@@ -17,7 +17,7 @@ public class InsertInsulae {
 
 	private static final String INSERT_PROPERTY_STMT = "INSERT INTO insula " + "(modern_city, short_name, full_name) VALUES (?,?,?)";
 
-	static Connection newDBCon;
+	private static Connection newDBCon;
 
 	private static String DB_DRIVER;
 	private static String DB_URL;
