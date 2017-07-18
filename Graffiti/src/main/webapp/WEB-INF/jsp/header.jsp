@@ -27,18 +27,18 @@
 							Inscriptions</a></li>
 					<li><a
 						href="<%=request.getContextPath()%>/results?drawing_category=All">Browse
-							Figural Graffiti (Drawings)</a></li>	
-					<li><a
-						href="<%=request.getContextPath()%>/search?city=Pompeii">Search
-							Pompeii</a></li>
-						
+							Figural Graffiti (Drawings)</a></li>
+
 					<li><a
 						href="<%=request.getContextPath()%>/search?city=Herculaneum">Search
 							Herculaneum</a></li>
+					<li><a
+						href="<%=request.getContextPath()%>/search?city=Pompeii">Search
+							Pompeii</a></li>
+
 					<li><a href="<%=request.getContextPath()%>/featured-graffiti">Featured
 							Graffiti</a></li>
-							<li><a href="<%=request.getContextPath()%>/New-featured-graffiti">New Featured
-							Graffiti</a></li>
+					<li><a href="<%=request.getContextPath()%>/New-featured-graffiti">New Featured Graffiti</a></li>
 					<li><a href="/about">About the Project</a></li>
 					<!-- If user is authenticated, Login disappears and Logout appears. Vice versa if admin is not authenticated -->
 					<%

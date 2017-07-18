@@ -8,33 +8,39 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 /**
- * Inserts Description and Translations of figural graffiti from spreadsheet into database
+ * Inserts Description and Translations of figural graffiti from spreadsheet
+ * into database
  * 
  * @author Sara Sprenkle
  *
  */
 public class InsertDrawingDescriptionAndTranslations {
+	
+	// These are the locations of the data within the CSV file
+	private static final int LOCATION_OF_EDR_ID = 0;
 	private static final int LOCATION_OF_LATIN_DESCRIPTION = 10;
-
 	private static final int LOCATION_OF_ENGLISH_DESCRIPTION = 11;
-
-	final static String newDBURL = "jdbc:postgresql://hopper.cs.wlu.edu/graffiti5";
 
 	private static final String UPDATE_DESCRIPTION = "UPDATE figural_graffiti_info SET description_in_english=? WHERE edr_id=?";
 	private static final String UPDATE_DESCRIPTION_TRANSLATION = "UPDATE figural_graffiti_info SET description_in_latin=? WHERE edr_id=?";
 
-	static Connection newDBCon;
+	private static Connection newDBCon;
+	private static String DB_DRIVER;
+	private static String DB_URL;
+	private static String DB_USER;
+	private static String DB_PASSWORD;
 
 	public static void main(String[] args) {
 		init();
 
 		try {
-			updateTranslations("/Users/sprenkle/Desktop/descriptions.csv");
+			updateTranslations("data/EDRData/herc_figural.csv");
 
 			newDBCon.close();
 
@@ -71,24 +77,24 @@ public class InsertDrawingDescriptionAndTranslations {
 		}
 
 		for (CSVRecord record : records) {
-			String edrID = Utils.cleanData(record.get(0));
+			String edrID = Utils.cleanData(record.get(LOCATION_OF_EDR_ID));
 			String description_in_english = Utils.cleanData(record.get(LOCATION_OF_ENGLISH_DESCRIPTION));
 			String description_in_latin = Utils.cleanData(record.get(LOCATION_OF_LATIN_DESCRIPTION));
-			
+
 			try {
 				descriptionUpdate.setString(2, edrID);
 				translationStmt.setString(2, edrID);
-				
+
 				descriptionUpdate.setString(1, description_in_english);
 				translationStmt.setString(1, description_in_latin);
-				
+
 				descriptionUpdate.executeUpdate();
 				translationStmt.executeUpdate();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 		try {
 			descriptionUpdate.close();
@@ -100,18 +106,29 @@ public class InsertDrawingDescriptionAndTranslations {
 	}
 
 	private static void init() {
+		getConfigurationProperties();
+
 		try {
-			Class.forName("org.postgresql.Driver");
+			Class.forName(DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			newDBCon = DriverManager.getConnection(newDBURL, "web", "");
+			newDBCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void getConfigurationProperties() {
+		Properties prop = Utils.getConfigurationProperties();
+
+		DB_DRIVER = prop.getProperty("db.driverClassName");
+		DB_URL = prop.getProperty("db.url");
+		DB_USER = prop.getProperty("db.user");
+		DB_PASSWORD = prop.getProperty("db.password");
 	}
 
 }
