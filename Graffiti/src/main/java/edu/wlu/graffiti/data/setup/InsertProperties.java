@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -28,19 +27,15 @@ import edu.wlu.graffiti.bean.PropertyType;
  */
 public class InsertProperties {
 
-	private static String DB_DRIVER;
-	private static String DB_URL;
-	private static String DB_USER;
-	private static String DB_PASSWORD;
+	final static String newDBURL = "jdbc:postgresql://hopper.cs.wlu.edu/graffiti3";
+
+	// private static final String DELIMITER = ",";
 
 	private static final String INSERT_PROPERTY_STMT = "INSERT INTO properties "
 			+ "(insula_id, property_number, additional_properties, property_name, italian_property_name) "
 			+ "VALUES (?,?,?,?,?)";
 
-	private static final String UPDATE_OSM_ID = "UPDATE properties SET osm_id = ? WHERE property_id = ?";
-	private static final String UPDATE_OSM_WAY_ID = "UPDATE properties SET osm_way_id = ? WHERE property_id = ?";
-
-	private static final String LOOKUP_INSULA_ID = "SELECT id from insula WHERE modern_city=? AND short_name=?";
+	private static final String LOOKUP_INSULA_ID = "SELECT id from insula WHERE modern_city=? AND name=?";
 
 	private static final String LOOKUP_PROP_ID = "SELECT id FROM properties "
 			+ "WHERE insula_id=? AND property_number = ?";
@@ -57,7 +52,7 @@ public class InsertProperties {
 
 		try {
 			insertProperties("data/pompeii_properties.csv");
-			insertProperties("data/herculaneum_properties.csv");
+			insertProperties("data/herculaneum_properties2.csv");
 
 			newDBCon.close();
 		} catch (SQLException e1) {
@@ -72,8 +67,6 @@ public class InsertProperties {
 			PreparedStatement insertPTStmt = newDBCon.prepareStatement(INSERT_PROPERTY_TYPE_MAPPING);
 
 			List<PropertyType> propertyTypes = getPropertyTypes();
-
-			BufferedReader br = new BufferedReader(new FileReader(datafileName));
 
 			Reader in = new FileReader(datafileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
@@ -97,7 +90,7 @@ public class InsertProperties {
 				if (record.size() > 5) {
 					italianPropName = record.get(5).trim();
 				}
-				System.out.println("Looking up " + modernCity + " " + insula);
+
 				int insula_id = lookupInsulaId(modernCity, insula);
 
 				pstmt.setInt(1, insula_id);
@@ -115,17 +108,18 @@ public class InsertProperties {
 				}
 
 				int propID = locatePropertyId(insula_id, propertyNumber);
-				
+
 				// handle property tags
 				if (record.size() > 6) {
 					String[] tagArray = record.get(6).trim().split(",");
 					for (String t : tagArray) {
 						t = t.trim();
+						// System.out.println("tag: " + t);
 						for (PropertyType propType : propertyTypes) {
 							// System.out.println("propType: " +
 							// propType.getName());
 							if (propType.includes(t)) {
-								System.out.println("Match! " + propType.getName() + "for propID " + propID);
+								System.out.println("Match! " + propType.getName());
 								insertPTStmt.setInt(1, propID);
 								insertPTStmt.setInt(2, propType.getId());
 								// Wrapped in try to handle the
@@ -139,10 +133,8 @@ public class InsertProperties {
 						}
 					}
 				}
-				
-				// handle adding OSM ids
 			}
-			br.close();
+			in.close();
 			pstmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -215,31 +207,20 @@ public class InsertProperties {
 	}
 
 	private static void init() {
-		getConfigurationProperties();
-
 		try {
-			Class.forName(DB_DRIVER);
+			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			newDBCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			newDBCon = DriverManager.getConnection(newDBURL, "web", "");
 			selectInsulaStmt = newDBCon.prepareStatement(LOOKUP_INSULA_ID);
 			selectPropStmt = newDBCon.prepareStatement(LOOKUP_PROP_ID);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static void getConfigurationProperties() {
-		Properties prop = Utils.getConfigurationProperties();
-
-		DB_DRIVER = prop.getProperty("db.driverClassName");
-		DB_URL = prop.getProperty("db.url");
-		DB_USER = prop.getProperty("db.user");
-		DB_PASSWORD = prop.getProperty("db.password");
 	}
 
 }
