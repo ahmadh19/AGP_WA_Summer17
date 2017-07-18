@@ -38,7 +38,7 @@ public class ImportEDRData {
 	private static String DB_URL;
 	private static String DB_USER;
 	private static String DB_PASSWORD;
-	
+
 	private static final String INSERT_INSCRIPTION_STATEMENT = "INSERT INTO edr_inscriptions "
 			+ "(edr_id, ancient_city, find_spot, measurements, writing_style, \"language\") " + "VALUES (?,?,?,?,?,?)";
 
@@ -48,8 +48,7 @@ public class ImportEDRData {
 	private static final String CHECK_INSCRIPTION_STATEMENT = "SELECT COUNT(*) FROM edr_inscriptions"
 			+ " WHERE edr_id = ?";
 
-	private static final String INSERT_AGP_METADATA = "INSERT INTO agp_inscription_info (edr_id) "
-			+ "VALUES (?)";
+	private static final String INSERT_AGP_METADATA = "INSERT INTO agp_inscription_info (edr_id) " + "VALUES (?)";
 
 	private static final String UPDATE_PROPERTY = "UPDATE agp_inscription_info SET "
 			+ "property_id = ? WHERE edr_id = ?";
@@ -144,11 +143,12 @@ public class ImportEDRData {
 	}
 
 	private static void updateApparatus(String apparatusFileName) {
+		String eagleID="";
 		try {
 			Reader in = new FileReader(apparatusFileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
-				String eagleID = Utils.cleanData(record.get(0));
+				eagleID = Utils.cleanData(record.get(0));
 				String apparatus = Utils.cleanData(record.get(1));
 
 				try {
@@ -162,12 +162,14 @@ public class ImportEDRData {
 						System.err.println(apparatus);
 					}
 				} catch (SQLException e) {
+
 					e.printStackTrace();
 				}
 
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.err.println("\nSomething went wrong with " + eagleID);
 		}
 	}
 
@@ -263,7 +265,7 @@ public class ImportEDRData {
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
-				String ancient_city = Utils.cleanData(record.get(4));
+				String ancient_city = Utils.cleanData(record.get(3));
 				String findSpot = Utils.cleanData(record.get(5));
 				String alt = Utils.cleanData(record.get(18));
 				String lat = Utils.cleanData(record.get(19));
@@ -343,10 +345,6 @@ public class ImportEDRData {
 		String insula = "";
 		String propertyNum = "";
 
-		if (ancient_city.startsWith("Pompei")) {
-			ancient_city = "Pompeii";
-		}
-
 		if (ancient_city.equals("Pompeii")) {
 			insula = address.substring(0, address.lastIndexOf('.'));
 			propertyNum = address.substring(address.lastIndexOf('.') + 1);
@@ -358,7 +356,7 @@ public class ImportEDRData {
 			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		}
 
-		System.out.println("city: " + ancient_city);
+		System.out.println("ancient city: " + ancient_city);
 		System.out.println("findspot: " + findSpot);
 		System.out.println("address: " + address);
 		System.out.println("insula: " + insula);
@@ -366,6 +364,13 @@ public class ImportEDRData {
 
 		// Look up ids from the HashMaps
 		// handle alternative spellings
+
+		if (!cityToInsulaMap.containsKey(ancient_city)) {
+			System.err.println();
+			System.out.println(ancient_city + "not found");
+			System.err.println();
+			return;
+		}
 
 		if (!cityToInsulaMap.get(ancient_city).containsKey(insula)) {
 			System.err.println();
