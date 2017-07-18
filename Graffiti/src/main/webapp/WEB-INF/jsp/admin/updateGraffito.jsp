@@ -6,7 +6,6 @@
 <%@ page import="edu.wlu.graffiti.bean.AGPInfo"%>
 <%@ page import="edu.wlu.graffiti.bean.DrawingTag"%>
 <%@ page import="edu.wlu.graffiti.bean.Theme"%>
-<%@ page import="edu.wlu.graffiti.dao.ThemeDao"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/functions' prefix='fn' %>
 
 <!DOCTYPE html>

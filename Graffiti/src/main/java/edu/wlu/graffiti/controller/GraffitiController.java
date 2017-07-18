@@ -245,7 +245,7 @@ public class GraffitiController {
 
 	}
 
-	@RequestMapping(value = "/New-featured-graffiti", method = RequestMethod.GET)
+	@RequestMapping(value = "/new-featured-graffiti", method = RequestMethod.GET)
 	public String newFeaturedHits(final HttpServletRequest request) {
 
 		final List<Inscription> greatestFiguralHits = this.graffitiDao.getGreatestFiguralHits();
@@ -253,7 +253,7 @@ public class GraffitiController {
 		request.setAttribute("figuralHits", greatestFiguralHits);
 		request.setAttribute("translationHits", greatestTranslationHits);
 
-		return "New_Featured_Graffiti";
+		return "newFeaturedGraffiti";
 
 	}
 

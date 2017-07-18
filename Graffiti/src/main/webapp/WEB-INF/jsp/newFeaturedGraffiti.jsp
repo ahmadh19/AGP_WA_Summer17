@@ -54,7 +54,7 @@ body {
 	display: inline-block;
 	margin: 25px 25px 25px 25px;
 	vertical-align: top;
-    width:212px;
+    width:175px;
 }
 
 .portfolio-grid li > a,
@@ -219,7 +219,7 @@ body {
                     </li>
     
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Love" target="_blank" class="animated flipInX">
                       
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Love.png" alt="Love"/>
                         </a>
@@ -230,17 +230,17 @@ body {
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Bath" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Baths.png" alt="Baths"/>
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank"  class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Gladiators" target="_blank"  class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Gladiators.png" alt="Gladiators"/>
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Food" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Food.png" alt="Food"/>
                         </a>
                     </li>

@@ -70,6 +70,7 @@ th {
 
 		<table class="table table-bordered table-striped" id="herculaneumTable"
 				style="margin-bottom: 30px;">
+			<thead>
 				<tr>
 					<%
 					if (request.getAttribute("filterByInsula") == null) {
@@ -81,6 +82,8 @@ th {
 					<th>Type</th>
 					<th>URI</th>
 				</tr>
+			</thead>
+			<tbody>
 				<c:forEach var="m" begin="${1}"
 					end="${fn:length(requestScope.herculaneumProperties)}">
 					<c:set var="prop" value="${requestScope.herculaneumProperties[m-1]}" />
@@ -96,7 +99,8 @@ th {
 						<td><a href="http://${prop.uri}">http://${prop.uri}</a></td>
 					</tr>
 				</c:forEach>
-			</table>
+			</tbody>
+		</table>
 		<%
 		}	
 		%>
@@ -139,6 +143,7 @@ th {
 
 		<table class="table table-bordered table-striped" id="pompeiiTable"
 			style="margin-bottom: 30px;">
+			<thead>
 			<tr>
 				<%
 					if (request.getAttribute("filterByInsula") == null) {
@@ -150,6 +155,8 @@ th {
 				<th>Type</th>
 				<th>URI</th>
 			</tr>
+			</thead>
+			<tbody>
 			<c:forEach var="k" begin="${1}"
 				end="${fn:length(requestScope.pompeiiProperties)}">
 				<c:set var="prop" value="${requestScope.pompeiiProperties[k-1]}" />
@@ -165,6 +172,7 @@ th {
 					<td><a href="http://${prop.uri}">http://${prop.uri}</a></td>
 				</tr>
 			</c:forEach>
+			</tbody>
 		</table>
 		<%
 			}

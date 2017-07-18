@@ -20,6 +20,8 @@ public class ThemeDao extends JdbcTemplate {
 	private static final String SELECT_STATEMENT = "SELECT * " + "FROM themes ORDER BY name";
 	
 	private static final String SELECT_BY_ID = "SELECT * " + "FROM themes WHERE theme_id = ?";
+	
+	private static final String SELECT_BY_NAME = "SELECT * " + "FROM themes WHERE name = ?";
 
 	public static final String SELECT_BY_EDR_ID = "SELECT themes.theme_id, themes.name "
 			+ "FROM graffititothemes, themes WHERE graffito_id = ? "
@@ -36,6 +38,11 @@ public class ThemeDao extends JdbcTemplate {
 	//@Cacheable("themes")
 	public Theme getThemeById(int theme_id) {
 		Theme theme = queryForObject(SELECT_BY_ID, new ThemeRowMapper(), theme_id);
+		return theme;
+	}
+	
+	public Theme getThemeByName(String theme_name) {
+		Theme theme = queryForObject(SELECT_BY_NAME, new ThemeRowMapper(), theme_name);
 		return theme;
 	}
 	

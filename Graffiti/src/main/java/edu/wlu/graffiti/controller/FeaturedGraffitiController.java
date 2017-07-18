@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -51,12 +52,21 @@ public class FeaturedGraffitiController {
 		return "newTranslationQuiz";
 
 	}
-	@RequestMapping(value = "/ThemeGraffiti", method = RequestMethod.GET)
-	public String featuredHits2(final HttpServletRequest request) {
+	@RequestMapping(value = "/themes/{themeName}", method = RequestMethod.GET)
+	public String searchThemedGraffiti(@PathVariable String themeName, final HttpServletRequest request) {
 
-		final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
-		request.setAttribute("translationHits", greatestTranslationHits);
-		return "Rough_Draft_Theme_Mock_Up";
+		// Old code:
+		//final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
+		//request.setAttribute("translationHits", greatestTranslationHits);
+		
+		Theme theme = themeDao.getThemeByName(themeName);
+		
+		List<Inscription> inscriptions = graffitiDao.getInscriptionByTheme(Integer.toString(theme.getId()));
+		request.setAttribute("inscriptions", inscriptions);
+		request.setAttribute("theme", themeDao.getThemeByName(themeName));
+		
+		return "themedGraffitiResults";
 
 	}
-	}
+
+}
