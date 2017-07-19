@@ -85,17 +85,17 @@ button:disabled {
 }
 
 .modal {
-	display: none; /* Hidden by default */
-	position: fixed; /* Stay in place */
-	z-index: 0; /* Sit on top */
+	display: none;
+	position: fixed;
+	z-index: 0;
 	left: 0;
 	top: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	overflow: auto; /* Enable scroll if needed */
-	background-color: rgb(0, 0, 0); /* Fallback color */
-	background-color: rgba(0, 0, 0, 0); /* Black w/ opacity */
-	-webkit-animation-name: fadeIn; /* Fade in the background */
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgb(0, 0, 0);
+	background-color: rgba(0, 0, 0, 0); /* bg w/ opacity control */
+	-webkit-animation-name: fadeIn;
 	-webkit-animation-duration: 0.4s;
 	animation-name: fadeIn;
 	animation-duration: 0.4s
@@ -405,27 +405,28 @@ button:disabled {
 </div>
 
 <script type="text/javascript">
-	// Get the modal
 	var modal = document.getElementById("myModal");
-	// Get the button that opens the modal
 	var btn = document.getElementById("kbdButton");
-	// Get the <span> element that closes the modal
 	var span = document.getElementsByClassName("close")[0];
+	
 	// When the user clicks the button, open the modal
 	btn.onclick = function() {
 		modal.style.display = "block";
 	}
-	// When the user clicks on <span> (x), close the modal
+	
+	// When the user clicks on X, close the modal
 	span.onclick = function() {
 		modal.style.display = "none";
 	}
+	
 	// When the user clicks anywhere outside of the modal, close it
 	window.onclick = function(event) {
 		if (event.target == modal) {
 			modal.style.display = "none";
 		}
 	}
-	//create the keyboard buttons
+	
+	// Create the keyboard buttons
 	window.onload = function() {
 		var textBox = document.getElementById("keyword");
 
