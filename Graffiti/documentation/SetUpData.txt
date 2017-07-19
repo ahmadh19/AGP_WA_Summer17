@@ -7,6 +7,7 @@ Data Set Up
 Populate Default Data 
  - Insert Property Types - InsertPropertyTypes
  - Insert Drawing Tags
+ - Insert Themes
  
  Populate Data
  - Insert Cities and Insula - InsertCitiesAndInsulae.java - both Pompeii and Herculaneum
