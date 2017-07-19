@@ -38,7 +38,7 @@
 
 					<li><a href="<%=request.getContextPath()%>/featured-graffiti">Featured
 							Graffiti</a></li>
-					<li><a href="<%=request.getContextPath()%>/New-featured-graffiti">New Featured Graffiti</a></li>
+					<li><a href="<%=request.getContextPath()%>/new-featured-graffiti">New Featured Graffiti</a></li>
 					<li><a href="/about">About the Project</a></li>
 					<!-- If user is authenticated, Login disappears and Logout appears. Vice versa if admin is not authenticated -->
 					<%

@@ -12,11 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Insula;
 import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.bean.PropertyType;
 import edu.wlu.graffiti.dao.InsulaDao;
 import edu.wlu.graffiti.dao.FindspotDao;
+import edu.wlu.graffiti.dao.GraffitiDao;
 
 /**
  * Special controller for testing the consistency of the information in the
@@ -33,6 +35,9 @@ public class DBTestingController {
 
 	@Resource
 	private InsulaDao insulaDao;
+	
+	@Resource
+	private GraffitiDao graffitiDao;
 
 	@RequestMapping(value = "/database/propertyInfo", method = RequestMethod.GET)
 	public String searchForm(final HttpServletRequest request) {
@@ -55,5 +60,6 @@ public class DBTestingController {
 
 		return "database/showPropertyInfo";
 	}
+	
 
 }

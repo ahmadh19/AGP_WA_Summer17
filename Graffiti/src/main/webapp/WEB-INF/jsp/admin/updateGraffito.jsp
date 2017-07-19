@@ -5,6 +5,8 @@
 <%@ page import="edu.wlu.graffiti.bean.Inscription"%>
 <%@ page import="edu.wlu.graffiti.bean.AGPInfo"%>
 <%@ page import="edu.wlu.graffiti.bean.DrawingTag"%>
+<%@ page import="edu.wlu.graffiti.bean.Theme"%>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/functions' prefix='fn' %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -48,6 +50,12 @@ input[name*="image"] {
 			$("#drawing_info").toggle();
 		});
 	});
+	
+	$(document).ready(function() {
+		$("#themed").click(function() {
+			$("#themes_info").toggle();
+		});
+	});
 </script>
 </head>
 <body>
@@ -62,14 +70,12 @@ input[name*="image"] {
 
 	<%
 		Inscription inscription = (Inscription) request.getAttribute("graffito");
+		List<DrawingTag> drawingTags = (List<DrawingTag>) request.getAttribute("drawingTags");
+		List<Integer> drawingTagIds = (List<Integer>) request.getAttribute("drawingTagIds");
+		List<Theme> themes = (List<Theme>) request.getAttribute("themes");
+		List<Integer> themeIds = (List<Integer>) request.getAttribute("inscriptionThemeIds");
+		List<Integer> allThemeIds = (List<Integer>) request.getAttribute("allThemeIds");
 
-		Set<DrawingTag> drawingTags = inscription.getAgp().getFiguralInfo().getDrawingTags();
-		List<Integer> drawingTagIds = new ArrayList<Integer>();
-
-		for (DrawingTag i : drawingTags) {
-			int id = i.getId();
-			drawingTagIds.add(id);
-		}
 	%>
 
 	<div class="container">
@@ -196,33 +202,18 @@ input[name*="image"] {
 
 					<div class="form-group">
 
-						<!--  MAKE THIS INTO A FOR LOOP, drawn from DB -->
-
 						<label for="drawingCategory" class="col-sm-3 control-label">Drawing
 							Category</label>
 
 						<div class="col-sm-6">
-							<label><input type="checkbox" name="drawingCategory"
-								value=3 <%=drawingTagIds.contains(3) ? "checked" : ""%>>Animals</label>
-							<br /> <label><input type="checkbox"
-								name="drawingCategory" value=1
-								<%=drawingTagIds.contains(1) ? "checked" : ""%>>Boats</label> <br />
-							<label><input type="checkbox" name="drawingCategory"
-								value=4 <%=drawingTagIds.contains(4) ? "checked" : ""%>>Erotic
-								Images</label> <br /> <label><input type="checkbox"
-								name="drawingCategory" value=2
-								<%=drawingTagIds.contains(2) ? "checked" : ""%>>Geometric
-								Designs</label> <br /> <label><input type="checkbox"
-								name="drawingCategory" value=7
-								<%=drawingTagIds.contains(7) ? "checked" : ""%>>Gladiators</label>
-							<br /> <label><input type="checkbox"
-								name="drawingCategory" value=6
-								<%=drawingTagIds.contains(6) ? "checked" : ""%>>Human
-								Figures</label> <br /> <label><input type="checkbox"
-								name="drawingCategory" value=8
-								<%=drawingTagIds.contains(8) ? "checked" : ""%>>Plants</label> <br />
-							<label><input type="checkbox" name="drawingCategory"
-								value=5 <%=drawingTagIds.contains(5) ? "checked" : ""%>>Other</label>
+							<c:forEach var="dc" items="${drawingTags}">
+							<label>
+								<input type="checkbox" name="drawingCategory" 
+								value='${dc.id}' <c:if test="${drawingTagIds.contains(dc.id)}" > checked </c:if>> 
+								${dc.name}
+								</label>
+								</br>
+						</c:forEach>
 						</div>
 					</div>
 					<div class="form-group">
@@ -309,7 +300,7 @@ input[name*="image"] {
 					<div class="col-sm-1">
 						<input type="checkbox" name="gh_fig" id="gh_fig"
 							class="form-control"
-							<%=inscription.getAgp().isGreatestHitFigural() ? "checked" : ""%> />
+							<%=inscription.getAgp().getHasFiguralComponent() ? "checked" : ""%> />
 					</div>
 				</div>
 
@@ -322,6 +313,37 @@ input[name*="image"] {
 							<%=inscription.getAgp().isGreatestHitTranslation() ? "checked" : ""%> />
 					</div>
 				</div>
+				
+				<div class="form-group">
+					<label for="themed" class="col-sm-3 control-label">Themed Graffiti?</label>
+					<div class="col-sm-1">
+						<input type="checkbox" name="themed" id="themed"
+							class="form-control"
+							<%=inscription.getAgp().isThemed() ? "checked" : ""%> />
+					</div>
+				</div>
+				
+				<div id="themes_info"
+					style="display:<%=inscription.getAgp().isThemed() ? "inline" : "none"%>">
+					<div class="form-group">
+	
+						<label for="themes" class="col-sm-3 control-label">Themes</label>
+
+						<div class="col-sm-6">
+						
+						<c:forEach var="theme" items="${themes}">
+							<label>
+								<input type="checkbox" name="themes" 
+								value='${theme.id}' <c:if test="${inscriptionThemeIds.contains(theme.id)}" > checked </c:if>> 
+								${theme.name}
+								</label>
+								</br>
+						</c:forEach>
+					
+						</div>
+					</div>
+				</div>
+				
 						<!-- Sprenkle's Comment to be deleted -->
 				<p class="alert alert-info">Only show the following if it is a
 					featured hit...</p>

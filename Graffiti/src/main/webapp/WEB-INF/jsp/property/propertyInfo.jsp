@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
 	pageEncoding="US-ASCII"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -12,17 +13,18 @@
 <!-- this is the stuff for leaflet map -->
 <link rel="stylesheet"
 	href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/resources/css/main.css" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
+<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/resources/css/main.css" />
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
-<script type="text/javascript">
-
+<script src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
+<script type="text/javascript"> 
 function start() {
 	$('img').mapster({
 		areas: [
@@ -54,10 +56,13 @@ function generateMap(name) {
 </script>
 </head>
 <body>
+
+	
 	<!-- this script is also for leaflet -->
 	<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
 
 	<%@include file="/WEB-INF/jsp/header.jsp"%>
+	<c:set var="i" value="${requestScope.inscription}" />
 	<div class="container">
 		<h1>Property</h1>
 
@@ -110,7 +115,7 @@ function generateMap(name) {
 					<th class="propertyLabel">Commentary:</th>
 					<td>${prop.commentary }</td>
 				</tr>
-			</c:if>
+			</c:if>class="propertyMetadataMap"
 			<c:if test="${prop.numberOfGraffiti > 0}">
 				<tr>
 					<th class="propertyLabel">Archaeological Context:</th>
@@ -137,10 +142,12 @@ function generateMap(name) {
 			</tr>
 		</table>
 		<div id="map">
-			<div id="cityMap"></div>
+			<div id="cityMap" class="propertyMetadataMap"></div>
+			<div id="pompeiimap" class="propertyMetadataMap"></div>
 		</div>
+		
 	</div>
-
+	
 	<!-- 
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/pompeiiMap.js"/>">
@@ -151,8 +158,18 @@ function generateMap(name) {
 	 -->
 
 	<script type="text/javascript">
+	if("${prop.insula.city.name}"=="Herculaneum"){
 		generateMap("${prop.insula.city.name}");
-	</script>
+	}
+	else if("${prop.insula.city.name}"=="Pompeii"){
+		window.initmap(true,false,false,false,"${prop.id}");
+		
+	}
 
+	
+
+	
+	</script>
+	
 </body>
 </html>

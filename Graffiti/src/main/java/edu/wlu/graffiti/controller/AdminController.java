@@ -2,20 +2,25 @@ package edu.wlu.graffiti.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import edu.wlu.graffiti.bean.DrawingTag;
 import edu.wlu.graffiti.bean.Inscription;
+import edu.wlu.graffiti.bean.Theme;
 import edu.wlu.graffiti.dao.DrawingTagsDao;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.dao.InsulaDao;
 import edu.wlu.graffiti.dao.PropertyTypesDao;
+import edu.wlu.graffiti.dao.ThemeDao;
 
 @Controller
 public class AdminController {
@@ -36,6 +41,9 @@ public class AdminController {
 
 	@Resource
 	private InsulaDao insulaDao;
+	
+	@Resource
+	private ThemeDao themeDao;
 	
 	@RequestMapping(value = "/AdminFunctions", method = RequestMethod.GET)
 	public String adminFunctions(final HttpServletRequest request) {
@@ -61,22 +69,52 @@ public class AdminController {
 		}
 
 		request.getSession().setAttribute("edrID", id);
+		
+		System.out.println("The EDR-ID is: " +id);
 
-		Inscription element = graffitiDao.getInscriptionByEDR(id);
+		Inscription inscription = graffitiDao.getInscriptionByEDR(id);
 
-		if (element == null) {
+		if (inscription == null) {
 			request.setAttribute("msg", "Not a valid EDR number");
 			return "admin/editGraffito";
 		}
 
-		request.setAttribute("graffito", element);
+		request.setAttribute("graffito", inscription);
+
+		addDrawingTagsAndThemesToRequest(request, inscription);
 
 		return "admin/updateGraffito";
 
 	}
 
+
+	private void addDrawingTagsAndThemesToRequest(final HttpServletRequest request, Inscription inscription) {
+		Set<DrawingTag> drawingTags = inscription.getAgp().getFiguralInfo().getDrawingTags();
+		List<Integer> drawingTagIds = new ArrayList<Integer>();
+
+		for (DrawingTag i : drawingTags) {
+			int dtId = i.getId();
+			drawingTagIds.add(dtId);
+		}
+		
+		List<Theme> themes = inscription.getAgp().getThemes();
+		List<Integer> themeIds = new ArrayList<Integer>();
+		List<Integer> allThemeIds = themeDao.getAllThemeIds();
+		
+		for (Theme t : themes) {
+			int tId = t.getId();
+			themeIds.add(tId);
+		}
+		
+		request.setAttribute("drawingTags", drawingTagsDao.getDrawingTags());
+		request.setAttribute("drawingTagIds", drawingTagIds);
+		request.setAttribute("themes", themeDao.getThemes());
+		request.setAttribute("inscriptionThemeIds", themeIds);
+		request.setAttribute("allThemeIds", allThemeIds);
+	}
+
 	// Update a graffito controller
-	@RequestMapping(value = "/admin/updateGraffito", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/updateGraffito" , method = RequestMethod.POST)
 	public String adminUpdateGraffito(final HttpServletRequest request) {
 
 		// updating AGP Inscription Information
@@ -97,10 +135,12 @@ public class AdminController {
 		String figural = request.getParameter("figural");
 		String ghFig = request.getParameter("gh_fig");
 		String ghTrans = request.getParameter("gh_trans");
+		String theme = request.getParameter("themed");
 
 		boolean hasFiguralComponent = false;
 		boolean isfeaturedHitFig = false;
 		boolean isfeaturedHitTrans = false;
+		boolean isThemed = false;
 
 		if (figural != null) {
 			hasFiguralComponent = true;
@@ -110,6 +150,9 @@ public class AdminController {
 		}
 		if (ghTrans != null) {
 			isfeaturedHitTrans = true;
+		}
+		if (theme != null) {
+			isThemed = true;
 		}
 
 		List<Object> agpOneDimArrList = new ArrayList<Object>();
@@ -127,6 +170,7 @@ public class AdminController {
 		agpOneDimArrList.add(hasFiguralComponent);
 		agpOneDimArrList.add(isfeaturedHitFig);
 		agpOneDimArrList.add(isfeaturedHitTrans);
+		agpOneDimArrList.add(isThemed);
 
 		graffitiDao.updateAgpInscription(agpOneDimArrList, edrID);
 
@@ -148,15 +192,25 @@ public class AdminController {
 		String[] drawingTags = request.getParameterValues("drawingCategory");
 		graffitiDao.clearDrawingTags(edrID);
 
-		if (drawingTags != null) {
+		if (drawingTags != null && hasFiguralComponent) {
 			graffitiDao.insertDrawingTags(edrID, drawingTags);
 		}
 
+		// updating themes
+		String[] themes = request.getParameterValues("themes");
+		graffitiDao.clearThemes(edrID);
+
+		if (themes != null && isThemed) {
+			graffitiDao.insertThemes(edrID, themes);
+		}
+		
 		request.setAttribute("msg", "The graffito has been successfully updated in the database");
 
 		Inscription element = graffitiDao.getInscriptionByEDR(edrID);
 
 		request.setAttribute("graffito", element);
+		
+		addDrawingTagsAndThemesToRequest(request, element);
 
 		return "admin/updateGraffito";
 

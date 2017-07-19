@@ -1,25 +1,20 @@
-@CHARSET "UTF-8";
 
+ @CHARSET "UTF-8";
 
-
-
-/*Used in propertyInfo.js,vii.12_map.xml(?),pompeiiMap.xml,i.8_map.xml,
-herculaneum_map.xml,search.jsp(really? No stylesheet link here shown)*/
 
 #map {
 	height: 500px;
 	width: 800px;
 }
 
-/*Used in pompeiiMap.jsp,searchPompeii.jsp*/
 
 .mapdiv {
-	height: 500px;
-	width: 800px;
+	height: 400px;
+	width: 650px;
 	float: left;
+	position:absolute;
+	margin-left:auto;
 }
-
-/*Used in pompeiiMap.jsp,and searchPompeii.jsp */
 
 #newDiv {
 	height:800px;
@@ -29,10 +24,17 @@ herculaneum_map.xml,search.jsp(really? No stylesheet link here shown)*/
 	position:absolute;
 }
 
-/*Used in searchResults.js[ fpr the pompeiimap*/
+
+.propertyMetadataMap{
+	width: 300px;
+	position: absolute;
+	margin-left: 500px;
+	border: 3px solid #800000;
+	height:250px;
+}
 
 .searchResultsPompeii{
-	height:250px;
+	height:300px;
 	width:300px;
 	margin-top:0px;
 	margin-left:715px;
@@ -41,7 +43,7 @@ herculaneum_map.xml,search.jsp(really? No stylesheet link here shown)*/
 	position:absolute;
 }
 
-/*Used in searchResults.js[ fpr the herculaneum*/
+
 
 .searchResultsHerculaneum{
 	height:250px;
@@ -54,10 +56,6 @@ herculaneum_map.xml,search.jsp(really? No stylesheet link here shown)*/
 }
 
 
-
-
-/*Used in moreGraffitoInformation.jsp*/
-
 .findspotMap{
 	height:400px;
 	width:500px;
@@ -66,7 +64,7 @@ herculaneum_map.xml,search.jsp(really? No stylesheet link here shown)*/
 	border: 3px solid #800000;
 }
 
-/*Used in ?*/
+Used in ?
 
 .info h4 {
 	margin: 0 0 5px;
@@ -74,9 +72,13 @@ herculaneum_map.xml,search.jsp(really? No stylesheet link here shown)*/
 	
 }
 
-/*Used in searchPompeii.jsp*/
 
 #moreInfo {
-	height: 100px;
-	width: 200px;
+	height: 0px;
+	width:200px;
 }
+	
+	
+	
+	
+	

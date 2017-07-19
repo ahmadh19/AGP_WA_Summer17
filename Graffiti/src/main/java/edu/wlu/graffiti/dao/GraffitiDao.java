@@ -16,6 +16,7 @@ import edu.wlu.graffiti.bean.GreatestHitsInfo;
 import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Insula;
 import edu.wlu.graffiti.bean.Property;
+import edu.wlu.graffiti.bean.Theme;
 import edu.wlu.graffiti.data.rowmapper.DrawingTagRowMapper;
 import edu.wlu.graffiti.data.rowmapper.GreatestHItsInfoRowMapper;
 import edu.wlu.graffiti.data.rowmapper.InscriptionRowMapper;
@@ -105,6 +106,16 @@ public class GraffitiDao extends JdbcTemplate {
 			+ "LEFT JOIN greatest_hits_info ON edr_inscriptions.edr_id=greatest_hits_info.edr_id "
 			+ "WHERE has_figural_component = true AND drawing_tag_id=(?) AND edr_inscriptions.edr_id=graffitotodrawingtags.graffito_id AND "
 			+ "edr_inscriptions.edr_id=agp_inscription_info.edr_id";
+	
+	private static final String SELECT_INSCRIPTIONS_BY_THEME = "SELECT *, " + "edr_inscriptions.id AS local_id, "
+			+ "properties.id AS property_id "
+			+ "FROM graffititothemes, edr_inscriptions "
+			+ "LEFT JOIN agp_inscription_info ON edr_inscriptions.edr_id=agp_inscription_info.edr_id "
+			+ "LEFT JOIN properties ON agp_inscription_info.property_id=properties.id "
+			+ "LEFT JOIN figural_graffiti_info ON edr_inscriptions.edr_id=figural_graffiti_info.edr_id "
+			+ "LEFT JOIN greatest_hits_info ON edr_inscriptions.edr_id=greatest_hits_info.edr_id "
+			+ "WHERE is_themed = true AND theme_id=(?) AND edr_inscriptions.edr_id=graffititothemes.graffito_id AND "
+			+ "edr_inscriptions.edr_id=agp_inscription_info.edr_id";
 
 	private static final String SELECT_DRAWING_TAGS = "SELECT drawing_tags.id, name, description "
 			+ "FROM graffitotodrawingtags, drawing_tags "
@@ -118,6 +129,9 @@ public class GraffitiDao extends JdbcTemplate {
 
 	@Resource
 	private FindspotDao propertyDao;
+	
+	@Resource
+	private ThemeDao themeDao;
 	
 	@Cacheable("inscriptions")
 	public List<Inscription> getAllInscriptions() {
@@ -193,6 +207,13 @@ public class GraffitiDao extends JdbcTemplate {
 		return results;
 	}
 
+	public List<Inscription> getInscriptionByTheme(String themeId) {
+		List<Inscription> results = null;
+		results = query(SELECT_INSCRIPTIONS_BY_THEME, new InscriptionRowMapper(),
+				Integer.parseInt(themeId));
+		return results;
+	}
+	
 	/* Possibly should be removed; no longer used?
 	public List<Inscription> getInscriptionById(String id) {
 		List<Inscription> results = query(FIND_BY_ID, new InscriptionRowMapper(), id);
@@ -209,6 +230,15 @@ public class GraffitiDao extends JdbcTemplate {
 	private void retrieveDrawingTagsForInscription(Inscription inscription) {
 		List<DrawingTag> drawingTags = query(SELECT_DRAWING_TAGS, new DrawingTagRowMapper(), inscription.getEdrId());
 		inscription.getAgp().getFiguralInfo().addDrawingTags(drawingTags);
+	}
+	
+	/**
+	 * Gets the themes associated with an inscription.
+	 * @param inscription
+	 */
+	private void retrieveThemesForInscription(Inscription inscription) {
+		List<Theme> themes = themeDao.getThemesByEDR(inscription.getEdrId());
+		inscription.getAgp().setThemes(themes);
 	}
 
 	private void addPropertyToInscription(Inscription inscription) {
@@ -264,6 +294,7 @@ public class GraffitiDao extends JdbcTemplate {
 	private void addOtherInfo(Inscription inscription) {
 		retrieveDrawingTagsForInscription(inscription);
 		addPropertyToInscription(inscription);
+		retrieveThemesForInscription(inscription);
 	}
 
 	/**
@@ -292,7 +323,7 @@ public class GraffitiDao extends JdbcTemplate {
 		String sql = "UPDATE agp_inscription_info "
 				+ "SET summary=?, content_translation= ?, cil=?, langner=?, height_from_ground=(?),graffito_height=(?), "
 				+ "graffito_length=?, letter_height_min=?, letter_height_max=?, individual_letter_heights=?, "
-				+ " comment=?, has_figural_component = ?,  is_greatest_hit_figural=?, is_greatest_hit_translation=? "
+				+ " comment=?, has_figural_component = ?,  is_greatest_hit_figural=?, is_greatest_hit_translation=?, is_themed=? "
 				+ "where edr_id=(?)";
 		fields.add(edrID);
 		update(sql, fields.toArray());
@@ -322,6 +353,11 @@ public class GraffitiDao extends JdbcTemplate {
 		String sql = "UPDATE graffito2drawingtags " + "SET drawing_tag_id=(?) " + "where edr_id=(?)";
 		update(sql, fields.toArray());
 	}
+	
+	public void updateThemes(List<String> fields) {
+		String sql = "UPDATE graffititothemes " + "SET theme_id=(?) " + "where graffito_id=(?)";
+		update(sql, fields.toArray());
+	}
 
 	// insert edr inscription
 	public void insertEdrInscription(List<ArrayList<String>> inscriptions) {
@@ -349,12 +385,26 @@ public class GraffitiDao extends JdbcTemplate {
 		update(sql, edr);
 
 	}
+	
+	public void clearThemes(String edr) {
+		String sql = "DELETE FROM graffititothemes " + "WHERE graffito_id=(?)";
+
+		update(sql, edr);
+
+	}
 
 	// insert drawing tags
 	public void insertDrawingTags(String edr, String[] dts) {
 		String sql = "INSERT INTO graffitotodrawingtags " + "(graffito_id,drawing_tag_id)" + " VALUES (?,?)";
 		for (String dt : dts) {
 			update(sql, new Object[] { edr, Integer.parseInt(dt) });
+		}
+	}
+	
+	public void insertThemes(String edr, String[] themes) {
+		String sql = "INSERT INTO graffititothemes " + "(graffito_id,theme_id)" + " VALUES (?,?)";
+		for (String theme : themes) {
+			update(sql, new Object[] { edr, Integer.parseInt(theme) });
 		}
 	}
 

@@ -81,9 +81,10 @@ h3 {
 		<div class="rightcol">
 			<h3>Pompeii</h3>
 			<a href="search?city=Pompeii"><img class="fluid-img"
-				src="<%=request.getContextPath()%>/resources/images/Pompeii.jpg"
-				onmouseover="this.src='<%=request.getContextPath()%>/resources/images/explorePompeii.jpg'"
-				onmouseout="this.src='<%=request.getContextPath()%>/resources/images/Pompeii.jpg'" /></a>
+				src="<%=request.getContextPath()%>/resources/images/newPompeiiMap.jpeg"
+				onmouseover="this.src='<%=request.getContextPath()%>/resources/images/newPompeiiMap.jpeg'"
+				<%-- onmouseover="this.src='<%=request.getContextPath()%>/resources/images/explorePompeii.jpg'" --%>
+				onmouseout="this.src='<%=request.getContextPath()%>/resources/images/newPompeiiMap.jpeg'" /></a>
 		</div>
 	</div>
 	<p style="text-align: center;">

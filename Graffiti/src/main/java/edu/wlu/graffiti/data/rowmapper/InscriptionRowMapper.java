@@ -59,6 +59,7 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		agp.setMaxLetterWithFlourishesHeight(resultSet.getString("letter_with_flourishes_height_max"));
 		agp.setMinLetterWithFlourishesHeight(resultSet.getString("letter_with_flourishes_height_min"));
 		agp.setEpidoc(resultSet.getString("epidoc"));
+		agp.setThemed(resultSet.getBoolean("is_themed"));
 
 		if (agp.hasFiguralComponent()) {
 			figinfo.setDescriptionInEnglish(resultSet.getString("description_in_english"));
