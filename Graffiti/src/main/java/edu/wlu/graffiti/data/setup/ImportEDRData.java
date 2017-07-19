@@ -40,10 +40,12 @@ public class ImportEDRData {
 	private static String DB_PASSWORD;
 
 	private static final String INSERT_INSCRIPTION_STATEMENT = "INSERT INTO edr_inscriptions "
-			+ "(edr_id, ancient_city, find_spot, measurements, writing_style, \"language\", date_of_origin) " + "VALUES (?,?,?,?,?,?,?)";
+			+ "(edr_id, ancient_city, find_spot, measurements, writing_style, \"language\", date_of_origin) "
+			+ "VALUES (?,?,?,?,?,?,?)";
 
 	private static final String UPDATE_INSCRIPTION_STATEMENT = "UPDATE edr_inscriptions SET "
-			+ "ancient_city=?, find_spot=?, measurements=?, writing_style=?, \"language\"=?, date_of_origin=?" + "WHERE edr_id = ?";
+			+ "ancient_city=?, find_spot=?, measurements=?, writing_style=?, \"language\"=?, date_of_origin=?"
+			+ "WHERE edr_id = ?";
 
 	private static final String CHECK_INSCRIPTION_STATEMENT = "SELECT COUNT(*) FROM edr_inscriptions"
 			+ " WHERE edr_id = ?";
@@ -67,8 +69,6 @@ public class ImportEDRData {
 
 	private static final String INSERT_PHOTO_STATEMENT = "INSERT INTO photos (edr_id, photo_id) " + "VALUES (?, ?)";
 
-	
-	
 	private static Connection dbCon;
 
 	private static PreparedStatement insertAGPMetaStmt;
@@ -150,10 +150,11 @@ public class ImportEDRData {
 
 	/**
 	 * Update the apparatus information in each of the inscription entries.
+	 * 
 	 * @param apparatusFileName
 	 */
 	private static void updateApparatus(String apparatusFileName) {
-		String eagleID="";
+		String eagleID = "";
 		try {
 			Reader in = new FileReader(apparatusFileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
@@ -234,8 +235,6 @@ public class ImportEDRData {
 					e.printStackTrace();
 				}
 
-				/* } */
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -273,8 +272,6 @@ public class ImportEDRData {
 				String writingStyle = Utils.cleanData(record.get(10));
 				String language = Utils.cleanData(record.get(11));
 
-				System.out.println(eagleID);
-
 				selPStmt.setString(1, eagleID);
 
 				ResultSet rs = selPStmt.executeQuery();
@@ -284,13 +281,15 @@ public class ImportEDRData {
 				if (rs.next()) {
 					count = rs.getInt(1);
 				} else {
-					System.err.println("\nSomething went wrong with the SELECT statement!");
+					System.err.println(eagleID + ":\nSomething went wrong with the SELECT statement!");
 				}
 
 				if (count == 0) {
-					insertEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle, language, dateOfOrigin);
+					insertEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle, language,
+							dateOfOrigin);
 				} else {
-					updateEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle, language, dateOfOrigin);
+					updateEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle, language,
+							dateOfOrigin);
 				}
 
 				// update AGP Metadata
@@ -329,13 +328,12 @@ public class ImportEDRData {
 		}
 
 		String address = convertFindSpotToAddress(findSpot);
-		System.out.println("*" + address);
 
 		// TODO
 		// we're going to skip these because I can't handle them yet.
 
 		if (!address.contains(".")) {
-			System.err.println("Couldn't handle address " + address);
+			System.err.println(eagleID + ": Couldn't handle address " + address);
 			return;
 		}
 
@@ -346,33 +344,22 @@ public class ImportEDRData {
 			insula = address.substring(0, address.lastIndexOf('.'));
 			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		} else {
-			// int indexOfComma = address.indexOf(',');
-			// insula = address.substring(indexOfComma + 2, address.indexOf(',',
-			// indexOfComma));
 			insula = address.substring(0, address.indexOf('.'));
 			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		}
-
-		System.out.println("ancient city: " + ancient_city);
-		System.out.println("findspot: " + findSpot);
-		System.out.println("address: " + address);
-		System.out.println("insula: " + insula);
-		System.out.println("property: " + propertyNum);
 
 		// Look up ids from the HashMaps
 		// handle alternative spellings
 
 		if (!cityToInsulaMap.containsKey(ancient_city)) {
 			System.err.println();
-			System.out.println(ancient_city + "not found");
-			System.err.println();
+			System.err.println(eagleID + ": " + ancient_city + "not found");
 			return;
 		}
 
 		if (!cityToInsulaMap.get(ancient_city).containsKey(insula)) {
 			System.err.println();
-			System.err.println("Insula " + insula + " not found in " + ancient_city + "*");
-			System.err.println();
+			System.err.println(eagleID + ": Insula " + insula + " not found in " + ancient_city + ", " + address);
 			return;
 		}
 
@@ -380,8 +367,7 @@ public class ImportEDRData {
 
 		if (!insulaToPropertyMap.get(insulaID).containsKey(propertyNum)) {
 			System.err.println();
-			System.err.println("Property " + propertyNum + " in Insula " + insula + " not found");
-			System.err.println();
+			System.err.println(eagleID + ": Property " + propertyNum + " in Insula " + insula + " in " + ancient_city + " not found");
 			return;
 		}
 
@@ -409,6 +395,11 @@ public class ImportEDRData {
 	private static String convertFindSpotToAddress(String findSpot) {
 		// Example: Pompei (Napoli) VII.12.18-20, Lupanare, cella b
 		// Example: Ercolano (Napoli), Insula III.11, Casa del Tramezzo di Legno
+
+		// Hack to handle Insula Orientalis special addresses
+		if (findSpot.contains("Insula Orientalis ")) {
+			findSpot = findSpot.replace("Insula Orientalis ", "InsulaOrientalis");
+		}
 
 		Matcher matcher = patternList.get(0).matcher(findSpot);
 		if (matcher.matches()) {
@@ -456,9 +447,10 @@ public class ImportEDRData {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * Insert the photo information into database 
+	 * Insert the photo information into database
+	 * 
 	 * @param string
 	 */
 	private static void updatePhotoInformation(String dataFileName) {
@@ -482,7 +474,7 @@ public class ImportEDRData {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void insertPhotoInformation(String eagleID, String photoID) throws SQLException {
 		insertPhotoStmt.setString(1, eagleID);
 		insertPhotoStmt.setString(2, photoID);
@@ -507,7 +499,7 @@ public class ImportEDRData {
 
 		return sb.toString();
 	}
-	
+
 	private static void init() {
 		getConfigurationProperties();
 
@@ -531,7 +523,7 @@ public class ImportEDRData {
 			// dbCon.prepareStatement(UPDATE_DESCRIPTION);
 			updateBibStmt = dbCon.prepareStatement(UPDATE_BIB);
 			updateApparatusStmt = dbCon.prepareStatement(UPDATE_APPARATUS);
-			
+
 			insertPhotoStmt = dbCon.prepareStatement(INSERT_PHOTO_STATEMENT);
 
 		} catch (SQLException e) {
