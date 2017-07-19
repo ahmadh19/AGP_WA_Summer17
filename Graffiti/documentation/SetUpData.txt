@@ -10,7 +10,7 @@ Populate Default Data
  
  Populate Data
  - Insert Cities and Insula - InsertCitiesAndInsulae.java - both Pompeii and Herculaneum
- - Insert Properties (includes the mappings) - InsertProperties
+ - Insert Properties (includes the property type mappings) - InsertProperties
  - Insert Graffiti - ImportEDRData
  - Insert drawing tags - InsertDrawingTagMappings
  - InsertDescriptionsAndTranslations
