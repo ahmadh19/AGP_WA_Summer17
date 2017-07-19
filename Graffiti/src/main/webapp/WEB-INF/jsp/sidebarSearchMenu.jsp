@@ -293,7 +293,7 @@ button:disabled {
 					<button class="btn btn-default btn-custom"
 						onclick="contentSearch();" style="float: left;"
 						data-toggle="tooltip" data-placement="bottom"
-						title="Perform a search based on graffito content">Content</button>
+						title="Perform a search based only on the text of the graffiti">Text</button>
 					<button class="btn btn-default btn-custom"
 						onclick="globalSearch();" style="float: right;"
 						data-toggle="tooltip" data-placement="bottom"
