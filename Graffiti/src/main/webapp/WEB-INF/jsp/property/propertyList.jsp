@@ -14,11 +14,60 @@
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/js/filterSearch.js"/>"></script>
+<script type="text/javascript">
+;(function($) {
+	   $.fn.fixMe = function() {
+	      return this.each(function() {
+	         var $this = $(this),
+	            $t_fixed;
+	         function init() {
+	            $this.wrap('<div class="propContainer" />');
+	            $t_fixed = $this.clone();
+	            $t_fixed.find("tbody").remove().end().addClass("fixed").insertBefore($this);
+	            resizeFixed();
+	         }
+	         function resizeFixed() {
+	            $t_fixed.find("th").each(function(index) {
+	               $(this).css("width",$this.find("th").eq(index).outerWidth()+"px");
+	            });
+	         }
+	         function scrollFixed() {
+	            var offset = $(this).scrollTop() + $("#nav").height(),
+	            tableOffsetTop = $this.offset().top,
+	            tableOffsetBottom = tableOffsetTop + $this.height() - $this.find("thead").height();
+	            console.log("offset: " + offset + "\ntableoffsettop: " + tableOffsetTop + "\ntableOffsetBottom: " +  tableOffsetBottom);
+	            if(offset < tableOffsetTop || offset > tableOffsetBottom)
+	               $t_fixed.hide();
+	            else if(offset >= tableOffsetTop && offset <= tableOffsetBottom && $t_fixed.is(":hidden")) {
+	           	   $t_fixed.css({"position":"fixed","top":$("#nav").height() + "px", "width":"auto", "display":"none","border":"none"});
+	               $t_fixed.show();
+	            }
+	         }
+	         $(window).resize(resizeFixed);
+	         $(window).scroll(scrollFixed);
+	         init();
+	      });
+	   };
+	})(jQuery);
+
+	$(document).ready(function(){
+	   $("table").fixMe();
+	});
+</script>
 
 <style>
 th {
 	font-weight: bold;
 	color: maroon;
+}
+
+.fixed {
+	position: fixed;
+	top: 100px;
+	width: auto;
+	display: none;
+	border: none;
+	background-color: white;
 }
 </style>
 </head>

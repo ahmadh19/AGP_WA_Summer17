@@ -230,7 +230,7 @@ body {
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/themes/Bath" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Baths" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Baths.png" alt="Baths"/>
                         </a>
                     </li>
