@@ -13,9 +13,10 @@ import java.util.Properties;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
-public class InsertInsulae {
+public class InsertCitiesAndInsula {
 
 	private static final String INSERT_PROPERTY_STMT = "INSERT INTO insula " + "(modern_city, short_name, full_name) VALUES (?,?,?)";
+	private static final String INSERT_CITY_STMT = "INSERT INTO cities " + "(name, pleiades_id) VALUES (?,?)";
 
 	private static Connection newDBCon;
 
@@ -28,11 +29,46 @@ public class InsertInsulae {
 		init();
 
 		try {
+			insertCities("data/cities.csv");
 			insertProperties("data/herculaneum_insulae.csv");
 			insertProperties("data/pompeii_insulae.csv");
 			newDBCon.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
+		}
+	}
+	
+	private static void insertCities(String datafileName) {
+		try {
+			PreparedStatement pstmt = newDBCon.prepareStatement(INSERT_CITY_STMT);
+
+			Reader in = new FileReader(datafileName);
+			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+			for (CSVRecord record : records) {
+				String modernCity = Utils.cleanData(record.get(0));
+				String pleiadesID = Utils.cleanData(record.get(1));
+			
+				pstmt.setString(1, modernCity);
+				pstmt.setString(2, pleiadesID);
+				try {
+					System.out.println(modernCity + " " + pleiadesID);
+					pstmt.executeUpdate();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
+			in.close();
+			pstmt.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
