@@ -15,6 +15,7 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/filterSearch.js"/>"></script>
 <script type="text/javascript">
+// Based on code from https://codepen.io/jgx/pen/wiIGc
 ;(function($) {
 	   $.fn.fixMe = function() {
 	      return this.each(function() {

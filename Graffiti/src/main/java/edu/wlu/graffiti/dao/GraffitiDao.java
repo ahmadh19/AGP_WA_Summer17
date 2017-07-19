@@ -207,10 +207,10 @@ public class GraffitiDao extends JdbcTemplate {
 		return results;
 	}
 
-	public List<Inscription> getInscriptionByTheme(String themeId) {
+	public List<Inscription> getInscriptionByTheme(int themeId) {
 		List<Inscription> results = null;
 		results = query(SELECT_INSCRIPTIONS_BY_THEME, new InscriptionRowMapper(),
-				Integer.parseInt(themeId));
+				themeId);
 		return results;
 	}
 	

@@ -61,7 +61,7 @@ public class FeaturedGraffitiController {
 		
 		Theme theme = themeDao.getThemeByName(themeName);
 		
-		List<Inscription> inscriptions = graffitiDao.getInscriptionByTheme(Integer.toString(theme.getId()));
+		List<Inscription> inscriptions = graffitiDao.getInscriptionByTheme(theme.getId());
 		request.setAttribute("inscriptions", inscriptions);
 		request.setAttribute("theme", themeDao.getThemeByName(themeName));
 		

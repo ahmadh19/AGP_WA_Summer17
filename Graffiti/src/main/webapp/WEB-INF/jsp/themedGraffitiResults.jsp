@@ -10,10 +10,7 @@
 
 <meta charset="UTF-8">
 <title>Ancient Graffiti Project</title>
-<!--    Fix responsive navbar-->
 <%@include file="/resources/common_head.txt"%>
-<link rel="stylesheet" type="text/css"
-	href="resources/css/greatestHits.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 @media only screen and (max-width: 1023px) {
@@ -22,12 +19,7 @@
 	}
 }
 </style>
-<!--  Function to hide the gallery on load -->
-<script>
-	$(document).ready(function() {
-		$("#gallery").hide();
-	});
-</script>
+
 
 </head>
 <body>
@@ -68,9 +60,6 @@
 				</tbody>
 			</table>
 		</div>
-
-		<!-- JS for modal view, toggling, show translations-->
-		<script type="text/javascript" src="resources/js/greatestHits.js"></script>
 	</div>
 
 </body>
