@@ -80,7 +80,7 @@ public class PropertyController {
 		// get all the property types, all the properties and their mappings to
 		// property types
 		
-		if(!propertyDao.getCityNames().contains(city)) {
+		if(!propertyDao.getCityNames().contains(city.toUpperCase())) {
 			request.setAttribute("message", city + " is not a valid city.");
 			return "property/error";
 		}
@@ -96,7 +96,7 @@ public class PropertyController {
 		// get all the property types, all the properties and their mappings to
 		// property types
 		
-		if(!propertyDao.getCityNames().contains(city)) {
+		if(!propertyDao.getCityNames().contains(city.toUpperCase())) {
 			request.setAttribute("message", city + " is not a valid city.");
 			return "property/error";
 		}

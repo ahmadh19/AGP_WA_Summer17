@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.annotation.Resource;
 
@@ -104,6 +105,11 @@ public class FindspotDao extends JdbcTemplate {
 	@Cacheable("cities")
 	public List<String> getCityNames() {
 		List<String> results = queryForList(SELECT_CITY_NAMES, String.class);
+		// change names to upper case to allow for either lower or upper case in URIs
+		ListIterator<String> iterator = results.listIterator();
+		while(iterator.hasNext()) {
+			iterator.set(iterator.next().toUpperCase());
+		}
 		return results;
 	}
 
