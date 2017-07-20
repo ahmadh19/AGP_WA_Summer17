@@ -69,8 +69,6 @@ public class AdminController {
 		}
 
 		request.getSession().setAttribute("edrID", id);
-		
-		System.out.println("The EDR-ID is: " +id);
 
 		Inscription inscription = graffitiDao.getInscriptionByEDR(id);
 

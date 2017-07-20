@@ -56,7 +56,32 @@ input[name*="image"] {
 			$("#themes_info").toggle();
 		});
 	});
+	
+	$(document).ready(function() {
+		$("#gh_trans").click(function() {
+			$("#ghCommentary").toggle();
+		});
+	});
+	
 </script>
+
+<script type="text/javascript">
+	$(document).ready(function (){
+		$('#agp_info_form').submit(function(){ 
+			var checked = $('#gh_fig').is(':checked');
+			if(checked == true) {
+				var text = $('#gh_preferred_image').val();
+				if(text=='' || text=='null') {
+					$('#parent').prepend('<p class="alert alert-danger">Preferred Image is required if a figural graffito.</p>');
+					$(window).scrollTop(0);
+					return false;
+				} 
+			}
+		});
+	});
+
+</script>
+
 </head>
 <body>
 
@@ -78,7 +103,7 @@ input[name*="image"] {
 
 	%>
 
-	<div class="container">
+	<div class="container" id="parent">
 
 		<c:if test="${requestScope.msp != null}">
 			<p class="alert alert-success" role="alert">${requestScope.msg}</p>
@@ -136,7 +161,7 @@ input[name*="image"] {
 
 
 		<div id="agp_info">
-			<form class="form-horizontal" method="post" action="updateGraffito">
+			<form id="agp_info_form" class="form-horizontal" method="post" action="updateGraffito">
 				<input type="hidden" name="${_csrf.parameterName}"
 					value="${_csrf.token}" class="form-control" />
 
@@ -212,7 +237,7 @@ input[name*="image"] {
 								value='${dc.id}' <c:if test="${drawingTagIds.contains(dc.id)}" > checked </c:if>> 
 								${dc.name}
 								</label>
-								</br>
+								<br/>
 						</c:forEach>
 						</div>
 					</div>
@@ -314,6 +339,15 @@ input[name*="image"] {
 					</div>
 				</div>
 				
+				<div class="form-group" id="ghCommentary"
+					style="display:<%=inscription.getAgp().isGreatestHitTranslation() ? "inline" : "none"%>">>
+					<label for="gh_commentary" class="col-sm-3 control-label">Featured Graffiti Commentary</label>
+					<div class="col-sm-7">
+						<textarea rows="15" name="gh_commentary" id="gh_commentary"
+							class="form-control"><%=inscription.getAgp().getGreatestHitsInfo().getCommentary()%></textarea>
+					</div>
+				</div>
+				
 				<div class="form-group">
 					<label for="themed" class="col-sm-3 control-label">Themed Graffiti?</label>
 					<div class="col-sm-1">
@@ -337,29 +371,12 @@ input[name*="image"] {
 								value='${theme.id}' <c:if test="${inscriptionThemeIds.contains(theme.id)}" > checked </c:if>> 
 								${theme.name}
 								</label>
-								</br>
+								<br/>
 						</c:forEach>
 					
 						</div>
 					</div>
 				</div>
-				
-						<!-- Sprenkle's Comment to be deleted -->
-				<p class="alert alert-info">Only show the following if it is a
-					featured hit...</p>
-				
-				
-				
-				<div class="form-group">
-					<label for="gh_commentary" class="col-sm-3 control-label">Featured Graffiti Commentary</label>
-					<div class="col-sm-7">
-						<textarea rows="15" name="gh_commentary" id="gh_commentary"
-							class="form-control"><%=inscription.getAgp().getGreatestHitsInfo().getCommentary()%></textarea>
-					</div>
-				</div>
-
-				<p class="alert alert-danger">Preferred Image is required if a
-					figural graffito.</p>
 
 				<div class="form-group">
 					<label for="gh_preferred_image" class="col-sm-3 control-label">
@@ -372,8 +389,8 @@ input[name*="image"] {
 				</div>
 
 
-				<div class="form-group">
-					<button type="submit" class="btn btn-agp">Update Graffito</button>
+				<div class="form-group" id="btnPanel">
+					<button type="submit" class="btn btn-agp" id="updateGraffito">Update Graffito</button>
 					<button type="button" name="back" onclick="history.back()"
 						class="btn btn-agp">Go Back</button>
 				</div>
