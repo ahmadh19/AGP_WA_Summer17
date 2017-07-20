@@ -72,7 +72,8 @@ input[name*="image"] {
 			if(checked == true) {
 				var text = $('#gh_preferred_image').val();
 				if(text=='' || text=='null') {
-					$('#parent').prepend('<p class="alert alert-danger">Preferred Image is required if a figural graffito.</p>');
+					$('#parent').find("span").remove();
+					$('#parent').prepend('<p><span class="alert alert-danger">Preferred Image is required if a figural graffito.</span></p>');
 					$(window).scrollTop(0);
 					return false;
 				} 
