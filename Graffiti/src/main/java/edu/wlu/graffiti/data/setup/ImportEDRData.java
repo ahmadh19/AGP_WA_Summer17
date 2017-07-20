@@ -1,8 +1,10 @@
 package edu.wlu.graffiti.data.setup;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -156,8 +158,8 @@ public class ImportEDRData {
 	private static void updateApparatus(String apparatusFileName) {
 		String eagleID = "";
 		try {
-			Reader in = new FileReader(apparatusFileName);
-			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+			Reader in = new InputStreamReader( new FileInputStream(apparatusFileName), "UTF-8");
+			Iterable<CSVRecord> records = CSVFormat.newFormat(';').parse(in);
 			for (CSVRecord record : records) {
 				eagleID = Utils.cleanData(record.get(0));
 				String apparatus = Utils.cleanData(record.get(1));
@@ -191,8 +193,8 @@ public class ImportEDRData {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			System.err.println("\nSomething went wrong with apparatus for " + eagleID);
+			e.printStackTrace();
 		}
 	}
 
@@ -302,6 +304,12 @@ public class ImportEDRData {
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
 				String ancient_city = Utils.cleanData(record.get(3));
+				
+				if (!cityToInsulaMap.containsKey(ancient_city)) {
+					System.err.println(eagleID + ": city " + ancient_city + " not found");
+					continue;
+				}
+				
 				String findSpot = Utils.cleanData(record.get(5));
 				String dateOfOrigin = Utils.cleanData(record.get(17));
 				String alt = Utils.cleanData(record.get(18));
@@ -381,7 +389,7 @@ public class ImportEDRData {
 		// we're going to skip these because I can't handle them yet.
 
 		if (!address.contains(".")) {
-			System.err.println(eagleID + ": Couldn't handle address " + address);
+			System.err.println(eagleID + ": Couldn't handle address: " + address);
 			return;
 		}
 
@@ -396,17 +404,7 @@ public class ImportEDRData {
 			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		}
 
-		// Look up ids from the HashMaps
-		// handle alternative spellings
-
-		if (!cityToInsulaMap.containsKey(ancient_city)) {
-			System.err.println();
-			System.err.println(eagleID + ": " + ancient_city + "not found");
-			return;
-		}
-
 		if (!cityToInsulaMap.get(ancient_city).containsKey(insula)) {
-			System.err.println();
 			System.err.println(eagleID + ": Insula " + insula + " not found in " + ancient_city + ", " + address);
 			return;
 		}
@@ -414,7 +412,6 @@ public class ImportEDRData {
 		int insulaID = cityToInsulaMap.get(ancient_city).get(insula).getId();
 
 		if (!insulaToPropertyMap.get(insulaID).containsKey(propertyNum)) {
-			System.err.println();
 			System.err.println(eagleID + ": Property " + propertyNum + " in Insula " + insula + " in " + ancient_city
 					+ " not found");
 			return;
@@ -463,8 +460,8 @@ public class ImportEDRData {
 		}
 	}
 
-	private static int insertEagleInscription(String eagleID, String ancient_city, String findSpot,
-			String measurements, String writingStyle, String language, String date_of_origin) throws SQLException {
+	private static int insertEagleInscription(String eagleID, String ancient_city, String findSpot, String measurements,
+			String writingStyle, String language, String date_of_origin) throws SQLException {
 		insertPStmt.setString(1, eagleID);
 		insertPStmt.setString(2, ancient_city);
 		insertPStmt.setString(3, findSpot);
@@ -481,8 +478,8 @@ public class ImportEDRData {
 		return 0;
 	}
 
-	private static int updateEagleInscription(String eagleID, String ancient_city, String findSpot,
-			String measurements, String writingStyle, String language, String date_of_origin) throws SQLException {
+	private static int updateEagleInscription(String eagleID, String ancient_city, String findSpot, String measurements,
+			String writingStyle, String language, String date_of_origin) throws SQLException {
 		updatePStmt.setString(1, ancient_city);
 		updatePStmt.setString(2, findSpot);
 		updatePStmt.setString(3, measurements);
@@ -510,7 +507,7 @@ public class ImportEDRData {
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
-				String photoID = Utils.cleanData(record.get(21));
+				String photoID = Utils.cleanData(record.get(1));
 				insertPhotoInformation(eagleID, photoID);
 			}
 
