@@ -163,24 +163,36 @@ public class ImportEDRData {
 				String apparatus = Utils.cleanData(record.get(1));
 
 				try {
+					selPStmt.setString(1, eagleID);
 
-					updateApparatusStmt.setString(1, apparatus);
-					updateApparatusStmt.setString(2, eagleID);
+					ResultSet rs = selPStmt.executeQuery();
 
-					int updated = updateApparatusStmt.executeUpdate();
-					if (updated != 1) {
-						System.err.println("\nSomething went wrong with " + eagleID);
-						System.err.println(apparatus);
+					int count = 0;
+
+					if (rs.next()) {
+						count = rs.getInt(1);
+					} else {
+						System.err.println(eagleID
+								+ ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
+					}
+
+					if (count == 1) {
+						updateApparatusStmt.setString(1, apparatus);
+						updateApparatusStmt.setString(2, eagleID);
+
+						int updated = updateApparatusStmt.executeUpdate();
+						if (updated != 1) {
+							System.err.println("\nSomething went wrong with apparatus for " + eagleID);
+							System.err.println(apparatus);
+						}
 					}
 				} catch (SQLException e) {
-
 					e.printStackTrace();
 				}
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.err.println("\nSomething went wrong with " + eagleID);
+			System.err.println("\nSomething went wrong with apparatus for " + eagleID);
 		}
 	}
 
@@ -193,13 +205,27 @@ public class ImportEDRData {
 				String bib = Utils.cleanData(record.get(1));
 
 				try {
-					updateBibStmt.setString(1, bib);
-					updateBibStmt.setString(2, eagleID);
+					selPStmt.setString(1, eagleID);
 
-					int updated = updateBibStmt.executeUpdate();
-					if (updated != 1) {
-						System.err.println("\nSomething went wrong with " + eagleID);
-						System.err.println(bib);
+					ResultSet rs = selPStmt.executeQuery();
+
+					int count = 0;
+
+					if (rs.next()) {
+						count = rs.getInt(1);
+					} else {
+						System.err.println(eagleID
+								+ ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
+					}
+					if (count == 1) {
+						updateBibStmt.setString(1, bib);
+						updateBibStmt.setString(2, eagleID);
+
+						int updated = updateBibStmt.executeUpdate();
+						if (updated != 1) {
+							System.err.println("\nSomething went wrong with bibliography for " + eagleID);
+							System.err.println(bib);
+						}
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -223,13 +249,28 @@ public class ImportEDRData {
 				try {
 					content = cleanContent(content);
 
-					updateContentStmt.setString(1, content);
-					updateContentStmt.setString(2, eagleID);
+					selPStmt.setString(1, eagleID);
 
-					int updated = updateContentStmt.executeUpdate();
-					if (updated != 1) {
-						System.err.println("\nSomething went wrong with " + eagleID);
-						System.err.println(content);
+					ResultSet rs = selPStmt.executeQuery();
+
+					int count = 0;
+
+					if (rs.next()) {
+						count = rs.getInt(1);
+					} else {
+						System.err.println(eagleID
+								+ ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
+					}
+					if (count == 1) {
+
+						updateContentStmt.setString(1, content);
+						updateContentStmt.setString(2, eagleID);
+
+						int updated = updateContentStmt.executeUpdate();
+						if (updated != 1) {
+							System.err.println("\nSomething went wrong with content for " + eagleID);
+							System.err.println(content);
+						}
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -281,19 +322,26 @@ public class ImportEDRData {
 				if (rs.next()) {
 					count = rs.getInt(1);
 				} else {
-					System.err.println(eagleID + ":\nSomething went wrong with the SELECT statement!");
+					System.err.println(
+							eagleID + ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
 				}
 
+				int successUpdate = 0;
+
 				if (count == 0) {
-					insertEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle, language,
-							dateOfOrigin);
+					successUpdate = insertEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle,
+							language, dateOfOrigin);
 				} else {
-					updateEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle, language,
-							dateOfOrigin);
+					successUpdate = updateEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle,
+							language, dateOfOrigin);
 				}
 
 				// update AGP Metadata
-				updateAGPMetadata(eagleID, ancient_city, findSpot);
+				if (successUpdate == 1) {
+					updateAGPMetadata(eagleID, ancient_city, findSpot);
+				} else {
+					System.err.println("Error updating/inserting " + eagleID);
+				}
 
 			}
 
@@ -367,7 +415,8 @@ public class ImportEDRData {
 
 		if (!insulaToPropertyMap.get(insulaID).containsKey(propertyNum)) {
 			System.err.println();
-			System.err.println(eagleID + ": Property " + propertyNum + " in Insula " + insula + " in " + ancient_city + " not found");
+			System.err.println(eagleID + ": Property " + propertyNum + " in Insula " + insula + " in " + ancient_city
+					+ " not found");
 			return;
 		}
 
@@ -414,7 +463,7 @@ public class ImportEDRData {
 		}
 	}
 
-	private static void insertEagleInscription(String eagleID, String ancient_city, String findSpot,
+	private static int insertEagleInscription(String eagleID, String ancient_city, String findSpot,
 			String measurements, String writingStyle, String language, String date_of_origin) throws SQLException {
 		insertPStmt.setString(1, eagleID);
 		insertPStmt.setString(2, ancient_city);
@@ -425,13 +474,14 @@ public class ImportEDRData {
 		insertPStmt.setString(7, date_of_origin);
 
 		try {
-			insertPStmt.executeUpdate();
+			return insertPStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return 0;
 	}
 
-	private static void updateEagleInscription(String eagleID, String ancient_city, String findSpot,
+	private static int updateEagleInscription(String eagleID, String ancient_city, String findSpot,
 			String measurements, String writingStyle, String language, String date_of_origin) throws SQLException {
 		updatePStmt.setString(1, ancient_city);
 		updatePStmt.setString(2, findSpot);
@@ -442,10 +492,11 @@ public class ImportEDRData {
 		updatePStmt.setString(7, eagleID);
 
 		try {
-			updatePStmt.executeUpdate();
+			return updatePStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return 0;
 	}
 
 	/**
