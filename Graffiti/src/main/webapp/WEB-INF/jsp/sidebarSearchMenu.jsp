@@ -428,20 +428,25 @@ button:disabled {
 	
 	// Create the keyboard buttons
 	window.onload = function() {
+		var brCount = 1;
+		
 		for (i = 945; i < 970; i++) {
 			var textBox = document.getElementById("keyword");
 			var v = document.createElement("input");
 			v.type = "button";
 			v.value = String.fromCharCode(i);
 			v.addEventListener("click", function(event) {
-				textBox.value = textBox.value + this.value;
+				textBox.value += this.value;
 			});
 			document.getElementById("greekKeys").appendChild(v);
 			
-			if (i % 10 == 4) {
+			if (brCount == 9) {
 				var brTag = document.createElement("br");
 				document.getElementById("greekKeys").appendChild(brTag);
+				brCount = 0;
 			}
+			
+			brCount++;
 		}
 	}
 </script>
