@@ -83,6 +83,94 @@ input[name*="image"] {
 
 </script>
 
+<script type="text/javascript">
+	/**
+	var highlightedText = '';
+	
+	function getText(event) {
+		highlightedText = (document.all) ? document.selection.createRange().text : document.getSelection();
+		if(highlightedText != "") {
+			return highlightedText;
+		}
+		return false;
+	}
+	
+	document.onmouseup = getText;
+	if(!document.all) { // use document.getElementById() instead? why is this used? is it non-standard?
+		document.captureEvents(Event.MOUSEUP);
+	}
+	*/
+
+	function getSelected() {
+		if (window.getSelection) {
+			return window.getSelection();
+		} else if (document.getSelection) {
+			return document.getSelection();
+		} else {
+			var selection = document.selection
+					&& document.selection.createRange();
+			if (selection.text) {
+				return selection.text;
+			}
+			return false;
+		}
+		return false;
+	}
+
+	$(document).ready(function() {
+		var selectionImage;
+		$('#graffitoContent').mouseup(function(e) {
+			var selection = getSelected();
+			if (!selectionImage) {
+				selectionImage = $('<button>').attr({
+					type : 'button',
+					title : 'Add To EpiDoc',
+					id : 'epidocify',
+					style : 'position: absolute;'
+				}).html("EpiDoc-ify").css({
+					"color" : "black"
+				}).hide();
+				$(document.body).append(selectionImage);
+			}
+			$("#epidocify").click(function epidocify() {
+				var txt = '';
+				if (window.getSelection) {
+					txt = window.getSelection();
+				} else if (document.getSelection) {
+					txt = document.getSelection();
+				} else if (document.selection) {
+					txt = document.selection.createRange().text;
+				} else {
+					return;
+				}
+				alert(txt);
+
+			}).mousedown(function() {
+
+				if (selectionImage) {
+					selectionImage.fadeOut();
+				}
+				
+			});
+
+			selectionImage.css({
+				top : e.pageY - 30, //offsets
+				left : e.pageX - 13
+			//offsets
+			}).fadeIn();
+		});
+	});
+
+	// hide the EpiDoc-ify button if user clicks elsewhere on the window...
+	window.onclick = function(event) {
+		if (!event.target.matches('.epidocify') && !event.target.matches('#graffitoContent')) {
+			var btn = document.getElementById("epidocify");
+			$(btn).fadeOut();
+		}
+	}
+	
+</script>
+
 </head>
 <body>
 
@@ -168,7 +256,7 @@ input[name*="image"] {
 
 				<div class="form-group" style="clear:left;">
 					<strong class="col-sm-3 attribute">Graffito:</strong>
-					<div class="col-sm-6">${i.contentWithLineBreaks}</div>
+					<div class="col-sm-6" id="graffitoContent">${i.contentWithLineBreaks}</div>
 				</div>
 
 				<div class="form-group">
