@@ -311,7 +311,7 @@ public class ImportEDRData {
 				}
 				
 				String findSpot = Utils.cleanData(record.get(5));
-				String dateOfOrigin = Utils.cleanData(record.get(17));
+				String dateOfOrigin = Utils.cleanData(record.get(16));
 				String alt = Utils.cleanData(record.get(18));
 				String lat = Utils.cleanData(record.get(19));
 				String littAlt = Utils.cleanData(record.get(21));
