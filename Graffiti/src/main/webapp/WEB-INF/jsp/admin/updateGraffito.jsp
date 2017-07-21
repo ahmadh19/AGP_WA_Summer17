@@ -526,13 +526,12 @@ input[name*="image"] {
 
 				selectionImage.css({
 					top : e.pageY - 30, //offsets
-					left : e.pageX - 13
-				//offsets
+					left : e.pageX - 13 //offsets
 				}).fadeIn();
 			});
 		});
 
-		// hide the EpiDoc-ify button if user clicks elsewhere on the window...
+		// hide the EpiDoc-ify button and the modal screen if user clicks elsewhere
 		window.onclick = function(event) {
 			if (!event.target.matches('.epidocify') && !event.target.matches('#graffitoContent')) {
 				var btn = document.getElementById("epidocify");
