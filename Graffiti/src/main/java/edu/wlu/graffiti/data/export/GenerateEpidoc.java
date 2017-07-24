@@ -102,11 +102,23 @@ public class GenerateEpidoc {
 		Element publicationStmt = new Element("publicationStmt");
 		Element authority = new Element("authority");
 		
-		Element idno = new Element("idno");
-		idno.setAttribute("type", "filename");
+		Element idno1 = new Element("idno");
+		idno1.setAttribute("type", "filename");
+		
+		Element publisher = new Element("publisher").setText("Ancient Graffiti Project");
+		Element idno2 = new Element("idno").setAttribute("ref", "URI");
+		idno2.setText("http://ancientgraffiti.org/Graffiti/graffito/AGP-" + i.getEdrId());
+		
+		Element availability = new Element("availability");
+		Element pAvailability =  new Element("p").setText("This work is licensed under a Creative Commons "
+				+ "Attribution-NonCommercial-ShareAlike 4.0 International License.");
+		availability.addContent(pAvailability);
 		
 		publicationStmt.addContent(authority);
-		publicationStmt.addContent(idno);
+		publicationStmt.addContent(publisher);
+		publicationStmt.addContent(idno1);
+		publicationStmt.addContent(idno2);
+		publicationStmt.addContent(availability);
 		fileDesc.addContent(publicationStmt);
 		
 		Element sourceDesc = new Element("sourceDesc");

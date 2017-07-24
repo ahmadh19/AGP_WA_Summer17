@@ -321,7 +321,7 @@ public class GraffitiDao extends JdbcTemplate {
 	@CacheEvict(value="inscriptions", key="#edrID")
 	public void updateAgpInscription(List<Object> fields, String edrID) {
 		String sql = "UPDATE agp_inscription_info "
-				+ "SET summary=?, content_translation= ?, cil=?, langner=?, height_from_ground=(?),graffito_height=(?), "
+				+ "SET summary=?, content_translation= ?, cil=?, langner=?, epidoc=?, height_from_ground=(?),graffito_height=(?), "
 				+ "graffito_length=?, letter_height_min=?, letter_height_max=?, individual_letter_heights=?, "
 				+ " comment=?, has_figural_component = ?,  is_greatest_hit_figural=?, is_greatest_hit_translation=?, is_themed=? "
 				+ "where edr_id=(?)";

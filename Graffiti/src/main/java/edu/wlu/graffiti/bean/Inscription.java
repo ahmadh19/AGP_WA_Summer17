@@ -113,7 +113,7 @@ public class Inscription implements Comparable<Inscription> {
 	public String getSpotKey() {
 		if (getFindSpot() != null) { // TODO do we need to check this? when will
 										// an inscription not have a findspot?
-			return "p" + String.valueOf(agp.getProperty().getId());
+			return String.valueOf(agp.getProperty().getId());
 		}
 		return "";
 	}
@@ -122,7 +122,7 @@ public class Inscription implements Comparable<Inscription> {
 	@JsonIgnore
 	public String getGenSpotKey() {
 		if (getSpotKey() != "") { // TODO do we need to check this?
-			return "i" + String.valueOf(agp.getProperty().getInsula().getId());
+			return String.valueOf(agp.getProperty().getInsula().getId());
 		}
 		return "";
 	}

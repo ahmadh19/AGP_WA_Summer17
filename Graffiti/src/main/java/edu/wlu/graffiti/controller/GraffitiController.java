@@ -627,7 +627,7 @@ public class GraffitiController {
 			final Set<String> locationKeysSet = new TreeSet<String>();
 			for (final Inscription inscription : inscriptions) {
 				locationKeysSet.add(inscription.getSpotKey());
-				locationKeysSet.add(inscription.getGenSpotKey());
+				/*locationKeysSet.add(inscription.getGenSpotKey());*/
 			}
 			locationKeys.addAll(locationKeysSet);
 		}
@@ -639,7 +639,7 @@ public class GraffitiController {
 		final Set<String> locationKeysSet = new TreeSet<String>();
 
 		locationKeysSet.add(inscription.getSpotKey());
-		locationKeysSet.add(inscription.getGenSpotKey());
+		/*locationKeysSet.add(inscription.getGenSpotKey());*/
 		locationKeys.addAll(locationKeysSet);
 		return locationKeys;
 	}
