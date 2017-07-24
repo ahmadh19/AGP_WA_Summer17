@@ -15,7 +15,9 @@
 	href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
-<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
+  integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
+  crossorigin=""></script>
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/resources/css/main.css" />
 
@@ -59,7 +61,9 @@ function generateMap(name) {
 
 	
 	<!-- this script is also for leaflet -->
-	<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
+  integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
+  crossorigin=""></script>
 
 	<%@include file="/WEB-INF/jsp/header.jsp"%>
 	<c:set var="i" value="${requestScope.inscription}" />
@@ -115,7 +119,7 @@ function generateMap(name) {
 					<th class="propertyLabel">Commentary:</th>
 					<td>${prop.commentary }</td>
 				</tr>
-			</c:if>class="propertyMetadataMap"
+			</c:if>
 			<c:if test="${prop.numberOfGraffiti > 0}">
 				<tr>
 					<th class="propertyLabel">Archaeological Context:</th>

@@ -36,7 +36,7 @@
 .searchResultsPompeii{
 	height:300px;
 	width:300px;
-	margin-top:0px;
+	margin-top:250px;
 	margin-left:715px;
 	float:right;
 	border: 3px solid #800000;
@@ -48,7 +48,7 @@
 .searchResultsHerculaneum{
 	height:250px;
 	width:300px;
-	margin-top:300px;
+	margin-top:0px;
 	margin-left:715px;
 	float:right;
 	border: 3px solid #800000;
