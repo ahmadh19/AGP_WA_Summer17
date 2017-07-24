@@ -40,9 +40,9 @@
 	background-color: #ddd;
 }
 
-.btn-key {
-	width: 25px;
-	height: 25px;
+#greekKeys input[type="button"] {
+	padding: 0px;
+	margin: 0px;
 }
 
 .label-primary, .label {
