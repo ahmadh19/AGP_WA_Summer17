@@ -577,11 +577,12 @@ public class GraffitiController {
 
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 				.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
-
+		
 		for (SearchHit hit : response.getHits()) {
 			// System.out.println(hit);
 			inscriptions.add(hitToInscription(hit));
 		}
+		
 		client.close();
 		HttpSession session = request.getSession();
 		if (inscriptions.size() > 0) {
