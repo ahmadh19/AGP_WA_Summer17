@@ -331,9 +331,8 @@ function refineResults() {
 	xmlHttp.open("GET", newUrl, false);
 	xmlHttp.send(null);
 	document.getElementById("search-results").innerHTML = xmlHttp.responseText;
-	//Without eval, innerHTML is a string instead of a list. Eval fixes this.
-	//making locationKeys of the list type.
-	var locationKeys=eval(document.getElementById("mapkeys").innerHTML);
+	//Problem: also passes for Herculaneum, not just Pompeii. However, does not seem to be causing errors. 
+	var locationKeys=document.getElementById("mapkeys").innerHTML;
 	map.remove();
 	window.initmap(true,false,false,false,0,locationKeys);
 }
