@@ -23,7 +23,7 @@
 				<ul class="nav navbar-nav" id="nav">
 					<li><a href="<%=request.getContextPath()%>/">Home</a></li>
 					<li><a
-						href="<%=request.getContextPath()%>/results?">Browse All
+						href="<%=request.getContextPath()%>/results">Browse All
 							Inscriptions</a></li>
 					<li><a
 						href="<%=request.getContextPath()%>/results?drawing_category=All">Browse
