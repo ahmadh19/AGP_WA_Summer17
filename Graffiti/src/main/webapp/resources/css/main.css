@@ -8,6 +8,11 @@
 }
 
 
+a.leaflet-control-zoom-in,a.leaflet-control-zoom-out,.leaflet-bar a.leaflet-disabled{
+	background:transparent;
+	
+}
+
 .mapdiv {
 	height: 400px;
 	width: 650px;
