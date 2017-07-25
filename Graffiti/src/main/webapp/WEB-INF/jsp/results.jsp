@@ -198,7 +198,6 @@ hr.main-table {
 	position: fixed;
 	color: white;
 	cursor: pointer;
-	align: right;
 	display: inline;
 	margin: 225px 0px 0px 560px;
 }
