@@ -28,6 +28,11 @@
 	border-color: #fff;
 }
 
+table.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .btn-custom {
 	width: 78px;
 	font-size: 12px;
@@ -40,10 +45,15 @@
 	background-color: #ddd;
 }
 
+
 #greekKeys input[type="button"] {
-	padding: 0px;
-	margin: 0px;
+    padding-top: 2px;
+    padding-right: 6px;
+    padding-bottom: 3px;
+    padding-left: 6px;
+    border-width: 2px;
 }
+
 
 .label-primary, .label {
 	border: 2px solid #428bca;
@@ -99,9 +109,9 @@ button:disabled {
 	<div class="arrow"></div>
 	<div class="popover-content">
 		<p>
-			<center><table>
+			<table class="center">
 				<tr><td nowrap align="center"><div id="greekKeys"></div></tr>
-			</table></center>
+			</table>
 		</p>
 	</div>
 </div>
