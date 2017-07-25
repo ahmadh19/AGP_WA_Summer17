@@ -10,8 +10,6 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	var fillColor;
 	var southWest = L.latLng(40.746, 14.48),
 	
-	
-	
 	northEast = L.latLng(40.754, 14.498),
 	bounds = L.latLngBounds(southWest, northEast);
 	
@@ -27,32 +25,13 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	else{
 		currentZoomLevel=15;
 	}
-	
+	var zoomLevelForIndividualProperty=18;
 	var initialZoomNotCalled=true;
 	var totalInsulaGraffitisDict=new Array();
 	var currentInsulaNumber;
 	var graffitiInLayer;
 	var numberOfGraffitiInGroup;
 	var justStarted=true;
-	
-	/*if(zoomOnOneProperty&&propertyIdToHighlight!=0){
-		var x=0;
-	}
-	*/
-	
-	//Converts geoJson data to normal coordinate settings:
-	
-	//const decode = require('geojson-polyline').decode;
-	//const newData = decode(pompeiiPropertyData);
-	//var parser=require('geojson');
-	
-	
-	//var idsAndCoords=GeoJSON.parse(pompeiiPropertyData,{Point:['lat','lng'],include:[Property_Id]});
-	//alert("Here are the ids and coordinates:"+idsAndCoords);*/
-	
-	
-	/*alert(property.feature.geometry.coordinates);*/
-	/*var propertyID = property.feature.properties.Property_Id;*/
 	
 	
 	//Fires when the map is initialized
@@ -62,6 +41,7 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
 		maxBounds: bounds,
+		//Here is the +/- button for zoom
 	})
 	
 	
@@ -78,18 +58,36 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	//map.addLayer(grayscale);
 	L.geoJson(pompeiiPropertyData).addTo(map);
 	
-	
-	
-	
-	
 	//A listener for zoom events. 
-	map.on("zoomend", function(e) {
-		dealWithZoom();
+	map.on('zoomend', function(e) {
+		dealWithInsulaLevelView();
 	});
 	
+	//Centers the map around a single property
+	function showCloseUpView(){
+		if(propertyIdToHighlight){
+			var newCenterCoordinates=[];
+			map.eachLayer(function(layer){
+				if(layer.feature!=undefined){
+					if(layer.feature.properties.Property_Id==propertyIdToHighlight){
+						newCenterCoordinates=layer.getBounds().getCenter();
+						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
+					}
+				}
+			});
+		}
+	}
+	
+	
+	if(propertyIdToHighlight!=0)
+	{
+		showCloseUpView();
+	}
+	
 	//Responsible for showing the map view on the insula level. 
-	function dealWithZoom(){
-		console.log("fgfhgfh");
+	function dealWithInsulaLevelView(){
+		
+		console.log("Center in deal with zoom: "+map.getCenter());
 		//This must be reset
 		totalInsulaGraffitisDict=new Array();
 		map.eachLayer(function(layer){
@@ -371,8 +369,8 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	    
 	}).addTo(map);
 	//Putting this after the above appears to make it this start correctly.
-	 if(initialZoomNotCalled){
-		   dealWithZoom();
+	 if(initialZoomNotCalled==true){
+		   dealWithInsulaLevelView();
 		   initialZoomNotCalled=false;
 	 }
 	
@@ -385,14 +383,18 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	};
 	
 	// method that we will use to update the control based on feature properties passed
-	info.update = function (props) {
-		if(showHover){
-			this._div.innerHTML = (props ? props.Property_Name + ", " + props.PRIMARY_DO
-					: 'Hover over property to see name');
-		}
-	};
-
-	info.addTo(map);
+	function updateHoverText(){
+		info.update = function (props) {
+			if(showHover){
+				this._div.innerHTML = (props ? props.Property_Name + ", " + props.PRIMARY_DO
+						: 'Hover over property to see name');
+			}
+		};
+	
+		info.addTo(map);
+	}
+	
+	updateHoverText();
 	
 	//Used to acquire all of the items clicked for search(red button "Click here to search).
 	//Does this by iterating through the list of clicked items and adding them to uniqueClicked,
@@ -484,6 +486,8 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		el2.addEventListener("click", displayHighlightedRegions, false);
 	}
 	
+	showCloseUpView();
+	console.log("Center after function: "+map.getCenter());
 //	var locationNeeded = false;
 //	if (document.title == "Ancient Graffiti Project :: Property Info") {
 //		locationNeeded = true;

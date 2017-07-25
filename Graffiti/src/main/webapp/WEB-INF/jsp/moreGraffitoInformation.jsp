@@ -11,10 +11,11 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <%@ include file="/resources/common_head.txt" %>
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
   integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
   crossorigin=""/>
-<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
+
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 
@@ -360,7 +361,7 @@ function backToResults(){
 									<a
 										href="<%=request.getContextPath()%>/results?drawing=${dt.id}">${dt.name}</a>
 									<c:if test="${!loopStatus.last}">, </c:if>
-								</c:forEach></td>
+								</c:forEach></td>showCloseUpView();
 						</tr>
 					</c:if>
 
@@ -518,7 +519,7 @@ function backToResults(){
 					
 				} else if ("${i.ancientCity}" == "Pompeii") {
 					
-					window.initmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>);
+					window.initmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
 					
 				} 
 			</script>
