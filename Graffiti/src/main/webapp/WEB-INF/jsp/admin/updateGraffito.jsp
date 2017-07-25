@@ -42,6 +42,44 @@ input[name*="image"] {
 .btn-group-vertical > .btn-group::after, .btn-toolbar::after, .clearfix::after, .container-fluid::after, .container::after, .dl-horizontal dd::after, .form-horizontal .form-group::after, .modal-footer::after, .modal-header::after, .nav::after, .navbar-collapse::after, .navbar-header::after, .navbar::after, .pager::after, .panel-body::after, .row::after
 {   clear:left; }
 
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 60px;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+} 
+
+.modal .modal-content .btn-agp {
+	margin: 10px;
+}
 
 </style>
 <script type="text/javascript">
@@ -82,6 +120,7 @@ input[name*="image"] {
 	});
 
 </script>
+
 
 </head>
 <body>
@@ -168,7 +207,13 @@ input[name*="image"] {
 
 				<div class="form-group" style="clear:left;">
 					<strong class="col-sm-3 attribute">Graffito:</strong>
-					<div class="col-sm-6">${i.contentWithLineBreaks}</div>
+					<div class="col-sm-6" id="graffitoContent">${i.contentWithLineBreaks}</div>
+				</div>
+				
+				<div id="epidocModal" class="modal">
+					<div class="modal-content" id="epidocModalContent">
+						<span class="close">&times;</span>
+					</div>
 				</div>
 
 				<div class="form-group">
@@ -186,7 +231,7 @@ input[name*="image"] {
 				</div>
 
 				<div class="form-group">
-					<label for="summary" class="col-sm-3 control-label">Summary</label>
+					<label for="summary" class="col-sm-3 control-label">Summary:</label>
 					<div class="col-sm-6">
 						<textarea id="summary" name="summary" class="form-control">${i.agp.summary}</textarea>
 					</div>
@@ -194,7 +239,7 @@ input[name*="image"] {
 
 				<div class="form-group">
 					<label for="content_translation" class="col-sm-3 control-label">Graffito
-						Translation</label>
+						Translation:</label>
 					<div class="col-sm-6">
 						<textarea name="content_translation" id="content_translation"
 							class="form-control">${ i.agp.contentTranslation}</textarea>
@@ -202,12 +247,19 @@ input[name*="image"] {
 				</div>
 
 				<div class="form-group">
-					<label for="commentary" class="col-sm-3 control-label">Commentary</label>
+					<label for="commentary" class="col-sm-3 control-label">Commentary:</label>
 					<div class="col-sm-6">
 						<textarea rows=7 id="commentary" name="commentary" class="form-control">${ i.agp.commentary }</textarea>
 					</div>
 				</div>
 
+				<div class="form-group">
+					<label for="epidocContent" class="col-sm-3 control-label">EpiDoc:</label>
+					<div class="col-sm-6">
+						<textarea rows=5 id="epidocContent" name="epidocContent" class="form-control">${i.agp.epidoc}</textarea>
+					</div>
+				</div>
+				
 				<hr />
 
 				<!-- look at graffito2drawingtags -->
@@ -398,5 +450,99 @@ input[name*="image"] {
 			</form>
 		</div>
 	</div>
+
+	<script type="text/javascript">
+	
+		function getSelected() {
+			if (window.getSelection) {
+				return window.getSelection();
+			} else if (document.getSelection) {
+				return document.getSelection();
+			} else {
+				var selection = document.selection
+						&& document.selection.createRange();
+				if (selection.text) {
+					return selection.text;
+				}
+				return false;
+			}
+			return false;
+		}
+		
+		var modal = document.getElementById("epidocModal");
+		
+		function markAsPersonName(text) {
+			var epidoc = "<personName>" + text + "</personName>";
+			document.getElementById("epidocContent").value += epidoc;
+			modal.style.display = "none";
+		}
+		
+		function markAsPlaceName(text) {
+			var epidoc = "<placeName>" + text + "</placeName>";
+			document.getElementById("epidocContent").value += epidoc;
+			modal.style.display = "none";
+		}
+
+		$(document).ready(function() {
+			var selectionImage;
+			$('#graffitoContent').mouseup(function(e) {
+				var selection = getSelected();
+				if (!selectionImage) {
+					selectionImage = $('<button>').attr({
+						type : 'button',
+						title : 'Add To EpiDoc',
+						id : 'epidocify',
+						style : 'position: absolute;'
+					}).html("EpiDoc-ify").css({
+						"color" : "black"
+					}).hide();
+					$(document.body).append(selectionImage);
+				}
+				$("#epidocify").click(function epidocify() {
+					var txt = '';
+					if (window.getSelection) {
+						txt = window.getSelection();
+					} else if (document.getSelection) {
+						txt = document.getSelection();
+					} else if (document.selection) {
+						txt = document.selection.createRange().text;
+					} else {
+						return;
+					}
+					//alert(txt);
+					modal.style.display = "block";
+					
+					$(".modal .modal-content").html("<p>Mark '" + txt + "' as one of the following: </p>" +
+						"<button type='button' class='btn btn-agp' onclick=markAsPersonName('"+ txt +"')>Person Name</button>" +
+						"<button type='button' class='btn btn-agp' onclick=markAsPlaceName('"+ txt +"')>Place Name</button>");
+				
+				}).mousedown(function() {
+
+					if (selectionImage) {
+						selectionImage.fadeOut();
+					}
+
+				});
+
+				selectionImage.css({
+					top : e.pageY - 30, //offsets
+					left : e.pageX - 13 //offsets
+				}).fadeIn();
+			});
+		});
+
+		// hide the EpiDoc-ify button and the modal screen if user clicks elsewhere
+		window.onclick = function(event) {
+			if (!event.target.matches('.epidocify') && !event.target.matches('#graffitoContent')) {
+				var btn = document.getElementById("epidocify");
+				$(btn).fadeOut();
+			}
+			
+			if(event.target == modal) {
+				modal.style.display = "none";
+			}
+		}
+	</script>
+
 </body>
 </html>

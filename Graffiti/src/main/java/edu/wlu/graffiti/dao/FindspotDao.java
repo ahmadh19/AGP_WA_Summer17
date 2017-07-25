@@ -105,6 +105,13 @@ public class FindspotDao extends JdbcTemplate {
 	@Cacheable("cities")
 	public List<String> getCityNames() {
 		List<String> results = queryForList(SELECT_CITY_NAMES, String.class);
+		return results;
+	}
+	
+	// TODO: set up caching for this
+	//@Cacheable("citiesUpperCase")
+	public List<String> getCityNamesUpperCase() {
+		List<String> results = queryForList(SELECT_CITY_NAMES, String.class);
 		// change names to upper case to allow for either lower or upper case in URIs
 		ListIterator<String> iterator = results.listIterator();
 		while(iterator.hasNext()) {

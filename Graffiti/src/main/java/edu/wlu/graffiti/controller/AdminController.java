@@ -123,6 +123,7 @@ public class AdminController {
 		String commentary = request.getParameter("commentary");
 		String cil = request.getParameter("cil");
 		String langner = request.getParameter("langner");
+		String epidoc = request.getParameter("epidocContent");
 		String floor_to_graffito_height = request.getParameter("floor_to_graffito_height");
 		String content_translation = request.getParameter("content_translation");
 		String graffito_height = request.getParameter("graffito_height");
@@ -158,6 +159,7 @@ public class AdminController {
 		agpOneDimArrList.add(content_translation);
 		agpOneDimArrList.add(cil);
 		agpOneDimArrList.add(langner);
+		agpOneDimArrList.add(epidoc);
 		agpOneDimArrList.add(floor_to_graffito_height);
 		agpOneDimArrList.add(graffito_height);
 		agpOneDimArrList.add(graffito_length);

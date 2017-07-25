@@ -9,6 +9,8 @@
 	});
 </script>
 
+<script type="text/javascript" src="<c:url value="/resources/js/bootstrap-modal-popover.js"/>"></script>
+
 <style type="text/css">
 .panel-default>.panel-heading {
 	border-color: #bbb;
@@ -26,27 +28,38 @@
 	border-color: #fff;
 }
 
+table.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .btn-custom {
 	width: 78px;
 	font-size: 12px;
-	Property: Pompeii I.8.15 Caupona and Officina di Fufidius Successus ×
-		background-color: #ddd;
+	background-color: #ddd;
 }
 
 .btn-keyboard {
 	width: 160px;
 	font-size: 12px;
-	Property: Pompeii I.8.15 Caupona and Officina di Fufidius Successus ×
-		background-color: #ddd;
+	background-color: #ddd;
 }
+
+
+#greekKeys input[type="button"] {
+    padding-top: 2px;
+    padding-right: 6px;
+    padding-bottom: 3px;
+    padding-left: 6px;
+    border-width: 2px;
+}
+
 
 .label-primary, .label {
 	border: 2px solid #428bca;
 	margin-right: 1px;
 	font-size: 12px;
 }
-
-.WEB_0
 
 .large-font {
 	font-size: 18px;
@@ -83,71 +96,6 @@ input {
 button:disabled {
 	color: #aaa;
 }
-
-.modal {
-	display: none;
-	position: fixed;
-	z-index: 0;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	overflow: auto;
-	background-color: rgb(0, 0, 0);
-	background-color: rgba(0, 0, 0, 0); /* bg w/ opacity control */
-	-webkit-animation-name: fadeIn;
-	-webkit-animation-duration: 0.4s;
-	animation-name: fadeIn;
-	animation-duration: 0.4s
-}
-
-.modal-content {
-	position: fixed;
-	bottom: 0;
-	left: 270px;
-	background-color: #f2f3f4;
-	padding: 10px;
-	width: 476px;
-	border: 1px solid #888;
-	-webkit-animation-name: slideIn;
-	-webkit-animation-duration: 0.4s;
-	animation-name: slideIn;
-	animation-duration: 0.4s
-}
-
-.close {
-	color: #aaaaaa;
-	float: right;
-	font-size: 28px;
-	font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-	color: #000;
-	text-decoration: none;
-	cursor: pointer;
-}
-
-@-webkit-keyframes slideIn {
-	from {bottom: -300px; opacity: 0}
-	to {bottom: 0; opacity: 1}
-}
-
-@keyframes slideIn {
-	from {bottom: -300px; opacity: 0}
-	to {bottom: 0; opacity: 1}
-}
-
-@-webkit-keyframes fadeIn {
-	from {opacity: 0}
-	to {opacity: 1}
-}
-
-@keyframes fadeIn {
-	from {opacity: 0}
-	to {opacity: 1}
-}
 </style>
 
 <%
@@ -157,20 +105,17 @@ button:disabled {
 	}
 %>
 
-<div id="myModal" class="modal">
-	<div class="modal-content">
-		<span class="close">&times;</span>
+<div id="popupButton" class="popover">
+	<div class="arrow"></div>
+	<div class="popover-content">
 		<p>
-		<center>
-			<table>
-				<tr>
-					<td nowrap align="center"><div id="greekKeys"></div>
-				</tr>
+			<table class="center">
+				<tr><td nowrap align="center"><div id="greekKeys"></div></tr>
 			</table>
-		</center>
 		</p>
 	</div>
 </div>
+
 <div class="panel-group" style="width: 185px; float: left;">
 	<div class="panel panel-default">
 
@@ -386,10 +331,12 @@ button:disabled {
 						data-toggle="tooltip" data-placement="bottom"
 						title="Perform a search based only on the text of the graffiti">Text</button>
 					<button class="btn btn-default btn-custom"
-						onclick="globalSearch();" style="float: right; margin-bottom: 3px;"
-						data-toggle="tooltip" data-placement="bottom"
+						onclick="globalSearch();"
+						style="float: right; margin-bottom: 3px;" data-toggle="tooltip"
+						data-placement="bottom"
 						title="Perform a search based on all data fields">Global</button>
-					<button id="kbdButton" class="btn btn-default btn-keyboard">Greek Alphabet</button>
+					<a href="#popupButton" role="button" class="btn btn-default btn-keyboard" 
+						data-toggle="modal-popover" data-placement="bottom">Greek Alphabet</a>
 				</div>
 			</div>
 		</div>
@@ -405,31 +352,10 @@ button:disabled {
 </div>
 
 <script type="text/javascript">
-	var modal = document.getElementById("myModal");
-	var btn = document.getElementById("kbdButton");
-	var span = document.getElementsByClassName("close")[0];
-	
-	// When the user clicks the button, open the modal
-	btn.onclick = function() {
-		modal.style.display = "block";
-	}
-	
-	// When the user clicks on X, close the modal
-	span.onclick = function() {
-		modal.style.display = "none";
-	}
-	
-	// When the user clicks anywhere outside of the modal, close it
-	window.onclick = function(event) {
-		if (event.target == modal) {
-			modal.style.display = "none";
-		}
-	}
-	
 	// Create the keyboard buttons
 	window.onload = function() {
 		var brCount = 1;
-		
+
 		for (i = 945; i < 970; i++) {
 			var textBox = document.getElementById("keyword");
 			var v = document.createElement("input");
@@ -439,13 +365,13 @@ button:disabled {
 				textBox.value += this.value;
 			});
 			document.getElementById("greekKeys").appendChild(v);
-			
+
 			if (brCount == 9) {
 				var brTag = document.createElement("br");
 				document.getElementById("greekKeys").appendChild(brTag);
 				brCount = 0;
 			}
-			
+
 			brCount++;
 		}
 	}
