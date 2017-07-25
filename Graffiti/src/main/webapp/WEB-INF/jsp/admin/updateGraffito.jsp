@@ -254,7 +254,7 @@ input[name*="image"] {
 				</div>
 
 				<div class="form-group">
-					<label for="epidocContent" class="col-sm-3 control-label">EpiDoc:</label>
+					<label for="epidocContent" class="col-sm-3 control-label">Content EpiDoc:</label>
 					<div class="col-sm-6">
 						<textarea rows=5 id="epidocContent" name="epidocContent" class="form-control">${i.agp.epidoc}</textarea>
 					</div>

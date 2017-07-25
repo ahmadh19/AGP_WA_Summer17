@@ -298,15 +298,6 @@ public class GraffitiDao extends JdbcTemplate {
 		retrieveDrawingTagsForInscription(inscription);
 		addPropertyToInscription(inscription);
 		retrieveThemesForInscription(inscription);
-		addEpidocText(inscription);
-	}
-
-	private void addEpidocText(Inscription inscription) {
-		String epidoc = generator.serializeToXML(inscription);
-		if(inscription.getAgp().getEpidoc().equals("")) {
-			inscription.getAgp().setEpidoc(
-					epidoc.substring(epidoc.indexOf("edition") - 11, epidoc.indexOf("</ab></div>") + 11));
-		}
 	}
 
 	/**

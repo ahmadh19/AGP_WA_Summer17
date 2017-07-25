@@ -217,8 +217,8 @@ public class GenerateEpidoc {
 			height_handNote3.setAttribute("min", "0.01");
 			height_handNote3.setAttribute("max", "0.015");
 			height_handNote3.setAttribute("scope", "flourishLetter");
-			height_handNote3.setText(Integer.toString(Integer.valueOf(i.getAgp().getMinLetterWithFlourishesHeight()) - 
-					Integer.valueOf(i.getAgp().getMaxLetterWithFlourishesHeight()))); 
+			height_handNote3.setText(Double.toString(Double.valueOf(i.getAgp().getMinLetterWithFlourishesHeight()) - 
+					Double.valueOf(i.getAgp().getMaxLetterWithFlourishesHeight()))); 
 			handNote3.addContent(height_handNote3);
 			handDesc.addContent(handNote3);
 		}
@@ -315,7 +315,7 @@ public class GenerateEpidoc {
 		div1.setAttribute("space", "preserve", Namespace.XML_NAMESPACE);
 		div1.setAttribute("lang", "en", Namespace.XML_NAMESPACE);
 		Element ab = new Element("ab");
-		Element lb = new Element("ab").setAttribute("n", "1");
+		Element lb = new Element("lb").setAttribute("n", "1"); // TODO:why does this not show up?
 		ab.addContent(lb);
 		ab.setText(i.getContent());
 		div1.addContent(ab);
