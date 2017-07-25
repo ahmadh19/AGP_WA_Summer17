@@ -15,6 +15,7 @@ import java.util.Properties;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import edu.wlu.graffiti.bean.PropertyType;
 
@@ -114,6 +115,12 @@ public class InsertProperties {
 
 				int propID = locatePropertyId(insula_id, propertyNumber);
 
+				if( propID == 0 ) {
+					System.out.println("Property not in DB: " + insula_id + " " + propertyNumber + " " + propertyName);
+					continue;
+				}
+				
+				
 				// handle property tags
 				if (record.size() > 6) {
 					String[] tagArray = record.get(6).trim().split(",");
@@ -142,16 +149,19 @@ public class InsertProperties {
 
 				// handle adding OSM ids
 				if (record.size() > 7) {
+					
+					/* We don't seem to have this in the DB yet.
 					String osmId = record.get(7).trim();
-					if (!osmId.equals("")) {
+					if (!osmId.isEmpty() && !NumberUtils.isCreatable(osmId)) {
 						osmStmt.setInt(2, propID);
 						osmStmt.setString(1, osmId);
 						osmStmt.executeUpdate();
 					}
+					*/
 
 					if (record.size() > 8) {
 						String osmWayId = record.get(8).trim();
-						if (!osmWayId.equals("")) {
+						if (!osmWayId.isEmpty() && NumberUtils.isCreatable(osmWayId)) {
 							osmWayStmt.setInt(2, propID);
 							osmWayStmt.setString(1, osmWayId);
 							osmWayStmt.executeUpdate();

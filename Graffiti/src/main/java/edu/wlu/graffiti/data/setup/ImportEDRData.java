@@ -58,6 +58,8 @@ public class ImportEDRData {
 			+ "property_id = ? WHERE edr_id = ?";
 
 	private static final String UPDATE_CONTENT = "UPDATE edr_inscriptions SET " + "content = ? WHERE edr_id = ?";
+	private static final String UPDATE_CONTENT_EPIDOC = "UPDATE agp_inscription_info SET "
+			+ "epidoc = ? WHERE edr_id = ?";
 
 	private static final String UPDATE_BIB = "UPDATE edr_inscriptions SET " + "bibliography = ? WHERE edr_id = ?";
 
@@ -79,8 +81,6 @@ public class ImportEDRData {
 	private static PreparedStatement updatePStmt;
 	private static PreparedStatement selPStmt;
 	private static PreparedStatement updatePropertyStmt;
-	private static PreparedStatement updateContentStmt;
-	private static PreparedStatement updateBibStmt;
 	private static PreparedStatement updateApparatusStmt;
 	private static PreparedStatement insertPhotoStmt;
 
@@ -89,6 +89,8 @@ public class ImportEDRData {
 	private static Map<Integer, HashMap<String, Property>> insulaToPropertyMap;
 
 	private static List<Pattern> patternList;
+
+	private static Pattern bibPattern;
 
 	public static void main(String[] args) {
 		init();
@@ -158,7 +160,7 @@ public class ImportEDRData {
 	private static void updateApparatus(String apparatusFileName) {
 		String eagleID = "";
 		try {
-			Reader in = new InputStreamReader( new FileInputStream(apparatusFileName), "UTF-8");
+			Reader in = new InputStreamReader(new FileInputStream(apparatusFileName), "UTF-8");
 			Iterable<CSVRecord> records = CSVFormat.newFormat(';').parse(in);
 			for (CSVRecord record : records) {
 				eagleID = Utils.cleanData(record.get(0));
@@ -198,13 +200,28 @@ public class ImportEDRData {
 		}
 	}
 
+	/**
+	 * Updates the bibliography field in the database, using the EDR CSV export
+	 * file. Also handles that the AGP link may be in the bibliography and
+	 * should be removed.
+	 * 
+	 * @param bibFileName
+	 */
 	private static void updateBibliography(String bibFileName) {
 		try {
+			PreparedStatement updateBibStmt = dbCon.prepareStatement(UPDATE_BIB);
+
 			Reader in = new FileReader(bibFileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
 				String bib = Utils.cleanData(record.get(1));
+				Matcher bibMatch = bibPattern.matcher(bib);
+
+				// handles if the AGP link is in the bibliography
+				if (bibMatch.find()) {
+					bib = bibMatch.replaceAll("");
+				}
 
 				try {
 					selPStmt.setString(1, eagleID);
@@ -236,12 +253,23 @@ public class ImportEDRData {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
 		}
 	}
 
+	/**
+	 * Updates the content field of database, based on the EDR CSV export file.
+	 * Also creates a "starter" epidoc content field for agp_inscriptions_info
+	 * based on the content.
+	 * 
+	 * @param contentFileName
+	 */
 	private static void updateContent(String contentFileName) {
-
 		try {
+			PreparedStatement updateContentStmt = dbCon.prepareStatement(UPDATE_CONTENT);
+			PreparedStatement updateEpidocStmt = dbCon.prepareStatement(UPDATE_CONTENT_EPIDOC);
+
 			Reader in = new FileReader(contentFileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
@@ -249,13 +277,11 @@ public class ImportEDRData {
 				String content = Utils.cleanData(record.get(1));
 
 				try {
+					int count = 0;
 					content = cleanContent(content);
-
 					selPStmt.setString(1, eagleID);
 
 					ResultSet rs = selPStmt.executeQuery();
-
-					int count = 0;
 
 					if (rs.next()) {
 						count = rs.getInt(1);
@@ -264,7 +290,6 @@ public class ImportEDRData {
 								+ ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
 					}
 					if (count == 1) {
-
 						updateContentStmt.setString(1, content);
 						updateContentStmt.setString(2, eagleID);
 
@@ -272,17 +297,26 @@ public class ImportEDRData {
 						if (updated != 1) {
 							System.err.println("\nSomething went wrong with content for " + eagleID);
 							System.err.println(content);
+						} else {
+							// TODO: put starter Epidoc code.
+							updateEpidocStmt.setString(1, transformContentToEpidoc(content));
+							updateEpidocStmt.setString(2, eagleID);
+							updateEpidocStmt.executeUpdate();
 						}
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
 		}
+	}
 
+	private static String transformContentToEpidoc(String content) {
+		return content;
 	}
 
 	/**
@@ -304,12 +338,12 @@ public class ImportEDRData {
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
 				String ancient_city = Utils.cleanData(record.get(3));
-				
+
 				if (!cityToInsulaMap.containsKey(ancient_city)) {
 					System.err.println(eagleID + ": city " + ancient_city + " not found");
 					continue;
 				}
-				
+
 				String findSpot = Utils.cleanData(record.get(5));
 				String dateOfOrigin = Utils.cleanData(record.get(16));
 				String alt = Utils.cleanData(record.get(18));
@@ -566,10 +600,8 @@ public class ImportEDRData {
 			selPStmt = dbCon.prepareStatement(CHECK_INSCRIPTION_STATEMENT);
 
 			updatePropertyStmt = dbCon.prepareStatement(UPDATE_PROPERTY);
-			updateContentStmt = dbCon.prepareStatement(UPDATE_CONTENT);
 			// updateDescriptionStmt =
 			// dbCon.prepareStatement(UPDATE_DESCRIPTION);
-			updateBibStmt = dbCon.prepareStatement(UPDATE_BIB);
 			updateApparatusStmt = dbCon.prepareStatement(UPDATE_APPARATUS);
 
 			insertPhotoStmt = dbCon.prepareStatement(INSERT_PHOTO_STATEMENT);
@@ -583,6 +615,8 @@ public class ImportEDRData {
 		patternList
 				.add(Pattern.compile("^\\w+ \\(\\w+\\),? ([\\w'.-]* )* ?\\(?([\\w'.-]*+)\\)?(,[\\w\\s-,'.\\(\\)]*)?"));
 		// TODO: Need to update the pattern to handle Insula Orientalis I
+
+		bibPattern = Pattern.compile("http://.*/Graffiti/graffito/AGP-EDR\\d{6} \\(\\d\\)");
 	}
 
 	public static void getConfigurationProperties() {
