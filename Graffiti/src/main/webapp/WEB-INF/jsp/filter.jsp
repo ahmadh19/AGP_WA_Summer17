@@ -4,12 +4,6 @@
 <c:set var="num" value="${fn:length(requestScope.resultsLyst)}" />
 <%@ page import= "java.util.*" %>
 
-<style>
-.scroll_top{
-	margin-left:65%;
-}
-</style>
-
 <% List<String> newLocationKeys=(List<String>)request.getAttribute("findLocationKeys");%>
 <div id="mapkeys" style="display:none;"><%=newLocationKeys %></div>
 
