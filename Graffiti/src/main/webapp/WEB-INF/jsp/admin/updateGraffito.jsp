@@ -473,13 +473,15 @@ input[name*="image"] {
 		
 		function markAsPersonName(text) {
 			var epidoc = "<personName>" + text + "</personName>";
-			document.getElementById("epidocContent").value += epidoc;
-			modal.style.display = "none";
+			if(document.getElementById("epidocContent").value != "") {
+				document.getElementById("epidocContent").value = document.getElementById("epidocContent").value.replace(text, epidoc);
+				modal.style.display = "none";
+			}
 		}
 		
 		function markAsPlaceName(text) {
 			var epidoc = "<placeName>" + text + "</placeName>";
-			document.getElementById("epidocContent").value += epidoc;
+			document.getElementById("epidocContent").value = document.getElementById("epidocContent").value.replace(text, epidoc);
 			modal.style.display = "none";
 		}
 

@@ -43,6 +43,7 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		agp.setLangner(resultSet.getString("langner"));
 		agp.setWritingStyleInEnglish(resultSet.getString("writing_style_in_english"));
 		agp.setLanguageInEnglish(resultSet.getString("lang_in_english"));
+		agp.setEpidoc(resultSet.getString("epidoc"));
 		
 		Property p = new Property(resultSet.getInt("property_id"));
 		agp.setProperty(p);

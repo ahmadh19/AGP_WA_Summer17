@@ -17,6 +17,7 @@ import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Insula;
 import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.bean.Theme;
+import edu.wlu.graffiti.data.export.GenerateEpidoc;
 import edu.wlu.graffiti.data.rowmapper.DrawingTagRowMapper;
 import edu.wlu.graffiti.data.rowmapper.GreatestHItsInfoRowMapper;
 import edu.wlu.graffiti.data.rowmapper.InscriptionRowMapper;
@@ -132,6 +133,8 @@ public class GraffitiDao extends JdbcTemplate {
 	
 	@Resource
 	private ThemeDao themeDao;
+	
+	private GenerateEpidoc generator = new GenerateEpidoc();
 	
 	@Cacheable("inscriptions")
 	public List<Inscription> getAllInscriptions() {
@@ -295,6 +298,15 @@ public class GraffitiDao extends JdbcTemplate {
 		retrieveDrawingTagsForInscription(inscription);
 		addPropertyToInscription(inscription);
 		retrieveThemesForInscription(inscription);
+		addEpidocText(inscription);
+	}
+
+	private void addEpidocText(Inscription inscription) {
+		String epidoc = generator.serializeToXML(inscription);
+		if(inscription.getAgp().getEpidoc().equals("")) {
+			inscription.getAgp().setEpidoc(
+					epidoc.substring(epidoc.indexOf("edition") - 11, epidoc.indexOf("</ab></div>") + 11));
+		}
 	}
 
 	/**
