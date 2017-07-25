@@ -1,9 +1,9 @@
 package edu.wlu.graffiti.data.setup;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,18 +20,26 @@ import edu.wlu.graffiti.bean.PropertyType;
 
 /**
  * Insert properties from a CSV file into the database; Also insert property
- * type mappings.
+ * type mappings and OSM ids
  * 
  * @author Sara Sprenkle
  * 
  */
 public class InsertProperties {
 
+	private static String DB_DRIVER;
+	private static String DB_URL;
+	private static String DB_USER;
+	private static String DB_PASSWORD;
+
 	private static final String INSERT_PROPERTY_STMT = "INSERT INTO properties "
 			+ "(insula_id, property_number, additional_properties, property_name, italian_property_name) "
 			+ "VALUES (?,?,?,?,?)";
 
-	private static final String LOOKUP_INSULA_ID = "SELECT id from insula WHERE modern_city=? AND short_Name=?";
+	private static final String UPDATE_OSM_ID = "UPDATE properties SET osm_id = ? WHERE id = ?";
+	private static final String UPDATE_OSM_WAY_ID = "UPDATE properties SET osm_way_id = ? WHERE id = ?";
+
+	private static final String LOOKUP_INSULA_ID = "SELECT id from insula WHERE modern_city=? AND short_name=?";
 
 	private static final String LOOKUP_PROP_ID = "SELECT id FROM properties "
 			+ "WHERE insula_id=? AND property_number = ?";
@@ -41,12 +49,7 @@ public class InsertProperties {
 	private static PreparedStatement selectInsulaStmt;
 	private static PreparedStatement selectPropStmt;
 
-	private static Connection newDBCon;
-
-	private static String DB_DRIVER;
-	private static String DB_URL;
-	private static String DB_USER;
-	private static String DB_PASSWORD;
+	static Connection newDBCon;
 
 	public static void main(String[] args) {
 		init();
@@ -64,13 +67,13 @@ public class InsertProperties {
 	private static void insertProperties(String datafileName) {
 		try {
 			PreparedStatement pstmt = newDBCon.prepareStatement(INSERT_PROPERTY_STMT);
-
 			PreparedStatement insertPTStmt = newDBCon.prepareStatement(INSERT_PROPERTY_TYPE_MAPPING);
+			PreparedStatement osmStmt = newDBCon.prepareStatement(UPDATE_OSM_ID);
+			PreparedStatement osmWayStmt = newDBCon.prepareStatement(UPDATE_OSM_WAY_ID);
 
 			List<PropertyType> propertyTypes = getPropertyTypes();
 
-			// Reader in = new FileReader(datafileName);
-			InputStreamReader in = new InputStreamReader(new FileInputStream(datafileName), "UTF-8");
+			Reader in = new FileReader(datafileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				String modernCity = record.get(0).trim();
@@ -92,7 +95,7 @@ public class InsertProperties {
 				if (record.size() > 5) {
 					italianPropName = record.get(5).trim();
 				}
-
+				System.out.println("Looking up " + modernCity + " " + insula);
 				int insula_id = lookupInsulaId(modernCity, insula);
 
 				pstmt.setInt(1, insula_id);
@@ -116,28 +119,51 @@ public class InsertProperties {
 					String[] tagArray = record.get(6).trim().split(",");
 					for (String t : tagArray) {
 						t = t.trim();
-						// System.out.println("tag: " + t);
 						for (PropertyType propType : propertyTypes) {
 							// System.out.println("propType: " +
 							// propType.getName());
 							if (propType.includes(t)) {
-								System.out.println("Match! " + propType.getName());
+								System.out.println("Match! " + propType.getName() + " for propID " + propID);
 								insertPTStmt.setInt(1, propID);
 								insertPTStmt.setInt(2, propType.getId());
-								// Wrapped in try to handle the
-								// "duplicate key errors" that so often occur.
+								// Wrapped in try to handle the "duplicate key
+								// errors" that so often occur.
 								try {
 									insertPTStmt.executeUpdate();
 								} catch (SQLException e) {
+									System.err.println(
+											"Duplicate entry, likely caused by synonyms in the property types.");
 									e.printStackTrace();
 								}
 							}
 						}
 					}
 				}
+
+				// handle adding OSM ids
+				if (record.size() > 7) {
+					String osmId = record.get(7).trim();
+					if (!osmId.equals("")) {
+						osmStmt.setInt(2, propID);
+						osmStmt.setString(1, osmId);
+						osmStmt.executeUpdate();
+					}
+
+					if (record.size() > 8) {
+						String osmWayId = record.get(8).trim();
+						if (!osmWayId.equals("")) {
+							osmWayStmt.setInt(2, propID);
+							osmWayStmt.setString(1, osmWayId);
+							osmWayStmt.executeUpdate();
+						}
+					}
+
+				}
+
 			}
 			in.close();
 			pstmt.close();
+			insertPTStmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -207,7 +233,7 @@ public class InsertProperties {
 
 		return propTypes;
 	}
-	
+
 	private static void init() {
 		getConfigurationProperties();
 
@@ -224,6 +250,7 @@ public class InsertProperties {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public static void getConfigurationProperties() {
