@@ -583,7 +583,7 @@ public class GraffitiController {
 			inscriptions.add(hitToInscription(hit));
 		}
 		
-		client.close();
+		//client.close(); // This line slows down searching tremendously for some reason
 		HttpSession session = request.getSession();
 		if (inscriptions.size() > 0) {
 			// System.out.println(inscriptions.get(0));
