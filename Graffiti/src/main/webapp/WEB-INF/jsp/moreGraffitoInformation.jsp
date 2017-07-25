@@ -361,7 +361,7 @@ function backToResults(){
 									<a
 										href="<%=request.getContextPath()%>/results?drawing=${dt.id}">${dt.name}</a>
 									<c:if test="${!loopStatus.last}">, </c:if>
-								</c:forEach></td>
+								</c:forEach></td>showCloseUpView();
 						</tr>
 					</c:if>
 
