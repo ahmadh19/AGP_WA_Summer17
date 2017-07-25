@@ -101,7 +101,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		
 		init();
 		
-		storeHerculaneum();
+		//storeHerculaneum();
 		 
 		storePompeii();
 		
@@ -139,7 +139,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 				JsonNode field = herculaneumIterator.next();
 				String fieldText = field.toString();
 				
-				System.out.println("Herc field text    "+fieldText);
+				//System.out.println("Herc field text    "+fieldText);
 																																																								
 				// converts the above string into an InputStream so I can use it in
 				// the json parser to iterate through the different tokens
@@ -150,9 +150,9 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 				while (parseLine.nextToken() != JsonToken.END_OBJECT) {
 					String fieldname = parseLine.getCurrentName();
 					
-					System.out.println("Herculaneum fieldname:   "+fieldname);
+					//System.out.println("Herculaneum fieldname:   "+fieldname);
 					
-					System.out.println("PRIMARY_DO");
+					//System.out.println("PRIMARY_DO");
 					
 					// when the token is the PRIMARY_DO field, we go to the next
 					// token and that is the value
@@ -160,7 +160,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 					if("PRIMARY_DO".equals(fieldname)) {
 						parseLine.nextToken();
 						String primarydo = parseLine.getText();
-						System.out.println("Herculaneum primarydo:   "+primarydo);
+						//System.out.println("Herculaneum primarydo:   "+primarydo);
 						if (!primarydo.contains(".")) {continue;}
 						String[] parts = primarydo.split("\\.");
 						
@@ -187,6 +187,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								String insulaPleiadesId = rs.getString("insula_pleiades_id");
 								String propPleiadesId = rs.getString("property_pleiades_id");
 								
+								
 								getNumberStatement.setInt(1,propertyId);
 								ResultSet numberOnPropResultSet=getNumberStatement.executeQuery();
 								int numberOfGraffitiOnProperty=0;
@@ -203,6 +204,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								
 								ObjectNode graffito = (ObjectNode)field;
 								ObjectNode properties = (ObjectNode)graffito.path("properties");
+								
 								properties.put("Property_Id", propertyId);
 								/*properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);*/
 								properties.put("Property_Name", propertyName);
@@ -217,7 +219,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								graffito.set("properties", updatedProps);
 								
 								// write the newly updated graffito to text file
-								System.out.println(graffito);
+								//System.out.println(graffito);
 								
 								//jsWriter.println(graffito+",");	
 								herculaneumTextWriter.println(graffito +",");
@@ -272,6 +274,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			while (pompeiiIterator.hasNext()) {
 				JsonNode field = pompeiiIterator.next();
 				String fieldText = field.toString();
+				
+				
 																																																								
 				// converts the above string into an InputStream so I can use it in
 				// the json parser to iterate through the different tokens
@@ -281,9 +285,15 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 				
 				while (parseLine.nextToken() != JsonToken.END_OBJECT) {
 					String fieldname = parseLine.getCurrentName();
-					
+					//System.out.println("Here is pompeii fieldText: "+fieldText);
+					//System.out.println("Here is pompeii fieldName: "+fieldname);
 					// when the token is the PRIMARY_DO field, we go to the next
 					// token and that is the value
+					//if(("coordinates").equals(fieldname)){
+						//System.out.println("Here is coordinates "+parseLine.getText());
+					//}
+					//System.out.println(parseLine.getText());
+					//System.out.println(fieldname);
 					if("PRIMARY_DO".equals(fieldname)) {
 						
 						//System.out.println("Pompeii Field Name: "+fieldname);
@@ -331,6 +341,10 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								
 								ObjectNode graffito = (ObjectNode)field;
 								ObjectNode properties = (ObjectNode)graffito.path("properties");
+								//ObjectNode geometry = (ObjectNode)graffito.path("geometry");
+								//geometry=removeZCoordinates(geometry);
+								
+								//System.out.println("Here is geometry object after function: "+geometry);
 								properties.put("Property_Id", propertyId);
 								properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 								properties.put("Property_Name", propertyName);
@@ -373,6 +387,23 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		
 		
 	}
+
+	
+	/**
+	 * Iterates through all of the coordinates in a JSON Geometry object and removes the last(Z-coords)
+	 *in each part of the list. Designed only for geoJson polygons with coordinates in "circle" form(?!)
+	 * @param geometryObject
+	 * @return
+	 */
+	
+	private static ObjectNode removeZCoordinates(ObjectNode geometryObject){
+		System.out.println("Geometry object received by function: "+geometryObject);
+		ObjectNode coordinates = (ObjectNode)geometryObject.path("Type");
+		System.out.println("Here are the coordinates: "+coordinates);
+		return geometryObject;
+	}
+	
+	
 	/**
 	 * An independent function for copying from pompeiiPropertyData.txt to pompeiiPropertyData.js with necessary js-specific components. 
 	*Copies the data from pompeiiPropertyData.txt to updateEschebach.js in between the [ ]
@@ -405,7 +436,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		jsReadFirst=new Scanner(jsFirst);
 		while(jsReadFirst.hasNext()){
 			String content=jsReadFirst.nextLine();
-			herculaneumJsWriter.println(content);
+			//herculaneumJsWriter.println(content);
 		}
 		
 		//Copies from herculaneumPropertyData.txt to herculaneumPropertyData.js for the body portion of the file. 

@@ -87,7 +87,6 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	//Responsible for showing the map view on the insula level. 
 	function dealWithInsulaLevelView(){
 		
-		console.log("Center in deal with zoom: "+map.getCenter());
 		//This must be reset
 		totalInsulaGraffitisDict=new Array();
 		map.eachLayer(function(layer){
@@ -120,7 +119,6 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
 				layer.setStyle({fillColor: getFillColor(numberOfGraffitiInGroup)});
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
-				
 				fillColor=getFillColor(numberOfGraffitiInGroup);
 				borderColor=fillColor;
 			}
@@ -487,7 +485,6 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	}
 	
 	showCloseUpView();
-	console.log("Center after function: "+map.getCenter());
 //	var locationNeeded = false;
 //	if (document.title == "Ancient Graffiti Project :: Property Info") {
 //		locationNeeded = true;
