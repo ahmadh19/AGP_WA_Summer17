@@ -55,10 +55,10 @@ public class ExtractEDRLanguageForAGPInfo {
 
 			while (rs.next()) {
 				String language = rs.getString("language");
-				String eagle_id = rs.getString("eagle_id");
+				String edr_id = rs.getString("edr_id");
 				String translatedLanguage = language;
 
-				System.out.println(eagle_id + ": " + language);
+				System.out.println(edr_id + ": " + language);
 
 				if (language.equals("graeca")) {
 					translatedLanguage = "Greek";
@@ -72,7 +72,7 @@ public class ExtractEDRLanguageForAGPInfo {
 					translatedLanguage = language;
 				}
 
-				updateAnnotation(eagle_id, translatedLanguage);
+				updateAnnotation(edr_id, translatedLanguage);
 
 			}
 
@@ -89,13 +89,13 @@ public class ExtractEDRLanguageForAGPInfo {
 	/**
 	 * 
 	 * 
-	 * @param eagle_id
+	 * @param edr_id
 	 * @param translatedLang
 	 */
-	private static void updateAnnotation(String eagle_id, String translatedLang) {
+	private static void updateAnnotation(String edr_id, String translatedLang) {
 		try {
 			updateAGPInfoStmt.setString(1, translatedLang);
-			updateAGPInfoStmt.setString(2, eagle_id);
+			updateAGPInfoStmt.setString(2, edr_id);
 			updateAGPInfoStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

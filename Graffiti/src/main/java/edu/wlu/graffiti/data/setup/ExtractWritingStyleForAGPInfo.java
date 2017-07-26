@@ -53,10 +53,10 @@ public class ExtractWritingStyleForAGPInfo {
 
 			while (rs.next()) {
 				String writingStyle = rs.getString("writing_style");
-				String eagle_id = rs.getString("eagle_id");
+				String edr_id = rs.getString("edr_id");
 				String translatedWritingStyle = writingStyle;
 
-				System.out.println(eagle_id + ": " + writingStyle);
+				System.out.println(edr_id + ": " + writingStyle);
 
 				// Writing Style is either
 				// "litt. scariph" which should be translated to
@@ -86,7 +86,7 @@ public class ExtractWritingStyleForAGPInfo {
 					translatedWritingStyle = writingStyle;
 				}
 
-				updateAnnotation(eagle_id, translatedWritingStyle);
+				updateAnnotation(edr_id, translatedWritingStyle);
 
 			}
 
@@ -103,14 +103,14 @@ public class ExtractWritingStyleForAGPInfo {
 	/**
 	 * 
 	 * 
-	 * @param eagle_id
+	 * @param edr_id
 	 * @param translatedStyle
 	 *            TODO
 	 */
-	private static void updateAnnotation(String eagle_id, String translatedStyle) {
+	private static void updateAnnotation(String edr_id, String translatedStyle) {
 		try {
 			updateWritingStyleStmt.setString(1, translatedStyle);
-			updateWritingStyleStmt.setString(2, eagle_id);
+			updateWritingStyleStmt.setString(2, edr_id);
 			updateWritingStyleStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
