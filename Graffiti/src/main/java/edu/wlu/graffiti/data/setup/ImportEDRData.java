@@ -1,8 +1,10 @@
 package edu.wlu.graffiti.data.setup;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -38,23 +40,26 @@ public class ImportEDRData {
 	private static String DB_URL;
 	private static String DB_USER;
 	private static String DB_PASSWORD;
-	
+
 	private static final String INSERT_INSCRIPTION_STATEMENT = "INSERT INTO edr_inscriptions "
-			+ "(edr_id, ancient_city, find_spot, measurements, writing_style, \"language\") " + "VALUES (?,?,?,?,?,?)";
+			+ "(edr_id, ancient_city, find_spot, measurements, writing_style, \"language\", date_of_origin) "
+			+ "VALUES (?,?,?,?,?,?,?)";
 
 	private static final String UPDATE_INSCRIPTION_STATEMENT = "UPDATE edr_inscriptions SET "
-			+ "ancient_city=?, find_spot=?, measurements=?, writing_style=?, \"language\"=? " + "WHERE edr_id = ?";
+			+ "ancient_city=?, find_spot=?, measurements=?, writing_style=?, \"language\"=?, date_of_origin=?"
+			+ "WHERE edr_id = ?";
 
 	private static final String CHECK_INSCRIPTION_STATEMENT = "SELECT COUNT(*) FROM edr_inscriptions"
 			+ " WHERE edr_id = ?";
 
-	private static final String INSERT_AGP_METADATA = "INSERT INTO agp_inscription_info (edr_id) "
-			+ "VALUES (?)";
+	private static final String INSERT_AGP_METADATA = "INSERT INTO agp_inscription_info (edr_id) " + "VALUES (?)";
 
 	private static final String UPDATE_PROPERTY = "UPDATE agp_inscription_info SET "
 			+ "property_id = ? WHERE edr_id = ?";
 
 	private static final String UPDATE_CONTENT = "UPDATE edr_inscriptions SET " + "content = ? WHERE edr_id = ?";
+	private static final String UPDATE_CONTENT_EPIDOC = "UPDATE agp_inscription_info SET "
+			+ "epidoc = ? WHERE edr_id = ?";
 
 	private static final String UPDATE_BIB = "UPDATE edr_inscriptions SET " + "bibliography = ? WHERE edr_id = ?";
 
@@ -66,7 +71,9 @@ public class ImportEDRData {
 
 	private static final String SELECT_INSULA_AND_PROPERTIES = "select *, insula.id as insula_id, properties.id as property_id from insula, properties where insula_id = insula.id";
 
-	static Connection dbCon;
+	private static final String INSERT_PHOTO_STATEMENT = "INSERT INTO photos (edr_id, photo_id) " + "VALUES (?, ?)";
+
+	private static Connection dbCon;
 
 	private static PreparedStatement insertAGPMetaStmt;
 	private static PreparedStatement insertPStmt;
@@ -74,15 +81,16 @@ public class ImportEDRData {
 	private static PreparedStatement updatePStmt;
 	private static PreparedStatement selPStmt;
 	private static PreparedStatement updatePropertyStmt;
-	private static PreparedStatement updateContentStmt;
-	private static PreparedStatement updateBibStmt;
 	private static PreparedStatement updateApparatusStmt;
+	private static PreparedStatement insertPhotoStmt;
 
 	private static Map<String, HashMap<String, Insula>> cityToInsulaMap;
 
 	private static Map<Integer, HashMap<String, Property>> insulaToPropertyMap;
 
 	private static List<Pattern> patternList;
+
+	private static Pattern bibPattern;
 
 	public static void main(String[] args) {
 		init();
@@ -93,6 +101,7 @@ public class ImportEDRData {
 			updateContent("data/EDRData/testo_epigr.csv");
 			updateBibliography("data/EDRData/editiones.csv");
 			updateApparatus("data/EDRData/apparatus.csv");
+			updatePhotoInformation("data/EDRData/foto.csv");
 			dbCon.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -143,50 +152,99 @@ public class ImportEDRData {
 
 	}
 
+	/**
+	 * Update the apparatus information in each of the inscription entries.
+	 * 
+	 * @param apparatusFileName
+	 */
 	private static void updateApparatus(String apparatusFileName) {
+		String eagleID = "";
 		try {
-			Reader in = new FileReader(apparatusFileName);
-			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+			Reader in = new InputStreamReader(new FileInputStream(apparatusFileName), "UTF-8");
+			Iterable<CSVRecord> records = CSVFormat.newFormat(';').parse(in);
 			for (CSVRecord record : records) {
-				String eagleID = Utils.cleanData(record.get(0));
+				eagleID = Utils.cleanData(record.get(0));
 				String apparatus = Utils.cleanData(record.get(1));
 
 				try {
+					selPStmt.setString(1, eagleID);
 
-					updateApparatusStmt.setString(1, apparatus);
-					updateApparatusStmt.setString(2, eagleID);
+					ResultSet rs = selPStmt.executeQuery();
 
-					int updated = updateApparatusStmt.executeUpdate();
-					if (updated != 1) {
-						System.err.println("\nSomething went wrong with " + eagleID);
-						System.err.println(apparatus);
+					int count = 0;
+
+					if (rs.next()) {
+						count = rs.getInt(1);
+					} else {
+						System.err.println(eagleID
+								+ ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
+					}
+
+					if (count == 1) {
+						updateApparatusStmt.setString(1, apparatus);
+						updateApparatusStmt.setString(2, eagleID);
+
+						int updated = updateApparatusStmt.executeUpdate();
+						if (updated != 1) {
+							System.err.println("\nSomething went wrong with apparatus for " + eagleID);
+							System.err.println(apparatus);
+						}
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-
 			}
 		} catch (IOException e) {
+			System.err.println("\nSomething went wrong with apparatus for " + eagleID);
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Updates the bibliography field in the database, using the EDR CSV export
+	 * file. Also handles that the AGP link may be in the bibliography and
+	 * should be removed.
+	 * 
+	 * @param bibFileName
+	 */
 	private static void updateBibliography(String bibFileName) {
 		try {
+			PreparedStatement updateBibStmt = dbCon.prepareStatement(UPDATE_BIB);
+
 			Reader in = new FileReader(bibFileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
 				String bib = Utils.cleanData(record.get(1));
+				Matcher bibMatch = bibPattern.matcher(bib);
+
+				// handles if the AGP link is in the bibliography
+				if (bibMatch.find()) {
+					bib = bibMatch.replaceAll("");
+				}
 
 				try {
-					updateBibStmt.setString(1, bib);
-					updateBibStmt.setString(2, eagleID);
+					selPStmt.setString(1, eagleID);
 
-					int updated = updateBibStmt.executeUpdate();
-					if (updated != 1) {
-						System.err.println("\nSomething went wrong with " + eagleID);
-						System.err.println(bib);
+					ResultSet rs = selPStmt.executeQuery();
+
+					int count = 0;
+
+					if (rs.next()) {
+						count = rs.getInt(1);
+					} else {
+						System.err.println(eagleID
+								+ ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
+					}
+					if (count == 1) {
+						updateBibStmt.setString(1, bib);
+						updateBibStmt.setString(2, eagleID);
+
+						int updated = updateBibStmt.executeUpdate();
+						if (updated != 1) {
+							System.err.println("\nSomething went wrong with bibliography for " + eagleID);
+							System.err.println(bib);
+						}
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -195,54 +253,70 @@ public class ImportEDRData {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
 		}
 	}
 
+	/**
+	 * Updates the content field of database, based on the EDR CSV export file.
+	 * Also creates a "starter" epidoc content field for agp_inscriptions_info
+	 * based on the content.
+	 * 
+	 * @param contentFileName
+	 */
 	private static void updateContent(String contentFileName) {
-
 		try {
+			PreparedStatement updateContentStmt = dbCon.prepareStatement(UPDATE_CONTENT);
+			PreparedStatement updateEpidocStmt = dbCon.prepareStatement(UPDATE_CONTENT_EPIDOC);
+
 			Reader in = new FileReader(contentFileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
 				String content = Utils.cleanData(record.get(1));
 
-				// this needs to be generalized
-
-				/*
-				 * if (content.startsWith("((:")) { String desc =
-				 * content.substring(3, content.length() - 2); try {
-				 * updateDescriptionStmt.setString(1, desc);
-				 * updateDescriptionStmt.setString(2, eagleID); int updated =
-				 * updateDescriptionStmt.executeUpdate(); if (updated != 1) {
-				 * System.out.println("Something went wrong with " + eagleID);
-				 * System.out.println(desc); } } catch (SQLException e) {
-				 * e.printStackTrace(); }
-				 * 
-				 * } else {
-				 */
 				try {
+					int count = 0;
 					content = cleanContent(content);
+					selPStmt.setString(1, eagleID);
 
-					updateContentStmt.setString(1, content);
-					updateContentStmt.setString(2, eagleID);
+					ResultSet rs = selPStmt.executeQuery();
 
-					int updated = updateContentStmt.executeUpdate();
-					if (updated != 1) {
-						System.err.println("\nSomething went wrong with " + eagleID);
-						System.err.println(content);
+					if (rs.next()) {
+						count = rs.getInt(1);
+					} else {
+						System.err.println(eagleID
+								+ ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
+					}
+					if (count == 1) {
+						updateContentStmt.setString(1, content);
+						updateContentStmt.setString(2, eagleID);
+
+						int updated = updateContentStmt.executeUpdate();
+						if (updated != 1) {
+							System.err.println("\nSomething went wrong with content for " + eagleID);
+							System.err.println(content);
+						} else {
+							// TODO: put starter Epidoc code.
+							updateEpidocStmt.setString(1, transformContentToEpidoc(content));
+							updateEpidocStmt.setString(2, eagleID);
+							updateEpidocStmt.executeUpdate();
+						}
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-
-				/* } */
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
 		}
+	}
 
+	private static String transformContentToEpidoc(String content) {
+		return content;
 	}
 
 	/**
@@ -263,8 +337,15 @@ public class ImportEDRData {
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
-				String ancient_city = Utils.cleanData(record.get(4));
+				String ancient_city = Utils.cleanData(record.get(3));
+
+				if (!cityToInsulaMap.containsKey(ancient_city)) {
+					System.err.println(eagleID + ": city " + ancient_city + " not found");
+					continue;
+				}
+
 				String findSpot = Utils.cleanData(record.get(5));
+				String dateOfOrigin = Utils.cleanData(record.get(16));
 				String alt = Utils.cleanData(record.get(18));
 				String lat = Utils.cleanData(record.get(19));
 				String littAlt = Utils.cleanData(record.get(21));
@@ -273,8 +354,6 @@ public class ImportEDRData {
 
 				String writingStyle = Utils.cleanData(record.get(10));
 				String language = Utils.cleanData(record.get(11));
-
-				System.out.println(eagleID);
 
 				selPStmt.setString(1, eagleID);
 
@@ -285,17 +364,26 @@ public class ImportEDRData {
 				if (rs.next()) {
 					count = rs.getInt(1);
 				} else {
-					System.err.println("\nSomething went wrong with the SELECT statement!");
+					System.err.println(
+							eagleID + ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
 				}
 
+				int successUpdate = 0;
+
 				if (count == 0) {
-					insertEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle, language);
+					successUpdate = insertEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle,
+							language, dateOfOrigin);
 				} else {
-					updateEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle, language);
+					successUpdate = updateEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle,
+							language, dateOfOrigin);
 				}
 
 				// update AGP Metadata
-				updateAGPMetadata(eagleID, ancient_city, findSpot);
+				if (successUpdate == 1) {
+					updateAGPMetadata(eagleID, ancient_city, findSpot);
+				} else {
+					System.err.println("Error updating/inserting " + eagleID);
+				}
 
 			}
 
@@ -330,56 +418,36 @@ public class ImportEDRData {
 		}
 
 		String address = convertFindSpotToAddress(findSpot);
-		System.out.println("*" + address);
 
 		// TODO
 		// we're going to skip these because I can't handle them yet.
 
 		if (!address.contains(".")) {
-			System.err.println("Couldn't handle address " + address);
+			System.err.println(eagleID + ": Couldn't handle address: " + address);
 			return;
 		}
 
 		String insula = "";
 		String propertyNum = "";
 
-		if (ancient_city.startsWith("Pompei")) {
-			ancient_city = "Pompeii";
-		}
-
 		if (ancient_city.equals("Pompeii")) {
 			insula = address.substring(0, address.lastIndexOf('.'));
 			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		} else {
-			// int indexOfComma = address.indexOf(',');
-			// insula = address.substring(indexOfComma + 2, address.indexOf(',',
-			// indexOfComma));
 			insula = address.substring(0, address.indexOf('.'));
 			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		}
 
-		System.out.println("city: " + ancient_city);
-		System.out.println("findspot: " + findSpot);
-		System.out.println("address: " + address);
-		System.out.println("insula: " + insula);
-		System.out.println("property: " + propertyNum);
-
-		// Look up ids from the HashMaps
-		// handle alternative spellings
-
 		if (!cityToInsulaMap.get(ancient_city).containsKey(insula)) {
-			System.err.println();
-			System.err.println("Insula " + insula + " not found in " + ancient_city + "*");
-			System.err.println();
+			System.err.println(eagleID + ": Insula " + insula + " not found in " + ancient_city + ", " + address);
 			return;
 		}
 
 		int insulaID = cityToInsulaMap.get(ancient_city).get(insula).getId();
 
 		if (!insulaToPropertyMap.get(insulaID).containsKey(propertyNum)) {
-			System.err.println();
-			System.err.println("Property " + propertyNum + " in Insula " + insula + " not found");
-			System.err.println();
+			System.err.println(eagleID + ": Property " + propertyNum + " in Insula " + insula + " in " + ancient_city
+					+ " not found");
 			return;
 		}
 
@@ -408,6 +476,11 @@ public class ImportEDRData {
 		// Example: Pompei (Napoli) VII.12.18-20, Lupanare, cella b
 		// Example: Ercolano (Napoli), Insula III.11, Casa del Tramezzo di Legno
 
+		// Hack to handle Insula Orientalis special addresses
+		if (findSpot.contains("Insula Orientalis ")) {
+			findSpot = findSpot.replace("Insula Orientalis ", "InsulaOrientalis");
+		}
+
 		Matcher matcher = patternList.get(0).matcher(findSpot);
 		if (matcher.matches()) {
 			return matcher.group(1);
@@ -421,33 +494,75 @@ public class ImportEDRData {
 		}
 	}
 
-	private static void insertEagleInscription(String eagleID, String ancient_city, String findSpot,
-			String measurements, String writingStyle, String language) throws SQLException {
+	private static int insertEagleInscription(String eagleID, String ancient_city, String findSpot, String measurements,
+			String writingStyle, String language, String date_of_origin) throws SQLException {
 		insertPStmt.setString(1, eagleID);
 		insertPStmt.setString(2, ancient_city);
 		insertPStmt.setString(3, findSpot);
 		insertPStmt.setString(4, measurements);
 		insertPStmt.setString(5, writingStyle);
 		insertPStmt.setString(6, language);
+		insertPStmt.setString(7, date_of_origin);
 
 		try {
-			insertPStmt.executeUpdate();
+			return insertPStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return 0;
 	}
 
-	private static void updateEagleInscription(String eagleID, String ancient_city, String findSpot,
-			String measurements, String writingStyle, String language) throws SQLException {
+	private static int updateEagleInscription(String eagleID, String ancient_city, String findSpot, String measurements,
+			String writingStyle, String language, String date_of_origin) throws SQLException {
 		updatePStmt.setString(1, ancient_city);
 		updatePStmt.setString(2, findSpot);
 		updatePStmt.setString(3, measurements);
 		updatePStmt.setString(4, writingStyle);
 		updatePStmt.setString(5, language);
-		updatePStmt.setString(6, eagleID);
+		updatePStmt.setString(6, date_of_origin);
+		updatePStmt.setString(7, eagleID);
 
 		try {
-			updatePStmt.executeUpdate();
+			return updatePStmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	/**
+	 * Insert the photo information into database
+	 * 
+	 * @param string
+	 */
+	private static void updatePhotoInformation(String dataFileName) {
+		try {
+			Reader in = new FileReader(dataFileName);
+			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+			for (CSVRecord record : records) {
+				String eagleID = Utils.cleanData(record.get(0));
+				String photoID = Utils.cleanData(record.get(1));
+				insertPhotoInformation(eagleID, photoID);
+			}
+
+			in.close();
+			insertPStmt.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void insertPhotoInformation(String eagleID, String photoID) throws SQLException {
+		insertPhotoStmt.setString(1, eagleID);
+		insertPhotoStmt.setString(2, photoID);
+
+		try {
+			insertPhotoStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -485,11 +600,11 @@ public class ImportEDRData {
 			selPStmt = dbCon.prepareStatement(CHECK_INSCRIPTION_STATEMENT);
 
 			updatePropertyStmt = dbCon.prepareStatement(UPDATE_PROPERTY);
-			updateContentStmt = dbCon.prepareStatement(UPDATE_CONTENT);
 			// updateDescriptionStmt =
 			// dbCon.prepareStatement(UPDATE_DESCRIPTION);
-			updateBibStmt = dbCon.prepareStatement(UPDATE_BIB);
 			updateApparatusStmt = dbCon.prepareStatement(UPDATE_APPARATUS);
+
+			insertPhotoStmt = dbCon.prepareStatement(INSERT_PHOTO_STATEMENT);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -500,6 +615,8 @@ public class ImportEDRData {
 		patternList
 				.add(Pattern.compile("^\\w+ \\(\\w+\\),? ([\\w'.-]* )* ?\\(?([\\w'.-]*+)\\)?(,[\\w\\s-,'.\\(\\)]*)?"));
 		// TODO: Need to update the pattern to handle Insula Orientalis I
+
+		bibPattern = Pattern.compile("http://.*/Graffiti/graffito/AGP-EDR\\d{6} \\(\\d\\)");
 	}
 
 	public static void getConfigurationProperties() {

@@ -1,12 +1,14 @@
-
- @CHARSET "UTF-8";
-
+@charset "UTF-8";
 
 #map {
 	height: 500px;
 	width: 800px;
 }
 
+a.leaflet-control-zoom-in,a.leaflet-control-zoom-out,.leaflet-bar a.leaflet-disabled{
+	background:transparent;
+	
+}
 
 .mapdiv {
 	height: 400px;
@@ -43,8 +45,6 @@
 	position:absolute;
 }
 
-
-
 .searchResultsHerculaneum{
 	height:250px;
 	width:300px;
@@ -55,7 +55,6 @@
 	position:absolute;
 }
 
-
 .findspotMap{
 	height:400px;
 	width:500px;
@@ -64,7 +63,7 @@
 	border: 3px solid #800000;
 }
 
-Used in ?
+/* Used in ? */
 
 .info h4 {
 	margin: 0 0 5px;
@@ -72,13 +71,7 @@ Used in ?
 	
 }
 
-
 #moreInfo {
 	height: 0px;
 	width:200px;
 }
-	
-	
-	
-	
-	

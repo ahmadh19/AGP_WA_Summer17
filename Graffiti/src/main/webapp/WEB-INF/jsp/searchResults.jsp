@@ -207,9 +207,6 @@ hr.main-table {
 	cursor: pointer;
 	align: right;
 	display: inline;
-Graffito
-
-	
 	margin: 225px 0px 0px 560px;
 }
 

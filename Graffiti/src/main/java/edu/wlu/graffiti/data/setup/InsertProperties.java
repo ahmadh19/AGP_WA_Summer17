@@ -1,6 +1,5 @@
 package edu.wlu.graffiti.data.setup;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,12 +15,13 @@ import java.util.Properties;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import edu.wlu.graffiti.bean.PropertyType;
 
 /**
  * Insert properties from a CSV file into the database; Also insert property
- * type mappings.
+ * type mappings and OSM ids
  * 
  * @author Sara Sprenkle
  * 
@@ -37,8 +37,8 @@ public class InsertProperties {
 			+ "(insula_id, property_number, additional_properties, property_name, italian_property_name) "
 			+ "VALUES (?,?,?,?,?)";
 
-	private static final String UPDATE_OSM_ID = "UPDATE properties SET osm_id = ? WHERE property_id = ?";
-	private static final String UPDATE_OSM_WAY_ID = "UPDATE properties SET osm_way_id = ? WHERE property_id = ?";
+	private static final String UPDATE_OSM_ID = "UPDATE properties SET osm_id = ? WHERE id = ?";
+	private static final String UPDATE_OSM_WAY_ID = "UPDATE properties SET osm_way_id = ? WHERE id = ?";
 
 	private static final String LOOKUP_INSULA_ID = "SELECT id from insula WHERE modern_city=? AND short_name=?";
 
@@ -68,12 +68,11 @@ public class InsertProperties {
 	private static void insertProperties(String datafileName) {
 		try {
 			PreparedStatement pstmt = newDBCon.prepareStatement(INSERT_PROPERTY_STMT);
-
 			PreparedStatement insertPTStmt = newDBCon.prepareStatement(INSERT_PROPERTY_TYPE_MAPPING);
+			PreparedStatement osmStmt = newDBCon.prepareStatement(UPDATE_OSM_ID);
+			PreparedStatement osmWayStmt = newDBCon.prepareStatement(UPDATE_OSM_WAY_ID);
 
 			List<PropertyType> propertyTypes = getPropertyTypes();
-
-			BufferedReader br = new BufferedReader(new FileReader(datafileName));
 
 			Reader in = new FileReader(datafileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
@@ -115,6 +114,12 @@ public class InsertProperties {
 				}
 
 				int propID = locatePropertyId(insula_id, propertyNumber);
+
+				if( propID == 0 ) {
+					System.out.println("Property not in DB: " + insula_id + " " + propertyNumber + " " + propertyName);
+					continue;
+				}
+				
 				
 				// handle property tags
 				if (record.size() > 6) {
@@ -125,25 +130,50 @@ public class InsertProperties {
 							// System.out.println("propType: " +
 							// propType.getName());
 							if (propType.includes(t)) {
-								System.out.println("Match! " + propType.getName() + "for propID " + propID);
+								System.out.println("Match! " + propType.getName() + " for propID " + propID);
 								insertPTStmt.setInt(1, propID);
 								insertPTStmt.setInt(2, propType.getId());
-								// Wrapped in try to handle the
-								// "duplicate key errors" that so often occur.
+								// Wrapped in try to handle the "duplicate key
+								// errors" that so often occur.
 								try {
 									insertPTStmt.executeUpdate();
 								} catch (SQLException e) {
+									System.err.println(
+											"Duplicate entry, likely caused by synonyms in the property types.");
 									e.printStackTrace();
 								}
 							}
 						}
 					}
 				}
-				
+
 				// handle adding OSM ids
+				if (record.size() > 7) {
+					
+					/* We don't seem to have this in the DB yet.
+					String osmId = record.get(7).trim();
+					if (!osmId.isEmpty() && !NumberUtils.isCreatable(osmId)) {
+						osmStmt.setInt(2, propID);
+						osmStmt.setString(1, osmId);
+						osmStmt.executeUpdate();
+					}
+					*/
+
+					if (record.size() > 8) {
+						String osmWayId = record.get(8).trim();
+						if (!osmWayId.isEmpty() && NumberUtils.isCreatable(osmWayId)) {
+							osmWayStmt.setInt(2, propID);
+							osmWayStmt.setString(1, osmWayId);
+							osmWayStmt.executeUpdate();
+						}
+					}
+
+				}
+
 			}
-			br.close();
+			in.close();
 			pstmt.close();
+			insertPTStmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {

@@ -54,7 +54,7 @@
 				<c:when test="${len == 1}">
 					<tr>
 						<td colspan="2"><a target="_blank" href="${pages[0]}"><img
-								style="display: block; float: center; margin-left: auto; margin-right: auto;"
+								style="display: block; margin-left: auto; margin-right: auto;"
 								class="thumbnail" src="${thumbnails[0]}" /></a></td>
 					</tr>
 				</c:when>
@@ -122,7 +122,7 @@
 			if (session.getAttribute("authenticated") != null) {
 		%>
 		<tr>
-			<td colspan="2" align="center">
+			<td colspan="2">
 				<form action="<%=request.getContextPath()%>/admin/updateGraffito">
 					<input class="btn btn-agp" type=submit value="Edit Graffito"><input
 						type="hidden" name="edrID" value="${i.edrId}" />

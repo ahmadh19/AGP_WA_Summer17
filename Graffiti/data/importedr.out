@@ -1,0 +1,676 @@
+Reading in properties and insula
+city: Pompeii
+    - IX.1: Insula [id=223, modern_city=Pompeii, name=IX.1, description=]
+    - IX.2: Insula [id=224, modern_city=Pompeii, name=IX.2, description=]
+    - IX.11: Insula [id=233, modern_city=Pompeii, name=IX.11, description=]
+    - IX.10: Insula [id=232, modern_city=Pompeii, name=IX.10, description=]
+    - IX.5: Insula [id=227, modern_city=Pompeii, name=IX.5, description=]
+    - IX.6: Insula [id=228, modern_city=Pompeii, name=IX.6, description=]
+    - IX.3: Insula [id=225, modern_city=Pompeii, name=IX.3, description=]
+    - IX.4: Insula [id=226, modern_city=Pompeii, name=IX.4, description=]
+    - IX.9: Insula [id=231, modern_city=Pompeii, name=IX.9, description=]
+    - IX.7: Insula [id=229, modern_city=Pompeii, name=IX.7, description=]
+    - IX.8: Insula [id=230, modern_city=Pompeii, name=IX.8, description=]
+    - I.20: Insula [id=148, modern_city=Pompeii, name=I.20, description=]
+    - I.22: Insula [id=150, modern_city=Pompeii, name=I.22, description=]
+    - I.21: Insula [id=149, modern_city=Pompeii, name=I.21, description=]
+    - IX.13: Insula [id=235, modern_city=Pompeii, name=IX.13, description=]
+    - IX.12: Insula [id=234, modern_city=Pompeii, name=IX.12, description=]
+    - IX.14: Insula [id=236, modern_city=Pompeii, name=IX.14, description=]
+    - III.3: Insula [id=162, modern_city=Pompeii, name=III.3, description=]
+    - III.4: Insula [id=163, modern_city=Pompeii, name=III.4, description=]
+    - III.1: Insula [id=160, modern_city=Pompeii, name=III.1, description=]
+    - III.2: Insula [id=161, modern_city=Pompeii, name=III.2, description=]
+    - IV.3: Insula [id=173, modern_city=Pompeii, name=IV.3, description=]
+    - VI.3: Insula [id=185, modern_city=Pompeii, name=VI.3, description=]
+    - IV.4: Insula [id=174, modern_city=Pompeii, name=IV.4, description=]
+    - VI.4: Insula [id=186, modern_city=Pompeii, name=VI.4, description=]
+    - III.9: Insula [id=168, modern_city=Pompeii, name=III.9, description=]
+    - IV.1: Insula [id=171, modern_city=Pompeii, name=IV.1, description=]
+    - VI.5: Insula [id=187, modern_city=Pompeii, name=VI.5, description=]
+    - IV.2: Insula [id=172, modern_city=Pompeii, name=IV.2, description=]
+    - VI.6: Insula [id=188, modern_city=Pompeii, name=VI.6, description=]
+    - III.7: Insula [id=166, modern_city=Pompeii, name=III.7, description=]
+    - VI.7: Insula [id=189, modern_city=Pompeii, name=VI.7, description=]
+    - III.8: Insula [id=167, modern_city=Pompeii, name=III.8, description=]
+    - VI.8: Insula [id=190, modern_city=Pompeii, name=VI.8, description=]
+    - III.5: Insula [id=164, modern_city=Pompeii, name=III.5, description=]
+    - IV.5: Insula [id=175, modern_city=Pompeii, name=IV.5, description=]
+    - VI.9: Insula [id=191, modern_city=Pompeii, name=VI.9, description=]
+    - III.6: Insula [id=165, modern_city=Pompeii, name=III.6, description=]
+    - V.1: Insula [id=176, modern_city=Pompeii, name=V.1, description=]
+    - V.3: Insula [id=178, modern_city=Pompeii, name=V.3, description=]
+    - V.2: Insula [id=177, modern_city=Pompeii, name=V.2, description=]
+    - V.5: Insula [id=180, modern_city=Pompeii, name=V.5, description=]
+    - VI.17: Insula [id=199, modern_city=Pompeii, name=VI.17, description=]
+    - V.4: Insula [id=179, modern_city=Pompeii, name=V.4, description=]
+    - VI.16: Insula [id=198, modern_city=Pompeii, name=VI.16, description=]
+    - V.7: Insula [id=182, modern_city=Pompeii, name=V.7, description=]
+    - VI.1: Insula [id=183, modern_city=Pompeii, name=VI.1, description=]
+    - VII.8: Insula [id=207, modern_city=Pompeii, name=VII.8, description=]
+    - V.6: Insula [id=181, modern_city=Pompeii, name=V.6, description=]
+    - VI.2: Insula [id=184, modern_city=Pompeii, name=VI.2, description=]
+    - VII.9: Insula [id=208, modern_city=Pompeii, name=VII.9, description=]
+    - III.10: Insula [id=169, modern_city=Pompeii, name=III.10, description=]
+    - III.11: Insula [id=170, modern_city=Pompeii, name=III.11, description=]
+    - II.1: Insula [id=151, modern_city=Pompeii, name=II.1, description=]
+    - I.11: Insula [id=139, modern_city=Pompeii, name=I.11, description=]
+    - II.4: Insula [id=154, modern_city=Pompeii, name=II.4, description=]
+    - I.10: Insula [id=138, modern_city=Pompeii, name=I.10, description=]
+    - II.5: Insula [id=155, modern_city=Pompeii, name=II.5, description=]
+    - I.13: Insula [id=141, modern_city=Pompeii, name=I.13, description=]
+    - II.2: Insula [id=152, modern_city=Pompeii, name=II.2, description=]
+    - I.12: Insula [id=140, modern_city=Pompeii, name=I.12, description=]
+    - II.3: Insula [id=153, modern_city=Pompeii, name=II.3, description=]
+    - I.15: Insula [id=143, modern_city=Pompeii, name=I.15, description=]
+    - II.8: Insula [id=158, modern_city=Pompeii, name=II.8, description=]
+    - I.14: Insula [id=142, modern_city=Pompeii, name=I.14, description=]
+    - II.9: Insula [id=159, modern_city=Pompeii, name=II.9, description=]
+    - I.17: Insula [id=145, modern_city=Pompeii, name=I.17, description=]
+    - II.6: Insula [id=156, modern_city=Pompeii, name=II.6, description=]
+    - I.16: Insula [id=144, modern_city=Pompeii, name=I.16, description=]
+    - II.7: Insula [id=157, modern_city=Pompeii, name=II.7, description=]
+    - I.2: Insula [id=130, modern_city=Pompeii, name=I.2, description=]
+    - I.19: Insula [id=147, modern_city=Pompeii, name=I.19, description=]
+    - I.1: Insula [id=129, modern_city=Pompeii, name=I.1, description=]
+    - I.18: Insula [id=146, modern_city=Pompeii, name=I.18, description=]
+    - I.4: Insula [id=132, modern_city=Pompeii, name=I.4, description=]
+    - I.3: Insula [id=131, modern_city=Pompeii, name=I.3, description=]
+    - I.6: Insula [id=134, modern_city=Pompeii, name=I.6, description=]
+    - I.5: Insula [id=133, modern_city=Pompeii, name=I.5, description=]
+    - I.8: Insula [id=136, modern_city=Pompeii, name=I.8, description=]
+    - I.7: Insula [id=135, modern_city=Pompeii, name=I.7, description=]
+    - I.9: Insula [id=137, modern_city=Pompeii, name=I.9, description=]
+    - VI.13: Insula [id=195, modern_city=Pompeii, name=VI.13, description=]
+    - VII.6: Insula [id=205, modern_city=Pompeii, name=VII.6, description=]
+    - VI.12: Insula [id=194, modern_city=Pompeii, name=VI.12, description=]
+    - VII.7: Insula [id=206, modern_city=Pompeii, name=VII.7, description=]
+    - VI.15: Insula [id=197, modern_city=Pompeii, name=VI.15, description=]
+    - VII.4: Insula [id=203, modern_city=Pompeii, name=VII.4, description=]
+    - VI.14: Insula [id=196, modern_city=Pompeii, name=VI.14, description=]
+    - VII.5: Insula [id=204, modern_city=Pompeii, name=VII.5, description=]
+    - VII.2: Insula [id=201, modern_city=Pompeii, name=VII.2, description=]
+    - VII.3: Insula [id=202, modern_city=Pompeii, name=VII.3, description=]
+    - VI.11: Insula [id=193, modern_city=Pompeii, name=VI.11, description=]
+    - VI.10: Insula [id=192, modern_city=Pompeii, name=VI.10, description=]
+    - VII.1: Insula [id=200, modern_city=Pompeii, name=VII.1, description=]
+    - VII.10: Insula [id=209, modern_city=Pompeii, name=VII.10, description=]
+    - VIII.2: Insula [id=217, modern_city=Pompeii, name=VIII.2, description=]
+    - VIII.1: Insula [id=216, modern_city=Pompeii, name=VIII.1, description=]
+    - VII.16: Insula [id=215, modern_city=Pompeii, name=VII.16, description=]
+    - VII.15: Insula [id=214, modern_city=Pompeii, name=VII.15, description=]
+    - VIII.7: Insula [id=222, modern_city=Pompeii, name=VIII.7, description=]
+    - VII.14: Insula [id=213, modern_city=Pompeii, name=VII.14, description=]
+    - VIII.6: Insula [id=221, modern_city=Pompeii, name=VIII.6, description=]
+    - VII.13: Insula [id=212, modern_city=Pompeii, name=VII.13, description=]
+    - VIII.5: Insula [id=220, modern_city=Pompeii, name=VIII.5, description=]
+    - VII.12: Insula [id=211, modern_city=Pompeii, name=VII.12, description=]
+    - VIII.4: Insula [id=219, modern_city=Pompeii, name=VIII.4, description=]
+    - VII.11: Insula [id=210, modern_city=Pompeii, name=VII.11, description=]
+    - VIII.3: Insula [id=218, modern_city=Pompeii, name=VIII.3, description=]
+city: Herculaneum
+    - II: Insula [id=119, modern_city=Herculaneum, name=II, description=]
+    - WithinWalls: Insula [id=127, modern_city=Herculaneum, name=WithinWalls, description=]
+    - VI: Insula [id=123, modern_city=Herculaneum, name=VI, description=]
+    - InsulaOrientalisII: Insula [id=126, modern_city=Herculaneum, name=InsulaOrientalisII, description=]
+    - V: Insula [id=122, modern_city=Herculaneum, name=V, description=]
+    - VII: Insula [id=124, modern_city=Herculaneum, name=VII, description=]
+    - III: Insula [id=120, modern_city=Herculaneum, name=III, description=]
+    - InsulaOrientalisI: Insula [id=125, modern_city=Herculaneum, name=InsulaOrientalisI, description=]
+    - OutsideWalls: Insula [id=128, modern_city=Herculaneum, name=OutsideWalls, description=]
+    - IV: Insula [id=121, modern_city=Herculaneum, name=IV, description=]
+EDR092812: Insula Haus des C not found in Pompeii, Haus des C.Iulius Polybius
+EDR072296: Property c in Insula V.6 in Pompeii not found
+EDR071808: Couldn't handle address: 
+EDR073222: Couldn't handle address: I
+EDR073610: Couldn't handle address: I
+EDR074234: Property 13-14 in Insula VII.12 in Pompeii not found
+EDR076752: Insula Haus des C not found in Pompeii, Haus des C.Iulius Polybius, Atrium, westliche Wand
+EDR076753: Insula Haus des C not found in Pompeii, Haus des C. Iulius Polybius, cortile della cucina
+EDR076754: Insula Haus des C not found in Pompeii, Haus des C. Iulius Polybius, cortile della cucina
+EDR076755: Property 3 in Insula IX.13 in Pompeii not found
+EDR076757: Insula Haus des C not found in Pompeii, Haus des C.Iulius Polybius, östliche Wand
+EDR076758: Insula Haus des C not found in Pompeii, Haus des C.Iulius Polybius, nördlicher Wandelgang
+EDR077698: Insula II not found in Pompeii, II.7
+EDR079495: Property 2-3 in Insula III.5 in Pompeii not found
+EDR079713: Insula Haus des C not found in Pompeii, Haus des C. Iulius Polybius, Pfosten
+EDR079714: Insula Haus des C not found in Pompeii, Haus des C. Iulius Polybius, cortile della cucina
+EDR127829: Insula Pompei (Napoli). Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad amphitheatrum (II.7). col. XVIII
+EDR127413: Insula II not found in Pompeii, II.7
+EDR081355: Couldn't handle address: 
+EDR125529: city Ager Pompeianus not found
+EDR125532: city Ager Pompeianus not found
+EDR127147: Insula Pompei (Napoli), Campus ad amphitheatrum (II.7) col not found in Pompeii, Pompei (Napoli), Campus ad amphitheatrum (II.7) col. LXX
+EDR127157: Couldn't handle address: II
+EDR127158: Couldn't handle address: II
+EDR127191: Insula Pompei (Napoli), Campus ad amphitheatrum (II.7) not found in Pompeii, Pompei (Napoli), Campus ad amphitheatrum (II.7).
+EDR127188: Insula II not found in Pompeii, II.7
+EDR127080: Insula II not found in Pompeii, II.7
+EDR127160: Couldn't handle address: II
+EDR127424: Insula II not found in Pompeii, II.7
+EDR127140: Insula II not found in Pompeii, II.7
+EDR127234: Insula II not found in Pompeii, II.7
+EDR127299: Couldn't handle address: II
+EDR127403: Insula II not found in Pompeii, II.7
+EDR127406: Insula II not found in Pompeii, II.7
+EDR127428: Insula II not found in Pompeii, II.7
+EDR127081: Insula Pompei (Napoli), Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli), Campus ad amphitheatrum (II.7). col. XVIII
+EDR127145: Insula II not found in Pompeii, II.7
+EDR127396: Insula II not found in Pompeii, II.7
+EDR127801: Insula II not found in Pompeii, II.7
+EDR127835: Insula II not found in Pompeii, II.7
+EDR127843: Insula II not found in Pompeii, II.7
+EDR127154: Insula II not found in Pompeii, II.7
+EDR127414: Insula II not found in Pompeii, II.7
+EDR127575: Insula II not found in Pompeii, II.7
+EDR127151: Insula II not found in Pompeii, II.7
+EDR127212: Insula II not found in Pompeii, II.7
+EDR127242: Insula II not found in Pompeii, II.7
+EDR127430: Insula II not found in Pompeii, II.7
+EDR127572: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXIV
+EDR127574: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXVI
+EDR127576: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXVI
+EDR128046: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXVII
+EDR128047: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXVIII
+EDR128114: Insula II not found in Pompeii, II.7
+EDR127149: Insula II not found in Pompeii, II.7
+EDR127404: Insula II not found in Pompeii, II.7
+EDR127415: Insula II not found in Pompeii, II.7
+EDR127418: Insula II not found in Pompeii, II.7
+EDR127848: Insula II not found in Pompeii, II.7
+EDR127850: Insula II not found in Pompeii, II.7
+EDR128048: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXVIII
+EDR128050: Insula Pompei (Napoli), Campus ad Amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli), Campus ad Amphitheatrum (II.7). col. LXXV
+EDR128279: Insula II not found in Pompeii, II.7
+EDR127213: Insula II not found in Pompeii, II.7
+EDR127425: Insula II not found in Pompeii, II.7
+EDR127231: Insula II not found in Pompeii, II.7
+EDR127233: Property 1-10 in Insula II.7 in Pompeii not found
+EDR127237: Insula II not found in Pompeii, II.7
+EDR127368: Insula II not found in Pompeii, II.7
+EDR127399: Insula II not found in Pompeii, II.7
+EDR127573: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXV
+EDR127578: Insula II not found in Pompeii, II.7
+EDR127806: Insula II not found in Pompeii, II.7
+EDR127808: Insula II not found in Pompeii, II.7
+EDR128116: Insula II not found in Pompeii, II.7
+EDR127192: Insula II not found in Pompeii, II.7
+EDR127298: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. XXVII
+EDR127577: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXVI
+EDR127579: Insula II not found in Pompeii, II.7
+EDR127969: Insula II not found in Pompeii, II.7
+EDR128013: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. XXIV
+EDR128014: Insula II not found in Pompeii, II.7
+EDR128049: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXVI
+EDR128052: Insula Pompei (Napoli). Campus ad Amphitheatrum (II,7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II,7). col. LXXIV
+EDR128056: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. LXXIII
+EDR128057: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7), col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7), col. XXIV
+EDR128058: Insula II not found in Pompeii, II.7
+EDR127823: Insula II not found in Pompeii, II.7
+EDR127842: Insula II not found in Pompeii, II.7
+EDR128053: Insula II not found in Pompeii, II.7
+EDR128059: Insula II not found in Pompeii, II.7
+EDR128062: Insula II not found in Pompeii, II.7
+EDR128097: Insula II not found in Pompeii, II.7
+EDR128098: Insula II not found in Pompeii, II.7
+EDR127152: Insula II not found in Pompeii, II.7
+EDR128276: Insula II not found in Pompeii, II.7
+EDR127155: Insula II not found in Pompeii, II.7
+EDR127187: Insula Pompei (Napoli) Campus ad Amphitheatrum (II not found in Pompeii, Pompei (Napoli) Campus ad Amphitheatrum (II.7) col XXIX
+EDR127366: Insula II not found in Pompeii, II.7
+EDR127411: Insula II not found in Pompeii, II.7
+EDR127811: Insula II not found in Pompeii, II.7
+EDR127813: Insula II not found in Pompeii, II.7
+EDR127833: Insula II not found in Pompeii, II.7
+EDR127838: Insula II not found in Pompeii, II.7
+EDR128017: Insula Pompei (Napoli). Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad amphitheatrum (II.7). col. XIX
+EDR128055: Insula II not found in Pompeii, II.7
+EDR128061: Insula II not found in Pompeii, II.7
+EDR128063: Insula II not found in Pompeii, II.7
+EDR128294: Insula II not found in Pompeii, II.7
+EDR127185: Insula II not found in Pompeii, II.7
+EDR127194: Insula II not found in Pompeii, II.7
+EDR127416: Insula II not found in Pompeii, II.7
+EDR127807: Insula II not found in Pompeii, II.7
+EDR127809: Insula II not found in Pompeii, II.7
+EDR127810: Insula II not found in Pompeii, II.7
+EDR127828: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7). col. XVIII
+EDR128064: Insula II not found in Pompeii, II.7
+EDR128277: Insula II not found in Pompeii, II.7
+EDR127412: Insula II not found in Pompeii, II.7
+EDR127417: Insula II not found in Pompeii, II.7
+EDR127419: Insula II not found in Pompeii, II.7
+EDR127790: Insula II not found in Pompeii, II.7
+EDR127980: Insula II not found in Pompeii, II.7
+EDR128118: Insula II not found in Pompeii, II.7
+EDR127186: Insula II not found in Pompeii, II.7
+EDR127218: Insula II not found in Pompeii, II.7
+EDR127409: Insula II not found in Pompeii, II.7
+EDR127426: Insula II not found in Pompeii, II.7
+EDR128582: Insula II not found in Pompeii, II.7
+EDR128583: Insula II not found in Pompeii, II.7
+EDR127398: Insula II not found in Pompeii, II.7
+EDR128066: Insula II not found in Pompeii, II.7
+EDR128067: Insula II not found in Pompeii, II.7
+EDR128080: Insula II not found in Pompeii, II.7
+EDR128082: Insula II not found in Pompeii, II.7
+EDR128084: Insula II not found in Pompeii, II.7
+EDR128585: Insula II not found in Pompeii, II.7
+EDR128660: Insula Pompei (Napoli), Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli), Campus ad amphitheatrum (II.7). col. XVIII
+EDR127814: Insula II not found in Pompeii, II.7
+EDR127982: Insula II not found in Pompeii, II.7
+EDR128065: Insula II not found in Pompeii, II.7
+EDR128662: Insula Pompei (Napoli). Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad amphitheatrum (II.7). col. XVIII
+EDR127830: Insula Pompei (Napoli). Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad amphitheatrum (II.7). col. XVIII
+EDR127845: Insula II not found in Pompeii, II.7
+EDR128016: Insula Pompei (Napoli). Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad amphitheatrum (II.7). col. XVIII
+EDR128051: Insula Pompei (Napoli). Campus ad Amphitheatrum (II,7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II,7). col. LXXVII
+EDR128060: Insula II not found in Pompeii, II.7
+EDR128663: Insula Pompei (Napoli). Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad amphitheatrum (II.7). col. XVIII
+EDR128117: Insula II not found in Pompeii, II.7
+EDR127405: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7). col. XVIII
+EDR127831: Insula Pompei (Napoli). Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad amphitheatrum (II.7). col. XVIII
+EDR128290: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7). col. XV
+EDR128661: Insula Pompei (Napoli). Campus ad amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad amphitheatrum (II.7). col. XVIII
+EDR128733: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7). col. XVIII
+EDR128734: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7). col. XVIII
+EDR128737: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7). col. XVIII
+EDR127193: Insula II not found in Pompeii, II.7
+EDR127297: Insula II not found in Pompeii, II.7
+EDR127407: Insula II not found in Pompeii, II.7
+EDR127421: Insula II not found in Pompeii, II.7
+EDR127816: Insula II not found in Pompeii, II.7
+EDR127817: Insula II not found in Pompeii, II.7
+EDR127820: Insula II not found in Pompeii, II.7
+EDR127847: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7). col. XVIII
+EDR127971: Insula II not found in Pompeii, II.7
+EDR127973: Insula II not found in Pompeii, II.7
+EDR128278: Insula II not found in Pompeii, II.7
+EDR128286: Insula II not found in Pompeii, II.7
+EDR128641: Insula II not found in Pompeii, II.7
+EDR128642: Insula II not found in Pompeii, II.7
+EDR128643: Insula II not found in Pompeii, II.7
+EDR128644: Insula II not found in Pompeii, II.7
+EDR128645: Insula II not found in Pompeii, II.7
+EDR128738: Insula Pompei (Napoli). Campus ad Amphitheatrum (II.7). col not found in Pompeii, Pompei (Napoli). Campus ad Amphitheatrum (II.7). col. XVIII
+EDR128751: Insula II not found in Pompeii, II.7
+EDR128754: Insula II not found in Pompeii, II.7
+EDR128759: Insula II not found in Pompeii, II.7
+EDR128760: Insula II not found in Pompeii, II.7
+EDR127420: Insula II not found in Pompeii, II.7
+EDR127422: Insula II not found in Pompeii, II.7
+EDR127844: Insula II not found in Pompeii, II.7
+EDR127976: Insula II not found in Pompeii, II.7
+EDR127981: Insula II not found in Pompeii, II.7
+EDR128284: Insula II not found in Pompeii, II.7
+EDR128285: Insula II not found in Pompeii, II.7
+EDR128287: Insula II not found in Pompeii, II.7
+EDR128291: Insula II not found in Pompeii, II.7
+EDR128292: Insula II not found in Pompeii, II.7
+EDR128293: Insula II not found in Pompeii, II.7
+EDR128563: Insula II not found in Pompeii, II.7
+EDR128746: Insula II not found in Pompeii, II.7
+EDR128747: Insula II not found in Pompeii, II.7
+EDR128750: Insula II not found in Pompeii, II.7
+EDR128756: Insula II not found in Pompeii, II.7
+EDR128758: Insula II not found in Pompeii, II.7
+EDR128762: Insula II not found in Pompeii, II.7
+EDR128769: Insula II not found in Pompeii, II.7
+EDR128770: Insula II not found in Pompeii, II.7
+EDR128772: Insula II not found in Pompeii, II.7
+EDR128773: Insula II not found in Pompeii, II.7
+EDR128774: Insula II not found in Pompeii, II.7
+EDR128775: Insula II not found in Pompeii, II.7
+EDR128776: Insula II not found in Pompeii, II.7
+EDR128777: Insula II not found in Pompeii, II.7
+EDR128778: Insula II not found in Pompeii, II.7
+EDR128779: Insula II not found in Pompeii, II.7
+EDR127849: Insula II not found in Pompeii, II.7
+EDR127423: Insula II not found in Pompeii, II.7
+EDR127821: Insula II not found in Pompeii, II.7
+EDR127822: Insula II not found in Pompeii, II.7
+EDR127826: Insula II not found in Pompeii, II.7
+EDR127827: Insula II not found in Pompeii, II.7
+EDR128748: Insula II not found in Pompeii, II.7
+EDR140145: Property 1 in Insula VI in Herculaneum not found
+EDR140143: Property 16-17 in Insula III in Herculaneum not found
+EDR143636: Couldn't handle address: Suburbane
+EDR143648: Property 19 in Insula VIII.7 in Pompeii not found
+EDR144356: Property 1 in Insula VI in Herculaneum not found
+EDR145941: Couldn't handle address: Ercolano (Napoli), Decumanus Inferior (locus incertus)
+EDR144786: Property 19 in Insula VIII.7 in Pompeii not found
+EDR145935: Property 1 in Insula VI in Herculaneum not found
+EDR147517: Property 9-10 in Insula I.13 in Pompeii not found
+EDR147519: Property 1-10 in Insula II.7 in Pompeii not found
+EDR147976: Property 6 in Insula VI.9 in Pompeii not found
+EDR148022: Property 11 in Insula VI.15 in Pompeii not found
+EDR148379: Property 4-5 in Insula I.11 in Pompeii not found
+EDR148380: Property 20 in Insula VIII.7 in Pompeii not found
+EDR148381: Property 20 in Insula VIII.7 in Pompeii not found
+EDR148880: Property 6 in Insula II.4 in Pompeii not found
+EDR149304: Property 10 in Insula II.4 in Pompeii not found
+EDR147882: Property 1-10 in Insula II.7 in Pompeii not found
+EDR147916: Insula I not found in Pompeii, I.7
+EDR148875: Property 6 in Insula II.4 in Pompeii not found
+EDR148876: Property 6 in Insula II.4 in Pompeii not found
+EDR148877: Property 6 in Insula II.4 in Pompeii not found
+EDR148878: Property 6 in Insula II.4 in Pompeii not found
+EDR148879: Property 6 in Insula II.4 in Pompeii not found
+EDR148882: Property 3 in Insula II.4 in Pompeii not found
+EDR149050: Property 6 in Insula II.4 in Pompeii not found
+EDR149052: Property 6 in Insula II.4 in Pompeii not found
+EDR149053: Property 6 in Insula II.4 in Pompeii not found
+EDR149056: Property 6 in Insula II.4 in Pompeii not found
+EDR149057: Property 6 in Insula II.4 in Pompeii not found
+EDR149060: Property 6 in Insula II.4 in Pompeii not found
+EDR149063: Property 6 in Insula II.4 in Pompeii not found
+EDR149164: Property 16 in Insula VIII.5 in Pompeii not found
+EDR149196: Property 16 in Insula VIII.5 in Pompeii not found
+EDR149062: Property 6 in Insula II.4 in Pompeii not found
+EDR149065: Property 6 in Insula II.4 in Pompeii not found
+EDR149139: Property 5 in Insula I.4 in Pompeii not found
+EDR149140: Property 5 in Insula I.4 in Pompeii not found
+EDR149141: Property 5 in Insula I.4 in Pompeii not found
+EDR149145: Property 5 in Insula I.4 in Pompeii not found
+EDR149160: Property 2 in Insula VIII.5 in Pompeii not found
+EDR149162: Property 5 in Insula VIII.5 in Pompeii not found
+EDR149163: Property 9 in Insula VII.5 in Pompeii not found
+EDR149165: Property 16 in Insula VIII.5 in Pompeii not found
+EDR149172: Property 6 in Insula I.4 in Pompeii not found
+EDR149185: Property 6-7 in Insula I.4 in Pompeii not found
+EDR149232: Property 7 in Insula II.4 in Pompeii not found
+EDR149236: Property 7 in Insula II.4 in Pompeii not found
+EDR149238: Property 7 in Insula II.4 in Pompeii not found
+EDR149240: Property 7 in Insula II.4 in Pompeii not found
+EDR149241: Property 7 in Insula II.4 in Pompeii not found
+EDR149244: Property 7 in Insula II.4 in Pompeii not found
+EDR149245: Property 7 in Insula II.4 in Pompeii not found
+EDR149247: Property 7 in Insula II.4 in Pompeii not found
+EDR149248: Property 7 in Insula II.4 in Pompeii not found
+EDR149252: Property 7 in Insula II.4 in Pompeii not found
+EDR149253: Property 7 in Insula II.4 in Pompeii not found
+EDR149254: Property 7 in Insula II.4 in Pompeii not found
+EDR149255: Property 7 in Insula II.4 in Pompeii not found
+EDR149258: Property 7 in Insula II.4 in Pompeii not found
+EDR149293: Property 10 in Insula II.4 in Pompeii not found
+EDR149296: Property 10 in Insula II.4 in Pompeii not found
+EDR148418: Property 3 in Insula II.4 in Pompeii not found
+EDR149048: Property 6 in Insula II.4 in Pompeii not found
+EDR149159: Property 2 in Insula VIII.5 in Pompeii not found
+EDR149204: Property 9 in Insula VIII.5 in Pompeii not found
+EDR149206: Property 9 in Insula VIII.5 in Pompeii not found
+EDR149207: Property 16 in Insula VIII.5 in Pompeii not found
+EDR149208: Property 16 in Insula VIII.5 in Pompeii not found
+EDR149212: Property 28 in Insula VIII.5 in Pompeii not found
+EDR149334: Insula II not found in Pompeii, II.4
+EDR149511: Property 5 in Insula I.4 in Pompeii not found
+EDR149512: Property 5 in Insula I.4 in Pompeii not found
+EDR149513: Property 5 in Insula I.4 in Pompeii not found
+EDR149040: Property 5-6 in Insula II.4 in Pompeii not found
+EDR149042: Property 6-7 in Insula II.4 in Pompeii not found
+EDR149044: Property 6-7 in Insula II.4 in Pompeii not found
+EDR149045: Property 6-7 in Insula II.4 in Pompeii not found
+EDR149323: Property 7-8 in Insula II.4 in Pompeii not found
+EDR149324: Property 7-8 in Insula II.4 in Pompeii not found
+EDR149331: Property 7-8 in Insula II.4 in Pompeii not found
+EDR149332: Property 7-8 in Insula II.4 in Pompeii not found
+EDR149344: Insula II not found in Pompeii, II.4
+EDR149490: Property 3 in Insula II.5 in Pompeii not found
+EDR148874: Property 6 in Insula II.4 in Pompeii not found
+EDR148881: Property 6 in Insula II.4 in Pompeii not found
+EDR149046: Property 6 in Insula II.4 in Pompeii not found
+EDR149047: Property 6 in Insula II.4 in Pompeii not found
+EDR149197: Property 19 in Insula VIII.5 in Pompeii not found
+EDR149198: Property 19 in Insula VIII.5 in Pompeii not found
+EDR149205: Property 9 in Insula VIII.5 in Pompeii not found
+EDR149210: Property 29 in Insula VIII.5 in Pompeii not found
+EDR149213: Property 7-8 in Insula VIII.5 in Pompeii not found
+EDR149215: Property 28 in Insula VIII.5 in Pompeii not found
+EDR150188: Property 23-24 in Insula VIII.5 in Pompeii not found
+EDR150397: Property 19 in Insula VIII.5 in Pompeii not found
+EDR150506: Couldn't handle address: Lupanare
+EDR149067: Property 6 in Insula II.4 in Pompeii not found
+EDR149049: Property 6 in Insula II.4 in Pompeii not found
+EDR149136: Property 5 in Insula I.4 in Pompeii not found
+EDR149137: Property 5 in Insula I.4 in Pompeii not found
+EDR149138: Property 5 in Insula I.4 in Pompeii not found
+EDR149187: Property 22-23 in Insula I.4 in Pompeii not found
+EDR149249: Property 7 in Insula II.4 in Pompeii not found
+EDR149250: Property 7 in Insula II.4 in Pompeii not found
+EDR149251: Property 7 in Insula II.4 in Pompeii not found
+EDR149277: Property 10 in Insula II.4 in Pompeii not found
+EDR149278: Property 10 in Insula II.4 in Pompeii not found
+EDR149280: Property 10 in Insula II.4 in Pompeii not found
+EDR149281: Property 10 in Insula II.4 in Pompeii not found
+EDR149282: Property 10 in Insula II.4 in Pompeii not found
+EDR149291: Property 10 in Insula II.4 in Pompeii not found
+EDR149292: Property 10 in Insula II.4 in Pompeii not found
+EDR149294: Property 10 in Insula II.4 in Pompeii not found
+EDR149295: Property 10 in Insula II.4 in Pompeii not found
+EDR149335: Property 13 in Insula II.4 in Pompeii not found
+EDR149337: Insula II not found in Pompeii, II.4
+EDR149338: Property 13 in Insula II.4 in Pompeii not found
+EDR149340: Insula II not found in Pompeii, II.4
+EDR149403: Property 13 in Insula II.4 in Pompeii not found
+EDR149404: Property 13 in Insula II.4 in Pompeii not found
+EDR149405: Property 13 in Insula II.4 in Pompeii not found
+EDR149406: Insula II not found in Pompeii, II.4
+EDR149434: Insula II not found in Pompeii, II.4
+EDR149173: Property 6 in Insula I.4 in Pompeii not found
+EDR149174: Property 6 in Insula I.4 in Pompeii not found
+EDR149298: Property 10 in Insula II.4 in Pompeii not found
+EDR149300: Property 10 in Insula II.4 in Pompeii not found
+EDR149301: Property 10 in Insula II.4 in Pompeii not found
+EDR147862: Property 9-10 in Insula I.13 in Pompeii not found
+EDR147874: Property 3-4 in Insula III.5 in Pompeii not found
+EDR147875: Insula VIII.12 not found in Pompeii, VIII.12.14
+EDR147877: Insula VI not found in Pompeii, VI.10
+EDR147878: Property 14-15 in Insula I.6 in Pompeii not found
+EDR147929: Property 14-15 in Insula I.6 in Pompeii not found
+EDR147933: Property 8-9 in Insula VI.15 in Pompeii not found
+EDR147978: Property 6 in Insula VI.9 in Pompeii not found
+EDR140034: Property 1 in Insula VI in Herculaneum not found
+EDR140061: Property 1 in Insula VI in Herculaneum not found
+EDR140062: Property 1 in Insula VI in Herculaneum not found
+EDR140978: Couldn't handle address: Rampa
+EDR140979: Couldn't handle address: Rampa
+EDR147931: Insula VI not found in Pompeii, VI.10
+EDR147974: Property 14-15 in Insula I.6 in Pompeii not found
+EDR147975: Property 6 in Insula VI.9 in Pompeii not found
+EDR147977: Property 6 in Insula VI.9 in Pompeii not found
+EDR147979: Property 6 in Insula VI.9 in Pompeii not found
+EDR149061: Property 6 in Insula II.4 in Pompeii not found
+EDR149064: Property 6 in Insula II.4 in Pompeii not found
+EDR149154: Property 5 in Insula I.4 in Pompeii not found
+EDR149155: Property 5 in Insula I.4 in Pompeii not found
+EDR149188: Property 22-23 in Insula I.4 in Pompeii not found
+EDR149190: Insula I not found in Pompeii, I.4
+EDR149191: Insula I not found in Pompeii, I.4
+EDR149233: Property 7 in Insula II.4 in Pompeii not found
+EDR149333: Property 7-8 in Insula II.4 in Pompeii not found
+EDR151417: Property 1 in Insula VI in Herculaneum not found
+EDR148416: Property 20 in Insula VIII.7 in Pompeii not found
+EDR147857: Insula VI not found in Pompeii, VI.10
+EDR147607: Property 1 in Insula VI in Herculaneum not found
+EDR149151: Property 5 in Insula I.4 in Pompeii not found
+EDR149152: Property 5 in Insula I.4 in Pompeii not found
+EDR149186: Property 7-8 in Insula I.4 in Pompeii not found
+EDR149189: Property 22-23 in Insula I.4 in Pompeii not found
+EDR122604: Couldn't handle address: 17
+EDR125508: city Ager Pompeianus not found
+EDR125509: city Ager Pompeianus not found
+EDR125510: city Ager Pompeianus not found
+EDR125531: city Ager Pompeianus not found
+EDR125533: city Ager Pompeianus not found
+EDR125534: city Ager Pompeianus not found
+EDR127410: Insula II not found in Pompeii, II.7
+EDR127427: Insula II not found in Pompeii, II.7
+EDR127429: Insula II not found in Pompeii, II.7
+EDR127812: Insula II not found in Pompeii, II.7
+EDR127815: Insula II not found in Pompeii, II.7
+EDR127818: Insula II not found in Pompeii, II.7
+EDR127819: Insula II not found in Pompeii, II.7
+EDR127824: Insula II not found in Pompeii, II.7
+EDR127972: Insula II not found in Pompeii, II.7
+EDR127975: Insula II not found in Pompeii, II.7
+EDR127977: Insula II not found in Pompeii, II.7
+EDR127979: Insula II not found in Pompeii, II.7
+EDR128757: Insula II not found in Pompeii, II.7
+EDR128761: Insula II not found in Pompeii, II.7
+EDR136429: Insula Pompei (Napoli), Regio I.6 not found in Pompeii, Pompei (Napoli), Regio I.6.1 (left of), facade
+EDR140151: Property 1 in Insula VI in Herculaneum not found
+EDR140248: Property 1 in Insula VI in Herculaneum not found
+EDR140709: Property 1 in Insula VI in Herculaneum not found
+EDR140980: Couldn't handle address: Rampa
+EDR140982: Couldn't handle address: Rampa
+EDR140983: Couldn't handle address: Rampa
+EDR140986: Couldn't handle address: Rampa
+EDR140987: Couldn't handle address: Rampa
+EDR142566: Property 3-4 in Insula I.6 in Pompeii not found
+EDR143926: Property 19 in Insula VIII.7 in Pompeii not found
+EDR143927: Property 19 in Insula VIII.7 in Pompeii not found
+EDR144785: Property 19 in Insula VIII.7 in Pompeii not found
+EDR144787: Property 19 in Insula VIII.7 in Pompeii not found
+EDR144788: Property 19 in Insula VIII.7 in Pompeii not found
+EDR147777: Property 5 in Insula VII.7 in Pompeii not found
+EDR147779: Property 5 in Insula VII.7 in Pompeii not found
+EDR147780: Property c in Insula IX.14 in Pompeii not found
+EDR149143: Property 5 in Insula I.4 in Pompeii not found
+EDR149144: Property 5 in Insula I.4 in Pompeii not found
+EDR149147: Property 5 in Insula I.4 in Pompeii not found
+EDR149148: Property 5 in Insula I.4 in Pompeii not found
+EDR149149: Property 5 in Insula I.4 in Pompeii not found
+EDR149150: Property 5 in Insula I.4 in Pompeii not found
+EDR149176: Property 14 in Insula I.4 in Pompeii not found
+EDR149184: Property 28 in Insula I.4 in Pompeii not found
+EDR143925: Property 19 in Insula VIII.7 in Pompeii not found
+EDR147687: Property 5 in Insula VII.7 in Pompeii not found
+EDR149146: Property 5 in Insula I.4 in Pompeii not found
+EDR150187: Property 7-8 in Insula VIII.5 in Pompeii not found
+EDR145936: Property 1 in Insula VI in Herculaneum not found
+EDR149175: Property 6 in Insula I.4 in Pompeii not found
+EDR149142: Property 5 in Insula I.4 in Pompeii not found
+EDR151694: Insula VI not found in Pompeii, VI.10
+EDR151696: Insula VI not found in Pompeii, VI.10
+EDR151702: Insula VI not found in Pompeii, VI.10
+EDR151704: Insula VI not found in Pompeii, VI.10
+EDR140137: Property 16-17 in Insula III in Herculaneum not found
+EDR149302: Property 10 in Insula II.4 in Pompeii not found
+EDR151707: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151709: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151710: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151026: Property 67-68 in Insula VII.9 in Pompeii not found
+EDR151027: Property 67-68 in Insula VII.9 in Pompeii not found
+EDR151712: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151713: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151716: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151717: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151719: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151722: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151760: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151779: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR154189: Couldn't handle address: Suburbane
+EDR154190: Couldn't handle address: Suburbane
+EDR154368: Couldn't handle address: Suburbane
+EDR154372: Couldn't handle address: Rampa
+EDR154373: Couldn't handle address: Rampa
+EDR154592: Couldn't handle address: Massimo
+EDR151792: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR151877: Property 1 in Insula VI in Herculaneum not found
+EDR151926: Property 1-2 in Insula VI.9 in Pompeii not found
+EDR154369: Couldn't handle address: Suburbane
+EDR154370: Couldn't handle address: Suburbane
+EDR154542: Couldn't handle address: Rampa
+EDR154563: Couldn't handle address: Rampa
+EDR154575: Couldn't handle address: Aquae
+EDR154371: Couldn't handle address: Rampa
+EDR154421: Couldn't handle address: Ercolano (Napoli), Clivus ad Cloacam / Accesso alla Fogna
+EDR154429: Couldn't handle address: Rampa
+EDR154430: Couldn't handle address: Rampa
+EDR154431: Couldn't handle address: Rampa
+EDR154432: Couldn't handle address: Rampa
+EDR154537: Couldn't handle address: Rampa
+EDR154538: Couldn't handle address: Rampa
+EDR154539: Couldn't handle address: Rampa
+EDR154540: Couldn't handle address: Rampa
+EDR154541: Couldn't handle address: Rampa
+EDR151884: Property 1 in Insula VI in Herculaneum not found
+EDR151892: Property 1 in Insula VI in Herculaneum not found
+EDR151898: Property 1 in Insula VI in Herculaneum not found
+EDR140149: Property 16-17 in Insula III in Herculaneum not found
+EDR151901: Property 1 in Insula VI in Herculaneum not found
+EDR151594: Property 67-68 in Insula VII.9 in Pompeii not found
+EDR154433: Couldn't handle address: Rampa
+EDR151886: Property 1 in Insula VI in Herculaneum not found
+EDR154500: Couldn't handle address: Ercolano (Napoli), Accesso alla Fogna/Clivus ad Cloacam
+EDR151890: Property 1 in Insula VI in Herculaneum not found
+EDR151896: Property 1 in Insula VI in Herculaneum not found
+EDR156782: Couldn't handle address: Ercolano (Napoli), Clivus ad Cloacam / Accesso alla Fogna
+EDR154434: Couldn't handle address: Rampa
+EDR156776: Property 1 in Insula VI in Herculaneum not found
+EDR156779: Couldn't handle address: Rampa
+EDR150778: Insula VIII.9 not found in Pompeii, VIII.9.1
+EDR158841: Property 20 in Insula VIII.7 in Pompeii not found
+EDR158842: Insula II not found in Pompeii, II.6
+EDR158849: Property 10-11 in Insula I.11 in Pompeii not found
+EDR147688: Couldn't handle address: incertus
+EDR151022: Property 68 in Insula VII.9 in Pompeii not found
+EDR151023: Property 68 in Insula VII.9 in Pompeii not found
+EDR151028: Property 68 in Insula VII.9 in Pompeii not found
+EDR151029: Property 68 in Insula VII.9 in Pompeii not found
+EDR151032: Property 68 in Insula VII.9 in Pompeii not found
+EDR151033: Property 68 in Insula VII.9 in Pompeii not found
+EDR151580: Property 68 in Insula VII.9 in Pompeii not found
+EDR151586: Property 68 in Insula VII.9 in Pompeii not found
+EDR151589: Property 68 in Insula VII.9 in Pompeii not found
+EDR151590: Property 68 in Insula VII.9 in Pompeii not found
+EDR151597: Property 67 in Insula VII.9 in Pompeii not found
+EDR159412: Property 2-3 in Insula III.5 in Pompeii not found
+EDR159559: Property 1 in Insula I.7 in Pompeii not found
+EDR159410: Property 21 in Insula VIII.7 in Pompeii not found
+EDR159522: Property 22 in Insula VII.16 in Pompeii not found
+EDR159799: city Ager Pompeianus not found
+EDR159804: city Ager Pompeianus not found
+EDR159812: city Ager Pompeianus not found
+EDR159814: city Ager Pompeianus not found
+EDR159820: city Ager Pompeianus not found
+EDR159806: city Ager Pompeianus not found
+EDR159811: city Ager Pompeianus not found
+EDR159825: city Ager Pompeianus not found
+EDR159826: city Ager Pompeianus not found
+EDR159667: Property 27 in Insula VII.2 in Pompeii not found
+EDR160228: Property 11-12 in Insula I.6 in Pompeii not found
+EDR160326: Property d-c in Insula V.2 in Pompeii not found
+EDR156998: Couldn't handle address: Suburbane
+EDR159800: city Ager Pompeianus not found
+EDR159805: city Ager Pompeianus not found
+EDR159815: city Ager Pompeianus not found
+EDR159816: city Ager Pompeianus not found
+EDR159819: city Ager Pompeianus not found
+EDR159821: city Ager Pompeianus not found
+EDR159822: city Ager Pompeianus not found
+EDR159823: city Ager Pompeianus not found
+EDR159824: city Ager Pompeianus not found
+EDR160164: Property 9-10 in Insula VI.15 in Pompeii not found
+EDR160168: Couldn't handle address: amphitheatrum
+EDR160169: Insula II not found in Pompeii, II.7
+EDR160313: Insula II not found in Pompeii, II.7
+EDR160333: Property 4-5 in Insula I.10 in Pompeii not found
+EDR161819: Property 6 in Insula IX.13 in Pompeii not found
+EDR161820: Property 5-6 in Insula IX.13 in Pompeii not found
+EDR161821: Property 5-6 in Insula IX.13 in Pompeii not found
+EDR161822: Property 5-6 in Insula IX.13 in Pompeii not found
+EDR161823: Property 5-6 in Insula IX.13 in Pompeii not found
+EDR161824: Property 5-6 in Insula IX.13 in Pompeii not found
+EDR161825: Property 5-6 in Insula IX.13 in Pompeii not found
+EDR161826: Property 5-6 in Insula IX.13 in Pompeii not found
+EDR161835: Property 5-6 in Insula IX.13 in Pompeii not found
+EDR161836: Property 5-6 in Insula IX.13 in Pompeii not found
+EDR161837: Property 3-4 in Insula IX.13 in Pompeii not found
+EDR156980: Couldn't handle address: Massimo
+EDR156982: Couldn't handle address: Massimo
+EDR154179: Couldn't handle address: Suburbane
+EDR154185: Couldn't handle address: Suburbane
+EDR154186: Couldn't handle address: Suburbane
+EDR159869: Couldn't handle address: Massimo
+EDR159880: Couldn't handle address: Massimo
