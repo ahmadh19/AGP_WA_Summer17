@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.wlu.graffiti.bean.Inscription;
@@ -35,20 +36,20 @@ public class CSVController {
 	private FindspotDao findspotDao;
 	
 
-	@RequestMapping(value = "/graffito/AGP-{edrId}/csv", produces = "text/csv;charset=UTF-8")
+	@RequestMapping(value = "/graffito/AGP-{edrId}/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".csv");
 		return generator.serializeToCSV(graffitiDao.getInscriptionByEDR(edrId));
 	}
 	
-	@RequestMapping(value = "/all/csv", produces = "text/csv;charset=UTF-8")
+	@RequestMapping(value = "/all/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String getInscriptions(HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=all-inscriptions.csv");
 		return generator.serializeToCSV(graffitiDao.getAllInscriptions());
 	}
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/filtered-results/csv", produces = "text/csv;charset=UTF-8")
+	@RequestMapping(value = "/filtered-results/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String getFilteredInscriptions(final HttpServletRequest request, HttpServletResponse response) {
 		HttpSession s = request.getSession();
 		List<Inscription> results = (List<Inscription>) s.getAttribute("filteredList");
@@ -56,7 +57,7 @@ public class CSVController {
 		return generator.serializeToCSV(results);
 	}
 	
-	@RequestMapping(value = "/properties/csv", produces = "text/csv;charset=UTF-8")
+	@RequestMapping(value = "/properties/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String downloadProperties(final HttpServletRequest request, HttpServletResponse response) {
 		
 		final List<Property> properties = findspotDao.getProperties();
@@ -71,7 +72,7 @@ public class CSVController {
 	}
 
 	
-	@RequestMapping(value = "/properties/{city}/csv", produces = "text/csv;charset=UTF-8")
+	@RequestMapping(value = "/properties/{city}/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String downloadPropertiesByCity(@PathVariable String city, final HttpServletRequest request, HttpServletResponse response) {
 		
 		final List<Property> properties = findspotDao.getPropertiesByCity(city);
@@ -85,7 +86,7 @@ public class CSVController {
 		return generator.serializePropertiesToCSV(properties);
 	}
 	
-	@RequestMapping(value = "/properties/{city}/{insula}/csv", produces = "text/csv;charset=UTF-8")
+	@RequestMapping(value = "/properties/{city}/{insula}/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String downloadPropertiesByCityInsula(@PathVariable String city, @PathVariable String insula, final HttpServletRequest request, HttpServletResponse response) {
 		
 		final List<Property> properties = findspotDao.getPropertiesByCityAndInsula(city, insula);
