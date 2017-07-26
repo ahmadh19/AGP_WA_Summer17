@@ -22,10 +22,10 @@ import java.util.Properties;
  */
 public class ExtractEDRLanguageForAGPInfo {
 
-	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_annotations "
-			+ "SET lang_in_english = ? WHERE eagle_id=?";
+	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_info "
+			+ "SET lang_in_english = ? WHERE edr_id=?";
 
-	private final static String SELECT_GRAFFITI = "select language, eagle_id from edr_inscriptions";
+	private final static String SELECT_GRAFFITI = "select language, edr_id from edr_inscriptions";
 
 	private static Connection dbCon;
 

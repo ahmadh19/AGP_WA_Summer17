@@ -22,10 +22,10 @@ import java.util.Properties;
  */
 public class ExtractWritingStyleForAGPInfo {
 
-	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_annotations "
-			+ "SET writing_style_in_english = ? WHERE eagle_id=?";
+	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_info "
+			+ "SET writing_style_in_english = ? WHERE edr_id=?";
 
-	final static String SELECT_GRAFFITI = "select writing_style, eagle_id from eagle_inscriptions";
+	final static String SELECT_GRAFFITI = "select writing_style, edr_id from edr_inscriptions";
 
 	private static Connection dbCon;
 	private static String DB_DRIVER;
