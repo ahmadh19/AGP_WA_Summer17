@@ -13,17 +13,11 @@ Populate Default Data
  - Insert Cities and Insula - InsertCitiesAndInsulae.java - both Pompeii and Herculaneum
  - Insert Properties (includes the property type mappings) - InsertProperties
  - Insert Graffiti - ImportEDRData
+ 	- automatically calls AddEDRLinksToApparatus, ExtractEDRLanguageForAGPInfo, and ExtractWritingStyleForAGP
  - UpdateSummaryTranslationCommentary
  - InsertFiguralInformation
  - xx Insert drawing tags - InsertDrawingTagMappings
  - InsertDescriptionsAndTranslations
-
-Do some translations of data
- - Extract and Translate Language
- - Extract and Translate Writing Style
- - AddEDRLinksToApparatus --> add the links to EDR in the apparatus.
- 
-Update the number of drawings: UpdateNumberOfImages
 
 Update Elastic Search - AddInscriptionsToElasticSearch
  
