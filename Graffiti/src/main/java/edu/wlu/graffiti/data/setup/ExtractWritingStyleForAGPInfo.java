@@ -56,7 +56,7 @@ public class ExtractWritingStyleForAGPInfo {
 				String edr_id = rs.getString("edr_id");
 				String translatedWritingStyle = writingStyle;
 
-				System.out.println(edr_id + ": " + writingStyle);
+				//System.out.println(edr_id + ": " + writingStyle);
 
 				// Writing Style is either
 				// "litt. scariph" which should be translated to

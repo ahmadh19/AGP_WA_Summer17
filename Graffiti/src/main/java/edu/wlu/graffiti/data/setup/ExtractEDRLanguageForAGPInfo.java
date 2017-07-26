@@ -58,7 +58,7 @@ public class ExtractEDRLanguageForAGPInfo {
 				String edr_id = rs.getString("edr_id");
 				String translatedLanguage = language;
 
-				System.out.println(edr_id + ": " + language);
+				//System.out.println(edr_id + ": " + language);
 
 				if (language.equals("graeca")) {
 					translatedLanguage = "Greek";
