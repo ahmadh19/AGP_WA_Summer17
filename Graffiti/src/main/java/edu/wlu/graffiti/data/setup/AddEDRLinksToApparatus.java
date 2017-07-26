@@ -11,6 +11,8 @@ import java.util.Properties;
  * This class looks at the apparatus field and adds links to EDR for entries, as
  * appropriate.
  * 
+ * Can be called as stand-alone script or from other classes.
+ * 
  * @author Sara Sprenkle
  * 
  */
@@ -23,42 +25,43 @@ public class AddEDRLinksToApparatus {
 
 	private static final String URL_BASE = "http://ancientgraffiti.org/Graffiti/graffito/AGP-";
 
-	private static Connection newDBCon;
+	private static Connection dbCon;
 
 	private static PreparedStatement updateApparatusStmt;
 
 	private static String DB_DRIVER;
-
 	private static String DB_URL;
-
 	private static String DB_USER;
-
 	private static String DB_PASSWORD;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		addEDRLinksToApparatus();
+	}
+
+	public static void addEDRLinksToApparatus() {
 		init();
 
 		try {
 			// Get list of edrIDs
-			PreparedStatement extractData = newDBCon.prepareStatement(SELECT_GRAFFITI);
+			PreparedStatement extractData = dbCon.prepareStatement(SELECT_GRAFFITI);
 			ResultSet rs = extractData.executeQuery();
 
 			// Update apparatus for each entry where EDR entries are in the
 			// apparatus.
 			while (rs.next()) {
-				String id = rs.getString("edr_id");
+				String edrid = rs.getString("edr_id");
 				String apparatus = rs.getString("apparatus");
-				System.out.println(id);
+				System.out.println("Updating apparatus for " + edrid);
 				String displayApparatus = addLinks(apparatus);
-				updateDisplayApparatus(id, displayApparatus);
+				updateDisplayApparatus(edrid, displayApparatus);
 			}
 			rs.close();
 			extractData.close();
 			updateApparatusStmt.close();
-			newDBCon.close();
+			dbCon.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
@@ -126,8 +129,8 @@ public class AddEDRLinksToApparatus {
 		}
 
 		try {
-			newDBCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-			updateApparatusStmt = newDBCon.prepareStatement(UPDATE_APPARATUS_TO_DISPLAY);
+			dbCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateApparatusStmt = dbCon.prepareStatement(UPDATE_APPARATUS_TO_DISPLAY);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

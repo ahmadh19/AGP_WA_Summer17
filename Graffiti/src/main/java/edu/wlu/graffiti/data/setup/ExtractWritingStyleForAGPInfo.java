@@ -9,39 +9,45 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
- * This class is meant to extract the writing_style from the EAGLE inscriptions
- * and translate the Italian writing style into English.
+ * This class extracts the writing_style from the EDR inscriptions and translate
+ * the Italian writing style into English for AGP. Can be called as standalone
+ * application or from another script.
+ * Reads database information from the configuration.properties file.
  * 
  * @author sprenkle
  * 
  */
-public class ExtractAndTranslateWritingStyle {
+public class ExtractWritingStyleForAGPInfo {
 
 	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_annotations "
 			+ "SET writing_style_in_english = ? WHERE eagle_id=?";
 
-	final static String newDBURL = "jdbc:postgresql://hopper.cs.wlu.edu/graffiti3";
-
 	final static String SELECT_GRAFFITI = "select writing_style, eagle_id from eagle_inscriptions";
 
-	static Connection newDBCon;
+	private static Connection dbCon;
+	private static String DB_DRIVER;
+	private static String DB_URL;
+	private static String DB_USER;
+	private static String DB_PASSWORD;
 
-	private static PreparedStatement updateAnnotationStatement;
+	private static PreparedStatement updateWritingStyleStmt;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		updateWritingStyle();
+	}
 
+	public static void updateWritingStyle() {
 		init();
 
 		try {
 
-			// Extract the data from original DB and insert it into the new DB
-			PreparedStatement extractData = newDBCon
-					.prepareStatement(SELECT_GRAFFITI);
+			PreparedStatement extractData = dbCon.prepareStatement(SELECT_GRAFFITI);
 
 			ResultSet rs = extractData.executeQuery();
 
@@ -50,7 +56,7 @@ public class ExtractAndTranslateWritingStyle {
 				String eagle_id = rs.getString("eagle_id");
 				String translatedWritingStyle = writingStyle;
 
-				System.out.println(eagle_id + ": " + writingStyle );
+				System.out.println(eagle_id + ": " + writingStyle);
 
 				// Writing Style is either
 				// "litt. scariph" which should be translated to
@@ -58,31 +64,23 @@ public class ExtractAndTranslateWritingStyle {
 				// OR "cetera/carbone" which should be translated to "charcoal"
 
 				// make this into a switch statement?
-				if( writingStyle.startsWith( "litt. scariph") ){
+				if (writingStyle.startsWith("litt. scariph")) {
 					translatedWritingStyle = "Graffito/incised";
-				}
-				else if (writingStyle.equals( "cetera/carbone" ) ) {
+				} else if (writingStyle.equals("cetera/carbone")) {
 					translatedWritingStyle = "charcoal";
-				}
-				else if (writingStyle.equals( "carbone" ) ) {
+				} else if (writingStyle.equals("carbone")) {
 					translatedWritingStyle = "charcoal";
-				}
-				else if (writingStyle.startsWith( "cetera, carbone" ) ) {
+				} else if (writingStyle.startsWith("cetera, carbone")) {
 					translatedWritingStyle = "charcoal";
-				}
-				else if (writingStyle.startsWith( "cetera carbone" ) ) {
+				} else if (writingStyle.startsWith("cetera carbone")) {
 					translatedWritingStyle = "charcoal";
-				}
-				else if (writingStyle.startsWith( "cetera; lapide rubro" ) ) {
+				} else if (writingStyle.startsWith("cetera; lapide rubro")) {
 					translatedWritingStyle = "other; 'red rock'";
-				}
-				else if (writingStyle.startsWith( "cetera lapide rubro" ) ) {
+				} else if (writingStyle.startsWith("cetera lapide rubro")) {
 					translatedWritingStyle = "other; 'red rock'";
-				}
-				else if (writingStyle.startsWith( "cetera; rubrica" ) ) {
+				} else if (writingStyle.startsWith("cetera; rubrica")) {
 					translatedWritingStyle = "other; 'red substance'";
-				}
-				else if (writingStyle.startsWith( "scalpro" ) ) {
+				} else if (writingStyle.startsWith("scalpro")) {
 					translatedWritingStyle = "chisel";
 				} else {
 					translatedWritingStyle = writingStyle;
@@ -94,13 +92,12 @@ public class ExtractAndTranslateWritingStyle {
 
 			rs.close();
 			extractData.close();
-			updateAnnotationStatement.close();
-			newDBCon.close();
+			updateWritingStyleStmt.close();
+			dbCon.close();
 
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -112,31 +109,38 @@ public class ExtractAndTranslateWritingStyle {
 	 */
 	private static void updateAnnotation(String eagle_id, String translatedStyle) {
 		try {
-			updateAnnotationStatement.setString(1, translatedStyle);
-			updateAnnotationStatement.setString(2, eagle_id);
-			updateAnnotationStatement.executeUpdate();
+			updateWritingStyleStmt.setString(1, translatedStyle);
+			updateWritingStyleStmt.setString(2, eagle_id);
+			updateWritingStyleStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private static void init() {
+		getConfigurationProperties();
+
 		try {
-			Class.forName("org.postgresql.Driver");
+			Class.forName(DB_DRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		try {
-			newDBCon = DriverManager.getConnection(newDBURL, "web", "");
-
-			updateAnnotationStatement = newDBCon
-					.prepareStatement(UPDATE_ANNOTATION_STMT);
-
+			dbCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateWritingStyleStmt = dbCon.prepareStatement(UPDATE_ANNOTATION_STMT);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
 
+	public static void getConfigurationProperties() {
+		Properties prop = Utils.getConfigurationProperties();
+
+		DB_DRIVER = prop.getProperty("db.driverClassName");
+		DB_URL = prop.getProperty("db.url");
+		DB_USER = prop.getProperty("db.user");
+		DB_PASSWORD = prop.getProperty("db.password");
 	}
 
 }
