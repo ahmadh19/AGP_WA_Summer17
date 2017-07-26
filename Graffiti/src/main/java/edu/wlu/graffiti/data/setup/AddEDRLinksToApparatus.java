@@ -54,7 +54,7 @@ public class AddEDRLinksToApparatus {
 			while (rs.next()) {
 				String edrid = rs.getString("edr_id");
 				String apparatus = rs.getString("apparatus");
-				System.out.println("Updating apparatus for " + edrid);
+				//System.out.println("Updating apparatus for " + edrid);
 				String displayApparatus = addLinks(apparatus);
 				updateDisplayApparatus(edrid, displayApparatus);
 			}
@@ -86,7 +86,7 @@ public class AddEDRLinksToApparatus {
 						edrid = component.substring(0, 9);
 					} else {
 						edrid = component;
-						System.out.println("This one is too short: " + component);
+						System.out.println("This edrID is too short to update apparatus: " + component);
 					}
 					displayApparatus.append(" <a href=\"");
 					displayApparatus.append(URL_BASE);
