@@ -15,7 +15,7 @@ import org.apache.commons.csv.CSVRecord;
 
 public class UpdateSummaryTranslationCommentary {
 
-	private static final String CSV_LOCATION = "data/EDRData/summaryTranslationCommentary.csv";
+	private static final String CSV_LOCATION = "data/AGPData/summaryTranslationCommentary.csv";
 
 	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_info "
 			+ "SET summary = ?, content_translation = ?, comment = ?, langner = ? WHERE edr_id = ? ";
@@ -70,7 +70,7 @@ public class UpdateSummaryTranslationCommentary {
 				String summary = Utils.cleanData(record.get(6));
 				String translation = Utils.cleanData(record.get(7));
 				String commentary = Utils.cleanData(record.get(8));
-				System.out.println(edrID + ":" + summary);
+				//System.out.println(edrID + ":" + summary);
 
 				pstmt.setString(1, summary);
 				pstmt.setString(2, translation);
@@ -78,7 +78,8 @@ public class UpdateSummaryTranslationCommentary {
 				pstmt.setString(4, langner);
 				pstmt.setString(5, edrID);
 				try {
-					System.out.println(pstmt.executeUpdate());
+					//System.out.println(pstmt.executeUpdate());
+					pstmt.executeUpdate();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

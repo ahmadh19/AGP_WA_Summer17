@@ -27,15 +27,17 @@ import edu.wlu.graffiti.bean.Insula;
 import edu.wlu.graffiti.bean.Property;
 
 /**
- * Import the data from EDR
- * 
- * (Next: handle updates)
+ * Import the data from EDR.
+ * Update the AGP Information table based on the EDR data.
  * 
  * @author Sara Sprenkle
- *
  */
 public class ImportEDRData {
 
+	/* Location of data in the EDR CSV file. */
+	private static final int LOCATION_OF_WRITING_STYLE = 9;
+	private static final int LOCATION_OF_LANGUAGE = 10;
+	
 	private static String DB_DRIVER;
 	private static String DB_URL;
 	private static String DB_USER;
@@ -62,15 +64,8 @@ public class ImportEDRData {
 			+ "epidoc = ? WHERE edr_id = ?";
 
 	private static final String UPDATE_BIB = "UPDATE edr_inscriptions SET " + "bibliography = ? WHERE edr_id = ?";
-
 	private static final String UPDATE_APPARATUS = "UPDATE edr_inscriptions SET " + "apparatus = ? WHERE edr_id = ?";
-
-	// private static final String UPDATE_DESCRIPTION = "UPDATE
-	// agp_inscription_annotations SET "
-	// + "description = ? WHERE edr_id = ?";
-
 	private static final String SELECT_INSULA_AND_PROPERTIES = "select *, insula.id as insula_id, properties.id as property_id from insula, properties where insula_id = insula.id";
-
 	private static final String INSERT_PHOTO_STATEMENT = "INSERT INTO photos (edr_id, photo_id) " + "VALUES (?, ?)";
 
 	private static Connection dbCon;
@@ -103,6 +98,10 @@ public class ImportEDRData {
 			updateApparatus("data/EDRData/apparatus.csv");
 			updatePhotoInformation("data/EDRData/foto.csv");
 			dbCon.close();
+			AddEDRLinksToApparatus.addEDRLinksToApparatus();
+			ExtractEDRLanguageForAGPInfo.updateAGPLanguage();
+			ExtractWritingStyleForAGPInfo.updateWritingStyle();
+			
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
@@ -352,8 +351,8 @@ public class ImportEDRData {
 
 				String measurements = createMeasurementField(alt, lat, littAlt);
 
-				String writingStyle = Utils.cleanData(record.get(10));
-				String language = Utils.cleanData(record.get(11));
+				String writingStyle = Utils.cleanData(record.get(LOCATION_OF_WRITING_STYLE));
+				String language = Utils.cleanData(record.get(LOCATION_OF_LANGUAGE));
 
 				selPStmt.setString(1, eagleID);
 
