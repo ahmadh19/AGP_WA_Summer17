@@ -429,21 +429,3 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
