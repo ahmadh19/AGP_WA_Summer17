@@ -51,7 +51,7 @@ public class AddEDRLinksToApparatus {
 			while (rs.next()) {
 				String id = rs.getString("edr_id");
 				String apparatus = rs.getString("apparatus");
-
+				System.out.println(id);
 				String displayApparatus = addLinks(apparatus);
 				updateDisplayApparatus(id, displayApparatus);
 			}
@@ -83,7 +83,7 @@ public class AddEDRLinksToApparatus {
 						edrid = component.substring(0, 9);
 					} else {
 						edrid = component;
-						System.out.println(component);
+						System.out.println("This one is too short: " + component);
 					}
 					displayApparatus.append(" <a href=\"");
 					displayApparatus.append(URL_BASE);

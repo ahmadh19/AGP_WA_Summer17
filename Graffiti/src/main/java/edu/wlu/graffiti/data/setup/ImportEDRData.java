@@ -29,10 +29,7 @@ import edu.wlu.graffiti.bean.Property;
 /**
  * Import the data from EDR
  * 
- * (Next: handle updates)
- * 
  * @author Sara Sprenkle
- *
  */
 public class ImportEDRData {
 
