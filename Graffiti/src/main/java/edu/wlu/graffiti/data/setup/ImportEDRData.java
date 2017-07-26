@@ -35,8 +35,8 @@ import edu.wlu.graffiti.bean.Property;
 public class ImportEDRData {
 
 	/* Location of data in the EDR CSV file. */
-	private static final int LOCATION_OF_WRITING_STYLE = 10;
-	private static final int LOCATION_OF_LANGUAGE = 11;
+	private static final int LOCATION_OF_WRITING_STYLE = 9;
+	private static final int LOCATION_OF_LANGUAGE = 10;
 	
 	private static String DB_DRIVER;
 	private static String DB_URL;
