@@ -472,7 +472,7 @@ input[name*="image"] {
 		var modal = document.getElementById("epidocModal");
 		
 		function markAsPersonName(text) {
-			var epidoc = "<personName>" + text + "</personName>";
+			var epidoc = "<persName>" + text + "</persName>";
 			if(document.getElementById("epidocContent").value != "") {
 				document.getElementById("epidocContent").value = document.getElementById("epidocContent").value.replace(text, epidoc);
 				modal.style.display = "none";

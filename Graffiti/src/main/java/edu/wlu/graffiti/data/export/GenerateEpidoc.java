@@ -317,7 +317,7 @@ public class GenerateEpidoc {
 		Element ab = new Element("ab");
 		Element lb = new Element("lb").setAttribute("n", "1"); // TODO:why does this not show up?
 		ab.addContent(lb);
-		ab.setText(i.getContent());
+		ab.setText(i.getAgp().getEpidoc());
 		div1.addContent(ab);
 		body.addContent(div1);
 		
