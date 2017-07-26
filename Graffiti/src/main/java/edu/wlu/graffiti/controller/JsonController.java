@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.wlu.graffiti.bean.Inscription;
@@ -26,20 +27,20 @@ public class JsonController {
 	private FindspotDao findspotDao;
 	
 
-	@RequestMapping(value = "/graffito/AGP-{edrId}/json", produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/graffito/AGP-{edrId}/json", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public Inscription getInscription(@PathVariable String edrId, HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".json");
 		return graffitiDao.getInscriptionByEDR(edrId);
 	}
 	
-	@RequestMapping(value = "/all/json", produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/all/json", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public List<Inscription> getInscriptions(HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=all.json");
 		return graffitiDao.getAllInscriptions();
 	}
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/filtered-results/json", produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/filtered-results/json", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public List<Inscription> getFilteredInscriptions(final HttpServletRequest request, HttpServletResponse response) {
 		HttpSession s = request.getSession();
 		response.addHeader("Content-Disposition", "attachment; filename=filtered-results.json");
@@ -48,12 +49,12 @@ public class JsonController {
 		return results;
 	}
 	
-	@RequestMapping(value = "/property/{city}/{insula}/{property}/json", produces = "application/json")
+	@RequestMapping(value = "/property/{city}/{insula}/{property}/json", method = RequestMethod.GET, produces = "application/json")
 	public Property getProperty(@PathVariable String city, @PathVariable String insula, @PathVariable String property, HttpServletResponse response) {
 		return findspotDao.getPropertyByCityAndInsulaAndProperty(city, insula, property);
 	}
 	
-	@RequestMapping(value = "/properties/json", produces = "application/json")
+	@RequestMapping(value = "/properties/json", method = RequestMethod.GET, produces = "application/json")
 	public List<Property> getPropertyList(HttpServletResponse response) {
 		final List<Property> properties = findspotDao.getProperties();
 
@@ -66,7 +67,7 @@ public class JsonController {
 		return properties;
 	}
 	
-	@RequestMapping(value = "/properties/{city}/json", produces = "application/json")
+	@RequestMapping(value = "/properties/{city}/json", method = RequestMethod.GET, produces = "application/json")
 	public List<Property> getPropertyListByCity(@PathVariable String city, HttpServletResponse response) {
 		final List<Property> properties = findspotDao.getPropertiesByCity(city);
 
@@ -79,7 +80,7 @@ public class JsonController {
 		return properties;
 	}
 	
-	@RequestMapping(value = "/properties/{city}/{insula}/json", produces = "application/json")
+	@RequestMapping(value = "/properties/{city}/{insula}/json", method = RequestMethod.GET, produces = "application/json")
 	public List<Property> getPropertyListByCityInsula(@PathVariable String city, @PathVariable String insula, HttpServletResponse response) {
 		final List<Property> properties = findspotDao.getPropertiesByCityAndInsula(city, insula);
 
