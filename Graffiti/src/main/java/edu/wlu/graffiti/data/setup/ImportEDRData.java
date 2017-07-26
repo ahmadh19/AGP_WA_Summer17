@@ -34,6 +34,10 @@ import edu.wlu.graffiti.bean.Property;
  */
 public class ImportEDRData {
 
+	/* Location of data in the EDR CSV file. */
+	private static final int LOCATION_OF_WRITING_STYLE = 10;
+	private static final int LOCATION_OF_LANGUAGE = 11;
+	
 	private static String DB_DRIVER;
 	private static String DB_URL;
 	private static String DB_USER;
@@ -347,8 +351,8 @@ public class ImportEDRData {
 
 				String measurements = createMeasurementField(alt, lat, littAlt);
 
-				String writingStyle = Utils.cleanData(record.get(10));
-				String language = Utils.cleanData(record.get(11));
+				String writingStyle = Utils.cleanData(record.get(LOCATION_OF_WRITING_STYLE));
+				String language = Utils.cleanData(record.get(LOCATION_OF_LANGUAGE));
 
 				selPStmt.setString(1, eagleID);
 
