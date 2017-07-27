@@ -136,6 +136,15 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		for(i=0;i<oneString.length;i++){
 			character=oneString[i];
 			if(['0','1','2','3','4','5','6','7','8','9'].indexOf(character)>=0){
+				
+				if(oneString.length>i+1){
+					characterTwo=oneString[i+1];
+					if(['0','1','2','3','4','5','6','7','8','9'].indexOf(character)>=0){
+						character+=characterTwo;
+					}
+				}
+				
+				
 				return character;
 			}
 		}
