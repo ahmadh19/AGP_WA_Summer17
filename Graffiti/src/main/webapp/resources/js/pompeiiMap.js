@@ -41,6 +41,7 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		center: [40.750, 14.4884],
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
+		maxZoom:20,
 		maxBounds: bounds,
 		//Here is the +/- button for zoom
 	})
@@ -97,10 +98,10 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 				currentInsulaNumber=getFirstDigitInString(layer.feature.properties.PRIMARY_DO);
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
 					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
-					if(currentInsulaNumber==12){
-						console.log(graffitiInLayer);
-						console.log(layer.feature.properties.PRIMARY_DO);
-					}
+					//if(currentInsulaNumber==12){
+						//console.log(graffitiInLayer);
+						//console.log(layer.feature.properties.PRIMARY_DO);
+					//}
 				}
 				else{
 					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
@@ -150,9 +151,9 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 						//console.log("Character 1: "+character);
 						//console.log("Character 2: "+characterTwo);
 						character+=characterTwo;
-						if(oneString=="VII.12.18"){
-							console.log("132 prop through");
-						}
+						//if(oneString=="VII.12.18"){
+							//console.log("132 prop through");
+						//}
 						//console.log("Character 1: "+character);
 						
 						
