@@ -421,6 +421,7 @@ public class GraffitiController {
 		}
 	}
 	
+	// TODO: add annotation produces = "text/html" for the api docs?
 	@ApiOperation(value="Searches for inscriptions and returns the results. The base URI lists "
 			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
 			+ "results as the user wishes.",
@@ -680,7 +681,7 @@ public class GraffitiController {
 		this.graffitiDao = graffitiDao;
 	}
 
-	@ApiOperation(value="Filters the inscriptions and returns the results without any formatting. The base URI lists "
+	@ApiOperation(value="Filters the inscriptions and returns the results without any styling. The base URI lists "
 			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
 			+ "results as the user wishes.",
 			 notes="A detailed overview of possible parameters is as follows: <br/> "

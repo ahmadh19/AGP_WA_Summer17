@@ -9,8 +9,8 @@
  */
 
 var currentParams = new Array(); // the ending array of parameters
-requestUrl = "filter"; // request url for filtering
-reportUrl = "admin/report"; // report url for reports
+var requestUrl = "filter"; // request url for filtering
+var reportUrl = "admin/report"; // report url for reports
 var filters = new Array(); // an array of the filters applied so far on the search
 
 /**

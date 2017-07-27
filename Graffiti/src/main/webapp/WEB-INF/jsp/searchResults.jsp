@@ -172,17 +172,6 @@ function checkboxesAfterBack() {
 	}
 }
 
-
-function updatePage(){
-	checkboxesAfterBack();
-	
-	<c:if test="${not empty sessionScope.returnFromEDR}">
-	document.getElementById("${sessionScope.returnFromEDR}").scrollIntoView();
-	<c:set var="returnFromEDR" value="" scope="session" />
-	</c:if>
-	
-}
-
 </script>	
 
 <style>
@@ -226,7 +215,7 @@ ul#searchTerms li {
 	
 </head>
 
-<body onload="updatePage();">
+<body>
 <%@include file="header.jsp"%>
 
 <div id="contain" class="container" style="margin-bottom: 50px;">
@@ -258,7 +247,7 @@ ul#searchTerms li {
 
 	
 <script type="text/javascript">
-	generateHerculaneum("Herculaneum");
+	//generateHerculaneum("Herculaneum");
 </script>
 
 <script type="text/javascript"
