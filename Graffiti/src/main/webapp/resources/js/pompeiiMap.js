@@ -10,7 +10,7 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	var fillColor;
 	var southWest = L.latLng(40.746, 14.48),
 	
-	northEast = L.latLng(40.754, 14.498),
+	northEast = L.latLng(40.754, 14.494),
 	bounds = L.latLngBounds(southWest, northEast);
 	
 	var currentZoomLevel;
@@ -23,6 +23,7 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		currentZoomLevel=16;
 	}
 	else{
+		
 		currentZoomLevel=15;
 	}
 	var zoomLevelForIndividualProperty=18;
