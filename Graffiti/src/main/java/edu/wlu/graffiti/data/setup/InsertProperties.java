@@ -84,6 +84,11 @@ public class InsertProperties {
 				String propertyName = "";
 				String italianPropName = "";
 
+				if (modernCity.isEmpty()) {
+					System.err.println("Likely blank line, continuing ...");
+					continue;
+				}
+
 				if (record.size() > 2) {
 					propertyNumber = record.get(2).trim();
 				}
@@ -96,8 +101,13 @@ public class InsertProperties {
 				if (record.size() > 5) {
 					italianPropName = record.get(5).trim();
 				}
-				System.out.println("Looking up " + modernCity + " " + insula);
 				int insula_id = lookupInsulaId(modernCity, insula);
+
+				if (insula_id == 0) {
+					System.err.println("Failed when looking up insula: " + modernCity + " " + insula + "\n" + record);
+					System.err.println("Skipping...");
+					continue;
+				}
 
 				pstmt.setInt(1, insula_id);
 				pstmt.setString(2, propertyNumber);
@@ -108,29 +118,30 @@ public class InsertProperties {
 				try {
 					pstmt.executeUpdate();
 				} catch (SQLException e) {
+					System.err.println("Error for propertyName: " + propertyName + " propertyNum: " + propertyNumber
+							+ " insula_id: " + insula_id + " italian property name " + italianPropName
+							+ " additional properties " + additionalProperties);
 					e.printStackTrace();
-					System.out.println("For propertyName: " + propertyName + " propertyNum: " + propertyNumber
-							+ " insula_id: " + insula_id);
 				}
 
 				int propID = locatePropertyId(insula_id, propertyNumber);
 
-				if( propID == 0 ) {
-					System.out.println("Property not in DB: " + insula_id + " " + propertyNumber + " " + propertyName);
+				if (propID == 0) {
+					System.err.println("Property not in DB: " + insula_id + " " + propertyNumber + " " + propertyName);
+					System.err.println("Skipping...");
 					continue;
 				}
-				
-				
+
 				// handle property tags
 				if (record.size() > 6) {
 					String[] tagArray = record.get(6).trim().split(",");
 					for (String t : tagArray) {
 						t = t.trim();
 						for (PropertyType propType : propertyTypes) {
-							// System.out.println("propType: " +
-							// propType.getName());
 							if (propType.includes(t)) {
-								System.out.println("Match! " + propType.getName() + " for propID " + propID);
+								// System.out.println("Match! " +
+								// propType.getName() + " for propID " +
+								// propID);
 								insertPTStmt.setInt(1, propID);
 								insertPTStmt.setInt(2, propType.getId());
 								// Wrapped in try to handle the "duplicate key
@@ -149,15 +160,14 @@ public class InsertProperties {
 
 				// handle adding OSM ids
 				if (record.size() > 7) {
-					
-					/* We don't seem to have this in the DB yet.
-					String osmId = record.get(7).trim();
-					if (!osmId.isEmpty() && !NumberUtils.isCreatable(osmId)) {
-						osmStmt.setInt(2, propID);
-						osmStmt.setString(1, osmId);
-						osmStmt.executeUpdate();
-					}
-					*/
+
+					/*
+					 * We don't seem to have the OSM id in the spreadsheet yet.
+					 * String osmId = record.get(7).trim(); if (!osmId.isEmpty()
+					 * && !NumberUtils.isCreatable(osmId)) { osmStmt.setInt(2,
+					 * propID); osmStmt.setString(1, osmId);
+					 * osmStmt.executeUpdate(); }
+					 */
 
 					if (record.size() > 8) {
 						String osmWayId = record.get(8).trim();
