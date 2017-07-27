@@ -20,6 +20,8 @@ import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.data.export.GenerateEpidoc;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 
@@ -27,6 +29,7 @@ import edu.wlu.graffiti.data.export.GenerateEpidoc;
  *
  */
 @RestController
+@Api(value="EpiDoc", description="Operations pertainings to EpiDoc exports.")
 public class EpidocController {
 	
 	private GenerateEpidoc generator = new GenerateEpidoc();
@@ -37,12 +40,14 @@ public class EpidocController {
 	@Resource
 	private FindspotDao findspotDao;
 
+	@ApiOperation(value="Download the individual graffito as an EpiDoc file.")
 	@RequestMapping(value = "/graffito/AGP-{edrId}/xml", method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
 	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".xml");
 		return generator.serializeToXML(graffitiDao.getInscriptionByEDR(edrId));
 	}
 	
+	@ApiOperation(value="Download all graffiti as an EpiDoc file.")
 	@RequestMapping(value = "/all/xml", method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
 	public String getInscriptions(HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=all.xml");
@@ -50,6 +55,7 @@ public class EpidocController {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@ApiOperation(value="Download the filtered graffiti as an EpiDoc file.")
 	@RequestMapping(value = "/filtered-results/xml", method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
 	public String getFilteredInscriptions(final HttpServletRequest request, HttpServletResponse response) {
 		HttpSession s = request.getSession();

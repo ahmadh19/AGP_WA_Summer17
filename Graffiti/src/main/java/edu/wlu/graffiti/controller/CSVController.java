@@ -18,6 +18,8 @@ import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.data.export.GenerateCSV;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 
@@ -25,6 +27,7 @@ import edu.wlu.graffiti.data.export.GenerateCSV;
  *
  */
 @RestController
+@Api(value="CSV", description="Operations pertainings to CSV data exports.")
 public class CSVController {
 	
 	private GenerateCSV generator = new GenerateCSV();
@@ -35,13 +38,14 @@ public class CSVController {
 	@Resource
 	private FindspotDao findspotDao;
 	
-
+	@ApiOperation(value="Download the individual graffito as a CSV file.")
 	@RequestMapping(value = "/graffito/AGP-{edrId}/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".csv");
 		return generator.serializeToCSV(graffitiDao.getInscriptionByEDR(edrId));
 	}
 	
+	@ApiOperation(value="Download all graffiti as a CSV file.")
 	@RequestMapping(value = "/all/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String getInscriptions(HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=all-inscriptions.csv");
@@ -49,6 +53,7 @@ public class CSVController {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@ApiOperation(value="Download the filtered graffiti as a CSV file.")
 	@RequestMapping(value = "/filtered-results/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String getFilteredInscriptions(final HttpServletRequest request, HttpServletResponse response) {
 		HttpSession s = request.getSession();
@@ -57,6 +62,7 @@ public class CSVController {
 		return generator.serializeToCSV(results);
 	}
 	
+	@ApiOperation(value="Download all properties as a CSV file.")
 	@RequestMapping(value = "/properties/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String downloadProperties(final HttpServletRequest request, HttpServletResponse response) {
 		
@@ -71,7 +77,7 @@ public class CSVController {
 		return generator.serializePropertiesToCSV(properties);
 	}
 
-	
+	@ApiOperation(value="Download all properties in the city as a CSV file.")
 	@RequestMapping(value = "/properties/{city}/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String downloadPropertiesByCity(@PathVariable String city, final HttpServletRequest request, HttpServletResponse response) {
 		
@@ -86,6 +92,7 @@ public class CSVController {
 		return generator.serializePropertiesToCSV(properties);
 	}
 	
+	@ApiOperation(value="Download all properties in the city and insula as a CSV file.")
 	@RequestMapping(value = "/properties/{city}/{insula}/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
 	public String downloadPropertiesByCityInsula(@PathVariable String city, @PathVariable String insula, final HttpServletRequest request, HttpServletResponse response) {
 		

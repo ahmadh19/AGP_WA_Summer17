@@ -19,19 +19,21 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("edu.wlu.graffiti.controller"))
-				.paths(regex("/.*"))
-				.build();
+				.paths(regex(".*csv|.*json|.*xml|/filter.*|/results.*"))
+				.build()
+				.apiInfo(metaData());
 	}
 	
+	@SuppressWarnings("deprecation")
 	private ApiInfo metaData() {
 		ApiInfo apiInfo = new ApiInfo(
-				"Spring Boot REST API",
-				"Spring Boot REST API for Ancient Graffiti Project",
+				"AGP Search API",
+				"REST API for Ancient Graffiti Project",
 				"1.0",
 				"Terms of Service",
-				new Contact("Ancient Graffiti Project", "http://ancientgraffiti.org", "about@ancientgraffiti.org"),
-				"Apache License Version 2.0",
-				"https://www.apache.org/licenses/LICENSE-2.0", null
+				"AGP Dev Team", 
+				"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License",
+				"https://creativecommons.org/licenses/by-nc-sa/4.0/"
 				);
 		return apiInfo;
 	}
