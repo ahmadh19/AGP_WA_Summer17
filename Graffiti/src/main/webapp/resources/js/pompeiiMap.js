@@ -95,7 +95,7 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({color: getFillColor(graffitiInLayer)});
-				currentInsulaNumber=getFirstDigitInString(layer.feature.properties.PRIMARY_DO);
+				currentInsulaNumber=getInsulaGroupFromString(layer.feature.properties.PRIMARY_DO);
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
 					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
 					//if(currentInsulaNumber==12){
@@ -120,7 +120,7 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		//Empty slots are caused by there not yet being a group at those indexes yet them being surrounded by values. 
 		map.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
-				currentInsulaNumber=getFirstDigitInString(layer.feature.properties.PRIMARY_DO);
+				currentInsulaNumber=getInsulaGroupFromString(layer.feature.properties.PRIMARY_DO);
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
 				//For an unknown reason, forEachLayer loops through two times instead of one. 
 				//We compensate by dividing number of graffiti by two(?). 
@@ -134,34 +134,34 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		});
 	}
 	
-	//Gets and returns the first digit 1-9 in a string of characters. Returned in string form. 
+	//Gets and returns the insula group from a String assuming that the string is primary do and ending with the number
 	//Assumes no primary DO over 10(?)
-	function getFirstDigitInString(oneString){
+	function getInsulaGroupFromString(oneString){
 		//Converts string to list of chars so we can take the index
 		//oneString=oneString.split('');
-		var character;
+		
+		//Set equal to # to prevent layers from starting with undefined(stylistic choice)
+		var insulaGroup='#';
 		var i;
+		var possibleCharacter;
+		var characterTwo;
 		for(i=0;i<oneString.length;i++){
-			character=oneString[i];
-			if(['0','1','2','3','4','5','6','7','8','9'].indexOf(character)>=0){
-				
+			possibleCharacter=oneString[i];
+			if(['0','1','2','3','4','5','6','7','8','9','V','I','X'].indexOf(possibleCharacter)>=0){
+				insulaGroup+=possibleCharacter;
 				if(oneString.length>i+1){
 					characterTwo=oneString[i+1];
-					if(['0','1','2','3','4','5','6','7','8','9'].indexOf(character)>=0){
-						//console.log("Character 1: "+character);
-						//console.log("Character 2: "+characterTwo);
-						character+=characterTwo;
-						//if(oneString=="VII.12.18"){
-							//console.log("132 prop through");
-						//}
-						//console.log("Character 1: "+character);
-						
-						
+					if(['0','1','2','3','4','5','6','7','8','9'].indexOf(possibleCharacter)>=0){
+						insulaGroup+=characterTwo;
+
 					}
 				}
 				
 				//console.log("Character: "+character);
-				return character;
+				if(!(['V','I','X'].indexOf(possibleCharacter)>=0)){
+					return insulaGroup;
+					
+				}
 			}
 		}
 		//this should never happen
