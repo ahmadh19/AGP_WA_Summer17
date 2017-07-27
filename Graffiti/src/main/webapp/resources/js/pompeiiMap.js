@@ -97,6 +97,10 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 				currentInsulaNumber=getFirstDigitInString(layer.feature.properties.PRIMARY_DO);
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
 					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
+					if(currentInsulaNumber==12){
+						console.log(graffitiInLayer);
+						console.log(layer.feature.properties.PRIMARY_DO);
+					}
 				}
 				else{
 					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
@@ -113,15 +117,17 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 		//The second loop fills in the colors of the properties to match the total group color. 
 		//Again, only runs if the above conditions are true. 
 		//Empty slots are caused by there not yet being a group at those indexes yet them being surrounded by values. 
-		
 		map.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
 				currentInsulaNumber=getFirstDigitInString(layer.feature.properties.PRIMARY_DO);
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
-				layer.setStyle({fillColor: getFillColor(numberOfGraffitiInGroup)});
+				//For an unknown reason, forEachLayer loops through two times instead of one. 
+				//We compensate by dividing number of graffiti by two(?). 
+				newFillColor=getFillColor(numberOfGraffitiInGroup/2);
+				layer.setStyle({fillColor:newFillColor});
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
-				fillColor=getFillColor(numberOfGraffitiInGroup);
-				borderColor=fillColor;
+				
+				borderColor=newFillColor;
 			}
 			
 		});
@@ -141,11 +147,19 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 				if(oneString.length>i+1){
 					characterTwo=oneString[i+1];
 					if(['0','1','2','3','4','5','6','7','8','9'].indexOf(character)>=0){
+						//console.log("Character 1: "+character);
+						//console.log("Character 2: "+characterTwo);
 						character+=characterTwo;
+						if(oneString=="VII.12.18"){
+							console.log("132 prop through");
+						}
+						//console.log("Character 1: "+character);
+						
+						
 					}
 				}
 				
-				
+				//console.log("Character: "+character);
 				return character;
 			}
 		}
