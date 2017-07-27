@@ -1,10 +1,16 @@
 package edu.wlu.graffiti.data.setup;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
 import javax.annotation.Resource;
+
+import org.geojson.GeoJsonObject;
+import org.geojson.LngLatAlt;
+import org.geojson.Polygon;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -204,10 +210,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								ObjectNode properties = (ObjectNode) graffito.path("properties");
 
 								properties.put("Property_Id", propertyId);
-								/*
-								 * properties.put("Number_Of_Graffiti",
-								 * numberOfGraffitiOnProperty);
-								 */
+								properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 								properties.put("Property_Name", propertyName);
 								properties.put("Additional_Properties", addProperties);
 								properties.put("Italian_Property_Name", italPropName);
@@ -227,25 +230,19 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								// readFirstEsch.close();
 							}
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				}
 			}
-
 			herculaneumTextWriter.close();
-
-		}
-
-		catch (JsonParseException e) {
+		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -261,34 +258,32 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			PrintWriter pompeiiTextWriter = new PrintWriter("src/main/webapp/resources/js/pompeiiPropertyData.txt",
 					"UTF-8");
 
-			// creates necessary objects to parse the original eschebach files
+			// creates necessary objects to parse the original GeoJSON file
 			ObjectMapper pompeiiMapper = new ObjectMapper();
 			JsonFactory pompeiiJsonFactory = new JsonFactory();
 			JsonParser pompeiiJsonParser = pompeiiJsonFactory.createParser(new File(POMPEII_GEOJSON_FILE_LOC));
-			// this accesses the 'features' level of the eschebach document
+			// this accesses the 'features' level of the GeoJSON document
 			JsonNode pompeiiRoot = pompeiiMapper.readTree(pompeiiJsonParser);
 			JsonNode pompeiiFeaturesNode = pompeiiRoot.path("features");
 
 			// iterates over the features node
-			Iterator<JsonNode> pompeiiIterator = pompeiiFeaturesNode.elements();
+			Iterator<JsonNode> featureIterator = pompeiiFeaturesNode.elements();
 
-			while (pompeiiIterator.hasNext()) {
-				JsonNode field = pompeiiIterator.next();
-				JsonNode node = field.findValue("coordinates");
-				System.out.println(node);
+			while (featureIterator.hasNext()) {
+				JsonNode featureNode = featureIterator.next();
 
-				JsonNode primaryDONode = field.findValue("PRIMARY_DO");
+				JsonNode primaryDONode = featureNode.findValue("PRIMARY_DO");
 				if (primaryDONode == null) {
-					System.out.println("No PRIMARY_DO: " + field);
+					System.out.println("No PRIMARY_DO in " + featureNode);
 					continue;
 				}
 
 				String primaryDO = primaryDONode.textValue();
-
 				if (primaryDO == null || !primaryDO.contains(".")) {
 					System.out.println("Problem with primaryDO?: " + primaryDO);
 					continue;
 				}
+
 				String[] parts = primaryDO.split("\\.");
 
 				String pt1 = parts[0];
@@ -298,15 +293,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 				String insulaName = pt1 + "." + pt2;
 				String propertyNum = pt3;
 
-				// Parse the coordinates
-				JsonNode coordinatesNode = field.findValue("coordinates");
-				System.out.println("coordinates: " + coordinatesNode);
-				// System.out.println(coordinatesNode.isArray());
-
-				/*
-				 * int i = 0; while( coordinatesNode.has(i)) {
-				 * System.out.println( i + " " + coordinatesNode.get(i)); i++; }
-				 */
+				// Parse the geometry and get rid of the z coordinates
+				Polygon p = parseGeometryAndRemoveCoordinates(featureNode);
 
 				try {
 					selectPropertyStatement.setString(1, "Pompeii");
@@ -339,7 +327,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 							propertyType = resultset.getString("name");
 						}
 
-						ObjectNode graffito = (ObjectNode) field;
+						ObjectNode graffito = (ObjectNode) featureNode;
 						ObjectNode properties = (ObjectNode) graffito.path("properties");
 						properties.put("Property_Id", propertyId);
 						properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
@@ -367,6 +355,43 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+	}
+
+	private static Polygon parseGeometryAndRemoveCoordinates(JsonNode featureNode) {
+		JsonNode geometryNode = featureNode.findValue("geometry");
+		JsonParser coordParse = geometryNode.traverse();
+		Polygon p = null;
+
+		GeoJsonObject object;
+		try {
+			object = new ObjectMapper().readValue(coordParse, GeoJsonObject.class);
+
+			if (object instanceof Polygon) {
+				p = (Polygon) object;
+				System.out.println(p.getCoordinates());
+				List<List<LngLatAlt>> newCoordList = new ArrayList<List<LngLatAlt>>();
+				for (List<LngLatAlt> coordList : p.getCoordinates()) {
+					List<LngLatAlt> aList = new ArrayList<LngLatAlt>();
+					for (LngLatAlt coord : coordList) {
+						System.out.println(coord);
+						LngLatAlt newCoord = new LngLatAlt(coord.getLongitude(), coord.getLatitude());
+						aList.add(newCoord);
+					}
+					newCoordList.add(aList);
+				}
+				p.setCoordinates(newCoordList);
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return p;
 	}
 
 	/**
