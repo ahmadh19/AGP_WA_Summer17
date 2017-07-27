@@ -1,10 +1,16 @@
 package edu.wlu.graffiti.data.setup;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
 import javax.annotation.Resource;
+
+import org.geojson.GeoJsonObject;
+import org.geojson.LngLatAlt;
+import org.geojson.Polygon;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -40,21 +46,19 @@ import java.sql.SQLException;
  * can be used to efficiently provide data to geoJson for use in the maps of
  * Pompeii and Heracleum.
  * 
- * @author Alicia Martinez
+ * @author Alicia Martinez - v1.0
  * @author Kelly McCaffrey -Created functionality for getting the number of
  *         Graffiti and automating the process of copying to
  *         pompeiiPropertyData.js -Also added all functionality for the
  *         Herculaneum map.
+ * @author Sara Sprenkle - refactored code to make it easier to change later;
  */
 
 public class StorePropertiesFromDatabaseForgeoJsonMap {
 
-	// final static String newDBURL =
-	// "jdbc:postgresql://hopper.cs.wlu.edu/graffiti5";
-
-	// Get the database location using the configuration file instead of
-	// hardcoding:
-	static String newDBURL;
+	private static final String POMPEII_JAVASCRIPT_DATA_FILE_LOC = "src/main/webapp/resources/js/pompeiiPropertyData.js";
+	private static final String POMPEII_INIT_JAVASCRIPT_LOC = "src/main/webapp/resources/js/PropertyDataFirst.txt";
+	private static final String POMPEII_GEOJSON_FILE_LOC = "src/main/resources/geoJSON/eschebach.json";
 
 	final static String SELECT_PROPERTY = FindspotDao.SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT;
 
@@ -63,7 +67,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	final static String GET_PROPERTY_TYPE = "SELECT * FROM properties, propertytypes,"
 			+ " propertytopropertytype WHERE properties.id = propertytopropertytype.property_id"
 			+ " AND propertytypes.id = propertytopropertytype.property_type AND properties.id = ?";
-	static Connection newDBCon;
+	static Connection dbCon;
 
 	private static PreparedStatement selectPropertyStatement;
 	private static PreparedStatement getPropertyTypeStatement;
@@ -71,33 +75,6 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 	@Resource
 	private static GraffitiDao graffitiDaoObject;
-
-	private static void init() {
-
-		// Sets database url using the configuration file.
-		Properties prop = Utils.getConfigurationProperties();
-		newDBURL = prop.getProperty("db.url");
-
-		try {
-			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			newDBCon = DriverManager.getConnection(newDBURL, "web", "");
-
-			selectPropertyStatement = newDBCon.prepareStatement(SELECT_PROPERTY);
-
-			getPropertyTypeStatement = newDBCon.prepareStatement(GET_PROPERTY_TYPE);
-
-			getNumberStatement = newDBCon.prepareStatement(GET_NUMBER);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-	}
 
 	public static void main(String args[]) throws JsonProcessingException, IOException {
 
@@ -111,10 +88,31 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 	}
 
+	private static void init() {
+
+		// Sets database url using the configuration file.
+		Properties prop = Utils.getConfigurationProperties();
+		try {
+			Class.forName(prop.getProperty("db.driverClassName"));
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			dbCon = DriverManager.getConnection(prop.getProperty("db.url"), prop.getProperty("db.user"),
+					prop.getProperty("db.password"));
+			selectPropertyStatement = dbCon.prepareStatement(SELECT_PROPERTY);
+			getPropertyTypeStatement = dbCon.prepareStatement(GET_PROPERTY_TYPE);
+			getNumberStatement = dbCon.prepareStatement(GET_NUMBER);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	/**
 	 * Stores the data for Herculaneum in herculaneumPropertyData.txt
 	 */
-
 	private static void storeHerculaneum() {
 		try {
 			// creates the file we will later write the updated graffito to
@@ -212,10 +210,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								ObjectNode properties = (ObjectNode) graffito.path("properties");
 
 								properties.put("Property_Id", propertyId);
-								/*
-								 * properties.put("Number_Of_Graffiti",
-								 * numberOfGraffitiOnProperty);
-								 */
+								properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 								properties.put("Property_Name", propertyName);
 								properties.put("Additional_Properties", addProperties);
 								properties.put("Italian_Property_Name", italPropName);
@@ -235,29 +230,24 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								// readFirstEsch.close();
 							}
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				}
 			}
-
 			herculaneumTextWriter.close();
-
-		}
-
-		catch (JsonParseException e) {
+		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
-	 * Stores the data for Pompeii in herculaneumPropertyData.txt
+	 * Parses the data file Stores the data for Pompeii in
+	 * herculaneumPropertyData.txt
 	 * 
 	 * @throws IOException
 	 * @throws JsonProcessingException
@@ -265,37 +255,35 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	private static void storePompeii() throws JsonProcessingException, IOException {
 
 		try {
-
 			PrintWriter pompeiiTextWriter = new PrintWriter("src/main/webapp/resources/js/pompeiiPropertyData.txt",
 					"UTF-8");
 
-			// creates necessary objects to parse the original eschebach files
+			// creates necessary objects to parse the original GeoJSON file
 			ObjectMapper pompeiiMapper = new ObjectMapper();
 			JsonFactory pompeiiJsonFactory = new JsonFactory();
-			JsonParser pompeiiJsonParser = pompeiiJsonFactory
-					.createParser(new File("src/main/resources/geoJSON/eschebach.json"));
-			// this accesses the 'features' level of the eschebach document
+			JsonParser pompeiiJsonParser = pompeiiJsonFactory.createParser(new File(POMPEII_GEOJSON_FILE_LOC));
+			// this accesses the 'features' level of the GeoJSON document
 			JsonNode pompeiiRoot = pompeiiMapper.readTree(pompeiiJsonParser);
 			JsonNode pompeiiFeaturesNode = pompeiiRoot.path("features");
 
 			// iterates over the features node
-			Iterator<JsonNode> pompeiiIterator = pompeiiFeaturesNode.elements();
+			Iterator<JsonNode> featureIterator = pompeiiFeaturesNode.elements();
 
-			while (pompeiiIterator.hasNext()) {
-				JsonNode field = pompeiiIterator.next();
-				JsonNode node = field.findValue("coordinates");
-				System.out.println(node);
+			while (featureIterator.hasNext()) {
+				JsonNode featureNode = featureIterator.next();
 
-				JsonNode primaryDONode = field.findValue("PRIMARY_DO");
-				if(primaryDONode == null ) {
-					System.out.println("No PRIMARY_DO: " + field);
+				JsonNode primaryDONode = featureNode.findValue("PRIMARY_DO");
+				if (primaryDONode == null) {
+					System.out.println("No PRIMARY_DO in " + featureNode);
 					continue;
 				}
+
 				String primaryDO = primaryDONode.textValue();
-
-				if (!primaryDO.contains(".")) {
+				if (primaryDO == null || !primaryDO.contains(".")) {
+					System.out.println("Problem with primaryDO?: " + primaryDO);
 					continue;
 				}
+
 				String[] parts = primaryDO.split("\\.");
 
 				String pt1 = parts[0];
@@ -304,25 +292,10 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 				String insulaName = pt1 + "." + pt2;
 				String propertyNum = pt3;
-				
-				// Parse the coordinates
-				JsonNode coordinatesNode = field.findValue("coordinates");
-				System.out.println("coordinates: " + coordinatesNode);
-				System.out.println(coordinatesNode.isArray());
-				
-				int i = 0;
-				while( coordinatesNode.has(i)) {
-					System.out.println( i + " " + coordinatesNode.get(i));
-					i++;
-				}
-				
-				Iterator coordinates = coordinatesNode.elements();
-				
-				while(coordinates.hasNext()) {
-					Object o = coordinates.next();
-					System.out.println("nextElem: " + o);
-				}
-				
+
+				// Parse the geometry and get rid of the z coordinates
+				Polygon p = parseGeometryAndRemoveCoordinates(featureNode);
+
 				try {
 					selectPropertyStatement.setString(1, "Pompeii");
 					selectPropertyStatement.setString(2, insulaName);
@@ -354,14 +327,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 							propertyType = resultset.getString("name");
 						}
 
-						ObjectNode graffito = (ObjectNode) field;
+						ObjectNode graffito = (ObjectNode) featureNode;
 						ObjectNode properties = (ObjectNode) graffito.path("properties");
-						// ObjectNode geometry =
-						// (ObjectNode)graffito.path("geometry");
-						// geometry=removeZCoordinates(geometry);
-
-						// System.out.println("Here is geometry object after
-						// function: "+geometry);
 						properties.put("Property_Id", propertyId);
 						properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 						properties.put("Property_Name", propertyName);
@@ -375,28 +342,56 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						JsonNode updatedProps = (JsonNode) properties;
 						graffito.set("properties", updatedProps);
 
-						// write the newly updated graffito to text file
-						// System.out.println(graffito);
-
-						// jsWriter.println(graffito+",");
 						pompeiiTextWriter.println(graffito + ",");
-						// readFirstEsch.close();
 					}
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 
 			pompeiiTextWriter.close();
 		} catch (JsonParseException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
 
+	private static Polygon parseGeometryAndRemoveCoordinates(JsonNode featureNode) {
+		JsonNode geometryNode = featureNode.findValue("geometry");
+		JsonParser coordParse = geometryNode.traverse();
+		Polygon p = null;
+
+		GeoJsonObject object;
+		try {
+			object = new ObjectMapper().readValue(coordParse, GeoJsonObject.class);
+
+			if (object instanceof Polygon) {
+				p = (Polygon) object;
+				System.out.println(p.getCoordinates());
+				List<List<LngLatAlt>> newCoordList = new ArrayList<List<LngLatAlt>>();
+				for (List<LngLatAlt> coordList : p.getCoordinates()) {
+					List<LngLatAlt> aList = new ArrayList<LngLatAlt>();
+					for (LngLatAlt coord : coordList) {
+						System.out.println(coord);
+						LngLatAlt newCoord = new LngLatAlt(coord.getLongitude(), coord.getLatitude());
+						aList.add(newCoord);
+					}
+					newCoordList.add(aList);
+				}
+				p.setCoordinates(newCoordList);
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return p;
 	}
 
 	/**
@@ -407,7 +402,6 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	 * @param geometryObject
 	 * @return
 	 */
-
 	private static ObjectNode removeZCoordinates(ObjectNode geometryObject) {
 		System.out.println("Geometry object received by function: " + geometryObject);
 		ObjectNode coordinates = (ObjectNode) geometryObject.path("Type");
@@ -426,11 +420,11 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	 * @throws UnsupportedEncodingException
 	 */
 	private static void copyToJavascriptFiles() throws FileNotFoundException, UnsupportedEncodingException {
-		PrintWriter pompeiiJsWriter = new PrintWriter("src/main/webapp/resources/js/pompeiiPropertyData.js", "UTF-8");
+		PrintWriter pompeiiJsWriter = new PrintWriter(POMPEII_JAVASCRIPT_DATA_FILE_LOC, "UTF-8");
 		// Writes the beginning part of the js file, which it fetches from
 		// another text file called jsEschebachFirst.txt.
 		// This is the only way I found to format this part of the javascript.
-		File jsFirst = new File("src/main/webapp/resources/js/PropertyDataFirst.txt");
+		File jsFirst = new File(POMPEII_INIT_JAVASCRIPT_LOC);
 		Scanner jsReadFirst = new Scanner(jsFirst);
 		while (jsReadFirst.hasNext()) {
 			String content = jsReadFirst.nextLine();
@@ -449,7 +443,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 		PrintWriter herculaneumJsWriter = new PrintWriter("src/main/webapp/resources/js/herculaneumPropertyData.js",
 				"UTF-8");
-		jsFirst = new File("src/main/webapp/resources/js/PropertyDataFirst.txt");
+		jsFirst = new File(POMPEII_INIT_JAVASCRIPT_LOC);
 		jsReadFirst = new Scanner(jsFirst);
 		while (jsReadFirst.hasNext()) {
 			String content = jsReadFirst.nextLine();
