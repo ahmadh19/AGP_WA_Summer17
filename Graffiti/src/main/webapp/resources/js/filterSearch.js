@@ -335,7 +335,7 @@ function refineResults() {
 	//making locationKeys of the list type.
 	var locationKeys=eval(document.getElementById("mapkeys").innerHTML);
 	map.remove();
-	window.initmap(true,false,false,false,0,locationKeys);
+	window.initpompmap(true,false,false,false,0,locationKeys);
 }
 
 /*

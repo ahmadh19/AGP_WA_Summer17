@@ -65,7 +65,7 @@ function setButton(){
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 <script>
-	window.initmap();
+	window.initpompmap();
 	
 </script>
 </body>

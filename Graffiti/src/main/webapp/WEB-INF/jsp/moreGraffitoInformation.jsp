@@ -513,7 +513,7 @@ function backToResults(){
 			<script type="text/javascript">
 				hideConventions();
 				
-				window.initmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
+				window.initpompmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
 			</script>
 
 		</div>

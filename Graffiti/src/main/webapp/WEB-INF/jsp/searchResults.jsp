@@ -71,8 +71,6 @@ function setLocationKeys(){
 //		window.initmap();
 //}
 
-
-
 function generateHerculaneum(name) {
 	xmlHttp = new XMLHttpRequest();
 	xmlHttp.open("GET",
@@ -172,6 +170,7 @@ function checkboxesAfterBack() {
 				addSearchTerm("Global", value, value);
 			}
 		}
+		function generateHerculaneum(name) {
 	}
 }
 
@@ -263,7 +262,7 @@ ul#searchTerms li {
 	setLocationKeys();
 	//Apparently, these need to be used in same order as they are in div. 
 	window.inithercmap(true,false,false,false,0,locationKeys);
-	window.initmap(true,false,false,false,0,locationKeys);
+	window.initpompmap(true,false,false,false,0,locationKeys);
 
 </script>
 </body>
