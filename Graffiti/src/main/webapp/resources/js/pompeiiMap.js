@@ -78,6 +78,18 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 				}
 			});
 		}
+		else if(propertyIdListToHighlight.length==1){
+			var newCenterCoordinates=[];
+			var idOfListHighlight=propertyIdListToHighlight[0];
+			map.eachLayer(function(layer){
+				if(layer.feature!=undefined){
+					if(layer.feature.properties.Property_Id==idOfListHighlight){
+						newCenterCoordinates=layer.getBounds().getCenter();
+						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
+					}
+				}
+			});
+		}
 	}
 	
 	
