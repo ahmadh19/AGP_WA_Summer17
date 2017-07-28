@@ -321,7 +321,7 @@ public class ImportEDRData {
 	 * @return
 	 */
 	private static String transformContentToEpidoc(String content) {
-		String[] splitContent = content.split("<br> *");
+		String[] splitContent = content.split("\n *");
 		StringBuilder returnString = new StringBuilder();
 		for(int i = 0; i < splitContent.length; i++ ) {
 			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i] + "\n");
