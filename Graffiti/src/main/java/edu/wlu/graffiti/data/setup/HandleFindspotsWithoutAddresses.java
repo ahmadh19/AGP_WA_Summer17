@@ -1,11 +1,18 @@
 package edu.wlu.graffiti.data.setup;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 
 /**
  * This class updates findspots for graffiti whose findspots aren't the typical
@@ -18,15 +25,13 @@ import java.util.Properties;
  */
 public class HandleFindspotsWithoutAddresses {
 
-	final static String SELECT_GRAFFITI = "SELECT apparatus, edr_id from edr_inscriptions";
-
-	private static final String UPDATE_APPARATUS_TO_DISPLAY = "UPDATE edr_inscriptions SET apparatus_displayed = ? WHERE edr_id = ?";
-
-	private static final String URL_BASE = "http://ancientgraffiti.org/Graffiti/graffito/AGP-";
-
 	private static Connection dbCon;
+	private static String LOCATION_FILE_NAME = "data/AGPData/atypical_findspots.csv";
 
-	private static PreparedStatement updateApparatusStmt;
+	private static final String SELECT_PROPERTY = "select id from properties where property_name = ?";
+
+	private static PreparedStatement updatePropertyStmt;
+	private static PreparedStatement selectPropertyStmt;
 
 	private static String DB_DRIVER;
 	private static String DB_URL;
@@ -37,83 +42,46 @@ public class HandleFindspotsWithoutAddresses {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		addEDRLinksToApparatus();
+		updateGraffitiLocations(LOCATION_FILE_NAME);
 	}
 
-	public static void addEDRLinksToApparatus() {
+	public static void updateGraffitiLocations(String locationFileName) {
 		init();
-
+		
 		try {
-			// Get list of edrIDs
-			PreparedStatement extractData = dbCon.prepareStatement(SELECT_GRAFFITI);
-			ResultSet rs = extractData.executeQuery();
+			updatePropertyStmt = dbCon.prepareStatement(ImportEDRData.UPDATE_PROPERTY);
+			selectPropertyStmt = dbCon.prepareStatement(SELECT_PROPERTY);
+			
+			Reader in = new FileReader(locationFileName);
+			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+			for (CSVRecord record : records) {
+				String edrID = Utils.cleanData(record.get(0));
+				String findspot = Utils.cleanData(record.get(1));
+				
+				selectPropertyStmt.setString(1, findspot);
+				
+				ResultSet rs = selectPropertyStmt.executeQuery();
+				int propertyId = 0;
 
-			// Update apparatus for each entry where EDR entries are in the
-			// apparatus.
-			while (rs.next()) {
-				String edrid = rs.getString("edr_id");
-				String apparatus = rs.getString("apparatus");
-				// System.out.println("Updating apparatus for " + edrid);
-				String displayApparatus = addLinks(apparatus);
-				updateDisplayApparatus(edrid, displayApparatus);
+				if( rs.next() ) {
+					propertyId = rs.getInt(1);
+				} else {
+					System.out.println("Error looking up " + findspot);
+					continue;
+				}
+				
+				updatePropertyStmt.setString(2, edrID);
+				updatePropertyStmt.setInt(1, propertyId);
+				
+				updatePropertyStmt.executeUpdate();
 			}
-			rs.close();
-			extractData.close();
-			updateApparatusStmt.close();
+			updatePropertyStmt.close();
 			dbCon.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-		}
-	}
-
-	/**
-	 * Helper method to modify the apparatus to include links
-	 * 
-	 * @param apparatus
-	 * @return the apparatus so that it contains links to the other entries
-	 *         referenced
-	 */
-	private static String addLinks(String apparatus) {
-		if (apparatus.contains("EDR")) {
-			String[] components = apparatus.split("\\s");
-			StringBuilder displayApparatus = new StringBuilder();
-			for (String component : components) {
-				if (component.startsWith("EDR")) {
-					// know the EDR id is 9 characters
-					String edrid = "";
-					if (component.length() >= 9) {
-						edrid = component.substring(0, 9);
-					} else {
-						edrid = component;
-						System.out.println("This edrID is too short to update apparatus: " + component);
-					}
-					displayApparatus.append(" <a href=\"");
-					displayApparatus.append(URL_BASE);
-					// clean up the component -- remove punctuation
-					displayApparatus.append(edrid);
-					displayApparatus.append("\" title=\"See Details\">");
-					displayApparatus.append(component);
-					displayApparatus.append("</a> ");
-				} else {
-					displayApparatus.append(component + " ");
-				}
-			}
-			return displayApparatus.toString();
-		} else {
-			return apparatus;
-		}
-	}
-
-	/**
-	 * @param edr_id
-	 * @param apparatusDisplay
-	 */
-	private static void updateDisplayApparatus(String edr_id, String apparatusDisplay) {
-		try {
-			updateApparatusStmt.setString(1, apparatusDisplay);
-			updateApparatusStmt.setString(2, edr_id);
-			updateApparatusStmt.executeUpdate();
-		} catch (SQLException e) {
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -129,11 +97,9 @@ public class HandleFindspotsWithoutAddresses {
 
 		try {
 			dbCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-			updateApparatusStmt = dbCon.prepareStatement(UPDATE_APPARATUS_TO_DISPLAY);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public static void getConfigurationProperties() {
