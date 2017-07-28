@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.wlu.graffiti.bean.Inscription;
@@ -19,6 +20,8 @@ import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.data.export.GenerateEpidoc;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 
@@ -26,6 +29,7 @@ import edu.wlu.graffiti.data.export.GenerateEpidoc;
  *
  */
 @RestController
+@Api(value="EpiDoc", description="Operations pertaining to EpiDoc exports.")
 public class EpidocController {
 	
 	private GenerateEpidoc generator = new GenerateEpidoc();
@@ -36,20 +40,23 @@ public class EpidocController {
 	@Resource
 	private FindspotDao findspotDao;
 
-	@RequestMapping(value = "/graffito/AGP-{edrId}/xml", produces = "application/xml;charset=UTF-8")
+	@ApiOperation(value="Download the individual graffito as an EpiDoc file.")
+	@RequestMapping(value = "/graffito/AGP-{edrId}/xml", method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
 	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".xml");
 		return generator.serializeToXML(graffitiDao.getInscriptionByEDR(edrId));
 	}
 	
-	@RequestMapping(value = "/all/xml", produces = "application/xml;charset=UTF-8")
+	@ApiOperation(value="Download all graffiti as an EpiDoc file.")
+	@RequestMapping(value = "/all/xml", method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
 	public String getInscriptions(HttpServletResponse response) {
 		response.addHeader("Content-Disposition", "attachment; filename=all.xml");
 		return generator.serializeToXML(graffitiDao.getAllInscriptions());
 	}
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/filtered-results/xml", produces = "application/xml;charset=UTF-8")
+	@ApiOperation(value="Download the filtered graffiti as an EpiDoc file.")
+	@RequestMapping(value = "/filtered-results/xml", method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
 	public String getFilteredInscriptions(final HttpServletRequest request, HttpServletResponse response) {
 		HttpSession s = request.getSession();
 		response.addHeader("Content-Disposition", "attachment; filename=filtered-results.xml");

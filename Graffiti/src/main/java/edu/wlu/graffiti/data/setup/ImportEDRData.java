@@ -314,8 +314,19 @@ public class ImportEDRData {
 		}
 	}
 
+	/**
+	 * Scans the content for the <br> tag and adds <lb> tags appropriately for the EpiDoc.
+	 * 
+	 * @param content
+	 * @return
+	 */
 	private static String transformContentToEpidoc(String content) {
-		return content;
+		String[] splitContent = content.split("<br> *");
+		StringBuilder returnString = new StringBuilder();
+		for(int i = 0; i < splitContent.length; i++ ) {
+			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i] + "\n");
+		}
+		return returnString.toString();
 	}
 
 	/**
@@ -339,7 +350,7 @@ public class ImportEDRData {
 				String ancient_city = Utils.cleanData(record.get(3));
 
 				if (!cityToInsulaMap.containsKey(ancient_city)) {
-					System.err.println(eagleID + ": city " + ancient_city + " not found");
+					//System.err.println(eagleID + ": city " + ancient_city + " not found");
 					continue;
 				}
 
@@ -626,4 +637,5 @@ public class ImportEDRData {
 		DB_USER = prop.getProperty("db.user");
 		DB_PASSWORD = prop.getProperty("db.password");
 	}
+	
 }
