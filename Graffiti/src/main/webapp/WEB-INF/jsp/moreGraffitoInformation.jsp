@@ -512,15 +512,8 @@ function backToResults(){
 
 			<script type="text/javascript">
 				hideConventions();
-				if ("${i.ancientCity}" == "Herculaneum") {
-					
-					generateHerculaneum("${i.ancientCity}");
-					
-				} else if ("${i.ancientCity}" == "Pompeii") {
-					
-					window.initmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
-					
-				} 
+				
+				window.initmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
 			</script>
 
 		</div>

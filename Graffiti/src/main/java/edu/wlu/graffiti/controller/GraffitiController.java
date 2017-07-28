@@ -345,7 +345,7 @@ public class GraffitiController {
 			if (city.equals("Pompeii")) {
 				return "moreGraffitoInformation";
 			} else {
-				return "details";
+				return "moreGraffitoInformationHerculaneum";
 			}
 			// return "details";
 		}

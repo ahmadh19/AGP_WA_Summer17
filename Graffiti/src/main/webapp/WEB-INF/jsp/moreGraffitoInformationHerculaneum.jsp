@@ -1,30 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<%@include file="/resources/common_head.txt"%>
-<title>Ancient Graffiti Project :: Details</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>More Graffito Information</title>
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
-<c:set var="i" value="${requestScope.inscription}" />
-
-
+<%@ include file="/resources/common_head.txt"%>
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/resources/css/main.css" />
 <link rel="stylesheet"
 	href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
 	integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
 	crossorigin="" />
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/resources/css/main.css" />
+
 <script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>">
-src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"
-</script>
+	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
+
+<script type="text/javascript" src="/resources/js/geojson.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
+	integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
+	crossorigin=""></script>
+
+
+<script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
+
 
 
 <style type="text/css">
@@ -66,6 +71,14 @@ src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"
 	display: none;
 	width: 300px;
 	color: maroon;
+}
+
+h4 {
+	float: right;
+	position: relative;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	margin-right: 78%;
 }
 
 .btn-agp {
@@ -113,7 +126,7 @@ $('img').mapster({
 }); 
 }
 
-function generatePompeii(name) {
+function generateherculaneum(name) {
 	xmlHttp = new XMLHttpRequest();
 	path = "<%=request.getContextPath()%>/";
 	xmlHttp.open("GET", path +
@@ -124,17 +137,6 @@ function generatePompeii(name) {
 	start();
 } 
 
-
-function generateHerculaneum(name) {
-    xmlHttp = new XMLHttpRequest();
-    path = "<%=request.getContextPath()%>/";
-    xmlHttp.open("GET", path +
-            "map?clickedRegion="+name+"&second=yes"+"&city="+"${i.ancientCity}", false); 
-    xmlHttp.send(null);
-    document.getElementById("hercCityMap").innerHTML = xmlHttp.responseText;
-    start();
-}
-
 function selectImg(ind) {
 	var hrefs = "${requestScope.imagePages}".slice(1,-1).split(','); //turns string of urls into array
 	var srcs = "${requestScope.images}".slice(1,-1).split(',');
@@ -143,46 +145,24 @@ function selectImg(ind) {
 }
 
 function backToResults(){
+	xmlHttp = new XMLHttpRequest();
+	xmlHttp.open("GET", "<%=request.getContextPath()%>/backToResults?edr=" + "${inscription.edrId}", false);
+	xmlHttp.send(null);
 	var url = "${sessionScope.returnURL}";
 	url = url.replace("filter", "results"); // generate the results page--makes sure the page is formatted
 	window.location.href = url;
 }
 </script>
-</head>
-<body>
 
-	<script>
-	
-	//Function to hide measurements on load:
-	//Note: putting these in the head can cause problems, including endless loading
-	$(document).ready(function() {
-		//$("#measurements").hide();
-		});
-	
-	
-	//Do NOT delete the commented out code in this function. It is for the Show/Hide
-	//measurements button and will be re-implemented when we have the data that we need.  
-	
-	//Toggles Measurements to hide and show the text
-	$(document).ready(function() {
-	$("#showMeasure").click(function(){
-		//var button = $(this);
-		//if (button.val() == "Show Measurements"){
-			//button.val("Hide Measurements");
-			//$("#measurements").show();
-		//}else{
-			//button.val("Show Measurements");
-			//$("#measurements").hide();
-		//}
-		button.next().show();
-		});
-	
-		$("#measurements").show();
-	});
-	</script>
-	<%@include file="/WEB-INF/jsp/header.jsp"%>
+</head>
+
+<body>
+	<%@include file="header.jsp"%>
+
 
 	<c:set var="i" value="${requestScope.inscription}" />
+
+
 
 	<div class="button_bar">
 
@@ -199,7 +179,6 @@ function backToResults(){
 			<button class="btn btn-agp right-align">Export as JSON</button>
 		</a>
 	</div>
-
 	<div class="container">
 		<div class="top-div">
 			<!-- sets the title of graffito -->
@@ -512,24 +491,23 @@ function backToResults(){
 			</c:choose>
 
 			<div id="maps">
-				<h4>Findspot on map:</h4>
-				<div id="hercCityMap"></div>
+				<h4>Findspot:</h4>
 				<!-- <div id="pompCityMap"></div> -->
-				<div id="pompeiiMap"></div>
+				<div id="herculaneummap" class="findspotMap"></div>
 			</div>
 
-			<script>src="<c:url value="/resources/js/pompeiiMap.js"/>"</script>
+			<script src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 
 			<script type="text/javascript">
 				hideConventions();
-				if ("${i.ancientCity}" == "Herculaneum") {
-					generateHerculaneum("${i.ancientCity}");
-				} else if ("${i.ancientCity}" == "Pompeii") {
-					generatePompeii("${i.ancientCity}");
 				
-				} 
+				window.inithercmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
+					
+
 			</script>
+
 		</div>
 	</div>
+
 </body>
 </html>
