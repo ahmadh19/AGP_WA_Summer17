@@ -175,10 +175,10 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	
 	function getBorderColorForCloseZoom(feature){
 		borderColor='white';
-		//if (feature.properties.clicked == true || feature.properties.Property_Id==propertyIdToHighlight || propertyIdListToHighlight.indexOf(feature.properties.Property_Id)>=0) {
+		if (feature.properties.clicked == true || feature.properties.Property_Id==propertyIdToHighlight || propertyIdListToHighlight.indexOf(feature.properties.Property_Id)>=0) {
 			propertySelected=true;
-		//	return 'black';
-		//}
+			return 'black';
+		}
 		return 'white';
 	}
 	

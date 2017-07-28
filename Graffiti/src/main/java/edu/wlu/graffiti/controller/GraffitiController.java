@@ -218,21 +218,24 @@ public class GraffitiController {
 			} catch (SAXException | IOException e) {
 				e.printStackTrace();
 			}
-			request.setAttribute("coords", coords);
-			request.setAttribute("regionNames", regionNames);
-			request.setAttribute("regionIds", regionIds);
-			request.setAttribute("message", message);
-			request.setAttribute("displayImage", request.getContextPath() + "/resources/images/" + city + ".jpg");
+			//request.setAttribute("coords", coords);
+			//request.setAttribute("regionNames", regionNames);
+			//request.setAttribute("regionIds", regionIds);
+			//request.setAttribute("message", message);
+			//request.setAttribute("displayImage", request.getContextPath() + "/resources/images/" + city + ".jpg");
 
 			// Allows attributes to be set but goes to the pompeiiMap url if the
 			// city clicked on is pompeii.
+			System.out.println(city.toLowerCase());
 			if (city.toLowerCase().equals("pompeii")) {
 				// return "pompeiiMap";
 				return "searchPompeii";
 			}
 			if (city.toLowerCase().equals("herculaneum")) {
 				// return "pompeiiMap";
-				return "herculaneumMap";
+				//return "herculaneumMap";
+				System.out.println(city.toLowerCase());
+				return "searchHerculaneum";
 			}
 			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 			return "search";
