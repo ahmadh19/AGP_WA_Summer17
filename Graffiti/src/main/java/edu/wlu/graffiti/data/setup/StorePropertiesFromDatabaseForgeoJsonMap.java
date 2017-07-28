@@ -327,8 +327,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 							propertyType = resultset.getString("name");
 						}
 
-						ObjectNode graffito = (ObjectNode) featureNode;
-						ObjectNode properties = (ObjectNode) graffito.path("properties");
+						ObjectNode propertyNode = (ObjectNode) featureNode;
+						ObjectNode properties = (ObjectNode) propertyNode.path("properties");
 						properties.put("Property_Id", propertyId);
 						properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 						properties.put("Property_Name", propertyName);
@@ -338,11 +338,22 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						properties.put("Insula_Pleiades_Id", insulaPleiadesId);
 						properties.put("Property_Pleiades_Id", propPleiadesId);
 						properties.put("Property_Type", propertyType);
+						
+						//System.out.println(p);
+						//String contentOfP = pAsObject.get("coordinates").textValue();
+						String jsonPoly=new ObjectMapper().writeValueAsString(p);
+						JsonNode updatedGeometry=new ObjectMapper().readTree(jsonPoly);
+						//JsonNode updatedGeometry=(JsonNode) geometry;
 
 						JsonNode updatedProps = (JsonNode) properties;
-						graffito.set("properties", updatedProps);
+						
+						propertyNode.set("properties", updatedProps);
+						
+						propertyNode.replace("geometry",updatedGeometry);
+						
+						//propertyNode.set("geometry", updatedGeometry);
 
-						pompeiiTextWriter.println(graffito + ",");
+						pompeiiTextWriter.println(propertyNode + ",");
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -356,8 +367,14 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			e1.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Simplifies a geoJSON polygon object by removing the Z-coordinates and keeping only the x and y coordinates
+	 * @param featureNode
+	 * @return Polygon with Z-coordinate removed
+	 */
 
-	private static Polygon parseGeometryAndRemoveCoordinates(JsonNode featureNode) {
+	private static Polygon parseGeometryAndRemoveCoordinates(JsonNode featureNode) throws JsonProcessingException {
 		JsonNode geometryNode = featureNode.findValue("geometry");
 		JsonParser coordParse = geometryNode.traverse();
 		Polygon p = null;
@@ -365,21 +382,23 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		GeoJsonObject object;
 		try {
 			object = new ObjectMapper().readValue(coordParse, GeoJsonObject.class);
+			
 
 			if (object instanceof Polygon) {
 				p = (Polygon) object;
-				System.out.println(p.getCoordinates());
+				//System.out.println(p.getCoordinates());
 				List<List<LngLatAlt>> newCoordList = new ArrayList<List<LngLatAlt>>();
 				for (List<LngLatAlt> coordList : p.getCoordinates()) {
 					List<LngLatAlt> aList = new ArrayList<LngLatAlt>();
 					for (LngLatAlt coord : coordList) {
-						System.out.println(coord);
+						//System.out.println(coord);
 						LngLatAlt newCoord = new LngLatAlt(coord.getLongitude(), coord.getLatitude());
 						aList.add(newCoord);
 					}
 					newCoordList.add(aList);
 				}
 				p.setCoordinates(newCoordList);
+				
 			}
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -391,22 +410,11 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//GeoJsonObject modifiablePolygon=(GeoJsonObject)p;
+		ObjectNode modifiableFeatureNode=(ObjectNode)featureNode;
+		//modifiableFeatureNode.set("geometry",p);
+		
 		return p;
-	}
-
-	/**
-	 * Iterates through all of the coordinates in a JSON Geometry object and
-	 * removes the last(Z-coords) in each part of the list. Designed only for
-	 * geoJson polygons with coordinates in "circle" form(?!)
-	 * 
-	 * @param geometryObject
-	 * @return
-	 */
-	private static ObjectNode removeZCoordinates(ObjectNode geometryObject) {
-		System.out.println("Geometry object received by function: " + geometryObject);
-		ObjectNode coordinates = (ObjectNode) geometryObject.path("Type");
-		System.out.println("Here are the coordinates: " + coordinates);
-		return geometryObject;
 	}
 
 	/**

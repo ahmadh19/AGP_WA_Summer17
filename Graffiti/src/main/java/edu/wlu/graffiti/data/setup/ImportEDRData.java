@@ -316,17 +316,16 @@ public class ImportEDRData {
 
 	/**
 	 * Scans the content for the <br> tag and adds <lb> tags appropriately for the EpiDoc.
-	 * 
 	 * @param content
 	 * @return
 	 */
 	private static String transformContentToEpidoc(String content) {
-		String[] splitContent = content.split("<br> *");
+		String[] splitContent = content.split("\n *");
 		StringBuilder returnString = new StringBuilder();
 		for(int i = 0; i < splitContent.length; i++ ) {
 			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i] + "\n");
 		}
-		return returnString.toString();
+		return returnString.toString().trim();
 	}
 
 	/**
