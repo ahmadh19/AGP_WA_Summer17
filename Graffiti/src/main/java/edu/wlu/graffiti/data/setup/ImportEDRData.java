@@ -56,7 +56,7 @@ public class ImportEDRData {
 
 	private static final String INSERT_AGP_METADATA = "INSERT INTO agp_inscription_info (edr_id) " + "VALUES (?)";
 
-	private static final String UPDATE_PROPERTY = "UPDATE agp_inscription_info SET "
+	public static final String UPDATE_PROPERTY = "UPDATE agp_inscription_info SET "
 			+ "property_id = ? WHERE edr_id = ?";
 
 	private static final String UPDATE_CONTENT = "UPDATE edr_inscriptions SET " + "content = ? WHERE edr_id = ?";
@@ -213,7 +213,7 @@ public class ImportEDRData {
 			Reader in = new FileReader(bibFileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
-				String eagleID = Utils.cleanData(record.get(0));
+				String edrID = Utils.cleanData(record.get(0));
 				String bib = Utils.cleanData(record.get(1));
 				Matcher bibMatch = bibPattern.matcher(bib);
 
@@ -223,7 +223,7 @@ public class ImportEDRData {
 				}
 
 				try {
-					selPStmt.setString(1, eagleID);
+					selPStmt.setString(1, edrID);
 
 					ResultSet rs = selPStmt.executeQuery();
 
@@ -232,16 +232,16 @@ public class ImportEDRData {
 					if (rs.next()) {
 						count = rs.getInt(1);
 					} else {
-						System.err.println(eagleID
+						System.err.println(edrID
 								+ ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
 					}
 					if (count == 1) {
 						updateBibStmt.setString(1, bib);
-						updateBibStmt.setString(2, eagleID);
+						updateBibStmt.setString(2, edrID);
 
 						int updated = updateBibStmt.executeUpdate();
 						if (updated != 1) {
-							System.err.println("\nSomething went wrong with bibliography for " + eagleID);
+							System.err.println("\nSomething went wrong with bibliography for " + edrID);
 							System.err.println(bib);
 						}
 					}
