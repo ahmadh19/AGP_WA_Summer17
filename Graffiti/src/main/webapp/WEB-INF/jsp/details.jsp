@@ -15,16 +15,18 @@
 <c:set var="i" value="${requestScope.inscription}" />
 
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
-  integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
-  crossorigin=""/>
-<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
+<link rel="stylesheet"
+	href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
+	integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
+	crossorigin="" />
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/resources/css/main.css" />
 <script type="text/javascript"
-src="<c:url value="/resources/js/pompeiiPropertyData.js"/>">
+	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>">
 src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"
 </script>
-	
-	
+
+
 <style type="text/css">
 #pompCityMap {
 	margin-top: 0px;
@@ -53,9 +55,7 @@ src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"
 	color: blue;
 }
 
-#convention_table th {
-<body>
-	text-align: center;
+#convention_table th { <body > text-align:center;
 	width: 100%;
 }
 
@@ -151,7 +151,7 @@ function backToResults(){
 </head>
 <body>
 
-<script>
+	<script>
 	
 	//Function to hide measurements on load:
 	//Note: putting these in the head can cause problems, including endless loading
@@ -185,18 +185,16 @@ function backToResults(){
 	<c:set var="i" value="${requestScope.inscription}" />
 
 	<div class="button_bar">
-		 
+
 		<button class="btn btn-agp" onclick="backToResults();">Back
 			to Results</button>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/csv"
 			id="csv">
 			<button class="btn btn-agp right-align">Export as CSV</button>
-		</a>
-		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/xml"
+		</a> <a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/xml"
 			id="xml">
 			<button class="btn btn-agp right-align">Export as EpiDoc</button>
-		</a>
-		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/json"
+		</a> <a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/json"
 			id="json">
 			<button class="btn btn-agp right-align">Export as JSON</button>
 		</a>
@@ -229,6 +227,9 @@ function backToResults(){
 
 			<!-- sets the findspot -->
 			<c:choose>
+				<c:when test="${not empty i.agp.property.italianPropertyName}">
+					<c:set var="findspot" value="${i.agp.property.italianPropertyName}" />
+				</c:when>
 				<c:when test="${not empty i.agp.property.propertyName}">
 					<c:set var="findspot" value="${i.agp.property.propertyName}" />
 				</c:when>
@@ -306,17 +307,17 @@ function backToResults(){
 							</tr>
 							<tr>
 								<td onclick="displayDefinition('def6')">a&#803;b&#803;</td>
-							<Anthem/tr>
-							<tr>
-								<td onclick="displayDefinition('def7')"><span
-									style="text-decoration: underline">abc</span></td>
-							</tr>
-							<tr>
-								<td onclick="displayDefinition('def8')">((:abc))</td>
-							</tr>
-							<tr>
-								<td onclick="displayDefinition('def9')">(:abc)</td>
-							</tr>
+								<Anthem /tr>
+								<tr>
+									<td onclick="displayDefinition('def7')"><span
+										style="text-decoration: underline">abc</span></td>
+								</tr>
+								<tr>
+									<td onclick="displayDefinition('def8')">((:abc))</td>
+								</tr>
+								<tr>
+									<td onclick="displayDefinition('def9')">(:abc)</td>
+								</tr>
 						</tbody>
 					</table>
 				</div>
@@ -343,8 +344,7 @@ function backToResults(){
 					 -->
 					<tr>
 						<th class="propertyLabel">Findspot:</th>
-						<td>
-							<a
+						<td><a
 							href="http://pleiades.stoa.org/places/${i.agp.property.insula.city.pleiadesId}">${city}</a>,
 							${findspot}<a
 							href="<%=request.getContextPath() %>/results?property=${i.agp.property.id}">
@@ -398,35 +398,34 @@ function backToResults(){
 								value="Measurements:"></th>
 								<!--  value="Show Measurements"></th>-->
 							<th class="propertyLabel">Measurements:</th>
-								
+
 							<td>
 								<!--<div id="measurements"> Again, commented out to remove the button features. Do not delete!-->
-									<ul>
-										<c:if test="${not empty i.agp.graffitoHeight }">
-											<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.graffitoLength }">
-											<li>Graffito Length: ${i.agp.graffitoLength }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.heightFromGround }">
-											<li>Height from Ground: ${i.agp.heightFromGround }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.minLetterHeight }">
-											<li>Min Letter Height: ${i.agp.minLetterHeight}</li>
-										</c:if>
-										<c:if test="${not empty i.agp.maxLetterHeight }">
-											<li>Max Letter Height: ${i.agp.maxLetterHeight }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.minLetterWithFlourishesHeight }">
-											<li>Min Letter Height with Flourishes:
-												${i.agp.minLetterWithFlourishesHeight }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.maxLetterWithFlourishesHeight }">
-											<li>Max Letter Height with Flourishes:
-												${i.agp.maxLetterWithFlourishesHeight }</li>
-										</c:if>
-									</ul>
-								<!--</div>-->
+								<ul>
+									<c:if test="${not empty i.agp.graffitoHeight }">
+										<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.graffitoLength }">
+										<li>Graffito Length: ${i.agp.graffitoLength }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.heightFromGround }">
+										<li>Height from Ground: ${i.agp.heightFromGround }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.minLetterHeight }">
+										<li>Min Letter Height: ${i.agp.minLetterHeight}</li>
+									</c:if>
+									<c:if test="${not empty i.agp.maxLetterHeight }">
+										<li>Max Letter Height: ${i.agp.maxLetterHeight }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.minLetterWithFlourishesHeight }">
+										<li>Min Letter Height with Flourishes:
+											${i.agp.minLetterWithFlourishesHeight }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.maxLetterWithFlourishesHeight }">
+										<li>Max Letter Height with Flourishes:
+											${i.agp.maxLetterWithFlourishesHeight }</li>
+									</c:if>
+								</ul> <!--</div>-->
 							</td>
 
 						</tr>
@@ -518,7 +517,7 @@ function backToResults(){
 				<!-- <div id="pompCityMap"></div> -->
 				<div id="pompeiiMap"></div>
 			</div>
-			
+
 			<script>src="<c:url value="/resources/js/pompeiiMap.js"/>"</script>
 
 			<script type="text/javascript">
