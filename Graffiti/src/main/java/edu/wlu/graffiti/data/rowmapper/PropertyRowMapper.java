@@ -22,6 +22,7 @@ public final class PropertyRowMapper implements RowMapper<Property> {
 		property.setPropertyNumber(resultSet.getString("property_number"));
 		property.setItalianPropertyName(resultSet.getString("italian_property_name"));
 		property.setPleiadesId(resultSet.getString("property_pleiades_id"));
+		property.setAdditionalEntrances(resultSet.getString("additional_properties"));
 		property.setCommentary(resultSet.getString("commentary"));
 		insula.setId(resultSet.getInt("insula_id"));
 		insula.setModernCity(resultSet.getString("modern_city"));

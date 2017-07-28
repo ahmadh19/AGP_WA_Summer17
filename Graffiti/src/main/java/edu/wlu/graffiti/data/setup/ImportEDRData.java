@@ -56,7 +56,7 @@ public class ImportEDRData {
 
 	private static final String INSERT_AGP_METADATA = "INSERT INTO agp_inscription_info (edr_id) " + "VALUES (?)";
 
-	private static final String UPDATE_PROPERTY = "UPDATE agp_inscription_info SET "
+	public static final String UPDATE_PROPERTY = "UPDATE agp_inscription_info SET "
 			+ "property_id = ? WHERE edr_id = ?";
 
 	private static final String UPDATE_CONTENT = "UPDATE edr_inscriptions SET " + "content = ? WHERE edr_id = ?";
@@ -213,7 +213,7 @@ public class ImportEDRData {
 			Reader in = new FileReader(bibFileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
-				String eagleID = Utils.cleanData(record.get(0));
+				String edrID = Utils.cleanData(record.get(0));
 				String bib = Utils.cleanData(record.get(1));
 				Matcher bibMatch = bibPattern.matcher(bib);
 
@@ -223,7 +223,7 @@ public class ImportEDRData {
 				}
 
 				try {
-					selPStmt.setString(1, eagleID);
+					selPStmt.setString(1, edrID);
 
 					ResultSet rs = selPStmt.executeQuery();
 
@@ -232,16 +232,16 @@ public class ImportEDRData {
 					if (rs.next()) {
 						count = rs.getInt(1);
 					} else {
-						System.err.println(eagleID
+						System.err.println(edrID
 								+ ":\nSomething went wrong with the SELECT statement in updating inscriptions!");
 					}
 					if (count == 1) {
 						updateBibStmt.setString(1, bib);
-						updateBibStmt.setString(2, eagleID);
+						updateBibStmt.setString(2, edrID);
 
 						int updated = updateBibStmt.executeUpdate();
 						if (updated != 1) {
-							System.err.println("\nSomething went wrong with bibliography for " + eagleID);
+							System.err.println("\nSomething went wrong with bibliography for " + edrID);
 							System.err.println(bib);
 						}
 					}
@@ -316,17 +316,16 @@ public class ImportEDRData {
 
 	/**
 	 * Scans the content for the <br> tag and adds <lb> tags appropriately for the EpiDoc.
-	 * 
 	 * @param content
 	 * @return
 	 */
 	private static String transformContentToEpidoc(String content) {
-		String[] splitContent = content.split("<br> *");
+		String[] splitContent = content.split("\n *");
 		StringBuilder returnString = new StringBuilder();
 		for(int i = 0; i < splitContent.length; i++ ) {
 			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i] + "\n");
 		}
-		return returnString.toString();
+		return returnString.toString().trim();
 	}
 
 	/**
@@ -412,19 +411,24 @@ public class ImportEDRData {
 	/**
 	 * Update the AGP Metadata for this inscription
 	 * 
-	 * @param eagleID
+	 * @param edrId
 	 * @param ancient_city
 	 * @param findSpot
 	 * @throws SQLException
 	 */
-	private static void updateAGPMetadata(String eagleID, String ancient_city, String findSpot) throws SQLException {
+	private static void updateAGPMetadata(String edrId, String ancient_city, String findSpot) throws SQLException {
 
-		insertAGPMetaStmt.setString(1, eagleID);
+		insertAGPMetaStmt.setString(1, edrId);
 
 		try {
 			insertAGPMetaStmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+		
+		if( findSpot.contains("facade") || findSpot.contains("Facade")) {
+			System.err.println(edrId + " is on a facade...  Can't currently handle");
+			return;
 		}
 
 		String address = convertFindSpotToAddress(findSpot);
@@ -433,7 +437,7 @@ public class ImportEDRData {
 		// we're going to skip these because I can't handle them yet.
 
 		if (!address.contains(".")) {
-			System.err.println(eagleID + ": Couldn't handle address: " + address);
+			System.err.println(edrId + ": Couldn't handle address: " + address);
 			return;
 		}
 
@@ -449,14 +453,14 @@ public class ImportEDRData {
 		}
 
 		if (!cityToInsulaMap.get(ancient_city).containsKey(insula)) {
-			System.err.println(eagleID + ": Insula " + insula + " not found in " + ancient_city + ", " + address);
+			System.err.println(edrId + ": Insula " + insula + " not found in " + ancient_city + ", " + address);
 			return;
 		}
 
 		int insulaID = cityToInsulaMap.get(ancient_city).get(insula).getId();
 
 		if (!insulaToPropertyMap.get(insulaID).containsKey(propertyNum)) {
-			System.err.println(eagleID + ": Property " + propertyNum + " in Insula " + insula + " in " + ancient_city
+			System.err.println(edrId + ": Property " + propertyNum + " in Insula " + insula + " in " + ancient_city
 					+ " not found");
 			return;
 		}
@@ -466,12 +470,12 @@ public class ImportEDRData {
 		// update property info
 
 		updatePropertyStmt.setInt(1, propertyID);
-		updatePropertyStmt.setString(2, eagleID);
+		updatePropertyStmt.setString(2, edrId);
 
 		int response = updatePropertyStmt.executeUpdate();
 
 		if (response != 1) {
-			System.err.println("WHAT? " + eagleID);
+			System.err.println("WHAT? " + edrId);
 		}
 
 	}

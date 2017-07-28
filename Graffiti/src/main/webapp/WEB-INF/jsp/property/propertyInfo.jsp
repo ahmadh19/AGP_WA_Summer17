@@ -82,6 +82,13 @@ function start() {
 				<th class="propertyLabel">Property Number:</th>
 				<td>${prop.propertyNumber}</td>
 			</tr>
+			<c:if test="${not empty prop.additionalEntrances}">
+				<tr>
+					<th class="propertyLabel">Additional entrances:
+					</th>
+					<td>${prop.additionalEntrances}</td>
+				</tr>
+			</c:if>
 			<tr>
 				<th class="propertyLabel">Property Name<br />(in English):
 				</th>

@@ -55,7 +55,6 @@ function setLocationKeys(){
 	if(locationKeys==null){
 		locationKeys=new ArrayList();
 	}
-	System.out.println("Location keys reset!");
 	%>
 	locationKeys = <%=locationKeys%>;
 }
