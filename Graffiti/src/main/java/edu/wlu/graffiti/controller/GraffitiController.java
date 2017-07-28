@@ -42,6 +42,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -57,8 +58,11 @@ import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.dao.InsulaDao;
 import edu.wlu.graffiti.dao.PropertyTypesDao;
 import edu.wlu.graffiti.data.setup.Utils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @Controller
+@Api(value="Graffiti", description="Operations pertaining to the graffiti.")
 public class GraffitiController {
 
 	@Resource
@@ -416,7 +420,22 @@ public class GraffitiController {
 			// return "details";
 		}
 	}
-
+	
+	// TODO: add annotation produces = "text/html" for the api docs?
+	@ApiOperation(value="Searches for inscriptions and returns the results. The base URI lists "
+			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
+			+ "results as the user wishes.",
+			 notes="A detailed overview of possible parameters is as follows: <br/> "
+			+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
+			+ "insula={insulaID} <br/>"
+			+ "property={propertyID} <br/>"
+			+ "property_type={propertyType}<br/>"
+			+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
+			+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
+			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
+			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
+			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
+			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
 	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	public String search(final HttpServletRequest request) {
 		init();
@@ -662,6 +681,20 @@ public class GraffitiController {
 		this.graffitiDao = graffitiDao;
 	}
 
+	@ApiOperation(value="Filters the inscriptions and returns the results without any styling. The base URI lists "
+			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
+			+ "results as the user wishes.",
+			 notes="A detailed overview of possible parameters is as follows: <br/> "
+			+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
+			+ "insula={insulaID} <br/>"
+			+ "property={propertyID} <br/>"
+			+ "property_type={propertyType}<br/>"
+			+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
+			+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
+			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
+			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
+			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
+			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
 	public String filterResults(final HttpServletRequest request) {
 		init();
