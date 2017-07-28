@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
-@Api(value="CSV", description="Operations pertainings to CSV data exports.")
+@Api(value="CSV", description="Operations pertaining to CSV data exports.")
 public class CSVController {
 	
 	private GenerateCSV generator = new GenerateCSV();

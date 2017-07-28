@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
-@Api(value="EpiDoc", description="Operations pertainings to EpiDoc exports.")
+@Api(value="EpiDoc", description="Operations pertaining to EpiDoc exports.")
 public class EpidocController {
 	
 	private GenerateEpidoc generator = new GenerateEpidoc();

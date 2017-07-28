@@ -21,7 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value="JSON", description="Operations pertainings to JSON data exports.")
+@Api(value="JSON", description="Operations pertaining to JSON data exports.")
 public class JsonController {
 	@Resource
 	private GraffitiDao graffitiDao;
