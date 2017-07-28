@@ -316,7 +316,6 @@ public class ImportEDRData {
 
 	/**
 	 * Scans the content for the <br> tag and adds <lb> tags appropriately for the EpiDoc.
-	 * 
 	 * @param content
 	 * @return
 	 */
