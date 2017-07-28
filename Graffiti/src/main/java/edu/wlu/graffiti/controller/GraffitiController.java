@@ -230,6 +230,10 @@ public class GraffitiController {
 				// return "pompeiiMap";
 				return "searchPompeii";
 			}
+			if (city.toLowerCase().equals("herculaneum")) {
+				// return "pompeiiMap";
+				return "herculaneumMap";
+			}
 			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 			return "search";
 		} else {

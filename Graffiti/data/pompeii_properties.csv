@@ -215,8 +215,8 @@ Pompeii,II.3,8,,,,Workshop
 Pompeii,II.4,1,,,,Shop
 Pompeii,II.4,2 - 12,,,Villa di Giulia Felice,Other
 Pompeii,II.5,"1,2,3,4",,,,Other
-Pompeii,II.6,1 - 11,,,,Public Space
-Pompeii,II.7,1 - 10,,,Grande Palestra,Public Space
+Pompeii,II.6,1-11,,,,Public Space
+Pompeii,II.7,1-10,,,Grande Palestra,Public Space
 Pompeii,II.8,1,,,,Garden
 Pompeii,II.8,"2,3",,,Caupona con abitazione,Tavern
 Pompeii,II.8,"4,5",,,(Unnamed),"Workshop, Restaurant?"
@@ -225,7 +225,7 @@ Pompeii,II.9,1,,,,House
 Pompeii,II.9,2,,,,House
 Pompeii,II.9,3,,,,House
 Pompeii,II.9,4,,,,House
-Pompeii,II.9,5,6,,Casa con osteria a giardino,House-- Inn?
+Pompeii,II.9,5,6,,Casa con osteria a giardino,"House,Inn"
 Pompeii,III.1,1,,,,Shop
 Pompeii,III.1,2,,,,Shop
 Pompeii,III.1,3,,,,House

@@ -349,7 +349,7 @@ public class ImportEDRData {
 				String ancient_city = Utils.cleanData(record.get(3));
 
 				if (!cityToInsulaMap.containsKey(ancient_city)) {
-					System.err.println(eagleID + ": city " + ancient_city + " not found");
+					//System.err.println(eagleID + ": city " + ancient_city + " not found");
 					continue;
 				}
 
