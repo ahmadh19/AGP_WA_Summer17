@@ -325,7 +325,7 @@ public class ImportEDRData {
 		for(int i = 0; i < splitContent.length; i++ ) {
 			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i] + "\n");
 		}
-		return returnString.toString();
+		return returnString.toString().trim();
 	}
 
 	/**
