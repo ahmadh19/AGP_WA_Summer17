@@ -22,6 +22,9 @@
  <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 	
+ <script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
+	
 <%@ page import= "java.util.*" %>
 
 <script type="text/javascript">
@@ -222,7 +225,7 @@ ul#searchTerms li {
 		<%@include file="sidebarSearchMenu.jsp"%>
 		<!--  SideBar Map  -->
 		
-		<div id="herculaneumCityMap" class="searchResultsHerculaneum"></div>
+		<div id="herculaneummap" class="searchResultsHerculaneum"></div>
 		<div id="pompeiimap" class="searchResultsPompeii"></div>
 		
 		
@@ -252,11 +255,16 @@ ul#searchTerms li {
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
+	
+<script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 
 <script>
 	setLocationKeys();
-    
+	//Apparently, these need to be used in same order as they are in div. 
+	window.inithercmap(true,false,false,false,0,locationKeys);
 	window.initmap(true,false,false,false,0,locationKeys);
+
 </script>
 </body>
 
