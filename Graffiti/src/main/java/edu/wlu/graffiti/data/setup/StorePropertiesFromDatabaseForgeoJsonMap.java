@@ -81,7 +81,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 		init();
 
-		// storeHerculaneum();
+		storeHerculaneum();
 
 		storePompeii();
 
@@ -130,7 +130,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			// herculaneumJsonFactory.createParser(new
 			// File("src/main/resources/geoJSON/herculaneum.json"));
 			JsonParser herculaneumJsonParser = herculaneumJsonFactory
-					.createParser(new File("src/main/resources/geoJSON/herculaneumTest.json"));
+					.createParser(new File("src/main/resources/geoJSON/herculaneum.json"));
 
 			JsonNode herculaneumRoot = herculaneumMapper.readTree(herculaneumJsonParser);
 			JsonNode herculaneumFeaturesNode = herculaneumRoot.path("features");
