@@ -8,19 +8,23 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Document(indexName = "agp", type = "inscriptions")
 public class Inscription implements Comparable<Inscription> {
 
 	private static final String BASE_EDR_THUMBNAIL_PHOTO_URL = "http://www.edr-edr.it/foto_epigrafi/thumbnails/";
 	private static final String BASE_EDR_IMAGE_PAGE_URL = "http://www.edr-edr.it/edr_programmi/view_img.php?id_nr=";
 	public static final String BASE_EDR_PHOTO_URL = "http://www.edr-edr.it/foto_epigrafi/immagini_uso/";
 	
+	@Id
 	private int id;
 	private String ancientCity;
 	private String findSpot;
@@ -36,6 +40,7 @@ public class Inscription implements Comparable<Inscription> {
 	private int numberOfImages;
 	private int startImageId;
 	private int stopImageId;
+	@Field(type = FieldType.Nested)
 	private AGPInfo agp;
 	private String edrFindSpot;
 	private String date;

@@ -25,6 +25,8 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
 import edu.wlu.graffiti.bean.DrawingTag;
 import edu.wlu.graffiti.bean.Inscription;
@@ -48,6 +50,8 @@ import edu.wlu.graffiti.data.rowmapper.PropertyTypeRowMapper;
  * @author whitej
  * @author sprenkle - refactored to decrease duplicate code with row mapping;
  *         revised to use the updated DB schema; updated for Elasticsearch 2.x
+ * @author cooperbaird - refactored to pull a lot of Elasticsearch stuff out and upgraded to
+ *         Elasticsearch 5.x
  *
  */
 
@@ -74,6 +78,9 @@ public class AddInscriptionsToElasticSearch {
 	private static final PropertyTypeRowMapper PROPERTY_TYPE_ROW_MAPPER = new PropertyTypeRowMapper();
 	private static final DrawingTagRowMapper DRAWING_TAG_ROW_MAPPER = new DrawingTagRowMapper();
 	private static final PropertyRowMapper PROPERTY_ROW_MAPPER = new PropertyRowMapper();
+	
+	@Autowired
+    private static ElasticsearchTemplate esTemplate;
 
 	/**
 	 * Gathers all inscriptions from the database and maps the result set to
@@ -86,22 +93,7 @@ public class AddInscriptionsToElasticSearch {
 		init();
 
 		try {
-			// Clear out index before adding inscriptions
-
-			boolean exists = client.admin().indices().prepareExists(ES_INDEX_NAME).get().isExists();
-
-			if (exists) {
-				DeleteIndexResponse delete = client.admin().indices().delete(new DeleteIndexRequest(ES_INDEX_NAME))
-						.actionGet();
-				if (!delete.isAcknowledged()) {
-					System.out.println(ES_INDEX_NAME + " index wasn't deleted");
-				} else {
-					System.out.println(ES_INDEX_NAME + " index successfully deleted");
-				}
-			}
-			
-			createIndexAndAnalyzer();
-			createMapping();
+			createIndexAnalyzerMapping();
 
 			PreparedStatement getInscriptions = newDBCon.prepareStatement(SELECT_ALL_INSCRIPTIONS);
 			PreparedStatement getProperty = newDBCon.prepareStatement(FindspotDao.SELECT_BY_PROPERTY_ID_STATEMENT);
@@ -142,14 +134,14 @@ public class AddInscriptionsToElasticSearch {
 					System.out.println("Failed to index document " + count);
 				}
 			}
+			
 			rs.close();
 			getInscriptions.close();
 			newDBCon.close();
 
 			System.out.println("Looking at " + rowNum + " inscriptions");
-
 			System.out.println(count + " documents indexed");
-			client.close();
+			
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		} catch (IOException e) {
@@ -159,10 +151,10 @@ public class AddInscriptionsToElasticSearch {
 	
 	/**
 	 * Implements a custom analyzer to fold special characters (like accents) to unicode,
-	 * to stem english words, and to strip punctuation. Then, the index is created.
+	 * to stem english words, and to strip punctuation. Then, the index is created and mapped.
 	 * @throws IOException 
 	 */
-	private static void createIndexAndAnalyzer() throws IOException {
+	private static void createIndexAnalyzerMapping() throws IOException {
 		XContentBuilder settingsBuilder = jsonBuilder()
 				.startObject()
 					.startObject("analysis")
@@ -201,8 +193,11 @@ public class AddInscriptionsToElasticSearch {
 						.endObject()
 					.endObject()
 				.endObject();
-				
-		client.admin().indices().prepareCreate(ES_INDEX_NAME).setSettings(settingsBuilder).get();
+		
+		esTemplate.deleteIndex(Inscription.class);
+		esTemplate.createIndex(Inscription.class, settingsBuilder);
+		esTemplate.putMapping(Inscription.class);
+		esTemplate.refresh(Inscription.class);
 	}
 
 	private static XContentBuilder createContentBuilder(Inscription i) throws IOException {
@@ -364,17 +359,7 @@ public class AddInscriptionsToElasticSearch {
 	 * @throws IOException
 	 */
 	private static void init() {
-
 		getConfigurationProperties();
-
-		Settings settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
-
-		try {
-			client = new PreBuiltTransportClient(settings).addTransportAddress(
-					new InetSocketTransportAddress(InetAddress.getByName(ELASTIC_SEARCH_LOC), ES_PORT));
-		} catch (UnknownHostException e1) {
-			e1.printStackTrace();
-		}
 
 		try {
 			Class.forName(DB_DRIVER);
@@ -396,6 +381,7 @@ public class AddInscriptionsToElasticSearch {
 	 * 
 	 * @throws IOException
 	 */
+	/*
 	private static void createMapping() throws IOException {
 		XContentBuilder mapping = jsonBuilder().startObject().startObject(ES_TYPE_NAME).startObject("properties")
 				.startObject("id").field("type", "long").endObject().startObject("city").field("type", "keyword")
@@ -422,5 +408,5 @@ public class AddInscriptionsToElasticSearch {
 
 		client.admin().indices().preparePutMapping(ES_INDEX_NAME).setType(ES_TYPE_NAME).setSource(mapping).get();
 	}
-
+	*/
 }
