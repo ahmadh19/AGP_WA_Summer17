@@ -59,7 +59,8 @@ a.leaflet-control-zoom-in,a.leaflet-control-zoom-out,.leaflet-bar a.leaflet-disa
 	height:400px;
 	width:500px;
 	float:right;
-	position:relative;
+	/* position:relative; */
+	position:absolute;
 	border: 3px solid #800000;
 }
 

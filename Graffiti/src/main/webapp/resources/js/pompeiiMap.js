@@ -107,7 +107,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({color: getFillColor(graffitiInLayer)});
-				currentInsulaNumber=getInsulaGroupFromString(layer.feature.properties.PRIMARY_DO);
+				currentInsulaNumber=layer.feature.properties.insula_id;
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
 					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
 					//if(currentInsulaNumber==12){
@@ -132,7 +132,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		//Empty slots are caused by there not yet being a group at those indexes yet them being surrounded by values. 
 		map.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
-				currentInsulaNumber=getInsulaGroupFromString(layer.feature.properties.PRIMARY_DO);
+				currentInsulaNumber=layer.feature.properties.insula_id;
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
 				//For an unknown reason, forEachLayer loops through two times instead of one. 
 				//We compensate by dividing number of graffiti by two(?). 
@@ -146,7 +146,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		});
 	}
 	
-	//Gets and returns the insula group from a String assuming that the string is primary do and ending with the number
+	/*//Gets and returns the insula group from a String assuming that the string is primary do and ending with the number
 	//Assumes no primary DO over 10(?)
 	function getInsulaGroupFromString(oneString){
 		//Converts string to list of chars so we can take the index
@@ -178,7 +178,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		}
 		//this should never happen
 		return false;
-	}
+	}*/
 	
 	function zoomedOutThresholdReached(){
 		currentZoomLevel=map.getZoom();

@@ -200,6 +200,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								String propertyName = rs.getString("property_name");
 								String addProperties = rs.getString("additional_properties");
 								String italPropName = rs.getString("italian_property_name");
+								String insulaId=rs.getString("insula_id");
 								//String insulaDescription = rs.getString("description");
 								//String insulaPleiadesId = rs.getString("insula_pleiades_id");
 								//String propPleiadesId = rs.getString("property_pleiades_id");
@@ -227,6 +228,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 								properties.put("Property_Name", propertyName);
 								properties.put("Additional_Properties", addProperties);
 								properties.put("Italian_Property_Name", italPropName);
+								properties.put("insula_id", insulaId);
 								
 								//These are not in the database.
 								//properties.put("Insula_Description", insulaDescription);
@@ -330,6 +332,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						String insulaDescription = rs.getString("description");
 						String insulaPleiadesId = rs.getString("insula_pleiades_id");
 						String propPleiadesId = rs.getString("property_pleiades_id");
+						String insulaId=rs.getString("insula_id");
 
 						getNumberStatement.setInt(1, propertyId);
 						ResultSet numberOnPropResultSet = getNumberStatement.executeQuery();
@@ -356,6 +359,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						properties.put("Insula_Pleiades_Id", insulaPleiadesId);
 						properties.put("Property_Pleiades_Id", propPleiadesId);
 						properties.put("Property_Type", propertyType);
+						properties.put("insula_id", insulaId);
 
 						JsonNode updatedProps = (JsonNode) properties;
 						propertyNode.set("properties", updatedProps);
