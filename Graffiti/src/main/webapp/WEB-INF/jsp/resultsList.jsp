@@ -60,7 +60,7 @@
 				</c:when>
 				<c:otherwise>
 					<c:set var="k" value="${i.edrId}" />
-				
+
 					<tr>
 						<td colspan="2"><a target="_blank" href="${pages[0]}"
 							id="imgLink${k}"><img class="thumbnail"
@@ -89,6 +89,7 @@
 			<th class="propertyLabel">Findspot:</th>
 			<td><a
 				href="<%=request.getContextPath() %>/results?property=${i.agp.property.id}">${i.agp.property.propertyName}
+					${i.agp.property.italianPropertyName}
 					(${i.agp.property.insula.shortName}.${i.agp.property.propertyNumber})</a>
 			</td>
 		</tr>
@@ -113,9 +114,7 @@
 		<tr style="line-height: 30px;">
 			<td><a
 				href="<%=request.getContextPath() %>/graffito/AGP-${i.edrId}"
-				id="${i.edrId}"> See more information
-					&#10140;</a>
-					</td>
+				id="${i.edrId}"> See more information &#10140;</a></td>
 		</tr>
 
 		<%
@@ -134,5 +133,5 @@
 		%>
 	</table>
 	<hr class="main-table" />
-	
+
 </c:forEach>

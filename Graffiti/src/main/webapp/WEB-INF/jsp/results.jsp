@@ -91,7 +91,7 @@ function checkAlreadyClicked(ids){
 function checkboxesAfterBack() {
 	contentsUrl = window.location.href;
 	var params = contentsUrl.split("?")[1].split("&");
-		
+	
 	var dict = {
 			"drawing_category" : "dc",
 			"property" : "p",

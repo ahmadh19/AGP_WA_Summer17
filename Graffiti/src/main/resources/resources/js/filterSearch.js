@@ -334,7 +334,7 @@ function refineResults() {
 	//Problem: also passes for Herculaneum, not just Pompeii. However, does not seem to be causing errors. 
 	var locationKeys=document.getElementById("mapkeys").innerHTML;
 	map.remove();
-	window.initmap(true,false,false,false,0,locationKeys);
+	window.initpompmap(true,false,false,false,0,locationKeys);
 }
 
 /*

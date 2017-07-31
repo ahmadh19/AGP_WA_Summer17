@@ -9,8 +9,8 @@
  */
 
 var currentParams = new Array(); // the ending array of parameters
-requestUrl = "filter"; // request url for filtering
-reportUrl = "admin/report"; // report url for reports
+var requestUrl = "filter"; // request url for filtering
+var reportUrl = "admin/report"; // report url for reports
 var filters = new Array(); // an array of the filters applied so far on the search
 
 /**
@@ -335,7 +335,7 @@ function refineResults() {
 	//making locationKeys of the list type.
 	var locationKeys=eval(document.getElementById("mapkeys").innerHTML);
 	map.remove();
-	window.initmap(true,false,false,false,0,locationKeys);
+	window.initpompmap(true,false,false,false,0,locationKeys);
 }
 
 /*

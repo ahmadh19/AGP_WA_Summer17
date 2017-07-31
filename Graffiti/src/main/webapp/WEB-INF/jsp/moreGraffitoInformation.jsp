@@ -1,5 +1,6 @@
- <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -10,19 +11,21 @@
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
-<%@ include file="/resources/common_head.txt" %>
-<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
-  integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
-  crossorigin=""/>
+<%@ include file="/resources/common_head.txt"%>
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/resources/css/main.css" />
+<link rel="stylesheet"
+	href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
+	integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
+	crossorigin="" />
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 
 <script type="text/javascript" src="/resources/js/geojson.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
-  integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
-  crossorigin=""></script>
+	integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
+	crossorigin=""></script>
 
 
 <script type="text/javascript"
@@ -31,8 +34,6 @@
 
 
 <style type="text/css">
-
-
 #pompCityMap {
 	margin-top: 0px;
 }
@@ -60,9 +61,7 @@
 	color: blue;
 }
 
-#convention_table th {
-<body>
-	text-align: center;
+#convention_table th { <body > text-align:center;
 	width: 100%;
 }
 
@@ -75,12 +74,12 @@
 	color: maroon;
 }
 
-h4{
-	float:right;
-	position:relative;
-	 margin-bottom: 10px;
-    margin-top: 10px;
-    margin-right:78%;
+h4 {
+	float: right;
+	position: relative;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	margin-right: 78%;
 }
 
 .btn-agp {
@@ -166,35 +165,33 @@ function backToResults(){
 	window.location.href = url;
 }
 </script>
-	
+
 </head>
 
 <body>
-<%@include file="header.jsp"%>
+	<%@include file="header.jsp"%>
 
 
-<c:set var="i" value="${requestScope.inscription}" />
+	<c:set var="i" value="${requestScope.inscription}" />
 
 
 
-<div class="button_bar">
-		 
+	<div class="button_bar">
+
 		<button class="btn btn-agp" onclick="backToResults();">Back
 			to Results</button>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/csv"
 			id="csv">
 			<button class="btn btn-agp right-align">Export as CSV</button>
-		</a>
-		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/xml"
+		</a> <a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/xml"
 			id="xml">
 			<button class="btn btn-agp right-align">Export as EpiDoc</button>
-		</a>
-		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/json"
+		</a> <a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/json"
 			id="json">
 			<button class="btn btn-agp right-align">Export as JSON</button>
 		</a>
 	</div>
-<div class="container">
+	<div class="container">
 		<div class="top-div">
 			<!-- sets the title of graffito -->
 			<c:choose>
@@ -221,6 +218,9 @@ function backToResults(){
 
 			<!-- sets the findspot -->
 			<c:choose>
+				<c:when test="${not empty i.agp.property.italianPropertyName}">
+					<c:set var="findspot" value="${i.agp.property.italianPropertyName}" />
+				</c:when>
 				<c:when test="${not empty i.agp.property.propertyName}">
 					<c:set var="findspot" value="${i.agp.property.propertyName}" />
 				</c:when>
@@ -298,17 +298,17 @@ function backToResults(){
 							</tr>
 							<tr>
 								<td onclick="displayDefinition('def6')">a&#803;b&#803;</td>
-							<Anthem/tr>
-							<tr>
-								<td onclick="displayDefinition('def7')"><span
-									style="text-decoration: underline">abc</span></td>
-							</tr>
-							<tr>
-								<td onclick="displayDefinition('def8')">((:abc))</td>
-							</tr>
-							<tr>
-								<td onclick="displayDefinition('def9')">(:abc)</td>
-							</tr>
+								<Anthem /tr>
+								<tr>
+									<td onclick="displayDefinition('def7')"><span
+										style="text-decoration: underline">abc</span></td>
+								</tr>
+								<tr>
+									<td onclick="displayDefinition('def8')">((:abc))</td>
+								</tr>
+								<tr>
+									<td onclick="displayDefinition('def9')">(:abc)</td>
+								</tr>
 						</tbody>
 					</table>
 				</div>
@@ -389,35 +389,34 @@ function backToResults(){
 								value="Measurements:"></th>
 								<!--  value="Show Measurements"></th>-->
 							<th class="propertyLabel">Measurements:</th>
-								
+
 							<td>
 								<!--<div id="measurements"> Again, commented out to remove the button features. Do not delete!-->
-									<ul>
-										<c:if test="${not empty i.agp.graffitoHeight }">
-											<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.graffitoLength }">
-											<li>Graffito Length: ${i.agp.graffitoLength }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.heightFromGround }">
-											<li>Height from Ground: ${i.agp.heightFromGround }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.minLetterHeight }">
-											<li>Min Letter Height: ${i.agp.minLetterHeight}</li>
-										</c:if>
-										<c:if test="${not empty i.agp.maxLetterHeight }">
-											<li>Max Letter Height: ${i.agp.maxLetterHeight }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.minLetterWithFlourishesHeight }">
-											<li>Min Letter Height with Flourishes:
-												${i.agp.minLetterWithFlourishesHeight }</li>
-										</c:if>
-										<c:if test="${not empty i.agp.maxLetterWithFlourishesHeight }">
-											<li>Max Letter Height with Flourishes:
-												${i.agp.maxLetterWithFlourishesHeight }</li>
-										</c:if>
-									</ul>
-								<!--</div>-->
+								<ul>
+									<c:if test="${not empty i.agp.graffitoHeight }">
+										<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.graffitoLength }">
+										<li>Graffito Length: ${i.agp.graffitoLength }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.heightFromGround }">
+										<li>Height from Ground: ${i.agp.heightFromGround }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.minLetterHeight }">
+										<li>Min Letter Height: ${i.agp.minLetterHeight}</li>
+									</c:if>
+									<c:if test="${not empty i.agp.maxLetterHeight }">
+										<li>Max Letter Height: ${i.agp.maxLetterHeight }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.minLetterWithFlourishesHeight }">
+										<li>Min Letter Height with Flourishes:
+											${i.agp.minLetterWithFlourishesHeight }</li>
+									</c:if>
+									<c:if test="${not empty i.agp.maxLetterWithFlourishesHeight }">
+										<li>Max Letter Height with Flourishes:
+											${i.agp.maxLetterWithFlourishesHeight }</li>
+									</c:if>
+								</ul> <!--</div>-->
 							</td>
 
 						</tr>
@@ -502,28 +501,21 @@ function backToResults(){
 					</table>
 				</c:when>
 			</c:choose>
-			
+
 			<div id="maps">
 				<h4>Findspot:</h4>
 				<!-- <div id="pompCityMap"></div> -->
 				<div id="pompeiimap" class="findspotMap"></div>
 			</div>
-			
+
 			<script src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 
 			<script type="text/javascript">
 				hideConventions();
-				if ("${i.ancientCity}" == "Herculaneum") {
-					
-					generateHerculaneum("${i.ancientCity}");
-					
-				} else if ("${i.ancientCity}" == "Pompeii") {
-					
-					window.initmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
-					
-				} 
+				
+				window.initpompmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
 			</script>
-			
+
 		</div>
 	</div>
 

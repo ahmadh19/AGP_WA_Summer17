@@ -56,6 +56,7 @@ import java.sql.SQLException;
 
 public class StorePropertiesFromDatabaseForgeoJsonMap {
 
+	private static final String POMPEII_PROPERTY_DATA_TXT_FILE = "src/main/webapp/resources/js/pompeiiPropertyData.txt";
 	private static final String POMPEII_JAVASCRIPT_DATA_FILE_LOC = "src/main/webapp/resources/js/pompeiiPropertyData.js";
 	private static final String POMPEII_INIT_JAVASCRIPT_LOC = "src/main/webapp/resources/js/PropertyDataFirst.txt";
 	private static final String POMPEII_GEOJSON_FILE_LOC = "src/main/resources/geoJSON/eschebach.json";
@@ -255,8 +256,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	private static void storePompeii() throws JsonProcessingException, IOException {
 
 		try {
-			PrintWriter pompeiiTextWriter = new PrintWriter("src/main/webapp/resources/js/pompeiiPropertyData.txt",
-					"UTF-8");
+			PrintWriter pompeiiTextWriter = new PrintWriter(POMPEII_PROPERTY_DATA_TXT_FILE, "UTF-8");
 
 			// creates necessary objects to parse the original GeoJSON file
 			ObjectMapper pompeiiMapper = new ObjectMapper();
@@ -327,8 +327,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 							propertyType = resultset.getString("name");
 						}
 
-						ObjectNode graffito = (ObjectNode) featureNode;
-						ObjectNode properties = (ObjectNode) graffito.path("properties");
+						ObjectNode propertyNode = (ObjectNode) featureNode;
+						ObjectNode properties = (ObjectNode) propertyNode.path("properties");
 						properties.put("Property_Id", propertyId);
 						properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 						properties.put("Property_Name", propertyName);
@@ -340,9 +340,14 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						properties.put("Property_Type", propertyType);
 
 						JsonNode updatedProps = (JsonNode) properties;
-						graffito.set("properties", updatedProps);
+						propertyNode.set("properties", updatedProps);
+						
+						String jsonPoly = new ObjectMapper().writeValueAsString(p);
+						JsonNode updatedGeometry = new ObjectMapper().readTree(jsonPoly);
 
-						pompeiiTextWriter.println(graffito + ",");
+						propertyNode.replace("geometry", updatedGeometry);
+
+						pompeiiTextWriter.println(propertyNode + ",");
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -357,7 +362,14 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		}
 	}
 
-	private static Polygon parseGeometryAndRemoveCoordinates(JsonNode featureNode) {
+	/**
+	 * Simplifies a geoJSON polygon object by removing the Z-coordinates and
+	 * keeping only the x and y coordinates
+	 * 
+	 * @param featureNode
+	 * @return Polygon with Z-coordinate removed
+	 */
+	private static Polygon parseGeometryAndRemoveCoordinates(JsonNode featureNode) throws JsonProcessingException {
 		JsonNode geometryNode = featureNode.findValue("geometry");
 		JsonParser coordParse = geometryNode.traverse();
 		Polygon p = null;
@@ -368,12 +380,12 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 			if (object instanceof Polygon) {
 				p = (Polygon) object;
-				System.out.println(p.getCoordinates());
+
+				// go through the coordinates, removing the z-coordinate
 				List<List<LngLatAlt>> newCoordList = new ArrayList<List<LngLatAlt>>();
 				for (List<LngLatAlt> coordList : p.getCoordinates()) {
 					List<LngLatAlt> aList = new ArrayList<LngLatAlt>();
 					for (LngLatAlt coord : coordList) {
-						System.out.println(coord);
 						LngLatAlt newCoord = new LngLatAlt(coord.getLongitude(), coord.getLatitude());
 						aList.add(newCoord);
 					}
@@ -382,31 +394,13 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 				p.setCoordinates(newCoordList);
 			}
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return p;
-	}
-
-	/**
-	 * Iterates through all of the coordinates in a JSON Geometry object and
-	 * removes the last(Z-coords) in each part of the list. Designed only for
-	 * geoJson polygons with coordinates in "circle" form(?!)
-	 * 
-	 * @param geometryObject
-	 * @return
-	 */
-	private static ObjectNode removeZCoordinates(ObjectNode geometryObject) {
-		System.out.println("Geometry object received by function: " + geometryObject);
-		ObjectNode coordinates = (ObjectNode) geometryObject.path("Type");
-		System.out.println("Here are the coordinates: " + coordinates);
-		return geometryObject;
 	}
 
 	/**
@@ -433,41 +427,39 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 		// Copies from pompeiiPropertyData.txt to pompeiiPropertyData.js for the
 		// body portion of the file.
-		File pompeiiUpdatedPText = new File("src/main/webapp/resources/js/pompeiiPropertyData.txt");
+		File pompeiiUpdatedPText = new File(POMPEII_PROPERTY_DATA_TXT_FILE);
 		Scanner pompeiiReadFromText = new Scanner(pompeiiUpdatedPText);
 		String pompeiiContent;
 		while (pompeiiReadFromText.hasNext()) {
 			pompeiiContent = pompeiiReadFromText.nextLine();
 			pompeiiJsWriter.println(pompeiiContent);
 		}
-
-		PrintWriter herculaneumJsWriter = new PrintWriter("src/main/webapp/resources/js/herculaneumPropertyData.js",
-				"UTF-8");
-		jsFirst = new File(POMPEII_INIT_JAVASCRIPT_LOC);
-		jsReadFirst = new Scanner(jsFirst);
-		while (jsReadFirst.hasNext()) {
-			String content = jsReadFirst.nextLine();
-			// herculaneumJsWriter.println(content);
-		}
-
-		// Copies from herculaneumPropertyData.txt to herculaneumPropertyData.js
-		// for the body portion of the file.
-		File herculaneumUpdatedPText = new File("src/main/webapp/resources/js/herculaneumPropertyData.txt");
-		Scanner herculaneumReadFromText = new Scanner(herculaneumUpdatedPText);
-		String herculaneumContent;
-		while (herculaneumReadFromText.hasNext()) {
-			herculaneumContent = herculaneumReadFromText.nextLine();
-			herculaneumJsWriter.println(herculaneumContent);
-		}
-
-		herculaneumJsWriter.println("]};");
-		herculaneumReadFromText.close();
-		herculaneumJsWriter.close();
-
 		pompeiiJsWriter.println("]};");
 		jsReadFirst.close();
 		pompeiiReadFromText.close();
 		pompeiiJsWriter.close();
+
+		/*
+		 * PrintWriter herculaneumJsWriter = new PrintWriter(
+		 * "src/main/webapp/resources/js/herculaneumPropertyData.js", "UTF-8");
+		 * jsFirst = new File(POMPEII_INIT_JAVASCRIPT_LOC); jsReadFirst = new
+		 * Scanner(jsFirst); while (jsReadFirst.hasNext()) { String content =
+		 * jsReadFirst.nextLine(); // herculaneumJsWriter.println(content); }
+		 * 
+		 * // Copies from herculaneumPropertyData.txt to
+		 * herculaneumPropertyData.js // for the body portion of the file. File
+		 * herculaneumUpdatedPText = new
+		 * File("src/main/webapp/resources/js/herculaneumPropertyData.txt");
+		 * Scanner herculaneumReadFromText = new
+		 * Scanner(herculaneumUpdatedPText); String herculaneumContent; while
+		 * (herculaneumReadFromText.hasNext()) { herculaneumContent =
+		 * herculaneumReadFromText.nextLine();
+		 * herculaneumJsWriter.println(herculaneumContent); }
+		 * 
+		 * herculaneumJsWriter.println("]};"); herculaneumReadFromText.close();
+		 * herculaneumJsWriter.close();
+		 */
+
 	}
 
 }

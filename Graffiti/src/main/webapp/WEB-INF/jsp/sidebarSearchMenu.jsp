@@ -354,9 +354,15 @@ button:disabled {
 <script type="text/javascript">
 	// Create the keyboard buttons
 	window.onload = function() {
+		checkboxesAfterBack();
+		
+		<c:if test="${not empty sessionScope.returnFromEDR}">
+		document.getElementById("${sessionScope.returnFromEDR}").scrollIntoView();
+		<c:set var="returnFromEDR" value="" scope="session" />
+		</c:if>
 		var brCount = 1;
 
-		for (i = 945; i < 970; i++) {
+		for (var i = 945; i < 970; i++) {
 			var textBox = document.getElementById("keyword");
 			var v = document.createElement("input");
 			v.type = "button";

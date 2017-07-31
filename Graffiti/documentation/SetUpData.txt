@@ -16,8 +16,6 @@ Populate Default Data
  	- automatically calls AddEDRLinksToApparatus, ExtractEDRLanguageForAGPInfo, and ExtractWritingStyleForAGP
  - UpdateSummaryTranslationCommentary
  - InsertFiguralInformation
- - xx Insert drawing tags - InsertDrawingTagMappings
- - InsertDescriptionsAndTranslations
 
 Update Elastic Search - AddInscriptionsToElasticSearch
  

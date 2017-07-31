@@ -42,6 +42,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -57,8 +58,11 @@ import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.dao.InsulaDao;
 import edu.wlu.graffiti.dao.PropertyTypesDao;
 import edu.wlu.graffiti.data.setup.Utils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @Controller
+@Api(value="Graffiti", description="Operations pertaining to the graffiti.")
 public class GraffitiController {
 
 	@Resource
@@ -145,92 +149,22 @@ public class GraffitiController {
 		String message;
 		HttpSession s = request.getSession();
 
-		if (city != null && !city.isEmpty()) {
-			if (city.toLowerCase().equals("pompeii")) {
-				request.setAttribute("city", "Pompeii");
-				city = "Pompeii";
-				message = "Click on the map to search for graffiti in a particular city-block.";
-			} else if (city.toLowerCase().equals("herculaneum")) {
-				request.setAttribute("city", "Herculaneum");
-				city = "Herculaneum";
-				message = "Click on one or more properties within the map, then hit the \"Search\" button below.";
-			} else {
-				request.setAttribute("error", "Error: " + city + " is not a valid city.");
-				return "index";
-			}
-
-			final InputStream inStream = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream(city.toLowerCase() + "_map.xml");
-
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder;
-			Document doc;
-
-			List<String> coords = new ArrayList<String>();
-			List<String> regionNames = new ArrayList<String>();
-			List<String> regionIds = new ArrayList<String>();
-
-			try {
-				dBuilder = dbFactory.newDocumentBuilder();
-				doc = dBuilder.parse(inStream);
-				doc.getDocumentElement().normalize();
-
-				NodeList areaList = doc.getElementsByTagName("area");
-
-				for (int i = 0; i < areaList.getLength(); i++) {
-
-					Element area = (Element) areaList.item(i);
-					String regionCoords = area.getAttribute("coords");
-					String regionName = area.getAttribute("alt");
-					int regionId;
-
-					if (city.equals("Pompeii")) { // use insula ids
-						regionId = this.insulaDao.getInsulaByCityAndInsula(city, regionName).get(0).getId();
-						regionIds.add("i" + String.valueOf(regionId));
-					} else { // use property ids
-						String insulaAndProp = regionName.split(" ")[0];
-						try {
-							int ind = insulaAndProp.lastIndexOf(".");
-							String insula = insulaAndProp.substring(0, ind);
-							String property_number = insulaAndProp.substring(ind + 1);
-							// System.out.println(insulaAndProp + " " + city + "
-							// " + insula + " " + property_number);
-							regionId = this.findspotDao
-									.getPropertyByCityAndInsulaAndProperty(city, insula, property_number).getId();
-							regionIds.add("p" + String.valueOf(regionId));
-						} catch (IndexOutOfBoundsException e) {
-							// not one of the "regular" properties
-							// String uniqueId = insulaAndProp + i;
-							// System.out.println(city + " " + regionName);
-							regionId = this.findspotDao.getPropertyByCityAndProperty(city, regionName).getId();
-							regionIds.add("p" + regionId);
-						}
-					}
-					coords.add(regionCoords);
-					regionNames.add(regionName);
-				}
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			} catch (SAXException | IOException e) {
-				e.printStackTrace();
-			}
-			request.setAttribute("coords", coords);
-			request.setAttribute("regionNames", regionNames);
-			request.setAttribute("regionIds", regionIds);
-			request.setAttribute("message", message);
-			request.setAttribute("displayImage", request.getContextPath() + "/resources/images/" + city + ".jpg");
-
+		
 			// Allows attributes to be set but goes to the pompeiiMap url if the
 			// city clicked on is pompeii.
+			System.out.println(city.toLowerCase());
 			if (city.toLowerCase().equals("pompeii")) {
 				// return "pompeiiMap";
 				return "searchPompeii";
 			}
+			if (city.toLowerCase().equals("herculaneum")) {
+				// return "pompeiiMap";
+				//return "herculaneumMap";
+				System.out.println(city.toLowerCase());
+				return "searchHerculaneum";
+			}
 			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 			return "search";
-		} else {
-			return "index";
-		}
 	}
 
 	@RequestMapping(value = "/featured-graffiti", method = RequestMethod.GET)
@@ -411,12 +345,27 @@ public class GraffitiController {
 			if (city.equals("Pompeii")) {
 				return "moreGraffitoInformation";
 			} else {
-				return "details";
+				return "moreGraffitoInformationHerculaneum";
 			}
 			// return "details";
 		}
 	}
-
+	
+	// TODO: add annotation produces = "text/html" for the api docs?
+	@ApiOperation(value="Searches for inscriptions and returns the results. The base URI lists "
+			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
+			+ "results as the user wishes.",
+			 notes="A detailed overview of possible parameters is as follows: <br/> "
+			+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
+			+ "insula={insulaID} <br/>"
+			+ "property={propertyID} <br/>"
+			+ "property_type={propertyType}<br/>"
+			+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
+			+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
+			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
+			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
+			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
+			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
 	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	public String search(final HttpServletRequest request) {
 		init();
@@ -427,7 +376,6 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
-		System.out.println("Location keys set in G Controller");
 		// return "results";
 		return "searchResults";
 	}
@@ -662,6 +610,20 @@ public class GraffitiController {
 		this.graffitiDao = graffitiDao;
 	}
 
+	@ApiOperation(value="Filters the inscriptions and returns the results without any styling. The base URI lists "
+			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
+			+ "results as the user wishes.",
+			 notes="A detailed overview of possible parameters is as follows: <br/> "
+			+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
+			+ "insula={insulaID} <br/>"
+			+ "property={propertyID} <br/>"
+			+ "property_type={propertyType}<br/>"
+			+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
+			+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
+			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
+			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
+			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
+			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
 	public String filterResults(final HttpServletRequest request) {
 		init();

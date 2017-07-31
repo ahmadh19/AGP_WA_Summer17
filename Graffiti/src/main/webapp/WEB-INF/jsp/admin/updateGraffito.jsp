@@ -210,6 +210,13 @@ input[name*="image"] {
 					<div class="col-sm-6" id="graffitoContent">${i.contentWithLineBreaks}</div>
 				</div>
 				
+				<div class="form-group">
+					<label for="epidocContent" class="col-sm-3 control-label">Content EpiDoc:</label>
+					<div class="col-sm-6">
+						<textarea rows=5 id="epidocContent" name="epidocContent" class="form-control">${i.agp.epidoc}</textarea>
+					</div>
+				</div>
+				
 				<div id="epidocModal" class="modal">
 					<div class="modal-content" id="epidocModalContent">
 						<span class="close">&times;</span>
@@ -250,13 +257,6 @@ input[name*="image"] {
 					<label for="commentary" class="col-sm-3 control-label">Commentary:</label>
 					<div class="col-sm-6">
 						<textarea rows=7 id="commentary" name="commentary" class="form-control">${ i.agp.commentary }</textarea>
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label for="epidocContent" class="col-sm-3 control-label">Content EpiDoc:</label>
-					<div class="col-sm-6">
-						<textarea rows=5 id="epidocContent" name="epidocContent" class="form-control">${i.agp.epidoc}</textarea>
 					</div>
 				</div>
 				

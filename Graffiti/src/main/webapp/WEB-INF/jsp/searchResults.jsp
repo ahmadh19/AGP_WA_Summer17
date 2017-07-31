@@ -22,6 +22,9 @@
  <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
 	
+ <script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
+	
 <%@ page import= "java.util.*" %>
 
 <script type="text/javascript">
@@ -52,7 +55,6 @@ function setLocationKeys(){
 	if(locationKeys==null){
 		locationKeys=new ArrayList();
 	}
-	System.out.println("Location keys reset!");
 	%>
 	locationKeys = <%=locationKeys%>;
 }
@@ -67,8 +69,6 @@ function setLocationKeys(){
 		//start();
 //		window.initmap();
 //}
-
-
 
 function generateHerculaneum(name) {
 	xmlHttp = new XMLHttpRequest();
@@ -169,18 +169,8 @@ function checkboxesAfterBack() {
 				addSearchTerm("Global", value, value);
 			}
 		}
+		function generateHerculaneum(name) {
 	}
-}
-
-
-function updatePage(){
-	checkboxesAfterBack();
-	
-	<c:if test="${not empty sessionScope.returnFromEDR}">
-	document.getElementById("${sessionScope.returnFromEDR}").scrollIntoView();
-	<c:set var="returnFromEDR" value="" scope="session" />
-	</c:if>
-	
 }
 
 </script>	
@@ -226,14 +216,14 @@ ul#searchTerms li {
 	
 </head>
 
-<body onload="updatePage();">
+<body>
 <%@include file="header.jsp"%>
 
 <div id="contain" class="container" style="margin-bottom: 50px;">
 		<%@include file="sidebarSearchMenu.jsp"%>
 		<!--  SideBar Map  -->
 		
-		<div id="herculaneumCityMap" class="searchResultsHerculaneum"></div>
+		<div id="herculaneummap" class="searchResultsHerculaneum"></div>
 		<div id="pompeiimap" class="searchResultsPompeii"></div>
 		
 		
@@ -258,16 +248,21 @@ ul#searchTerms li {
 
 	
 <script type="text/javascript">
-	generateHerculaneum("Herculaneum");
+	//generateHerculaneum("Herculaneum");
 </script>
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
+	
+<script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 
 <script>
 	setLocationKeys();
-    
-	window.initmap(true,false,false,false,0,locationKeys);
+	//Apparently, these need to be used in same order as they are in div. 
+	window.inithercmap(true,false,false,false,0,locationKeys);
+	window.initpompmap(true,false,false,false,0,locationKeys);
+
 </script>
 </body>
 

@@ -37,9 +37,18 @@ public class MapController {
 		return "pompeiiMap";
 	}
 	
+	@RequestMapping(value = "/herculaneumMap", method = RequestMethod.GET)
+	public String viewHercMap(final HttpServletRequest request) {
+		return "herculaneumMap";
+	}
+	
 	@RequestMapping(value = "/searchPompeii", method = RequestMethod.GET)
 	public String searchMap(final HttpServletRequest request) {
 		return "searchPompeii";
+	}
+	@RequestMapping(value = "/search?city=Herculaneum", method = RequestMethod.GET)
+	public String searchHerc(final HttpServletRequest request) {
+		return "searchHerculaneum";
 	}
 	
 	@RequestMapping(value = "/searchResults", method = RequestMethod.GET)

@@ -2,15 +2,15 @@
 var map;
 
 
-
-function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomOnOneProperty) {
+function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomOnOneProperty) {
 	//this just sets my access token
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
 	var borderColor;
 	var fillColor;
-	var southWest = L.latLng(40.746, 14.48),
+	//14.346131   40.8061619
+	var southWest = L.latLng(40.8061619, 14.346131),
 	
-	northEast = L.latLng(40.754, 14.494),
+	northEast = L.latLng(40.8061619, 14.346131),
 	bounds = L.latLngBounds(southWest, northEast);
 	
 	var currentZoomLevel;
@@ -37,11 +37,10 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//Fires when the map is initialized
 
-	map = new L.map('pompeiimap', {
-		center: [40.750, 14.4884],
+	map = new L.map('herculaneummap', {
+		center: [40.8061619, 14.346131],
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
-		maxZoom:20,
 		maxBounds: bounds,
 		//Here is the +/- button for zoom
 	})
@@ -58,11 +57,11 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	
 	//map.addLayer(grayscale);
-	L.geoJson(pompeiiPropertyData).addTo(map);
+	L.geoJson(herculaneumPropertyData).addTo(map);
 	
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
-		dealWithInsulaLevelView();
+		//dealWithInsulaLevelView();
 	});
 	
 	//Centers the map around a single property
@@ -78,24 +77,12 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				}
 			});
 		}
-		else if(propertyIdListToHighlight.length==1){
-			var newCenterCoordinates=[];
-			var idOfListHighlight=propertyIdListToHighlight[0];
-			map.eachLayer(function(layer){
-				if(layer.feature!=undefined){
-					if(layer.feature.properties.Property_Id==idOfListHighlight){
-						newCenterCoordinates=layer.getBounds().getCenter();
-						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
-					}
-				}
-			});
-		}
 	}
 	
 	
 	if(propertyIdToHighlight!=0)
 	{
-		showCloseUpView();
+		//showCloseUpView();
 	}
 	
 	//Responsible for showing the map view on the insula level. 
@@ -107,7 +94,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({color: getFillColor(graffitiInLayer)});
-				currentInsulaNumber=getInsulaGroupFromString(layer.feature.properties.PRIMARY_DO);
+				currentInsulaNumber=getFirstDigitInString(layer.feature.properties.PRIMARY_DO);
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
 					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
 					//if(currentInsulaNumber==12){
@@ -132,7 +119,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		//Empty slots are caused by there not yet being a group at those indexes yet them being surrounded by values. 
 		map.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
-				currentInsulaNumber=getInsulaGroupFromString(layer.feature.properties.PRIMARY_DO);
+				currentInsulaNumber=getFirstDigitInString(layer.feature.properties.PRIMARY_DO);
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
 				//For an unknown reason, forEachLayer loops through two times instead of one. 
 				//We compensate by dividing number of graffiti by two(?). 
@@ -146,34 +133,34 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		});
 	}
 	
-	//Gets and returns the insula group from a String assuming that the string is primary do and ending with the number
+	//Gets and returns the first digit 1-9 in a string of characters. Returned in string form. 
 	//Assumes no primary DO over 10(?)
-	function getInsulaGroupFromString(oneString){
+	function getFirstDigitInString(oneString){
 		//Converts string to list of chars so we can take the index
 		//oneString=oneString.split('');
-		
-		//Set equal to # to prevent layers from starting with undefined(stylistic choice)
-		var insulaGroup='#';
+		var character;
 		var i;
-		var possibleCharacter;
-		var characterTwo;
 		for(i=0;i<oneString.length;i++){
-			possibleCharacter=oneString[i];
-			if(['0','1','2','3','4','5','6','7','8','9','V','I','X'].indexOf(possibleCharacter)>=0){
-				insulaGroup+=possibleCharacter;
+			character=oneString[i];
+			if(['0','1','2','3','4','5','6','7','8','9'].indexOf(character)>=0){
+				
 				if(oneString.length>i+1){
 					characterTwo=oneString[i+1];
-					if(['0','1','2','3','4','5','6','7','8','9'].indexOf(possibleCharacter)>=0){
-						insulaGroup+=characterTwo;
-
+					if(['0','1','2','3','4','5','6','7','8','9'].indexOf(character)>=0){
+						//console.log("Character 1: "+character);
+						//console.log("Character 2: "+characterTwo);
+						character+=characterTwo;
+						//if(oneString=="VII.12.18"){
+							//console.log("132 prop through");
+						//}
+						//console.log("Character 1: "+character);
+						
+						
 					}
 				}
 				
 				//console.log("Character: "+character);
-				if(!(['V','I','X'].indexOf(possibleCharacter)>=0)){
-					return insulaGroup;
-					
-				}
+				return character;
 			}
 		}
 		//this should never happen
@@ -202,7 +189,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		propertySelected=false;
 		
 		borderColor=getBorderColorForCloseZoom(feature);
-		fillColor=getFillColor(feature.properties.Number_Of_Graffiti);
+		/*fillColor=getFillColor(feature.properties.Number_Of_Graffiti);*/
+		fillColor=getFillColor();
 		//Try: setStyle instead of returning if this was called using the zoomListener(extra boolean param to check this??)
 		return { 
 	    	fillColor:fillColor,
@@ -216,12 +204,16 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		
 	    //Problem: this does not appear to be called(statement not logging). 
 	    //However, when moved before the return statement console prints too much recursion and map breaks. 
-	    //Is this a form of javascript recursion?
-	    //Maybe I need to use the return contents in my zoom listener?
+	    //Is this a form of javascript recursion?//Maybe I need to use the return contents in my zoom listener?
 		//L.geoJson(pompeiiPropertyData, {style: style}).addTo(map);
+	    
 	}
 	
-	function getFillColor(numberOfGraffiti){
+	function getFillColor(){
+		return '#fda668';
+	}
+	
+	/*function getFillColor(numberOfGraffiti){
 		//Hex darkens color as number it represents decreases
 		if(colorDensity){
 
@@ -335,7 +327,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		//return 'green';
 		return '#FEB24C' ;
 	}
-	
+	*/
 	var geojson;
 	
 	//Sets color for properties which the cursor is moving over. 
@@ -343,7 +335,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		if(interactive && !zoomedOutThresholdReached()){
 			var layer = e.target;
 			layer.setStyle({
-			color:'yellow',
+			color:'red',
 			strokeWidth:"100"
 			
 			});
@@ -398,14 +390,14 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	
 	//What does this do?
-	geojson = L.geoJson(pompeiiPropertyData, {
+	geojson = L.geoJson(herculaneumPropertyData, {
 		style: style,
 	    onEachFeature: onEachFeature
 	    
 	}).addTo(map);
 	//Putting this after the above appears to make it this start correctly.
 	 if(initialZoomNotCalled==true){
-		   dealWithInsulaLevelView();
+		  //dealWithInsulaLevelView();
 		   initialZoomNotCalled=false;
 	 }
 	
@@ -516,12 +508,12 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		el.addEventListener("click", DoSubmit, false);
 	}
 	
-	var el2 = document.getElementById("pompeiimap");
+	var el2 = document.getElementById("herculaneummap");
 	if(el2!=null){
 		el2.addEventListener("click", displayHighlightedRegions, false);
 	}
 	
-	showCloseUpView();
+	//showCloseUpView();
 //	var locationNeeded = false;
 //	if (document.title == "Ancient Graffiti Project :: Property Info") {
 //		locationNeeded = true;
