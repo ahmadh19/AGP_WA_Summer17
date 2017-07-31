@@ -188,7 +188,7 @@ hr.main-table {
 	cursor: pointer;
 	align: right;
 	display: inline;
-	margin: 225px 0px 0px 560px;
+	margin: 225px 0px 0px 818px;
 }
 
 .map-override1 {
