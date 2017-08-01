@@ -15,6 +15,8 @@
 	href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
 <script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
   integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
   crossorigin=""></script>
@@ -26,6 +28,7 @@
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
 <script src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
+<script src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 <script type="text/javascript"> 
 function start() {
 	$('img').mapster({
@@ -45,21 +48,9 @@ function start() {
 	}); 
 }
 
-function generateMap(name) {
-	xmlHttp = new XMLHttpRequest();
-	path = "<%=request.getContextPath()%>/";
-	xmlHttp.open("GET", path +
-			"map?clickedRegion="+name+"&city="+name, false); 
-	xmlHttp.send(null);
-	document.getElementById("cityMap").innerHTML = xmlHttp.responseText;
-	//document.getElementById("pompeiimap").innerHTML = xmlHttp.responseText;
-	start();
-}
 </script>
 </head>
 <body>
-
-	
 	<!-- this script is also for leaflet -->
 	<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
   integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
@@ -91,6 +82,13 @@ function generateMap(name) {
 				<th class="propertyLabel">Property Number:</th>
 				<td>${prop.propertyNumber}</td>
 			</tr>
+			<c:if test="${not empty prop.additionalEntrances}">
+				<tr>
+					<th class="propertyLabel">Additional entrances:
+					</th>
+					<td>${prop.additionalEntrances}</td>
+				</tr>
+			</c:if>
 			<tr>
 				<th class="propertyLabel">Property Name<br />(in English):
 				</th>
@@ -146,7 +144,7 @@ function generateMap(name) {
 			</tr>
 		</table>
 		<div id="map">
-			<div id="cityMap" class="propertyMetadataMap"></div>
+			<div id="herculaneummap" class="propertyMetadataMap"></div>
 			<div id="pompeiimap" class="propertyMetadataMap"></div>
 		</div>
 		
@@ -163,10 +161,10 @@ function generateMap(name) {
 
 	<script type="text/javascript">
 	if("${prop.insula.city.name}"=="Herculaneum"){
-		generateMap("${prop.insula.city.name}");
+		window.inithercmap(true,false,false,false,"${prop.id}");
 	}
 	else if("${prop.insula.city.name}"=="Pompeii"){
-		window.initmap(true,false,false,false,"${prop.id}");
+		window.initpompmap(true,false,false,false,"${prop.id}");
 		
 	}
 

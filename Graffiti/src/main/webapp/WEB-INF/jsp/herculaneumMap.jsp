@@ -39,7 +39,7 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 <script>
-	window.initmap();
+	window.inithercmap();
 </script>
 </body>
 </html>

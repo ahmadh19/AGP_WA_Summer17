@@ -24,6 +24,7 @@ public class Property {
 	private String property_number;
 	private String property_name;
 	private String italianPropertyName;
+	private String additionalEntrances;
 	private Insula insula;
 	private List<PropertyType> propertyTypes;
 	private String pleiadesId = "";
@@ -138,6 +139,20 @@ public class Property {
 	 */
 	public String getPropertyNumber() {
 		return property_number;
+	}
+
+	/**
+	 * @return the additionalEntrances
+	 */
+	public String getAdditionalEntrances() {
+		return additionalEntrances;
+	}
+
+	/**
+	 * @param additionalEntrances 
+	 */
+	public void setAdditionalEntrances(String additionalEntrances) {
+		this.additionalEntrances = additionalEntrances;
 	}
 
 	/**

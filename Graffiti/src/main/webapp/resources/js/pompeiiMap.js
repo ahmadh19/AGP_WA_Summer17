@@ -3,7 +3,7 @@ var map;
 
 
 
-function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomOnOneProperty) {
+function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomOnOneProperty) {
 	//this just sets my access token
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
 	var borderColor;
@@ -72,6 +72,18 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 			map.eachLayer(function(layer){
 				if(layer.feature!=undefined){
 					if(layer.feature.properties.Property_Id==propertyIdToHighlight){
+						newCenterCoordinates=layer.getBounds().getCenter();
+						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
+					}
+				}
+			});
+		}
+		else if(propertyIdListToHighlight.length==1){
+			var newCenterCoordinates=[];
+			var idOfListHighlight=propertyIdListToHighlight[0];
+			map.eachLayer(function(layer){
+				if(layer.feature!=undefined){
+					if(layer.feature.properties.Property_Id==idOfListHighlight){
 						newCenterCoordinates=layer.getBounds().getCenter();
 						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
 					}
@@ -175,10 +187,10 @@ function initmap(moreZoom=false,showHover=true,colorDensity=true,interactive=tru
 	
 	function getBorderColorForCloseZoom(feature){
 		borderColor='white';
-		//if (feature.properties.clicked == true || feature.properties.Property_Id==propertyIdToHighlight || propertyIdListToHighlight.indexOf(feature.properties.Property_Id)>=0) {
+		if (feature.properties.clicked == true || feature.properties.Property_Id==propertyIdToHighlight || propertyIdListToHighlight.indexOf(feature.properties.Property_Id)>=0) {
 			propertySelected=true;
-		//	return 'black';
-		//}
+			return 'black';
+		}
 		return 'white';
 	}
 	

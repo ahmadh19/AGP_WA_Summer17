@@ -46,6 +46,10 @@ public class MapController {
 	public String searchMap(final HttpServletRequest request) {
 		return "searchPompeii";
 	}
+	@RequestMapping(value = "/search?city=Herculaneum", method = RequestMethod.GET)
+	public String searchHerc(final HttpServletRequest request) {
+		return "searchHerculaneum";
+	}
 	
 	@RequestMapping(value = "/searchResults", method = RequestMethod.GET)
 	public String viewSearchResults(final HttpServletRequest request) {
