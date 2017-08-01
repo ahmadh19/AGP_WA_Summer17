@@ -68,5 +68,10 @@ public class FeaturedGraffitiController {
 		return "themedGraffitiResults";
 
 	}
+	
+	@RequestMapping(value = "/new-featured-graffiti/figural-graffiti")
+	public String featuredFiguralGraffiti(final HttpServletRequest request) {
+		return "figuralGraffiti";
+	}
 
 }
