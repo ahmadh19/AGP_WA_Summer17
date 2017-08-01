@@ -378,7 +378,7 @@ input[name*="image"] {
 					<div class="col-sm-1">
 						<input type="checkbox" name="gh_fig" id="gh_fig"
 							class="form-control"
-							<%=inscription.getAgp().getHasFiguralComponent() ? "checked" : ""%> />
+							<%=inscription.getAgp().isGreatestHitFigural() ? "checked" : ""%> />
 					</div>
 				</div>
 

@@ -203,17 +203,17 @@ body {
     <ul class="portfolio-grid">
     				
        				<li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Pompeii" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/PompeiiCity.png" alt="Pompeii"/>
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Herculaneum" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/HerculaneumCity.png" alt="Herculaneum"/>
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Smyrna" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/SmyrnaCity.png" alt="Smyrna"/>
                         </a>
                     </li>

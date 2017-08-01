@@ -169,7 +169,6 @@ function checkboxesAfterBack() {
 				addSearchTerm("Global", value, value);
 			}
 		}
-		function generateHerculaneum(name) {
 	}
 }
 
