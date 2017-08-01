@@ -21,6 +21,8 @@
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
 
 <script type="text/javascript" src="/resources/js/geojson.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
@@ -30,7 +32,8 @@
 
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
-
+<script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 
 
 <style type="text/css">
@@ -127,27 +130,6 @@ $('img').mapster({
 }); 
 }
 
-function generatePompeii(name) {
-	xmlHttp = new XMLHttpRequest();
-	path = "<%=request.getContextPath()%>/";
-	xmlHttp.open("GET", path +
-			"map?clickedRegion="+name+"&city="+"${i.ancientCity}", false); 
-	
-	xmlHttp.send(null);
-	document.getElementById("pompCityMap").innerHTML = xmlHttp.responseText;
-	start();
-} 
-
-
-function generateHerculaneum(name) {
-    xmlHttp = new XMLHttpRequest();
-    path = "<%=request.getContextPath()%>/";
-    xmlHttp.open("GET", path +
-            "map?clickedRegion="+name+"&second=yes"+"&city="+"${i.ancientCity}", false); 
-    xmlHttp.send(null);
-    document.getElementById("hercCityMap").innerHTML = xmlHttp.responseText;
-    start();
-}
 
 function selectImg(ind) {
 	var hrefs = "${requestScope.imagePages}".slice(1,-1).split(','); //turns string of urls into array
@@ -506,14 +488,15 @@ function backToResults(){
 				<h4>Findspot:</h4>
 				<!-- <div id="pompCityMap"></div> -->
 				<div id="pompeiimap" class="findspotMap"></div>
+				<div id="herculaneummap" class="findspotMap"></div>
 			</div>
 
 			<script src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 
 			<script type="text/javascript">
 				hideConventions();
-				
 				window.initpompmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
+				
 			</script>
 
 		</div>
