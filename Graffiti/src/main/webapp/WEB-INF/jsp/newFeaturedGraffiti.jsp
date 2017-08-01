@@ -225,7 +225,7 @@ body {
                         </a>
                     </li>
                                      <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/new-featured-graffiti/figural-graffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/FG.png" alt="Figural Graffiti"/>
                         </a>
                     </li>
@@ -245,12 +245,12 @@ body {
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Travel" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Inns.jpg" alt="Inns and Travel Graffiti"/>
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Grammer" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Grammar.png" alt="Grammar Graffiti"/>
                         </a>
                     </li>
