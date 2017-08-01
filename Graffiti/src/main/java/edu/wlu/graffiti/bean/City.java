@@ -1,6 +1,11 @@
 package edu.wlu.graffiti.bean;
 
+import static org.springframework.data.elasticsearch.annotations.FieldType.keyword;
+
+import org.springframework.data.elasticsearch.annotations.Field;
+
 public class City {
+	@Field(type=keyword)
 	private String name;
 	private String description;
 	private String pleiadesID;

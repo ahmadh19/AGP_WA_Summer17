@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 /**
  * Information about the figural component
  * 
@@ -17,6 +20,7 @@ public class FiguralInfo {
 	
 	private String description_in_latin = "";
 	private String description_in_english = "";
+	@Field(type=FieldType.Nested)
 	private Set<DrawingTag> drawingTags;
 	
 	public FiguralInfo() {

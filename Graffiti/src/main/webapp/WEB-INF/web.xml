@@ -9,15 +9,15 @@
 		<param-value>/WEB-INF/log4j.properties</param-value>
 	</context-param>
 	
-	<context-param>
+	<!--<context-param>-->
 		<!-- Spring uses convention.  The ContextLoaderListener looks for applicationContext.xml by default.  Since we are using a different file, we need to add a context parameter. -->
-    	<param-name>contextConfigLocation</param-name>
+    	<!--<param-name>contextConfigLocation</param-name>
     	<param-value>/WEB-INF/spring-security.xml</param-value>
-	</context-param>
+	</context-param>-->
 	
-	<listener>
+	<!--<listener>
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-	</listener>
+	</listener>-->
 	
 	
 	<servlet>
@@ -37,7 +37,7 @@
     	</listener-class>
 	</listener>
 
-	<filter>
+	<!--<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
@@ -45,7 +45,7 @@
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping>-->
 	
 	
 	<context-param>

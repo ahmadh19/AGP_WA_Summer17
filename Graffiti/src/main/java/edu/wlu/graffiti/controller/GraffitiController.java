@@ -11,10 +11,7 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -25,28 +22,18 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import edu.wlu.graffiti.bean.DrawingTag;
 import edu.wlu.graffiti.bean.Inscription;
@@ -58,11 +45,11 @@ import edu.wlu.graffiti.dao.GraffitiDao;
 import edu.wlu.graffiti.dao.InsulaDao;
 import edu.wlu.graffiti.dao.PropertyTypesDao;
 import edu.wlu.graffiti.data.setup.Utils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.Api;
+//import io.swagger.annotations.ApiOperation;
 
 @Controller
-@Api(value="Graffiti", description="Operations pertaining to the graffiti.")
+//@Api(value="Graffiti", description="Operations pertaining to the graffiti.")
 public class GraffitiController {
 
 	@Resource
@@ -81,6 +68,9 @@ public class GraffitiController {
 
 	@Resource
 	private InsulaDao insulaDao;
+	
+	@Autowired
+    private ElasticsearchTemplate esTemplate;
 
 	public static final String WRITING_STYLE_PARAM_NAME = "writing_style";
 	public static final String WRITING_STYLE_SEARCH_DESC = "Writing Style";
@@ -100,19 +90,12 @@ public class GraffitiController {
 	/** default size in elasticsearch is 10 */
 	private static final int NUM_RESULTS_TO_RETURN = 2000;
 
-	/** elastic search configuration properties */
-	private static String ES_HOSTNAME;
-	private static int ES_PORT_NUM;
-	private static String ES_TYPE_NAME;
-	private static String ES_INDEX_NAME;
-	private static String ES_CLUSTER_NAME;
-
 	@Resource
 	private FindspotDao propertyDao;
 
-	private TransportClient client;
+	//private TransportClient client;
 
-	private Settings settings;
+	//private Settings settings;
 
 	private static String[] searchDescs = { "Content Keyword", "Global Keyword", "City", "Insula", "Property",
 			PROPERTY_TYPE_SEARCH_DESC, DRAWING_CATEGORY_SEARCH_DESC, WRITING_STYLE_SEARCH_DESC, "Language" };
@@ -129,13 +112,7 @@ public class GraffitiController {
 	private void init() {
 		if (prop == null) {
 			prop = Utils.getConfigurationProperties();
-			ES_HOSTNAME = prop.getProperty("es.loc");
-			ES_PORT_NUM = Integer.parseInt(prop.getProperty("es.port"));
-			ES_INDEX_NAME = prop.getProperty("es.index");
-			ES_TYPE_NAME = prop.getProperty("es.type");
-			ES_CLUSTER_NAME = prop.getProperty("es.cluster_name");
 		}
-		settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
 	}
 
 	// Maps to the search.jsp page currently receives information from
@@ -146,7 +123,6 @@ public class GraffitiController {
 	public String searchForm(final HttpServletRequest request) {
 
 		String city = request.getParameter("city");
-		String message;
 		HttpSession s = request.getSession();
 
 		
@@ -352,7 +328,7 @@ public class GraffitiController {
 	}
 	
 	// TODO: add annotation produces = "text/html" for the api docs?
-	@ApiOperation(value="Searches for inscriptions and returns the results. The base URI lists "
+	/*@ApiOperation(value="Searches for inscriptions and returns the results. The base URI lists "
 			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
 			+ "results as the user wishes.",
 			 notes="A detailed overview of possible parameters is as follows: <br/> "
@@ -365,7 +341,7 @@ public class GraffitiController {
 			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
 			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
 			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
-			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
+			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")*/
 	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	public String search(final HttpServletRequest request) {
 		init();
@@ -381,20 +357,8 @@ public class GraffitiController {
 	}
 
 	private List<Inscription> searchResults(final HttpServletRequest request) {
-		// System.out.println("We're in FilterController: " +
-		// request.getQueryString());
-
-		try {
-			client = new PreBuiltTransportClient(settings).addTransportAddress(
-					new InetSocketTransportAddress(InetAddress.getByName(ES_HOSTNAME), ES_PORT_NUM));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		SearchResponse response;
 		String searchedProperties = "";
 		String searchedDrawings = "";
-
-		List<Inscription> inscriptions = new ArrayList<Inscription>();
 
 		// List of parameter strings for each given search term
 		List<String> parameters = new ArrayList<String>();
@@ -522,16 +486,11 @@ public class GraffitiController {
 				query.must(otherQuery);
 			}
 		}
-
-		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
-				.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
 		
-		for (SearchHit hit : response.getHits()) {
-			// System.out.println(hit);
-			inscriptions.add(hitToInscription(hit));
-		}
+		SearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(query)
+				.withPageable(new PageRequest(0, NUM_RESULTS_TO_RETURN)).build();
+		List<Inscription> inscriptions = esTemplate.queryForList(searchQuery, Inscription.class);
 		
-		//client.close(); // This line slows down searching tremendously for some reason
 		HttpSession session = request.getSession();
 		if (inscriptions.size() > 0) {
 			// System.out.println(inscriptions.get(0));
@@ -561,12 +520,6 @@ public class GraffitiController {
 			sb.append(" ").append(parameters[i].replace("_", " "));
 		}
 		return sb.toString();
-	}
-
-	private Inscription hitToInscription(SearchHit hit) {
-		String edrID = hit.getField("edr_id").getValue();
-		Inscription inscription = graffitiDao.getInscriptionByEDR(edrID);
-		return inscription;
 	}
 
 	private static List<String> findLocationKeys(final List<Inscription> inscriptions) {
@@ -610,7 +563,7 @@ public class GraffitiController {
 		this.graffitiDao = graffitiDao;
 	}
 
-	@ApiOperation(value="Filters the inscriptions and returns the results without any styling. The base URI lists "
+	/*@ApiOperation(value="Filters the inscriptions and returns the results without any styling. The base URI lists "
 			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
 			+ "results as the user wishes.",
 			 notes="A detailed overview of possible parameters is as follows: <br/> "
@@ -623,7 +576,7 @@ public class GraffitiController {
 			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
 			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
 			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
-			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
+			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")*/
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
 	public String filterResults(final HttpServletRequest request) {
 		init();

@@ -6,7 +6,12 @@
  */
 package edu.wlu.graffiti.bean;
 
+import static org.springframework.data.elasticsearch.annotations.FieldType.keyword;
+
 import java.util.List;
+
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,10 +22,14 @@ public class AGPInfo implements Comparable<AGPInfo> {
 	private int id;
 	private String edrId;
 	private String commentary;
+	@Field(analyzer="folding")
 	private String contentTranslation;
 	private String summary;
+	@Field(type=keyword)
 	private String writingStyleInEnglish;
+	@Field(type=keyword)
 	private String languageInEnglish;
+	@Field(type=FieldType.Nested)
 	private Property property;
 	private String cil;
 	private String langner;
@@ -33,12 +42,15 @@ public class AGPInfo implements Comparable<AGPInfo> {
 	private String height_from_ground;
 	private String individualLetterHeights;
 	private String epidoc;
+	@Field(type=FieldType.Nested)
 	private FiguralInfo figuralInfo;
 	private boolean hasFiguralComponent = false;
 	private boolean isGreatestHitTranslation = false;
 	private boolean isGreatestHitFigural = false;
 	private boolean isThemed = false;
+	@Field(type=FieldType.Nested)
 	private GreatestHitsInfo ghInfo;
+	@Field(type=FieldType.Nested)
 	private List<Theme> themes;
 
 	public AGPInfo() {

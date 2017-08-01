@@ -3,6 +3,8 @@
  */
 package edu.wlu.graffiti.bean;
 
+import static org.springframework.data.elasticsearch.annotations.FieldType.keyword;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,8 +33,10 @@ public class Inscription implements Comparable<Inscription> {
 	private int findSpotPropertyID;
 	private String measurements;
 	private String language;
+	@Field(analyzer="folding")
 	private String content;
 	private String bibliography;
+	@Field(store=true, type=keyword)
 	private String edrId;
 	private String writingStyle;
 	private String apparatus;
@@ -40,7 +44,7 @@ public class Inscription implements Comparable<Inscription> {
 	private int numberOfImages;
 	private int startImageId;
 	private int stopImageId;
-	@Field(type = FieldType.Nested)
+	@Field(type=FieldType.Nested)
 	private AGPInfo agp;
 	private String edrFindSpot;
 	private String date;
@@ -168,9 +172,20 @@ public class Inscription implements Comparable<Inscription> {
 			return "";
 		}
 	}
+	
+	/**
+	 * @param myContent the content to pre-process
+	 * @return myContent html characters converted to unicode
+	 */
+	private static String getPreprocessedContent(String myContent) {
+		if(myContent != null)
+			return StringEscapeUtils.unescapeHtml4(myContent);
+		
+		return null;
+	}
 
 	public void setContent(final String content) {
-		this.content = content;
+		this.content = getPreprocessedContent(content);
 	}
 
 	public String getBibliography() {
@@ -386,17 +401,6 @@ public class Inscription implements Comparable<Inscription> {
 		String dateString = dateFormat.format(date);
 		
 		return "AGP-"+edrId+", <i>The Ancient Graffiti Project</i>, &lt;http://ancientgraffiti.org/Graffiti/graffito/AGP-"+edrId+"&gt; [accessed: "+dateString+"]";
-	}
-	
-	/**
-	 * @param myContent the content to pre-process
-	 * @return myContent html characters converted to unicode
-	 */
-	public String getPreprocessedContent(String myContent) {
-		if(myContent != null)
-			return StringEscapeUtils.unescapeHtml4(myContent);
-		
-		return null;
 	}
 	
 }

@@ -1,5 +1,8 @@
 package edu.wlu.graffiti.bean;
 
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -15,6 +18,7 @@ public class Insula {
 	private String shortName;
 	private String fullName;
 	private String pleiadesId;
+	@Field(type=FieldType.Nested)
 	private City city;
 
 	/**

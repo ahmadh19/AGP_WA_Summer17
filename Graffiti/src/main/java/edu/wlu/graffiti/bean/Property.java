@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,7 +27,9 @@ public class Property {
 	private String property_name;
 	private String italianPropertyName;
 	private String additionalEntrances;
+	@Field(type=FieldType.Nested)
 	private Insula insula;
+	@Field(type=FieldType.Nested)
 	private List<PropertyType> propertyTypes;
 	private String pleiadesId = "";
 	private String commentary = "";

@@ -1,44 +1,32 @@
-package edu.wlu.graffiti.data.setup;
+package edu.wlu.graffiti.elasticsearch;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.rest.RestStatus;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.stereotype.Component;
 
-import edu.wlu.graffiti.bean.DrawingTag;
 import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Property;
-import edu.wlu.graffiti.bean.PropertyType;
-import edu.wlu.graffiti.dao.DrawingTagsDao;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
-import edu.wlu.graffiti.data.rowmapper.DrawingTagRowMapper;
 import edu.wlu.graffiti.data.rowmapper.InscriptionRowMapper;
 import edu.wlu.graffiti.data.rowmapper.PropertyRowMapper;
-import edu.wlu.graffiti.data.rowmapper.PropertyTypeRowMapper;
+import edu.wlu.graffiti.data.setup.Utils;
 
 /**
  * This class gathers the inscriptions from the database and indexes them in the
@@ -54,17 +42,12 @@ import edu.wlu.graffiti.data.rowmapper.PropertyTypeRowMapper;
  *         Elasticsearch 5.x
  *
  */
-
-public class AddInscriptionsToElasticSearch {
+@SpringBootApplication
+public class AddInscriptionsToElasticSearch implements CommandLineRunner {
 
 	private static String DB_PASSWORD;
 	private static String DB_USER;
 	private static String DB_DRIVER;
-	private static String ELASTIC_SEARCH_LOC;
-	private static String ES_TYPE_NAME;
-	private static String ES_INDEX_NAME;
-	private static int ES_PORT;
-	private static String ES_CLUSTER_NAME;
 
 	private static String DB_URL;
 
@@ -72,16 +55,15 @@ public class AddInscriptionsToElasticSearch {
 
 	private static Connection newDBCon;
 
-	private static TransportClient client;
-
 	private static final InscriptionRowMapper INSCRIPTION_ROW_MAPPER = new InscriptionRowMapper();
-	private static final PropertyTypeRowMapper PROPERTY_TYPE_ROW_MAPPER = new PropertyTypeRowMapper();
-	private static final DrawingTagRowMapper DRAWING_TAG_ROW_MAPPER = new DrawingTagRowMapper();
 	private static final PropertyRowMapper PROPERTY_ROW_MAPPER = new PropertyRowMapper();
 	
 	@Autowired
-    private static ElasticsearchTemplate esTemplate;
-
+    private ElasticsearchTemplate esTemplate;
+	
+	@Autowired
+    private InscriptionService inscriptionService;
+	
 	/**
 	 * Gathers all inscriptions from the database and maps the result set to
 	 * inscription objects. Deletes all current documents from the Elasticsearch
@@ -90,6 +72,14 @@ public class AddInscriptionsToElasticSearch {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.out.println("before");
+		SpringApplication.run(AddInscriptionsToElasticSearch.class, args);
+		System.out.println("after");
+	}
+	
+	@Override
+	public void run(String... args) throws Exception {
+		System.out.println("in run");
 		init();
 
 		try {
@@ -118,21 +108,9 @@ public class AddInscriptionsToElasticSearch {
 				inscriptions.add(i);
 				propResults.close();
 				rowNum++;
-				
-				XContentBuilder inscriptionBuilder = createContentBuilder(i);
 
-				IndexResponse response = client.prepareIndex(ES_INDEX_NAME, ES_TYPE_NAME).setSource(inscriptionBuilder)
-						.get();
-
-				// System.out.println(inscriptionBuilder.string());
-
-				if (response.status().equals(RestStatus.CREATED)) {
-					count++;
-					// System.out.println(response.getId() + " " +
-					// response.getVersion());
-				} else {
-					System.out.println("Failed to index document " + count);
-				}
+				inscriptionService.save(i);
+				count++;
 			}
 			
 			rs.close();
@@ -154,7 +132,7 @@ public class AddInscriptionsToElasticSearch {
 	 * to stem english words, and to strip punctuation. Then, the index is created and mapped.
 	 * @throws IOException 
 	 */
-	private static void createIndexAnalyzerMapping() throws IOException {
+	private void createIndexAnalyzerMapping() throws IOException {
 		XContentBuilder settingsBuilder = jsonBuilder()
 				.startObject()
 					.startObject("analysis")
@@ -200,47 +178,6 @@ public class AddInscriptionsToElasticSearch {
 		esTemplate.refresh(Inscription.class);
 	}
 
-	private static XContentBuilder createContentBuilder(Inscription i) throws IOException {
-		Map<String, Object> property = new HashMap<String, Object>();
-		Map<String, Object> insula = new HashMap<String, Object>();
-		List<Integer> propertyTypes = new ArrayList<>();
-
-		if (i.getAgp().getProperty() != null && i.getAgp().getProperty().getInsula() != null ) {
-			propertyTypes = getPropertyTypes(i.getAgp().getProperty().getId());
-			insula.put("insula_id", i.getAgp().getProperty().getInsula().getId());
-			insula.put("insula_name", i.getAgp().getProperty().getInsula().getFullName());
-
-			property.put("property_id", i.getAgp().getProperty().getId());
-			property.put("property_name", i.getAgp().getProperty().getPropertyName());
-			property.put("property_number", i.getAgp().getProperty().getPropertyNumber());
-			property.put("property_types", propertyTypes);
-		}
-
-		Map<String, Object> drawing = new HashMap<String, Object>();
-		if (i.getAgp().hasFiguralComponent()) {
-			drawing.put("description_in_english", i.getAgp().getFiguralInfo().getDescriptionInEnglish());
-			drawing.put("description_in_latin", i.getAgp().getFiguralInfo().getDescriptionInLatin());
-			List<Integer> drawingTagIds = getDrawingTagIds(i.getEdrId());
-			List<String> drawingTags = getDrawingTags(i.getEdrId());
-			drawing.put("drawing_tag_ids", drawingTagIds);
-			drawing.put("drawing_tags", drawingTags);
-		}
-
-		XContentBuilder inscriptionBuilder = jsonBuilder().startObject().field("id", i.getId())
-				.field("city", i.getAncientCity()).field("insula", insula).field("property", property)
-				.field("drawing", drawing).field("summary", i.getAgp().getSummary())
-				.field("writing_style", i.getWritingStyle()).field("language", i.getLanguage())
-				.field("content", i.getPreprocessedContent(i.getContent())).field("edr_id", i.getEdrId())
-				.field("bibliography", i.getBibliography()).field("comment", i.getAgp().getCommentary())
-				.field("content_translation", i.getAgp().getContentTranslation())
-				.field("cil", i.getAgp().getCil())
-				.field("has_figural_component", i.getAgp().hasFiguralComponent())
-				.field("langner", i.getAgp().getLangner()).field("measurements", i.getMeasurements())
-				.field("writing_style_in_english", i.getAgp().getWritingStyleInEnglish())
-				.field("language_in_english", i.getAgp().getLanguageInEnglish()).endObject();
-		return inscriptionBuilder;
-	}
-
 	public static void getConfigurationProperties() {
 		Properties prop = Utils.getConfigurationProperties();
 
@@ -248,109 +185,6 @@ public class AddInscriptionsToElasticSearch {
 		DB_URL = prop.getProperty("db.url");
 		DB_USER = prop.getProperty("db.user");
 		DB_PASSWORD = prop.getProperty("db.password");
-		ELASTIC_SEARCH_LOC = prop.getProperty("es.loc");
-		ES_PORT = Integer.parseInt(prop.getProperty("es.port"));
-		ES_INDEX_NAME = prop.getProperty("es.index");
-		ES_TYPE_NAME = prop.getProperty("es.type");
-		ES_CLUSTER_NAME = prop.getProperty("es.cluster_name");
-	}
-
-	/**
-	 * Returns the list of property type names for an inscription's property in
-	 * order to store this information in an Elasticsearch index
-	 * 
-	 * @param propertyId
-	 *            the property id of the inscription's property
-	 * @return the list of property type names for an inscription's property
-	 */
-	private static List<Integer> getPropertyTypes(int propertyId) {
-		List<Integer> propertyTypes = new ArrayList<Integer>();
-
-		String selectByPropertyId = FindspotDao.SELECT_PROP_TYPES_BY_PROP_ID;
-
-		try {
-			PreparedStatement getPropertyTypesStatement = newDBCon.prepareStatement(selectByPropertyId);
-			getPropertyTypesStatement.setInt(1, propertyId);
-			ResultSet rs = getPropertyTypesStatement.executeQuery();
-
-			int rowNum = 0;
-
-			while (rs.next()) {
-				PropertyType pt = PROPERTY_TYPE_ROW_MAPPER.mapRow(rs, rowNum);
-				propertyTypes.add(pt.getId());
-				rowNum++;
-			}
-			rs.close();
-			getPropertyTypesStatement.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return propertyTypes;
-	}
-
-	/**
-	 * Returns the list of drawing tag names for an inscription's drawing in
-	 * order to store this information in an Elasticsearch index
-	 * 
-	 * @param graffitoId
-	 *            the inscription's EAGLE id
-	 * @return the list of drawing tag names for an inscription's drawing
-	 */
-	private static List<String> getDrawingTags(String graffitoId) {
-		List<String> drawingTags = new ArrayList<String>();
-		String selectByGraffitoId = DrawingTagsDao.SELECT_BY_EDR_ID;
-
-		try {
-			PreparedStatement getDrawingTagsStatement = newDBCon.prepareStatement(selectByGraffitoId);
-			getDrawingTagsStatement.setString(1, graffitoId);
-			ResultSet rs = getDrawingTagsStatement.executeQuery();
-
-			int rowNum = 0;
-
-			while (rs.next()) {
-				DrawingTag dt = DRAWING_TAG_ROW_MAPPER.mapRow(rs, rowNum);
-				drawingTags.add(dt.getName());
-				rowNum++;
-			}
-			rs.close();
-			getDrawingTagsStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return drawingTags;
-	}
-
-	/**
-	 * Returns the list of drawing tag names for an inscription's drawing in
-	 * order to store this information in an Elasticsearch index
-	 * 
-	 * @param graffitoId
-	 *            the inscription's EAGLE id
-	 * @return the list of drawing tag names for an inscription's drawing
-	 */
-	private static List<Integer> getDrawingTagIds(String graffitoId) {
-		List<Integer> drawingTagIds = new ArrayList<Integer>();
-		String selectByGraffitoId = DrawingTagsDao.SELECT_BY_EDR_ID;
-
-		try {
-			PreparedStatement getDrawingTagsStatement = newDBCon.prepareStatement(selectByGraffitoId);
-			getDrawingTagsStatement.setString(1, graffitoId);
-			ResultSet rs = getDrawingTagsStatement.executeQuery();
-
-			int rowNum = 0;
-
-			while (rs.next()) {
-				DrawingTag dt = DRAWING_TAG_ROW_MAPPER.mapRow(rs, rowNum);
-				drawingTagIds.add(dt.getId());
-				rowNum++;
-			}
-			rs.close();
-			getDrawingTagsStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return drawingTagIds;
 	}
 
 	/**
