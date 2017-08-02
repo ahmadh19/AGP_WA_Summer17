@@ -213,7 +213,7 @@ input[name*="image"] {
 				<div class="form-group">
 					<label for="epidocContent" class="col-sm-3 control-label">Content EpiDoc:</label>
 					<div class="col-sm-6">
-						<textarea rows=5 id="epidocContent" name="epidocContent" class="form-control">${i.agp.epidoc}</textarea>
+						<textarea rows=10 id="epidocContent" name="epidocContent" class="form-control">${i.agp.epidocWithLineBreaks}</textarea>
 					</div>
 				</div>
 				

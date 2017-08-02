@@ -61,24 +61,30 @@ public class EpidocTester {
 		String[] splitContentAcrossColumns = content.split(".*columna.*");
 		for(int i = 1; i < splitContentAcrossColumns.length; i++) {
 			char letter = (char) ('a'+ i-1);
-			returnString.append("<div type='textpart' subtype='column' n='" + letter + "'>\n");
+			returnString.append("<div type='textpart' subtype='column' n='" + letter + "'>");
 			addLBTagsToContent(splitContentAcrossColumns[i].trim(), returnString);
-			returnString.append("</div>\n");
+			returnString.append("</div>");
 		}
 	}
 
 	private static void addLBTagsToContent(String content, StringBuilder returnString) {
 		String[] splitContent = content.split("\n *");
 		for(int i = 0; i < splitContent.length; i++ ) {
-			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i] + "\n");
+			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i]);
 		}
 	}
 	
 	public static void main(String[] args) {
 		//System.out.print(content + "\n\n\n");
-		System.out.println("Content with images example:\n" + transformContentToEpidoc(content3) + "\n\n");
-		System.out.println("Content with column breaks example:\n" + transformContentToEpidoc(content) + "\n\n");
-		System.out.println("Simple content example:\n" + transformContentToEpidoc(content2));
+		//System.out.println("Content with images example:\n" + transformContentToEpidoc(content3) + "\n\n");
+		//System.out.println("Content with column breaks example:\n" + transformContentToEpidoc(content) + "\n\n");
+		//System.out.println("Simple content example:\n" + transformContentToEpidoc(content2));
+		System.out.print(transformContentToEpidoc(content3).replaceAll("<", "\n<"));
+		//System.out.println(transformContentToEpidoc(content3) + "\nStarting the printing:");
+		//String[] array = transformContentToEpidoc(content3).split("<");
+		//for(String str : array) {
+		//	System.out.print(str);
+		//}
 		
 	}
 

@@ -340,6 +340,12 @@ public class AGPInfo implements Comparable<AGPInfo> {
 		this.epidoc = epidoc;
 	}
 
+	@JsonIgnore
+	public String getEpidocWithLineBreaks() {
+		// remove all \r chars and add \n chars at every tag beginning 
+		return epidoc.replaceAll("\r", "").replaceAll("<", "\n<").trim();
+	}
+	
 	/**
 	 * @return the height_from_ground
 	 */
