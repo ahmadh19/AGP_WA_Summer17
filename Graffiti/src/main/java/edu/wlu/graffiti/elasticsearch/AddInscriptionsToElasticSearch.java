@@ -14,6 +14,9 @@ import java.util.Properties;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
 import edu.wlu.graffiti.bean.Inscription;
@@ -38,7 +41,8 @@ import edu.wlu.graffiti.data.setup.Utils;
  *         Elasticsearch 5.x
  *
  */
-public class AddInscriptionsToElasticSearch {
+@SpringBootApplication
+public class AddInscriptionsToElasticSearch implements CommandLineRunner {
 
 	private static String DB_PASSWORD;
 	private static String DB_USER;
@@ -67,6 +71,11 @@ public class AddInscriptionsToElasticSearch {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		SpringApplication.run(AddInscriptionsToElasticSearch.class, args);
+	}
+	
+	@Override
+	public void run(String... args) throws Exception {
 		init();
 
 		try {

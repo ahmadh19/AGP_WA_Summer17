@@ -19,7 +19,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Document(indexName = "agp", type = "inscriptions")
+@Document(indexName = "sprenkle-test", type = "inscriptions")
 public class Inscription implements Comparable<Inscription> {
 
 	private static final String BASE_EDR_THUMBNAIL_PHOTO_URL = "http://www.edr-edr.it/foto_epigrafi/thumbnails/";
