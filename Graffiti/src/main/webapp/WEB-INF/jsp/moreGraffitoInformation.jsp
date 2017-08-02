@@ -91,6 +91,34 @@ h4 {
 </style>
 <script type="text/javascript">
 //Functions for displaying and hiding the convention table 
+
+
+//Function to hide measurements on load:
+	//Note: putting these in the head can cause problems, including endless loading
+	$(document).ready(function() {
+		$("#measurements").hide();
+		});
+	
+	
+	//Do NOT delete the commented out code in this function. It is for the Show/Hide
+	//measurements button and will be re-implemented when we have the data that we need.  
+	
+	//Toggles Measurements to hide and show the text
+	$(document).ready(function() {
+	$("#showMeasure").click(function(){
+		var button = $(this);
+		if (button.val() == "Show Measurements"){
+			button.val("Hide Measurements");
+			$("#measurements").show();
+		}else{
+			button.val("Show Measurements");
+			$("#measurements").hide();
+		}
+		button.next().show();
+		});
+	
+		$("#measurements").show();
+	});
 function displayConventions() { 
 	document.getElementById("convention_table").style.display = 'inline';
 	document.getElementById("hideConvBtn").style.display = 'inline';
@@ -369,7 +397,7 @@ function backToResults(){
 							<th class="propertyLabel"><input type="button"
 								id="showMeasure" class="btn btn-agp" 
 								value="Show Measurements"></th>
-							<th class="propertyLabel">Measurements:</th>
+							
 
 							<td>
 								<div id="measurements">
