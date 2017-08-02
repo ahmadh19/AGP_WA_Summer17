@@ -14,11 +14,7 @@ import java.util.Properties;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.stereotype.Component;
 
 import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Property;
@@ -42,8 +38,7 @@ import edu.wlu.graffiti.data.setup.Utils;
  *         Elasticsearch 5.x
  *
  */
-@SpringBootApplication
-public class AddInscriptionsToElasticSearch implements CommandLineRunner {
+public class AddInscriptionsToElasticSearch {
 
 	private static String DB_PASSWORD;
 	private static String DB_USER;
@@ -59,10 +54,10 @@ public class AddInscriptionsToElasticSearch implements CommandLineRunner {
 	private static final PropertyRowMapper PROPERTY_ROW_MAPPER = new PropertyRowMapper();
 	
 	@Autowired
-    private ElasticsearchTemplate esTemplate;
+    private static ElasticsearchTemplate esTemplate;
 	
 	@Autowired
-    private InscriptionService inscriptionService;
+    private static InscriptionService inscriptionService;
 	
 	/**
 	 * Gathers all inscriptions from the database and maps the result set to
@@ -72,14 +67,6 @@ public class AddInscriptionsToElasticSearch implements CommandLineRunner {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("before");
-		SpringApplication.run(AddInscriptionsToElasticSearch.class, args);
-		System.out.println("after");
-	}
-	
-	@Override
-	public void run(String... args) throws Exception {
-		System.out.println("in run");
 		init();
 
 		try {
@@ -132,7 +119,7 @@ public class AddInscriptionsToElasticSearch implements CommandLineRunner {
 	 * to stem english words, and to strip punctuation. Then, the index is created and mapped.
 	 * @throws IOException 
 	 */
-	private void createIndexAnalyzerMapping() throws IOException {
+	private static void createIndexAnalyzerMapping() throws IOException {
 		XContentBuilder settingsBuilder = jsonBuilder()
 				.startObject()
 					.startObject("analysis")
