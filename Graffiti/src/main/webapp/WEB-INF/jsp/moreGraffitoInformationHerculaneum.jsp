@@ -87,6 +87,8 @@ h4 {
 </style>
 <script type="text/javascript">
 //Functions for displaying and hiding the convention table 
+
+
 function displayConventions() { 
 	document.getElementById("convention_table").style.display = 'inline';
 	document.getElementById("hideConvBtn").style.display = 'inline';
@@ -160,9 +162,40 @@ function backToResults(){
 	<%@include file="header.jsp"%>
 
 
+	
+
+
 	<c:set var="i" value="${requestScope.inscription}" />
 
 
+	<script>
+
+	$(document).ready(function() {
+		$("#measurements").hide();
+		});
+	
+	
+	//Do NOT delete the commented out code in this function. It is for the Show/Hide
+	//measurements button and will be re-implemented when we have the data that we need.  
+	
+	//Toggles Measurements to hide and show the text
+	$(document).ready(function() {
+	$("#showMeasure").click(function(){
+		var button = $(this);
+		if (button.val() == "Show Measurements"){
+			button.val("Hide Measurements");
+			$("#measurements").show();
+		}else{
+			button.val("Show Measurements");
+			$("#measurements").hide();
+		}
+		//button.next().show();
+		});
+	
+		//$("#measurements").show();
+	});
+
+	</script>
 
 	<div class="button_bar">
 
@@ -367,21 +400,28 @@ function backToResults(){
 							<td>${i.agp.writingStyleInEnglish}</td>
 						</tr>
 					</c:if>
+					console.log(${not empty i.agp.graffitoHeight});
+					console.log(${not empty i.agp.graffitoLength });
+					console.log(${not empty i.agp.heightFromGround });
+					console.log(${not empty i.agp.minLetterHeight});
+					console.log(${not empty i.agp.maxLetterHeight});
+					console.log("${not empty i.agp.minLetterWithFlourishesHeight }");
 					<c:if test="${not empty i.measurements}">
-
+		
+						
 						<tr>
 							
 							
 							<th class="propertyLabel"><input type="button"
 								id="showMeasure" class="btn btn-agp" 
 								 value="Show Measurements"></th>
-							<th class="propertyLabel">Measurements:</th>
 
 							<td>
 								<div id="measurements"> 
 								<ul>
+									
 									<c:if test="${not empty i.agp.graffitoHeight }">
-										<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
+										<li>Graffito Height: "${ i.agp.graffitoHeight }"</li>
 									</c:if>
 									<c:if test="${not empty i.agp.graffitoLength }">
 										<li>Graffito Length: ${i.agp.graffitoLength }</li>
@@ -403,7 +443,8 @@ function backToResults(){
 										<li>Max Letter Height with Flourishes:
 											${i.agp.maxLetterWithFlourishesHeight }</li>
 									</c:if>
-								</ul> </div>
+								</ul> 
+								</div>
 							</td>
 
 						</tr>
