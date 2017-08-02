@@ -364,16 +364,15 @@ function backToResults(){
 					<c:if test="${not empty i.measurements}">
 
 						<tr>
-							<!-- 
+							
 							
 							<th class="propertyLabel"><input type="button"
 								id="showMeasure" class="btn btn-agp" 
-								value="Measurements:"></th>
-								<!--  value="Show Measurements"></th>-->
+								value="Show Measurements"></th>
 							<th class="propertyLabel">Measurements:</th>
 
 							<td>
-								<!--<div id="measurements"> Again, commented out to remove the button features. Do not delete!-->
+								<div id="measurements">
 								<ul>
 									<c:if test="${not empty i.agp.graffitoHeight }">
 										<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
@@ -398,7 +397,8 @@ function backToResults(){
 										<li>Max Letter Height with Flourishes:
 											${i.agp.maxLetterWithFlourishesHeight }</li>
 									</c:if>
-								</ul> <!--</div>-->
+								</ul> 
+								</div>
 							</td>
 
 						</tr>
