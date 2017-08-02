@@ -79,6 +79,8 @@ public class FindspotDao extends JdbcTemplate {
 			+ "properties.pleiades_id as property_pleiades_id " + " FROM properties "
 			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
 			+ "LEFT JOIN cities ON insula.modern_city=cities.name WHERE properties.id = ?";
+	
+	
 
 	private static final String SELECT_PROPERTY_TYPES = "SELECT * " + " FROM propertyTypes";
 
@@ -86,6 +88,9 @@ public class FindspotDao extends JdbcTemplate {
 
 	public static final String SELECT_PROP_TYPES_BY_PROP_ID = "SELECT propertyTypes.id, propertyTypes.name, propertyTypes.description from propertyTypes, propertytopropertytype "
 			+ "WHERE propertytopropertytype.property_id = ? AND propertytopropertytype.property_type = propertytypes.id";
+	
+	public static final String SELECT_BY_OSM_WAY_ID_STATEMENT = "SELECT * "
+		 + " FROM properties WHERE osm_way_id = ?";
 
 	public static final String SELECT_CITY_NAMES = "SELECT name from cities ORDER BY name";
 	

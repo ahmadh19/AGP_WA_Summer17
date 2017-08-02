@@ -16,6 +16,7 @@ Populate Default Data
  	- automatically calls AddEDRLinksToApparatus, ExtractEDRLanguageForAGPInfo, and ExtractWritingStyleForAGP
  - UpdateSummaryTranslationCommentary
  - InsertFiguralInformation
+ - HandleFindspotsWithoutAddresses
 
 Update Elastic Search - AddInscriptionsToElasticSearch
  

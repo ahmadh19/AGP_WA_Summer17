@@ -11,8 +11,8 @@ import java.util.Properties;
 
 public class InsertThemes {
 
-	private static final String INSERT_THEMES = "INSERT INTO themes " + "(name) "
-			+ "VALUES (?)";
+	private static final String INSERT_THEMES = "INSERT INTO themes " + "(name, description) "
+			+ "VALUES (?, ?)";
 
 	private static String DB_DRIVER;
 	private static String DB_URL;

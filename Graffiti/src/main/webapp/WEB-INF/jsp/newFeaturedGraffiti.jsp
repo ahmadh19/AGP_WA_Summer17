@@ -203,17 +203,17 @@ body {
     <ul class="portfolio-grid">
     				
        				<li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Pompeii" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/PompeiiCity.png" alt="Pompeii"/>
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Herculaneum" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/HerculaneumCity.png" alt="Herculaneum"/>
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Smyrna" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/SmyrnaCity.png" alt="Smyrna"/>
                         </a>
                     </li>
@@ -225,7 +225,7 @@ body {
                         </a>
                     </li>
                                      <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/new-featured-graffiti/figural-graffiti" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/FG.png" alt="Figural Graffiti"/>
                         </a>
                     </li>
@@ -245,12 +245,12 @@ body {
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Travel" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Inns.jpg" alt="Inns and Travel Graffiti"/>
                         </a>
                     </li>
                     <li>
-                        <a href="<%=request.getContextPath()%>/ThemeGraffiti" target="_blank" class="animated flipInX">
+                        <a href="<%=request.getContextPath()%>/themes/Grammer" target="_blank" class="animated flipInX">
                             <img src="/Graffiti/resources/images/New_featured_graffiti/Grammar.png" alt="Grammar Graffiti"/>
                         </a>
                     </li>

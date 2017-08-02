@@ -378,7 +378,7 @@ input[name*="image"] {
 					<div class="col-sm-1">
 						<input type="checkbox" name="gh_fig" id="gh_fig"
 							class="form-control"
-							<%=inscription.getAgp().getHasFiguralComponent() ? "checked" : ""%> />
+							<%=inscription.getAgp().isGreatestHitFigural() ? "checked" : ""%> />
 					</div>
 				</div>
 
@@ -452,7 +452,9 @@ input[name*="image"] {
 	</div>
 
 	<script type="text/javascript">
-	
+		
+		// GETTING POSITIONS WILL NOT WORK BECAUSE CONTENT AND CONTENT EPIDOC HAVE DIFFERENT TEXTS!
+		/*
 		function getSelected() {
 			if (window.getSelection) {
 				return window.getSelection();
@@ -468,27 +470,93 @@ input[name*="image"] {
 			}
 			return false;
 		}
+		*/
+		
+		var selectionStart, selectionEnd;
+		
+		/*
+		function getSelected() {
+			var e1 = document.getElementById('epidocContent');
+			var text = e1.value.substring(e1.selectionStart, e1.selectionEnd);
+			return {
+				txt: text,
+				start: e1.selectionStart,
+				end: e1.selectionEnd
+			}
+		}
+		*/
+		
+		function getInputSelection(el) {
+		    var start = 0, end = 0, normalizedValue, range,
+		        textInputRange, len, endRange;
+
+		    if (typeof el.selectionStart == "number" && typeof el.selectionEnd == "number") {
+		        start = el.selectionStart;
+		        end = el.selectionEnd;
+		    } else {
+		        range = document.selection.createRange();
+
+		        if (range && range.parentElement() == el) {
+		            len = el.value.length;
+		            normalizedValue = el.value.replace(/\r\n/g, "\n");
+
+		            // Create a working TextRange that lives only in the input
+		            textInputRange = el.createTextRange();
+		            textInputRange.moveToBookmark(range.getBookmark());
+
+		            // Check if the start and end of the selection are at the very end
+		            // of the input, since moveStart/moveEnd doesn't return what we want
+		            // in those cases
+		            endRange = el.createTextRange();
+		            endRange.collapse(false);
+
+		            if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+		                start = end = len;
+		            } else {
+		                start = -textInputRange.moveStart("character", -len);
+		                start += normalizedValue.slice(0, start).split("\n").length - 1;
+
+		                if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+		                    end = len;
+		                } else {
+		                    end = -textInputRange.moveEnd("character", -len);
+		                    end += normalizedValue.slice(0, end).split("\n").length - 1;
+		                }
+		            }
+		        }
+		    }
+			var text = el.value.substring(start, end).trim();
+		    return {
+		        start: start,
+		        end: end,
+		        txt : text
+		    };
+		}
 		
 		var modal = document.getElementById("epidocModal");
 		
 		function markAsPersonName(text) {
 			var epidoc = "<persName>" + text + "</persName>";
-			if(document.getElementById("epidocContent").value != "") {
-				document.getElementById("epidocContent").value = document.getElementById("epidocContent").value.replace(text, epidoc);
-				modal.style.display = "none";
-			}
+			var tempStart = document.getElementById("epidocContent").value.substring(0, selectionStart);
+			var tempEnd = document.getElementById("epidocContent").value.substring(selectionEnd, 
+					document.getElementById("epidocContent").value.length);
+			document.getElementById("epidocContent").value = tempStart + epidoc + tempEnd;
+			modal.style.display = "none";
 		}
 		
 		function markAsPlaceName(text) {
 			var epidoc = "<placeName>" + text + "</placeName>";
-			document.getElementById("epidocContent").value = document.getElementById("epidocContent").value.replace(text, epidoc);
+			var tempStart = document.getElementById("epidocContent").value.substring(0, selectionStart);
+			var tempEnd = document.getElementById("epidocContent").value.substring(selectionEnd, 
+					document.getElementById("epidocContent").value.length);
+			document.getElementById("epidocContent").value = tempStart + epidoc + tempEnd;
 			modal.style.display = "none";
 		}
 
 		$(document).ready(function() {
 			var selectionImage;
-			$('#graffitoContent').mouseup(function(e) {
-				var selection = getSelected();
+			$('#epidocContent').mouseup(function(e) {
+				var selection = getInputSelection(document.getElementById("epidocContent"));
 				if (!selectionImage) {
 					selectionImage = $('<button>').attr({
 						type : 'button',
@@ -501,23 +569,18 @@ input[name*="image"] {
 					$(document.body).append(selectionImage);
 				}
 				$("#epidocify").click(function epidocify() {
-					var txt = '';
-					if (window.getSelection) {
-						txt = window.getSelection();
-					} else if (document.getSelection) {
-						txt = document.getSelection();
-					} else if (document.selection) {
-						txt = document.selection.createRange().text;
-					} else {
-						return;
-					}
-					//alert(txt);
-					modal.style.display = "block";
+					var selection = getInputSelection(document.getElementById("epidocContent"));
+					var txt = selection.txt;
+					selectionStart = selection.start;
+					selectionEnd = selection.end;
 					
-					$(".modal .modal-content").html("<p>Mark '" + txt + "' as one of the following: </p>" +
-						"<button type='button' class='btn btn-agp' onclick=markAsPersonName('"+ txt +"')>Person Name</button>" +
-						"<button type='button' class='btn btn-agp' onclick=markAsPlaceName('"+ txt +"')>Place Name</button>");
-				
+					if(txt !='') { 
+						modal.style.display = "block";
+						
+						$(".modal .modal-content").html("<p>Mark '" + selection.txt + "' as one of the following: </p>" +
+							"<button type='button' class='btn btn-agp' onclick=markAsPersonName('"+ selection.txt +"')>Person Name</button>" +
+							"<button type='button' class='btn btn-agp' onclick=markAsPlaceName('"+ selection.txt +"')>Place Name</button>");
+					}
 				}).mousedown(function() {
 
 					if (selectionImage) {
@@ -526,16 +589,18 @@ input[name*="image"] {
 
 				});
 
-				selectionImage.css({
-					top : e.pageY - 30, //offsets
-					left : e.pageX - 13 //offsets
-				}).fadeIn();
+				if(selectionImage && selection.txt != '') {
+					selectionImage.css({
+						top : e.pageY - 30, //offsets
+						left : e.pageX - 13 //offsets
+					}).fadeIn();
+				}
 			});
 		});
 
 		// hide the EpiDoc-ify button and the modal screen if user clicks elsewhere
 		window.onclick = function(event) {
-			if (!event.target.matches('.epidocify') && !event.target.matches('#graffitoContent')) {
+			if (!event.target.matches('.epidocify') && !event.target.matches('#epidocContent')) {
 				var btn = document.getElementById("epidocify");
 				$(btn).fadeOut();
 			}
