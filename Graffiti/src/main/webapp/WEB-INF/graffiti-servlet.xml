@@ -78,16 +78,4 @@
 		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
 		p:config-location="classpath:ehcache.xml" />
 
-	<!-- <bean class="edu.wlu.graffiti.controller.UserController"> <property 
-		name="formView" value="registrationForm" /> <property name="successView" 
-		value="registrationSuccess" /> -->
-	<!-- Map a validator -->
-	<!-- <property name="validator"> <bean class="edu.wlu.graffiti.validator.UserValidator" 
-		/> </property> </bean> -->
-
-	<bean id="messageSource"
-		class="org.springframework.context.support.ResourceBundleMessageSource">
-		<property name="basename" value="message" />
-	</bean>
-
 </beans>
