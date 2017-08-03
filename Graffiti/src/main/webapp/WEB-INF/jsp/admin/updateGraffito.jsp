@@ -393,7 +393,7 @@ input[name*="image"] {
 				</div>
 				
 				<div class="form-group" id="ghCommentary"
-					style="display:<%=inscription.getAgp().isGreatestHitTranslation() ? "inline" : "none"%>">>
+					style="display:<%=inscription.getAgp().isGreatestHitTranslation() || inscription.getAgp().isGreatestHitFigural() ? "inline" : "none"%>">>
 					<label for="gh_commentary" class="col-sm-3 control-label">Featured Graffiti Commentary</label>
 					<div class="col-sm-7">
 						<textarea rows="15" name="gh_commentary" id="gh_commentary"
