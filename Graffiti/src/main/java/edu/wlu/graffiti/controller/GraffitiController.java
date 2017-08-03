@@ -164,7 +164,7 @@ public class GraffitiController {
 				return "searchHerculaneum";
 			}
 			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-			return "search";
+			return "Not Found";
 	}
 
 	@RequestMapping(value = "/featured-graffiti", method = RequestMethod.GET)
