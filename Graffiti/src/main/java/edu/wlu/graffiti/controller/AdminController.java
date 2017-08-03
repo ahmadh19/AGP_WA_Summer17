@@ -159,7 +159,7 @@ public class AdminController {
 		agpOneDimArrList.add(content_translation);
 		agpOneDimArrList.add(cil);
 		agpOneDimArrList.add(langner);
-		agpOneDimArrList.add(epidoc);
+		agpOneDimArrList.add(epidoc.replaceAll("\r|\n", ""));
 		agpOneDimArrList.add(floor_to_graffito_height);
 		agpOneDimArrList.add(graffito_height);
 		agpOneDimArrList.add(graffito_length);

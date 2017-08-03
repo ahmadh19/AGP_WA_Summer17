@@ -13,9 +13,8 @@
 		<ul>
 			<c:forEach var="i" items="${figuralHits}">
 				<span class="poppedPhoto none centered" id="<%=idCounter%>">
-
 					<li><a class="poppedPhoto2"
-						href="http://www.edr-edr.it/edr_programmi/view_img.php?id_nr=${i.edrId.substring(3)}"
+						href="http://www.edr-edr.it/edr_programmi/view_img.php?id_nr=${i.agp.greatestHitsInfo.preferredImage}"
 						target="_blank"> <img
 							src="http://www.edr-edr.it/foto_epigrafi/immagini_uso/${i.edrId.substring(3,6)}/${i.agp.greatestHitsInfo.preferredImage}.jpg" />
 					</a> <!--  Next and Previous Button --> <%
