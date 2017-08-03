@@ -525,6 +525,8 @@ function backToResults(){
 
 			<script type="text/javascript">
 				hideConventions();
+				console.log("Here is the supposed property id:");
+				console.log(<c:out value = "${i.agp.property.id}"/>);
 				window.initpompmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
 				
 			</script>
