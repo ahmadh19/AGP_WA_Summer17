@@ -334,7 +334,7 @@ public class GraffitiController {
 			// Decides which jsp page to travel to when user clicks "More
 			// Information" on Search page.
 			
-			return "moreGraffitoInformation";
+			return "insulaDetails";
 		}
 	}
 	
