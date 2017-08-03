@@ -1,16 +1,10 @@
 package edu.wlu.graffiti.controller;
 
-import java.util.Map;
-
 import javax.annotation.Resource;
-import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
-import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.dao.GraffitiDao;
 
 @Controller
@@ -41,15 +35,15 @@ public class ValidationController {
 	*/
 
 	// Process the form.
-	@RequestMapping(method = RequestMethod.POST)
-	public String processValidatinForm(@Valid Inscription validationForm,
-			BindingResult result, Map model) {
-		if (result.hasErrors()) {
-			return "updateTest";
-		}
-		// Add the saved validationForm to the model
-		return "editComplete";
-	}
+//	@RequestMapping(method = RequestMethod.POST)
+//	public String processValidatinForm(@Valid Inscription validationForm,
+//			BindingResult result, Map model) {
+//		if (result.hasErrors()) {
+//			return "updateTest";
+//		}
+//		// Add the saved validationForm to the model
+//		return "editComplete";
+//	}
 	
 	
 	public GraffitiDao getGraffitiDao() {

@@ -358,11 +358,11 @@ public class LogFilter implements Filter {
 				// set the level of the logger
 				log.setLevel((Level) Level.INFO);
 
-				log.removeAllAppenders();
-
-				// add a FileAppender to the logger
-				log.addAppender(new FileAppender(new PatternLayout(),
-						logFileName));
+//				log.removeAllAppenders();
+//
+//				// add a FileAppender to the logger
+//				log.addAppender(new FileAppender(new PatternLayout(),
+//						logFileName));
 
 			}// end if
 

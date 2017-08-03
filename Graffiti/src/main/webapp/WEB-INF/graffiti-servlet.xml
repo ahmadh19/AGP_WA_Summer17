@@ -67,9 +67,9 @@
 		p:viewClass="org.springframework.web.servlet.view.JstlView" p:prefix="/WEB-INF/jsp/"
 		p:suffix=".jsp" />
 
-	<bean
+	<!-- <bean
 		class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping" />
-
+	 -->
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager"
 		p:cache-manager-ref="ehcache" />
 
