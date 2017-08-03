@@ -339,7 +339,7 @@ public class ImportEDRData {
 		if(!nonFiguralContent.equals("")) {
 			addLBTagsToContent(nonFiguralContent, returnString);
 		}
-		returnString.append("<figure><graphic url='http://...'/><figDesc>" + figuralContent + "</figDesc></figure>");
+		returnString.append("<figure><figDesc>" + figuralContent + "</figDesc></figure>");
 	}
 
 	private static void markContentWithColumns(String content, StringBuilder returnString) {
