@@ -333,14 +333,8 @@ public class GraffitiController {
 
 			// Decides which jsp page to travel to when user clicks "More
 			// Information" on Search page.
-			if (city.equals("Pompeii") || city.equals("pompeii")) {
-				return "moreGraffitoInformation";
-			} 
-			else {
-				System.out.println("???");
-				return "moreGraffitoInformationHerculaneum";
-			}
-			// return "details";
+			
+			return "moreGraffitoInformation";
 		}
 	}
 	
