@@ -68,5 +68,12 @@ public class FeaturedGraffitiController {
 		return "themedGraffitiResults";
 
 	}
+	
+	@RequestMapping(value = "/new-featured-graffiti/figural-graffiti")
+	public String featuredFiguralGraffiti(final HttpServletRequest request) {
+		List<Inscription> greatestFiguralHits = graffitiDao.getGreatestFiguralHits();
+		request.setAttribute("figuralHits", greatestFiguralHits);
+		return "figuralGraffiti";
+	}
 
 }

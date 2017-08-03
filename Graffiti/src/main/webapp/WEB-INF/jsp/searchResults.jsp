@@ -70,14 +70,6 @@ function setLocationKeys(){
 //		window.initmap();
 //}
 
-function generateHerculaneum(name) {
-	xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("GET",
-			"map?clickedRegion="+name+"&second=yes"+"&city="+name, false); 
-	xmlHttp.send(null);
-	document.getElementById("herculaneumCityMap").innerHTML = xmlHttp.responseText;
-	start();
-}
 
 function selectImg(ind, k, shortId, longId){
 	if (ind == 0){
@@ -169,7 +161,6 @@ function checkboxesAfterBack() {
 				addSearchTerm("Global", value, value);
 			}
 		}
-		function generateHerculaneum(name) {
 	}
 }
 
@@ -197,7 +188,7 @@ hr.main-table {
 	cursor: pointer;
 	align: right;
 	display: inline;
-	margin: 225px 0px 0px 560px;
+	margin: 225px 0px 0px 818px;
 }
 
 .map-override1 {
