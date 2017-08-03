@@ -315,17 +315,48 @@ public class ImportEDRData {
 	}
 
 	/**
-	 * Scans the content for the <br> tag and adds <lb> tags appropriately for the EpiDoc.
+	 * 
 	 * @param content
 	 * @return
 	 */
-	private static String transformContentToEpidoc(String content) {
-		String[] splitContent = content.split("\n *");
+	public static String transformContentToEpidoc(String content) {
 		StringBuilder returnString = new StringBuilder();
-		for(int i = 0; i < splitContent.length; i++ ) {
-			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i] + "\n");
+		if(content.contains("columna")) { // if content is split across columns
+			markContentWithColumns(content, returnString);
+		} else if(content.contains("((:")) { // if content contains the description of a figural graffito
+			markContentWithDrawing(content, returnString);
+			
+		} else { // if no columns or images in content
+			addLBTagsToContent(content, returnString);
 		}
 		return returnString.toString().trim();
+	}
+
+	// ARE WE ONLY GOING TO EVER HAVE ONE DRAWING PER CONTENT?
+	private static void markContentWithDrawing(String content, StringBuilder returnString) {
+		String nonFiguralContent = content.substring(0, content.indexOf("((:"));
+		String figuralContent = content.substring(content.indexOf("((:") + 3, content.indexOf("))")); 
+		if(!nonFiguralContent.equals("")) {
+			addLBTagsToContent(nonFiguralContent, returnString);
+		}
+		returnString.append("<figure><graphic url='http://...'/><figDesc>" + figuralContent + "</figDesc></figure>");
+	}
+
+	private static void markContentWithColumns(String content, StringBuilder returnString) {
+		String[] splitContentAcrossColumns = content.split(".*columna.*");
+		for(int i = 1; i < splitContentAcrossColumns.length; i++) {
+			char letter = (char) ('a'+ i-1);
+			returnString.append("<div type='textpart' subtype='column' n='" + letter + "'>");
+			addLBTagsToContent(splitContentAcrossColumns[i].trim(), returnString);
+			returnString.append("</div>");
+		}
+	}
+
+	private static void addLBTagsToContent(String content, StringBuilder returnString) {
+		String[] splitContent = content.split("\n *");
+		for(int i = 0; i < splitContent.length; i++ ) {
+			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i]);
+		}
 	}
 
 	/**
