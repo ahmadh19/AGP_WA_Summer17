@@ -31,16 +31,6 @@ public class MapController {
 
 	@Resource
 	private FindspotDao propertyDao;
-
-	@RequestMapping(value = "/pompeiiMap", method = RequestMethod.GET)
-	public String viewMap(final HttpServletRequest request) {
-		return "pompeiiMap";
-	}
-	
-	@RequestMapping(value = "/herculaneumMap", method = RequestMethod.GET)
-	public String viewHercMap(final HttpServletRequest request) {
-		return "herculaneumMap";
-	}
 	
 	@RequestMapping(value = "/searchPompeii", method = RequestMethod.GET)
 	public String searchMap(final HttpServletRequest request) {
