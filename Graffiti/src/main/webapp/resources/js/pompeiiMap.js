@@ -34,6 +34,14 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	var justStarted=true;
 	
 	
+	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
+	var clickedAreas = [];
+	var clickedInsula=[];
+	
+	//Holds the center latitudes and longitudes of all insula on the map. 
+	var insulaCentersDict=[];
+	
+	
 	//Fires when the map is initialized
 
 	map = new L.map('pompeiimap', {
@@ -52,16 +60,14 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//This adds more realistic features to the background like streets. Commented out bc/shape files are off positionally and more details shows it to users. 
 	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
 
-	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
-	var clickedAreas = [];
-	var clickedInsula=[];
 	
 	//map.addLayer(grayscale);
 	L.geoJson(pompeiiPropertyData).addTo(map);
 	
 	//Builds the dictionary of number of graffiti per insula
 	makeTotalInsulaGraffitiDict();
-	
+	//This builds the dictionary(centers do not change so needs to be built only once)
+	makeInsulaCentersDict();
 	
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
@@ -97,10 +103,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	
 	
-	if(propertyIdToHighlight!=0)
-	{
-		showCloseUpView();
-	}
+	showCloseUpView();
+	
 	
 	//Builds the dictionary of the graffiti in each insula
 	//This works well as graffiti numbers should not change over the session.
@@ -112,7 +116,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
-					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
+					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer/2;
 				}
 				else{
 					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
@@ -122,6 +126,28 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			
 		});
 		
+	}
+	
+	//This function gets and returns a "dictionary" of the latitude and longitude of each insula given its id(as index).
+	//Used to find where to place the labels of each insula on the map, upon iteration through this list.
+	function makeInsulaCentersDict(){
+		var currentInsulaNumber;
+		var oldInsulaNumber;
+		//A variable for the coordinates as they are collected for each insula
+		var coordinatesSoFar=[];
+		map.eachLayer(function(layer){
+			if(layer.feature!=undefined && interactive){
+				currentInsulaNumber=layer.feature.properties.insula_id;
+				//If a change in insula number has occurred, find the center of the coordinates and add them to the dictionary
+				if(currentInsulaNumber!=oldInsulaNumber){
+					
+				}
+				oldInsulaNumber=currentInsulaNumber;
+				coordinatesSoFar.push(layer.feature.geometry.coordinates);
+				//console.log("Here are coordinates so far:");
+				//console.log(coordinatesSoFar+":");
+			}
+		});
 	}
 	
 	
@@ -137,7 +163,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
 				//For an unknown reason, forEachLayer loops through two times instead of one. 
 				//We compensate by dividing number of graffiti by two(?). 
-				newFillColor=getFillColor(numberOfGraffitiInGroup/2);
+				newFillColor=getFillColor(numberOfGraffitiInGroup);
 				layer.setStyle({fillColor:newFillColor});
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
 				
@@ -363,6 +389,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			if(i!=indexNumber){
 				newArray.push(someArray[i]);
 			}
+			
 		}
 		return newArray;
 	}
@@ -370,16 +397,17 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//selected insula. 
 	function checkForInsulaClick(clickedProperty){
 		//Clicked property is a layer
-		var clickedInsulaId=clickedProperty.feature.properties.insula_id;
-		var indexOfInsulaId=clickedInsula.indexOf(clickedInsulaId);
+		//layer.feature.properties.insula_id
+		var clickedInsulaName=clickedProperty.feature.properties.insula_full_name;
+		var indexOfInsulaName=clickedInsula.indexOf(clickedInsulaName);
 		//Only adds the new id if it is already in the list
 		
-		if(indexOfInsulaId==-1){
-			clickedInsula.push(clickedInsulaId);
+		if(indexOfInsulaName==-1){
+			clickedInsula.push(clickedInsulaName);
 		}
 		//Otherwise, removed the insula id from the list
 		else{
-			clickedInsula=removeFromArray(clickedInsula,indexOfInsulaId);
+			clickedInsula=removeFromArray(clickedInsula,indexOfInsulaName);
 		}
 	}
 	
@@ -553,7 +581,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		el2.addEventListener("click", displayHighlightedRegions, false);
 	}
 	
-	showCloseUpView();
 
 }
 	
