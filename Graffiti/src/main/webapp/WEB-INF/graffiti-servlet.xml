@@ -61,6 +61,9 @@
 
 	<bean id="themeDao" class="edu.wlu.graffiti.dao.ThemeDao"
 		p:dataSource-ref="dataSource" />
+		
+	<bean id="photosDao" class="edu.wlu.graffiti.dao.PhotosDao"
+		p:dataSource-ref="dataSource" />
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver"

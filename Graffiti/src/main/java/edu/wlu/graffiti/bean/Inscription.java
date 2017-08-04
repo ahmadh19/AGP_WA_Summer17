@@ -33,9 +33,10 @@ public class Inscription implements Comparable<Inscription> {
 	private String writingStyle;
 	private String apparatus;
 	private String apparatusDisplay;
-	private int numberOfImages;
-	private int startImageId;
-	private int stopImageId;
+	private int numberOfImages; // TODO: remove this
+	private int startImageId; // TODO: remove this
+	private int stopImageId; // TODO: remove this
+	private List<Photo> photos;
 	private AGPInfo agp;
 	private String edrFindSpot;
 	private String date;
@@ -302,7 +303,7 @@ public class Inscription implements Comparable<Inscription> {
 	/**
 	 * 
 	 * @return the list of EDR image URLs
-	 */
+	 *
 	@JsonIgnore
 	public List<String> getImages() {
 		int numImages = this.getNumberOfImages();
@@ -321,11 +322,26 @@ public class Inscription implements Comparable<Inscription> {
 		}
 		return imageList;
 	}
-
+	*/
+	
+	/**
+	 * 
+	 * @return the list of EDR image URLs
+	 */
+	@JsonIgnore
+	public List<String> getImages() {
+		List<String> imageList = new ArrayList<String>();
+		String id = this.getEdrId();
+		for(Photo p : photos) {
+			imageList.add(BASE_EDR_PHOTO_URL + id.substring(3, 6) + "/" + p.getPhotoId() + ".jpg");
+		}
+		return imageList;
+	}
+	
 	/**
 	 * 
 	 * @return the list of the image page links on the EDR site
-	 */
+	 *
 	@JsonIgnore
 	public List<String> getPages() {
 		int numImages = this.getNumberOfImages();
@@ -343,12 +359,26 @@ public class Inscription implements Comparable<Inscription> {
 		}
 		return pageList;
 	}
+	*/
+	
+	/**
+	 * 
+	 * @return the list of the image page links on the EDR site
+	 */
+	@JsonIgnore
+	public List<String> getPages() {
+		List<String> pageList = new ArrayList<String>();
+		for(Photo p : this.photos) {
+			pageList.add(BASE_EDR_IMAGE_PAGE_URL + p.getPhotoId());
+		}
+		return pageList;
+	}
 
 	/**
 	 * 
 	 * @return the list of image thumbnail urls
 	 * 
-	 */
+	 *
 	@JsonIgnore
 	public List<String> getThumbnails() {
 		int numImages = getNumberOfImages();
@@ -367,6 +397,22 @@ public class Inscription implements Comparable<Inscription> {
 		}
 		return imageList;
 	}
+	*/
+	
+	/**
+	 * 
+	 * @return the list of image thumbnail urls
+	 * 
+	 */
+	@JsonIgnore
+	public List<String> getThumbnails() {
+		List<String> imageList = new ArrayList<String>();
+		String id = getEdrId();
+		for(Photo p : photos) {
+			imageList.add(BASE_EDR_THUMBNAIL_PHOTO_URL + id.substring(3, 6) + "/th_" + p.getPhotoId() + ".jpg");
+		}
+		return imageList;
+	}
 	
 	/**
 	 * @return the citation for the graffito page in AGP
@@ -381,6 +427,20 @@ public class Inscription implements Comparable<Inscription> {
 		String dateString = dateFormat.format(date);
 		
 		return "AGP-"+edrId+", <i>The Ancient Graffiti Project</i>, &lt;http://ancientgraffiti.org/Graffiti/graffito/AGP-"+edrId+"&gt; [accessed: "+dateString+"]";
+	}
+	
+	/**
+	 * @return the photos
+	 */
+	public List<Photo> getPhotos() {
+		return photos;
+	}
+
+	/**
+	 * @param photos the photos to set
+	 */
+	public void setPhotos(List<Photo> photos) {
+		this.photos = photos;
 	}
 	
 	/**

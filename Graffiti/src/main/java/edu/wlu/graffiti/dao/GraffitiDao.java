@@ -15,6 +15,7 @@ import edu.wlu.graffiti.bean.DrawingTag;
 import edu.wlu.graffiti.bean.GreatestHitsInfo;
 import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Insula;
+import edu.wlu.graffiti.bean.Photo;
 import edu.wlu.graffiti.bean.Property;
 import edu.wlu.graffiti.bean.Theme;
 import edu.wlu.graffiti.data.export.GenerateEpidoc;
@@ -133,6 +134,9 @@ public class GraffitiDao extends JdbcTemplate {
 	
 	@Resource
 	private ThemeDao themeDao;
+	
+	@Resource
+	private PhotosDao photosDao;
 	
 	private GenerateEpidoc generator = new GenerateEpidoc();
 	
@@ -298,6 +302,12 @@ public class GraffitiDao extends JdbcTemplate {
 		retrieveDrawingTagsForInscription(inscription);
 		addPropertyToInscription(inscription);
 		retrieveThemesForInscription(inscription);
+		addPhotos(inscription);
+	}
+
+	private void addPhotos(Inscription inscription) {
+		List<Photo> photos = photosDao.getPhotosByEDR(inscription.getEdrId());
+		inscription.setPhotos(photos);
 	}
 
 	/**
