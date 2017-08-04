@@ -59,16 +59,7 @@ function setLocationKeys(){
 	locationKeys = <%=locationKeys%>;
 }
 
-//setTimeout(function(){ map.invalidateSize()}, 1000);
-//function generatePompeii(name) {
-		//xmlHttp = new XMLHttpRequest();
-		//xmlHttp.open("GET",
-			//"map?clickedRegion="+name+"&city="+name, false); 
-		
-		//document.getElementById("pompeiimap").innerHTML = xmlHttp.responseText;
-		//start();
-//		window.initmap();
-//}
+
 
 
 function selectImg(ind, k, shortId, longId){
@@ -253,6 +244,7 @@ ul#searchTerms li {
 <script>
 	setLocationKeys();
 	//Apparently, these need to be used in same order as they are in div. 
+	//This jsp is used and needed. 
 	window.inithercmap(true,false,false,false,0,locationKeys);
 	window.initpompmap(true,false,false,false,0,locationKeys);
 

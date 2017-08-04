@@ -71,14 +71,25 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			var newCenterCoordinates=[];
 			map.eachLayer(function(layer){
 				if(layer.feature!=undefined){
+					console.log("Here is a defined layer feature");
+					console.log(layer.feature.properties.Property_Id);
 					if(layer.feature.properties.Property_Id==propertyIdToHighlight){
+						console.log("Now in pompeiiMap.js show close up view");
+						console.log("Property id passed as parameter:");
+						console.log(propertyIdToHighlight+" in layer");
+						console.log("Apparent property id of the layer");
+						console.log(layer.feature.properties.Property_Id);
 						newCenterCoordinates=layer.getBounds().getCenter();
 						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
 					}
-				}
+				}	
+				
 			});
+			console.log("Reminder: here is property id passed in as a parameter: ");
+			console.log(propertyIdToHighlight);
 		}
 		else if(propertyIdListToHighlight.length==1){
+			console.log("In ppm.js, no property id to highlight");
 			var newCenterCoordinates=[];
 			var idOfListHighlight=propertyIdListToHighlight[0];
 			map.eachLayer(function(layer){
@@ -97,6 +108,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	{
 		showCloseUpView();
 	}
+	else{
+		console.log("Failed to show close up view in ppm.js, prop id is 0");
+	}
 	
 	//Responsible for showing the map view on the insula level. 
 	function dealWithInsulaLevelView(){
@@ -110,10 +124,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
 					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
-					//if(currentInsulaNumber==12){
-						//console.log(graffitiInLayer);
-						//console.log(layer.feature.properties.PRIMARY_DO);
-					//}
 				}
 				else{
 					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
@@ -423,6 +433,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			if(showHover){
 				this._div.innerHTML = (props ? props.Property_Name + ", " + props.PRIMARY_DO
 						: 'Hover over property to see name');
+				
 			}
 		};
 	

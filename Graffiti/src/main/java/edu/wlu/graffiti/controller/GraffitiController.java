@@ -148,23 +148,14 @@ public class GraffitiController {
 		String city = request.getParameter("city");
 		String message;
 		HttpSession s = request.getSession();
-
-		
-			// Allows attributes to be set but goes to the pompeiiMap url if the
-			// city clicked on is pompeii.
-			System.out.println(city.toLowerCase());
 			if (city.toLowerCase().equals("pompeii")) {
-				// return "pompeiiMap";
 				return "searchPompeii";
 			}
 			if (city.toLowerCase().equals("herculaneum")) {
-				// return "pompeiiMap";
-				//return "herculaneumMap";
-				System.out.println(city.toLowerCase());
 				return "searchHerculaneum";
 			}
 			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-			return "search";
+			return "Not Found";
 	}
 
 	@RequestMapping(value = "/featured-graffiti", method = RequestMethod.GET)
@@ -342,14 +333,8 @@ public class GraffitiController {
 
 			// Decides which jsp page to travel to when user clicks "More
 			// Information" on Search page.
-			if (city.equals("Pompeii") || city.equals("pompeii")) {
-				return "moreGraffitoInformation";
-			} 
-			else {
-				System.out.println("???");
-				return "moreGraffitoInformationHerculaneum";
-			}
-			// return "details";
+			
+			return "insulaDetails";
 		}
 	}
 	
@@ -378,7 +363,6 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
-		// return "results";
 		return "searchResults";
 	}
 
