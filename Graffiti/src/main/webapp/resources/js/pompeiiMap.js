@@ -2,7 +2,6 @@
 var map;
 
 
-
 function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomOnOneProperty) {
 	//this just sets my access token
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
@@ -48,17 +47,21 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	
 	//Sinks with mapbox(?), why do we need access tokens security?
-	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
+	var mapboxUrl = 'https://api		alert("Special insula display");.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
 	
 	//This adds more realistic features to the background like streets. Commented out bc/shape files are off positionally and more details shows it to users. 
 	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
 
 	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
 	var clickedAreas = [];
-	
+	var clickedInsula=[];
 	
 	//map.addLayer(grayscale);
 	L.geoJson(pompeiiPropertyData).addTo(map);
+	
+	//Builds the dictionary of number of graffiti per insula
+	makeTotalInsulaGraffitiDict();
+	
 	
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
@@ -71,25 +74,15 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			var newCenterCoordinates=[];
 			map.eachLayer(function(layer){
 				if(layer.feature!=undefined){
-					console.log("Here is a defined layer feature");
-					console.log(layer.feature.properties.Property_Id);
 					if(layer.feature.properties.Property_Id==propertyIdToHighlight){
-						console.log("Now in pompeiiMap.js show close up view");
-						console.log("Property id passed as parameter:");
-						console.log(propertyIdToHighlight+" in layer");
-						console.log("Apparent property id of the layer");
-						console.log(layer.feature.properties.Property_Id);
 						newCenterCoordinates=layer.getBounds().getCenter();
 						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
 					}
 				}	
 				
 			});
-			console.log("Reminder: here is property id passed in as a parameter: ");
-			console.log(propertyIdToHighlight);
 		}
 		else if(propertyIdListToHighlight.length==1){
-			console.log("In ppm.js, no property id to highlight");
 			var newCenterCoordinates=[];
 			var idOfListHighlight=propertyIdListToHighlight[0];
 			map.eachLayer(function(layer){
@@ -108,19 +101,15 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	{
 		showCloseUpView();
 	}
-	else{
-		console.log("Failed to show close up view in ppm.js, prop id is 0");
-	}
 	
-	//Responsible for showing the map view on the insula level. 
-	function dealWithInsulaLevelView(){
-		
-		//This must be reset
+	//Builds the dictionary of the graffiti in each insula
+	//This works well as graffiti numbers should not change over the session.
+	//Modifies the clojure wide variable once and only once at the beginning of the program
+	function makeTotalInsulaGraffitiDict(){
 		totalInsulaGraffitisDict=new Array();
 		map.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
-				layer.setStyle({color: getFillColor(graffitiInLayer)});
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
 					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
@@ -129,14 +118,16 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
 				}
 			}
-			//Resets properties when user zooms back in
-			else if (colorDensity && layer.feature!=undefined){
-				layer.setStyle({color: getBorderColorForCloseZoom(layer.feature)});
-				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
-				layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
-			}
+			
 			
 		});
+		
+	}
+	
+	
+	//Responsible for showing the map view on the insula level. 
+	function dealWithInsulaLevelView(){
+		
 		//The second loop fills in the colors of the properties to match the total group color. 
 		//Again, only runs if the above conditions are true. 
 		//Empty slots are caused by there not yet being a group at those indexes yet them being surrounded by values. 
@@ -152,43 +143,15 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				
 				borderColor=newFillColor;
 			}
+			//Resets properties when user zooms back in
+			if (!zoomedOutThresholdReached() && colorDensity && layer.feature!=undefined){
+				layer.setStyle({color: getBorderColorForCloseZoom(layer.feature)});
+				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
+				layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
+			}
 			
 		});
 	}
-	
-	/*//Gets and returns the insula group from a String assuming that the string is primary do and ending with the number
-	//Assumes no primary DO over 10(?)
-	function getInsulaGroupFromString(oneString){
-		//Converts string to list of chars so we can take the index
-		//oneString=oneString.split('');
-		
-		//Set equal to # to prevent layers from starting with undefined(stylistic choice)
-		var insulaGroup='#';
-		var i;
-		var possibleCharacter;
-		var characterTwo;
-		for(i=0;i<oneString.length;i++){
-			possibleCharacter=oneString[i];
-			if(['0','1','2','3','4','5','6','7','8','9','V','I','X'].indexOf(possibleCharacter)>=0){
-				insulaGroup+=possibleCharacter;
-				if(oneString.length>i+1){
-					characterTwo=oneString[i+1];
-					if(['0','1','2','3','4','5','6','7','8','9'].indexOf(possibleCharacter)>=0){
-						insulaGroup+=characterTwo;
-
-					}
-				}
-				
-				//console.log("Character: "+character);
-				if(!(['V','I','X'].indexOf(possibleCharacter)>=0)){
-					return insulaGroup;
-					
-				}
-			}
-		}
-		//this should never happen
-		return false;
-	}*/
 	
 	function zoomedOutThresholdReached(){
 		currentZoomLevel=map.getZoom();
@@ -370,21 +333,72 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//have been and are clicked again, sets to false and vice versa. I am confused what pushToFront is
 	//or how it interacts with the wider collection of items if there is one. 
 	function showDetails(e) {
-		if(interactive && !zoomedOutThresholdReached()){
-			var layer = e.target;
-			if (layer.feature.properties.clicked != null) {
-				layer.feature.properties.clicked = !layer.feature.properties.clicked;
-			} else {
-				layer.feature.properties.clicked = true;
+		if(interactive){
+			if(!zoomedOutThresholdReached()){
+				var layer = e.target;
+				if (layer.feature.properties.clicked != null) {
+					layer.feature.properties.clicked = !layer.feature.properties.clicked;
+				} else {
+					layer.feature.properties.clicked = true;
+				}
+				if (!L.Browser.ie && !L.Browser.opera) {
+			        layer.bringToFront();
+			    }
+				clickedAreas.push(layer);
+				info.update(layer.feature.properties);
 			}
-			if (!L.Browser.ie && !L.Browser.opera) {
-		        layer.bringToFront();
-		    }
-			clickedAreas.push(layer);
-			info.update(layer.feature.properties);
+			else{
+				checkForInsulaClick(e.target);
+			}
+		}
+		
+		
+	}
+	
+	//Returns a new array with the contents of the previous index absent
+	function removeFromArray(someArray,indexNumber){
+		var newArray=[];
+		var i;
+		for(i=0;i<someArray.length;i++){
+			if(i!=indexNumber){
+				newArray.push(someArray[i]);
+			}
+		}
+		return newArray;
+	}
+	//On click, sees if a new insula id # has been selected. If so, adds it to the list of 
+	//selected insula. 
+	function checkForInsulaClick(clickedProperty){
+		//Clicked property is a layer
+		var clickedInsulaId=clickedProperty.feature.properties.insula_id;
+		var indexOfInsulaId=clickedInsula.indexOf(clickedInsulaId);
+		//Only adds the new id if it is already in the list
+		
+		if(indexOfInsulaId==-1){
+			clickedInsula.push(clickedInsulaId);
+		}
+		//Otherwise, removed the insula id from the list
+		else{
+			clickedInsula=removeFromArray(clickedInsula,indexOfInsulaId);
 		}
 	}
 	
+	//Used on click for insula level view in place of display selected regions
+	//In charge of the right information only, does not impact the actual map
+	function displayHighlightedInsula(){
+		var html = "<table><tr><th>Selected Insula:</th></tr>";
+		var numberOfInsulaSelected=clickedInsula.length;
+		for (var i=0; i<numberOfInsulaSelected; i++) {
+			html += "<tr><td><li>"+"#" +clickedInsula[i] + ", " + 
+					"<p>"+totalInsulaGraffitisDict[clickedInsula[i]]+" graffiti</p>"+ "</li></td></tr>";
+		}
+		html += "</table";
+		//Checks to avoid error for element is null.
+		var elem = document.getElementById("newDiv");
+		  if(typeof elem !== 'undefined' && elem !== null) {
+			  document.getElementById("newDiv").innerHTML = html;
+		  }
+	}
 	
 	
 	//Try: just commenting first line. Then, the map still works but colors remain unchanged when clicked twice. 
@@ -494,30 +508,37 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	
 	
+	
 	//Displays the Selected Properties and their corresponding information in an HTML table formatted. 
 	//Achieved by mixing html and javascript, accessing text properties of the regions(items). 
 	function displayHighlightedRegions() {
-		var clickedAreasTable = getUniqueClicked();
-		
-		var html = "<table><tr><th>Selected Properties:</th></tr>";
-		var length = clickedAreasTable.length;
-		for (var i=0; i<length; i++) {
-			var property = clickedAreasTable[i];
-			/*alert(property.feature.geometry.coordinates);*/
-			if (property.feature.properties.clicked === true) {
-				
-				html += "<tr><td><li>" +property.feature.properties.Property_Name + ", " + 
-						property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li></td></tr>";
-			}
-		}
-		html += "</table";
-		//Checks to avoid error for element is null.
-		var elem = document.getElementById("newDiv");
-		  if(typeof elem !== 'undefined' && elem !== null) {
-			  document.getElementById("newDiv").innerHTML = html;
-		  }
-			
 		// when you click anywhere on the map, it updates the table
+		
+		if(! zoomedOutThresholdReached()){
+			var clickedAreasTable = getUniqueClicked();
+			
+			var html = "<table><tr><th>Selected Properties:</th></tr>";
+			var length = clickedAreasTable.length;
+			for (var i=0; i<length; i++) {
+				var property = clickedAreasTable[i];
+				if (property.feature.properties.clicked === true) {
+					
+					html += "<tr><td><li>" +property.feature.properties.Property_Name + ", " + 
+							property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li></td></tr>";
+				}
+			}
+			html += "</table";
+			//Checks to avoid error for element is null.
+			var elem = document.getElementById("newDiv");
+			  if(typeof elem !== 'undefined' && elem !== null) {
+				  document.getElementById("newDiv").innerHTML = html;
+			  }
+		}
+		else{
+			displayHighlightedInsula();
+		}
+			
+		
 	}
 	
 	
@@ -533,15 +554,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	
 	showCloseUpView();
-//	var locationNeeded = false;
-//	if (document.title == "Ancient Graffiti Project :: Property Info") {
-//		locationNeeded = true;
-//	}
-//	
-//	// can the propertyId even be reverse accessed? Humm...
-//	function focusOnProperty(propId) {
-//		
-//	} **** this feature is currently in the works
+
 }
 	
 	
