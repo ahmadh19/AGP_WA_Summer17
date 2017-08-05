@@ -1,5 +1,5 @@
 /*
- * Drawing tag class holds the drawing tag information for Inscription.java class it receives its information
+ * Drawing tag class holds the themes information for Inscription.java class it receives its information
  * from drawing_tags table in the database. 
  */
 package edu.wlu.graffiti.bean;
@@ -15,6 +15,7 @@ public class Theme implements Comparable<Theme> {
 	
 	private int id;
 	private String name;
+	private String description;
 	
 
 	public Theme() {
@@ -45,6 +46,15 @@ public class Theme implements Comparable<Theme> {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@JsonIgnore
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String desc) {
+		description = desc;
 	}
 
 	@Override

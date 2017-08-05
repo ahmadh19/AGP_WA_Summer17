@@ -461,7 +461,7 @@ public class GraffitiController {
 				 * globalQuery.should(exactQuery);
 				 */
 
-				myTestQuery = multiMatchQuery(parameters.get(i), a);
+				myTestQuery = multiMatchQuery(parameters.get(i), a).minimumShouldMatch("80%");
 				globalQuery.should(myTestQuery);
 
 				query.must(globalQuery);
@@ -470,7 +470,7 @@ public class GraffitiController {
 				String[] params = parameters.get(i).split(" ");
 
 				for (String param : params) {
-					contentQuery.must(matchQuery(fieldNames.get(i), param));// .fuzziness("AUTO"));
+					contentQuery.must(matchQuery(fieldNames.get(i), param).minimumShouldMatch("80%")); //.fuzziness("AUTO"));
 				}
 				query.must(contentQuery);
 			} else if (searchTerms.get(i).equals("Property")) {
@@ -508,12 +508,11 @@ public class GraffitiController {
 				query.must(otherQuery);
 			}
 		}
-
+		
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
-				.setSize(NUM_RESULTS_TO_RETURN).addSort("edr_id", SortOrder.ASC).execute().actionGet();
+				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
 		
 		for (SearchHit hit : response.getHits()) {
-			// System.out.println(hit);
 			inscriptions.add(hitToInscription(hit));
 		}
 		

@@ -23,7 +23,7 @@ public class ThemeDao extends JdbcTemplate {
 	
 	private static final String SELECT_BY_NAME = "SELECT * " + "FROM themes WHERE name = ?";
 
-	public static final String SELECT_BY_EDR_ID = "SELECT themes.theme_id, themes.name "
+	public static final String SELECT_BY_EDR_ID = "SELECT themes.theme_id, themes.name, themes.description "
 			+ "FROM graffititothemes, themes WHERE graffito_id = ? "
 			+ "AND themes.theme_id = graffititothemes.theme_id ORDER BY name;";
 
