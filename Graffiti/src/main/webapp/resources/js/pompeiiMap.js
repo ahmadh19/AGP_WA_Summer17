@@ -36,6 +36,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
 	var clickedAreas = [];
+	//A list filled with nested list of the full name, id, and short name of each insula selected. 
 	var clickedInsula=[];
 	
 	//Holds the center latitudes and longitudes of all insula on the map. 
@@ -116,7 +117,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
-					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer/2;
+					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
 				}
 				else{
 					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
@@ -166,12 +167,11 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				newFillColor=getFillColor(numberOfGraffitiInGroup);
 				layer.setStyle({fillColor:newFillColor});
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
-				
-				borderColor=newFillColor;
 			}
 			//Resets properties when user zooms back in
 			if (!zoomedOutThresholdReached() && colorDensity && layer.feature!=undefined){
 				layer.setStyle({color: getBorderColorForCloseZoom(layer.feature)});
+				//Again, we must divide by 2 here
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
 			}
@@ -377,18 +377,18 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				checkForInsulaClick(e.target);
 			}
 		}
-		
-		
 	}
 	
 	//Returns a new array with the contents of the previous index absent
-	function removeFromArray(someArray,indexNumber){
+	//We must search for a string in the array because, again, indexOf does not work for nested lists. 
+	function removeStringedListFromArray(someArray,stringPortion){
 		var newArray=[];
 		var i;
 		for(i=0;i<someArray.length;i++){
-			if(i!=indexNumber){
+			if(""+someArray[i]!=stringPortion){
 				newArray.push(someArray[i]);
 			}
+
 			
 		}
 		return newArray;
@@ -398,27 +398,34 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	function checkForInsulaClick(clickedProperty){
 		//Clicked property is a layer
 		//layer.feature.properties.insula_id
-		var clickedInsulaName=clickedProperty.feature.properties.insula_full_name;
-		var indexOfInsulaName=clickedInsula.indexOf(clickedInsulaName);
+		
+		//indexOf does not work for nested lists. Thus, we have no choice but to use it with strings. 
+		var clickedInsulaAsString=""+clickedInsula;
+		var clickedInsulaFullName=clickedProperty.feature.properties.full_insula_name;
+		var clickedInsulaId=clickedProperty.feature.properties.insula_id;
+		var clickedInsulaShortName=clickedProperty.feature.properties.short_insula_name;
+		var targetInsulaString=""+[clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName];
+		var indexOfInsulaName=clickedInsulaAsString.indexOf(targetInsulaString);
 		//Only adds the new id if it is already in the list
 		
 		if(indexOfInsulaName==-1){
-			clickedInsula.push(clickedInsulaName);
+			clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
 		}
 		//Otherwise, removed the insula id from the list
 		else{
-			clickedInsula=removeFromArray(clickedInsula,indexOfInsulaName);
+			clickedInsula=removeStringedListFromArray(clickedInsula,targetInsulaString);
 		}
 	}
 	
 	//Used on click for insula level view in place of display selected regions
 	//In charge of the right information only, does not impact the actual map
 	function displayHighlightedInsula(){
+		//clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
 		var html = "<table><tr><th>Selected Insula:</th></tr>";
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
-			html += "<tr><td><li>"+"#" +clickedInsula[i] + ", " + 
-					"<p>"+totalInsulaGraffitisDict[clickedInsula[i]]+" graffiti</p>"+ "</li></td></tr>";
+			html += "<tr><td><li>"+clickedInsula[i][0] + ", " + 
+					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li></td></tr>"
 		}
 		html += "</table";
 		//Checks to avoid error for element is null.
