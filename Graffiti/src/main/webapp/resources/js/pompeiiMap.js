@@ -132,8 +132,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//This function gets and returns a "dictionary" of the latitude and longitude of each insula given its id(as index).
 	//Used to find where to place the labels of each insula on the map, upon iteration through this list.
 	function makeInsulaCentersDict(){
-		var currentInsulaNumber;
+		/*var currentInsulaNumber;
 		var oldInsulaNumber;
+		var insulaCenterCoordinates=[];
 		//A variable for the coordinates as they are collected for each insula
 		var coordinatesSoFar=[];
 		map.eachLayer(function(layer){
@@ -141,14 +142,18 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				//If a change in insula number has occurred, find the center of the coordinates and add them to the dictionary
 				if(currentInsulaNumber!=oldInsulaNumber){
+					//Not working?????????????????????????????
+					//insulaCenterCoordinates=coordinatesSoFar.getCenter();
+					//alert("Here are center coordinates:"+insulaCenterCoordinates);
 					
+					//coordinatesSoFar=[];
 				}
 				oldInsulaNumber=currentInsulaNumber;
 				coordinatesSoFar.push(layer.feature.geometry.coordinates);
 				//console.log("Here are coordinates so far:");
 				//console.log(coordinatesSoFar+":");
 			}
-		});
+		});*/
 	}
 	
 	
