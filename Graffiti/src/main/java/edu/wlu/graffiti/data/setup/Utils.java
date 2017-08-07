@@ -27,7 +27,7 @@ public class Utils {
 	public static Properties getConfigurationProperties() {
 		InputStream inputStream = null;
 		Properties prop = null;
-		System.out.println("Stage 1 utils");
+		//System.out.println("Stage 1 utils");
 		try {
 			prop = new Properties();
 			String propFileName = "configuration.properties";

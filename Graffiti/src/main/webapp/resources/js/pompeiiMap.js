@@ -153,17 +153,13 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				}
 			}
 		});
-		
 	}
-	
 	var createLabelIcon = function(labelClass,labelText){
 	  return L.divIcon({ 
 	    className: labelClass,
 	    html: labelText
 	  });
 	}
-	
-	
 	//Meant to show the insula short name labels at the given x/y coordinates
 	//(given as a normal list in Java array form)
 	function showALabelOnMap(xYCoordinates,textToDisplay){
@@ -173,9 +169,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		});
 		// you can set .my-div-icon styles in CSS
 		L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
-		alert(xYCoordinates+":");
 	}
-	
 	//Shows the short names of each insula in black
 	//at the center ccoordinates. 
 	function displayInsulaLabels(){
