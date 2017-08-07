@@ -1,3 +1,4 @@
+City,Insula,Main Entrance,Secondary entrances,Name,Italian Name,Category,OSM Tag,OSM Way ID,Herculaneum Panoramas link,Parco Archeologico Links,Source of info,Other notes
 Herculaneum,II,1,,House of Aristides,Casa di Aristide,House,,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F25-07_Aristide/F25-07_Aristide.html,http://www.pompeiisites.org/Sezione.jsp?titolo=La+casa+di+Aristide&idSezione=186,,Please check out yellow spaces (connected or not? characterized correctly? summer 2016)
 Herculaneum,II,2,,House of Argus ,Casa d'Argo ,House,,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/Argo/F26-03_Argo/F26-03_Argo.html,http://www.pompeiisites.org/Sezione.jsp?titolo=La+casa+d%27Argo&idSezione=185,,
 Herculaneum,II,3,,House of the Genius,Casa del Genio,House,,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F44-02_Genio/F44-02_Genio.html,http://www.pompeiisites.org/Sezione.jsp?titolo=La+casa+del+Genio&idSezione=184,,
@@ -103,7 +104,6 @@ http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F
 ,,,,,,,,,,,,
 Herculaneum,InsulaOrientalisII,1,,Shop,(leave blank),Shop,,,,,,
 Herculaneum,InsulaOrientalisII,2-3,,,Pistrinum ,Workshop,,,,,,
-Herculaneum,InsulaOrientalisII,3,,Shop ,(leave blank),Shop ,combine Ins. Or. II.2 and 3 - remove shop label,,combine Ins. Or. II.2 and 3 - remove shop label,,,
 Herculaneum,InsulaOrientalisII,4,,Palaestra ,(leave blank),,,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F41-02_Palestra/F41-02_Palestra.html,http://www.pompeiisites.org/Sezione.jsp?titolo=La+palestra+%28ins.+or.+II%2C4%29&idSezione=206,pompeiisites.org,
 Herculaneum,InsulaOrientalisII,5,,Dye shop ,(leave blank),Workshop,,,,,,
 Herculaneum,InsulaOrientalisII,6,,Wineshop of Livius Alcimus,(leave blank),Tavern,,,,,Wallace-Hadrill,
@@ -135,3 +135,13 @@ http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F
 
 http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F20-06_pool/F20-06_pool.html",http://www.pompeiisites.org/Sezione.jsp?titolo=Le+terme+suburbane+%28terrazza+meridionale%2C+3%29&idSezione=197,,
 Herculaneum,OutsideWalls,ow3,,Sacred Area,Area Sacra,Sacred Space,,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/Area_Sacra_Ara_Balbo/HTML5_panos/F02-03_Sacra/F02-03_Sacra.html,http://www.pompeiisites.org/Sezione.jsp?titolo=L%27area+sacra+%28Terrazza+meridionale%2C+1%29&idSezione=201,,
+,,,,,,,,,,,,
+,,,,,,,,,,,,
+,,Categories,,,,,,,,,,
+,,House,,,,,,,,,,
+,,Inn,,,,,,,,,,
+,,Public building,,Includes city baths,,,,,,,,
+,,Sacred space,,"What to call sacred space? temple is too restrictive, what else?",,,,,,,,
+,,Shop,,,,,,,,,,
+,,Tavern,,,,,,,,,,
+,,Workshop,,"includes bakeries, brothels",,,,,,,,
