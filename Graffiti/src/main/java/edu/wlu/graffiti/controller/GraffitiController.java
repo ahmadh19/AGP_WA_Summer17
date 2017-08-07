@@ -366,6 +366,19 @@ public class GraffitiController {
 		return "searchResults";
 	}
 
+	@RequestMapping(value = "/print", method = RequestMethod.GET)
+	public String printResults(final HttpServletRequest request) {
+		init();
+		HttpSession s = request.getSession();
+		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
+		List<Inscription> inscriptions = searchResults(request);
+
+		request.setAttribute("resultsLyst", inscriptions);
+		request.setAttribute("searchQueryDesc", "filtering");
+		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
+		return "print";
+	}
+	
 	private List<Inscription> searchResults(final HttpServletRequest request) {
 		// System.out.println("We're in FilterController: " +
 		// request.getQueryString());
