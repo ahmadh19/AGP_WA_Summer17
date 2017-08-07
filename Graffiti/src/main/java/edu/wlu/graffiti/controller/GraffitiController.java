@@ -138,24 +138,13 @@ public class GraffitiController {
 		settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
 	}
 
-	// Maps to the search.jsp page currently receives information from
-	// regions.txt file for the dropdown menu
-	// that holds the information for each property in an ancient city (i.e.
-	// Pompeii)
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public String searchForm(final HttpServletRequest request) {
-
-		String city = request.getParameter("city");
-		String message;
-		HttpSession s = request.getSession();
-			if (city.toLowerCase().equals("pompeii")) {
-				return "searchPompeii";
-			}
-			if (city.toLowerCase().equals("herculaneum")) {
-				return "searchHerculaneum";
-			}
-			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-			return "Not Found";
+	@RequestMapping(value = "/searchPompeii", method = RequestMethod.GET)
+	public String searchMap(final HttpServletRequest request) {
+		return "searchPompeii";
+	}
+	@RequestMapping(value = "/searchHerculaneum", method = RequestMethod.GET)
+	public String searchHerc(final HttpServletRequest request) {
+		return "searchHerculaneum";
 	}
 
 	@RequestMapping(value = "/featured-graffiti", method = RequestMethod.GET)
@@ -334,7 +323,7 @@ public class GraffitiController {
 			// Decides which jsp page to travel to when user clicks "More
 			// Information" on Search page.
 			
-			return "insulaDetails";
+			return "details";
 		}
 	}
 	
@@ -357,15 +346,54 @@ public class GraffitiController {
 	public String search(final HttpServletRequest request) {
 		init();
 		HttpSession s = request.getSession();
+		
+		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
+		List<Inscription> inscriptions = searchResults(request);
+		request.setAttribute("resultsLyst", inscriptions);
+		request.setAttribute("searchQueryDesc", "filtering");
+		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
+		return "results";
+	}
+	
+	@ApiOperation(value="Filters the inscriptions and returns the results without any styling. The base URI lists "
+			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
+			+ "results as the user wishes.",
+			 notes="A detailed overview of possible parameters is as follows: <br/> "
+			+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
+			+ "insula={insulaID} <br/>"
+			+ "property={propertyID} <br/>"
+			+ "property_type={propertyType}<br/>"
+			+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
+			+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
+			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
+			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
+			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
+			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
+	@RequestMapping(value = "/filter", method = RequestMethod.GET)
+	public String filterResults(final HttpServletRequest request) {
+		init();
+		HttpSession s = request.getSession();
+		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
+		List<Inscription> inscriptions = searchResults(request);
+		request.setAttribute("resultsLyst", inscriptions);
+		request.setAttribute("searchQueryDesc", "filtering");
+		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
+		return "filter";
+	}
+
+	@RequestMapping(value = "/print", method = RequestMethod.GET)
+	public String printResults(final HttpServletRequest request) {
+		init();
+		HttpSession s = request.getSession();
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 		List<Inscription> inscriptions = searchResults(request);
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
-		return "searchResults";
+		return "print";
 	}
-
+	
 	private List<Inscription> searchResults(final HttpServletRequest request) {
 		// System.out.println("We're in FilterController: " +
 		// request.getQueryString());
@@ -593,33 +621,6 @@ public class GraffitiController {
 
 	public void setGraffitiDao(final GraffitiDao graffitiDao) {
 		this.graffitiDao = graffitiDao;
-	}
-
-	@ApiOperation(value="Filters the inscriptions and returns the results without any styling. The base URI lists "
-			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
-			+ "results as the user wishes.",
-			 notes="A detailed overview of possible parameters is as follows: <br/> "
-			+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
-			+ "insula={insulaID} <br/>"
-			+ "property={propertyID} <br/>"
-			+ "property_type={propertyType}<br/>"
-			+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
-			+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
-			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
-			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
-			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
-			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
-	@RequestMapping(value = "/filter", method = RequestMethod.GET)
-	public String filterResults(final HttpServletRequest request) {
-		init();
-		HttpSession s = request.getSession();
-		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-		List<Inscription> inscriptions = searchResults(request);
-
-		request.setAttribute("resultsLyst", inscriptions);
-		request.setAttribute("searchQueryDesc", "filtering");
-		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
-		return "filter";
 	}
 
 	@RequestMapping(value = "/admin/report", method = RequestMethod.GET)

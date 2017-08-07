@@ -30,10 +30,10 @@
 							Figural Graffiti (Drawings)</a></li>
 
 					<li><a
-						href="<%=request.getContextPath()%>/search?city=Herculaneum">Search
+						href="<%=request.getContextPath()%>/searchHerculaneum">Search
 							Herculaneum</a></li>
 					<li><a
-						href="<%=request.getContextPath()%>/search?city=Pompeii">Search
+						href="<%=request.getContextPath()%>/searchPompeii">Search
 							Pompeii</a></li>
 
 					<li><a href="<%=request.getContextPath()%>/featured-graffiti">Featured

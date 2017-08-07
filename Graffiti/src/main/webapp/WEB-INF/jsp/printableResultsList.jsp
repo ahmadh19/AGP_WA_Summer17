@@ -6,7 +6,7 @@
 %>
 
 <c:forEach var="i" items="${resultsLyst}" varStatus="graffitoIndex">
-	<h4 id="${i.edrId }">
+	<h4 id="${i.edrId }" style="font-size: 24px;">
 		<c:choose>
 			<c:when test="${not empty i.agp.summary }">
 				<c:out value="${i.agp.summary }" />
@@ -18,6 +18,10 @@
 	</h4>
 
 	<table class="main-table" style="margin-bottom: 30px;">
+		<tr>
+			<th class="propertyLabel">EDR-ID:</th>
+			<td>${i.edrId}</td>
+		</tr>
 		<c:choose>
 			<c:when test="${not empty i.contentWithLineBreaks}">
 				<tr>
@@ -44,6 +48,25 @@
 				</c:if>
 			</c:otherwise>
 		</c:choose>
+		<c:if test="${not empty i.bibliography}">
+			<tr>
+				<th><span class="propertyLabel">Bibliography:</span></th>
+				<td>${i.bibliography}</td>
+			</tr>
+		</c:if>
+		<c:if test="${not empty i.writingStyle}">
+			<tr>
+				<th><span class="propertyLabel">Writing Style:</span></th>
+				<td>${i.writingStyle}</td>
+			</tr>
+		</c:if>
+		<c:if test="${not empty i.language}">
+			<tr>
+				<th><span class="propertyLabel">Language:</span></th>
+				<td>${i.language}</td>
+			</tr>
+		</c:if>
+		<!--
 		<c:if test="${fn:length(i.photos) gt 0}">
 			<c:set var="len" value="${fn:length(i.photos)}" />
 			<c:set var="images" value="${i.images}" />
@@ -80,6 +103,7 @@
 				</c:otherwise>
 			</c:choose>
 		</c:if>
+		-->
 		<tr>
 			<th class="propertyLabel">City:</th>
 			<td><a
@@ -113,26 +137,18 @@
 					</td>
 			</tr>
 		</c:if>
-		<tr style="line-height: 30px;">
-			<td><a
-				href="<%=request.getContextPath() %>/graffito/AGP-${i.edrId}"
-				id="${i.edrId}"> See more information &#10140;</a></td>
-		</tr>
-
-		<%
-			if (session.getAttribute("authenticated") != null) {
-		%>
+		<!-- 
 		<tr>
-			<td colspan="2">
-				<form action="<%=request.getContextPath()%>/admin/updateGraffito">
-					<input class="btn btn-agp" type=submit value="Edit Graffito"><input
-						type="hidden" name="edrID" value="${i.edrId}" />
-				</form>
-			</td>
+			<th>URI:</th>
+			<td>http://ancientgraffiti.org<%=request.getContextPath() %>/graffito/AGP-${i.edrId}</td>
 		</tr>
-		<%
-			}
-		%>
+		-->
+		<c:if test="${not empty i.citation}">
+			<tr>
+				<th><span class="propertyLabel">Suggested Citation:</span></th>
+				<td>${i.citation}</td>
+			</tr>
+		</c:if>
 	</table>
 	<hr class="main-table" />
 
