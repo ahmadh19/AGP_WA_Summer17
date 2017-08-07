@@ -97,6 +97,16 @@ public class ImportEDRData {
 			updateBibliography("data/EDRData/editiones.csv");
 			updateApparatus("data/EDRData/apparatus.csv");
 			updatePhotoInformation("data/EDRData/foto.csv");
+			
+			System.out.println("\nOn to Camodeca...\n");
+			
+			// do again for Camodeca
+			updateInscriptions("data/EDRData/camodeca_epigr.csv");
+			updateContent("data/EDRData/camodeca_epigr.csv");
+			updateBibliography("data/EDRData/comodeca_editiones.csv");
+			updateApparatus("data/EDRData/camodeca_apparatus.csv");
+			
+			
 			dbCon.close();
 			AddEDRLinksToApparatus.addEDRLinksToApparatus();
 			ExtractEDRLanguageForAGPInfo.updateAGPLanguage();
@@ -372,6 +382,8 @@ public class ImportEDRData {
 
 	private static void updateInscriptions(String datafileName) {
 		try {
+			insertPStmt = dbCon.prepareStatement(INSERT_INSCRIPTION_STATEMENT);
+			updatePStmt = dbCon.prepareStatement(UPDATE_INSCRIPTION_STATEMENT);
 
 			Reader in = new FileReader(datafileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
@@ -448,6 +460,8 @@ public class ImportEDRData {
 	 * @throws SQLException
 	 */
 	private static void updateAGPMetadata(String edrId, String ancient_city, String findSpot) throws SQLException {
+
+		insertAGPMetaStmt = dbCon.prepareStatement(INSERT_AGP_METADATA);
 
 		insertAGPMetaStmt.setString(1, edrId);
 
@@ -638,11 +652,6 @@ public class ImportEDRData {
 
 		try {
 			dbCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-
-			insertAGPMetaStmt = dbCon.prepareStatement(INSERT_AGP_METADATA);
-			insertPStmt = dbCon.prepareStatement(INSERT_INSCRIPTION_STATEMENT);
-			updatePStmt = dbCon.prepareStatement(UPDATE_INSCRIPTION_STATEMENT);
-			selPStmt = dbCon.prepareStatement(CHECK_INSCRIPTION_STATEMENT);
 
 			updatePropertyStmt = dbCon.prepareStatement(UPDATE_PROPERTY);
 			// updateDescriptionStmt =
