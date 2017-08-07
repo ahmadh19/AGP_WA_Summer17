@@ -179,25 +179,16 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Shows the short names of each insula in black
 	//at the center ccoordinates. 
 	function displayInsulaLabels(){
-		//alert("ahhh");
 		var i;
 		var insulaId;
 		var insulaCenterCoordinates;
 		var shortInsulaName;
-		//Alerts are working console.log is not
-		//alert("Inside of display insula labels\n");
-		
+		//Alerts are working console.log is not(why?)
 		for(i=0;i<insulaGroupIdsList.length;i++){
 			insulaId=insulaGroupIdsList[i];
 			insulaCenterCoordinates=insulaCentersDict[insulaId];
 			shortInsulaName=insulaShortNamesDict[insulaId];
 			showALabelOnMap(insulaCenterCoordinates,shortInsulaName);
-			//alert("Insula id:");
-			//alert(insulaId+":");
-			//alert("Insula center coordinates:");
-			//alert(insulaCenterCoordinates+":");
-			//alert("Short insula name:");
-			//alert(shortInsulaName+":");
 		}
 	}
 	
