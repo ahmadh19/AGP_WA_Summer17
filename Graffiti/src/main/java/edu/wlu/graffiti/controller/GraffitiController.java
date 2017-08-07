@@ -470,7 +470,7 @@ public class GraffitiController {
 				String[] params = parameters.get(i).split(" ");
 
 				for (String param : params) {
-					contentQuery.must(matchQuery(fieldNames.get(i), param).minimumShouldMatch("80%")); //.fuzziness("AUTO"));
+					contentQuery.must(matchQuery(fieldNames.get(i), param).minimumShouldMatch("-20%")); //.fuzziness("AUTO"));
 				}
 				query.must(contentQuery);
 			} else if (searchTerms.get(i).equals("Property")) {
@@ -508,6 +508,8 @@ public class GraffitiController {
 				query.must(otherQuery);
 			}
 		}
+		
+		System.out.println(query);
 		
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
