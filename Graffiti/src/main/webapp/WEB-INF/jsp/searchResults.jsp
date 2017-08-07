@@ -78,6 +78,15 @@ function selectImg2(ind, k, page, thumbnail){
 	document.getElementById("imgSrc"+k).src = thumbnail;
 }
 
+function printResults() {
+	var labels = document.getElementsByClassName("search-term-label");
+	//xmlHttp = new XMLHttpRequest();
+	newUrl = createURL("print");
+	//xmlHttp.open("GET", newUrl, false);
+	//xmlHttp.send(null);
+	window.open(newUrl, '_blank');
+}
+
 function checkAlreadyClicked(ids){
 	idList = ids.split(";");
 	for (var i = 0; i < idList.length-1; i++){
@@ -206,15 +215,11 @@ ul#searchTerms li {
 <div id="contain" class="container" style="margin-bottom: 50px;">
 		<%@include file="sidebarSearchMenu.jsp"%>
 		<!--  SideBar Map  -->
-		
 		<div id="herculaneummap" class="searchResultsHerculaneum"></div>
 		<div id="pompeiimap" class="searchResultsPompeii"></div>
-		
-		
-		
 
 		<div style="margin-left: 200px;">
-			<div style="width: 475px; padding-bottom: 10px;">
+			<div style="width: 480px; padding-bottom: 10px;">
 				<ul id="searchTerms" style="width: 525px; margin-left: -40px;"></ul>
 			</div>
 			<div id="search-results"> 

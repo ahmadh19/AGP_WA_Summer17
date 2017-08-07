@@ -7,7 +7,7 @@
 <% List<String> newLocationKeys=(List<String>)request.getAttribute("findLocationKeys");%>
 <div id="mapkeys" style="display:none;"><%=newLocationKeys %></div>
 
-<p class="alert alert-info" style="width: 475px">
+<p class="alert alert-info" style="width: 480px">
 	
 	<c:out value="${num} results found ${searchQueryDesc}" />
 	</br> </br>
@@ -23,6 +23,7 @@
 		id="bulkEpidocs">
 		<button class="btn btn-agp right-align">Export as CSV</button>
 	</a>
+	<button id="print" class="btn btn-agp right-align" onclick="printResults();" target="_blank">Print</button>
 </p>
 
 <c:if test="${num == 0}">
