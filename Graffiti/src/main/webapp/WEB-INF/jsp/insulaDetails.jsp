@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -155,8 +156,7 @@ function backToResults(){
 
 <body>
 	<%@include file="header.jsp"%>
-
-
+	
 	<c:set var="i" value="${requestScope.inscription}" />
 
 	<script>
@@ -469,8 +469,8 @@ function backToResults(){
 			%>
 		</div>
 		<div class="rightcol">
-
-			<c:set var="len" value="${i.numberOfImages}" />
+			
+			<c:set var="len" value="${fn:length(i.photos)}" />
 			<c:choose>
 				<c:when test="${len == 1}">
 					<a target="_blank" href="${requestScope.imagePages[0]}"><img

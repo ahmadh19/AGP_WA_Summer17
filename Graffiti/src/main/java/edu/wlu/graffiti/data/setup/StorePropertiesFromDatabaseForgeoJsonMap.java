@@ -50,7 +50,7 @@ import java.sql.SQLException;
  * @author Kelly McCaffrey -Created functionality for getting the number of
  *         Graffiti and automating the process of copying to
  *         pompeiiPropertyData.js -Also added all functionality for the
- *         Herculaneum map.
+ *         Herculaneum map and insula information such as insula name and insula id to the .txt and .js files. 
  * @author Sara Sprenkle - refactored code to make it easier to change later;
  */
 
@@ -65,18 +65,23 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	final static String SELECT_PROPERTY = FindspotDao.SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT;
 	
 	final static String SELECT_BY_OSM_WAY_ID=FindspotDao.SELECT_BY_OSM_WAY_ID_STATEMENT;
+	
+	final static String SELECT_BY_CITY_AND_INSULA=FindspotDao.SELECT_BY_PROPERTY_ID_STATEMENT;
 
 	final static String GET_NUMBER = GraffitiDao.FIND_BY_PROPERTY;
+	
 
 	final static String GET_PROPERTY_TYPE = "SELECT * FROM properties, propertytypes,"
 			+ " propertytopropertytype WHERE properties.id = propertytopropertytype.property_id"
 			+ " AND propertytypes.id = propertytopropertytype.property_type AND properties.id = ?";
+	
 	static Connection dbCon;
 
 	private static PreparedStatement selectPropertyStatement;
 	private static PreparedStatement getPropertyTypeStatement;
 	private static PreparedStatement getNumberStatement;
 	private static PreparedStatement osmWayIdSelectionStatement;
+	private static PreparedStatement selectCityAndInsulaStatement;
 
 	@Resource
 	private static GraffitiDao graffitiDaoObject;
@@ -106,6 +111,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		try {
 			dbCon = DriverManager.getConnection(prop.getProperty("db.url"), prop.getProperty("db.user"),
 					prop.getProperty("db.password"));
+			selectCityAndInsulaStatement=dbCon.prepareStatement(SELECT_BY_CITY_AND_INSULA);
 			osmWayIdSelectionStatement=dbCon.prepareStatement(SELECT_BY_OSM_WAY_ID);
 			selectPropertyStatement = dbCon.prepareStatement(SELECT_PROPERTY);
 			getPropertyTypeStatement = dbCon.prepareStatement(GET_PROPERTY_TYPE);
@@ -317,22 +323,45 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 				Polygon p = parseGeometryAndRemoveCoordinates(featureNode);
 
 				try {
+					
+					//Get the insula names from the database and store. 
+					//Removed a parameter (insula short name) bc/we don't have it. It is one of the things
+					//we are trying to get. Should still work(?)
+					
 					selectPropertyStatement.setString(1, "Pompeii");
 					selectPropertyStatement.setString(2, insulaName);
 					selectPropertyStatement.setString(3, propertyNum);
 
-					ResultSet rs = selectPropertyStatement.executeQuery();
+					ResultSet propertyResultSet = selectPropertyStatement.executeQuery();
 
-					if (rs.next()) {
-						int propertyId = rs.getInt("id");
+					if (propertyResultSet.next()) {
+						
+						
+						int propertyId=propertyResultSet.getInt("id");
+						selectCityAndInsulaStatement.setInt(1,propertyId);
+						
+						ResultSet insulaResultSet=selectCityAndInsulaStatement.executeQuery();
+						
+						ObjectNode propertyNode = (ObjectNode) featureNode;
+						ObjectNode properties = (ObjectNode) propertyNode.path("properties");
+						
+						if(insulaResultSet.next()){
+							String shortInsulaName=insulaResultSet.getString("short_name");
+							String fullInsulaName=insulaResultSet.getString("full_name");
+							
+							properties.put("short_insula_name", shortInsulaName);
+							properties.put("full_insula_name", fullInsulaName);
+						}
+						
+						
 
-						String propertyName = rs.getString("property_name");
-						String addProperties = rs.getString("additional_properties");
-						String italPropName = rs.getString("italian_property_name");
-						String insulaDescription = rs.getString("description");
-						String insulaPleiadesId = rs.getString("insula_pleiades_id");
-						String propPleiadesId = rs.getString("property_pleiades_id");
-						String insulaId=rs.getString("insula_id");
+						String propertyName = propertyResultSet.getString("property_name");
+						String addProperties = propertyResultSet.getString("additional_properties");
+						String italPropName = propertyResultSet.getString("italian_property_name");
+						String insulaDescription = propertyResultSet.getString("description");
+						String insulaPleiadesId = propertyResultSet.getString("insula_pleiades_id");
+						String propPleiadesId = propertyResultSet.getString("property_pleiades_id");
+						String insulaId=propertyResultSet.getString("insula_id");
 
 						getNumberStatement.setInt(1, propertyId);
 						ResultSet numberOnPropResultSet = getNumberStatement.executeQuery();
@@ -347,9 +376,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						if (resultset.next()) {
 							propertyType = resultset.getString("name");
 						}
-
-						ObjectNode propertyNode = (ObjectNode) featureNode;
-						ObjectNode properties = (ObjectNode) propertyNode.path("properties");
+						
 						properties.put("Property_Id", propertyId);
 						properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 						properties.put("Property_Name", propertyName);
@@ -360,6 +387,9 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						properties.put("Property_Pleiades_Id", propPleiadesId);
 						properties.put("Property_Type", propertyType);
 						properties.put("insula_id", insulaId);
+						
+						
+						
 
 						JsonNode updatedProps = (JsonNode) properties;
 						propertyNode.set("properties", updatedProps);

@@ -44,9 +44,9 @@
 				</c:if>
 			</c:otherwise>
 		</c:choose>
-		<c:if test="${i.numberOfImages > 0}">
-			<c:set var="len" value="${i.numberOfImages}" />
-			<c:set var="images" value="${i.images }" />
+		<c:if test="${fn:length(i.photos) gt 0}">
+			<c:set var="len" value="${fn:length(i.photos)}" />
+			<c:set var="images" value="${i.images}" />
 			<c:set var="thumbnails" value="${i.thumbnails}" />
 			<c:set var="pages" value="${i.pages}" />
 
@@ -103,12 +103,14 @@
 						<th class="propertyLabel">Drawing Categories:</th>
 					</c:otherwise>
 				</c:choose>
-				<td><c:forEach var="dt"
+				<td>
+				<c:forEach var="dt"
 						items="${i.agp.figuralInfo.getDrawingTags()}"
 						varStatus="loopStatus">
 						<a href="<%=request.getContextPath() %>/results?drawing=${dt.id}">${dt.name}</a>
 						<c:if test="${!loopStatus.last}">, </c:if>
-					</c:forEach></td>
+					</c:forEach>
+					</td>
 			</tr>
 		</c:if>
 		<tr style="line-height: 30px;">
