@@ -92,18 +92,18 @@ public class ImportEDRData {
 
 		try {
 			readPropertiesAndInsula();
-			updateInscriptions("data/EDRData/epigr.csv");
-			updateContent("data/EDRData/testo_epigr.csv");
-			updateBibliography("data/EDRData/editiones.csv");
-			updateApparatus("data/EDRData/apparatus.csv");
-			updatePhotoInformation("data/EDRData/foto.csv");
+//			updateInscriptions("data/EDRData/epigr.csv");
+//			updateContent("data/EDRData/testo_epigr.csv");
+//			updateBibliography("data/EDRData/editiones.csv");
+//			updateApparatus("data/EDRData/apparatus.csv");
+//			updatePhotoInformation("data/EDRData/foto.csv");
 			
 			System.out.println("\nOn to Camodeca...\n");
 			
 			// do again for Camodeca
 			updateInscriptions("data/EDRData/camodeca_epigr.csv");
 			updateContent("data/EDRData/camodeca_epigr.csv");
-			updateBibliography("data/EDRData/comodeca_editiones.csv");
+			updateBibliography("data/EDRData/camodeca_editiones.csv");
 			updateApparatus("data/EDRData/camodeca_apparatus.csv");
 			
 			
@@ -169,10 +169,15 @@ public class ImportEDRData {
 	private static void updateApparatus(String apparatusFileName) {
 		String eagleID = "";
 		try {
+			updateApparatusStmt = dbCon.prepareStatement(UPDATE_APPARATUS);
+
 			Reader in = new InputStreamReader(new FileInputStream(apparatusFileName), "UTF-8");
 			Iterable<CSVRecord> records = CSVFormat.newFormat(';').parse(in);
 			for (CSVRecord record : records) {
 				eagleID = Utils.cleanData(record.get(0));
+				if( record.size() == 1) { // skip if 
+					continue;
+				}
 				String apparatus = Utils.cleanData(record.get(1));
 
 				try {
@@ -203,7 +208,7 @@ public class ImportEDRData {
 					e.printStackTrace();
 				}
 			}
-		} catch (IOException e) {
+		} catch (IOException | SQLException e) {
 			System.err.println("\nSomething went wrong with apparatus for " + eagleID);
 			e.printStackTrace();
 		}
@@ -384,7 +389,8 @@ public class ImportEDRData {
 		try {
 			insertPStmt = dbCon.prepareStatement(INSERT_INSCRIPTION_STATEMENT);
 			updatePStmt = dbCon.prepareStatement(UPDATE_INSCRIPTION_STATEMENT);
-
+			selPStmt = dbCon.prepareStatement(CHECK_INSCRIPTION_STATEMENT);
+			
 			Reader in = new FileReader(datafileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
@@ -656,8 +662,6 @@ public class ImportEDRData {
 			updatePropertyStmt = dbCon.prepareStatement(UPDATE_PROPERTY);
 			// updateDescriptionStmt =
 			// dbCon.prepareStatement(UPDATE_DESCRIPTION);
-			updateApparatusStmt = dbCon.prepareStatement(UPDATE_APPARATUS);
-
 			insertPhotoStmt = dbCon.prepareStatement(INSERT_PHOTO_STATEMENT);
 
 		} catch (SQLException e) {
