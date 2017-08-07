@@ -23,7 +23,7 @@
 		id="bulkEpidocs">
 		<button class="btn btn-agp right-align">Export as CSV</button>
 	</a>
-	<button id="print" class="btn btn-agp right-align" onclick="printResults();" target="_blank">Print</button>
+	<button id="print" class="btn btn-agp right-align" onclick="printResults();">Print</button>
 </p>
 
 <c:if test="${num == 0}">
