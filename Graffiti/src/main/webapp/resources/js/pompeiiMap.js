@@ -61,6 +61,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//This adds more realistic features to the background like streets. Commented out bc/shape files are off positionally and more details shows it to users. 
 	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
 
+	//L.marker(new L.LatLng(40.750, 14.4884), {icon:createLabelIcon("textLabelclass","a place")}).addTo(map);
 	
 	//map.addLayer(grayscale);
 	L.geoJson(pompeiiPropertyData).addTo(map);
@@ -155,6 +156,26 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		
 	}
 	
+	var createLabelIcon = function(labelClass,labelText){
+	  return L.divIcon({ 
+	    className: labelClass,
+	    html: labelText
+	  });
+	}
+	
+	
+	//Meant to show the insula short name labels at the given x/y coordinates
+	//(given as a normal list in Java array form)
+	function showALabelOnMap(xYCoordinates,textToDisplay){
+		var myIcon = L.divIcon({ 
+		    //iconSize: new L.Point(10, 10), 
+		    html: textToDisplay
+		});
+		// you can set .my-div-icon styles in CSS
+		L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
+		alert(xYCoordinates+":");
+	}
+	
 	//Shows the short names of each insula in black
 	//at the center ccoordinates. 
 	function displayInsulaLabels(){
@@ -163,18 +184,20 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var insulaId;
 		var insulaCenterCoordinates;
 		var shortInsulaName;
-		console.log("Inside of display insula labels\n");
+		//Alerts are working console.log is not
+		//alert("Inside of display insula labels\n");
 		
 		for(i=0;i<insulaGroupIdsList.length;i++){
 			insulaId=insulaGroupIdsList[i];
 			insulaCenterCoordinates=insulaCentersDict[insulaId];
 			shortInsulaName=insulaShortNamesDict[insulaId];
-			console.log("Insula id:");
-			console.log(insulaId+":");
-			console.log("Insula center coordinates:");
-			console.log(insulaCenterCoordinates+":");
-			console.log("Short insula name:");
-			console.log(shortInsulaName+":");
+			showALabelOnMap(insulaCenterCoordinates,shortInsulaName);
+			//alert("Insula id:");
+			//alert(insulaId+":");
+			//alert("Insula center coordinates:");
+			//alert(insulaCenterCoordinates+":");
+			//alert("Short insula name:");
+			//alert(shortInsulaName+":");
 		}
 	}
 	
