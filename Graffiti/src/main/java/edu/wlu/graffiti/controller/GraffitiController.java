@@ -462,8 +462,10 @@ public class GraffitiController {
 				String[] a = fieldNames.get(i).split(" ");
 
 				for (String param : params) {
-					contentQuery.must(matchQuery(a[0], param).operator(Operator.AND)); // regular query
-					contentQuery.must(matchQuery(a[1], param).operator(Operator.OR)); // ngram query
+					BoolQueryBuilder orQuery = boolQuery(); // 'or' for n-gram and regular
+					orQuery.should(matchQuery(a[0], param)); // regular query
+					orQuery.should(matchQuery(a[1], param).minimumShouldMatch("80%")); // n-gram query
+					contentQuery.must(orQuery); // 'and' for search terms
 				}
 				
 				query.must(contentQuery);
