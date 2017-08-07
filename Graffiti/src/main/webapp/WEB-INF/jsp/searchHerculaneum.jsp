@@ -44,7 +44,7 @@ function setButton(){
 </script>
 
 <div class="container">
-	<h2>Search herculaneum by Map</h2>
+	<h2>Search Herculaneum by Map</h2>
 	<p>Click on one or more properties within the map, then hit the "Search" button below.</p>
 	<div id="moreInfo"><button id="search" class="btn btn-agp">Search Properties</button></div>
 	
