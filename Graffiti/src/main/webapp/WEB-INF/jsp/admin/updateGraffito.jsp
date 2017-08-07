@@ -578,10 +578,9 @@ input[name*="image"] {
 						modal.style.display = "block";
 						
 						//alert("<button type='button' class='btn btn-agp' onclick=markAsPersonName('"+ selection.txt +"')>Person Name</button>");
-						var btnText1 = 
 						$(".modal .modal-content").html("<p>Mark '" + selection.txt + "' as one of the following: </p>" +
-							"<button type='button' class='btn btn-agp' onclick=markAsPersonName('"+ selection.txt +"')>Person Name</button>" +
-							"<button type='button' class='btn btn-agp' onclick=markAsPlaceName('"+ selection.txt +"')>Place Name</button>");
+							"<button type='button' class='btn btn-agp' onclick=\"markAsPersonName(\'"+ selection.txt +"\')\">Person Name</button>" +
+							"<button type='button' class='btn btn-agp' onclick=\"markAsPlaceName(\'"+ selection.txt +"\')\">Place Name</button>");
 					}
 				}).mousedown(function() {
 
