@@ -138,24 +138,13 @@ public class GraffitiController {
 		settings = Settings.builder().put("cluster.name", ES_CLUSTER_NAME).build();
 	}
 
-	// Maps to the search.jsp page currently receives information from
-	// regions.txt file for the dropdown menu
-	// that holds the information for each property in an ancient city (i.e.
-	// Pompeii)
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public String searchForm(final HttpServletRequest request) {
-
-		String city = request.getParameter("city");
-		String message;
-		HttpSession s = request.getSession();
-			if (city.toLowerCase().equals("pompeii")) {
-				return "searchPompeii";
-			}
-			if (city.toLowerCase().equals("herculaneum")) {
-				return "searchHerculaneum";
-			}
-			s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
-			return "Not Found";
+	@RequestMapping(value = "/searchPompeii", method = RequestMethod.GET)
+	public String searchMap(final HttpServletRequest request) {
+		return "searchPompeii";
+	}
+	@RequestMapping(value = "/searchHerculaneum", method = RequestMethod.GET)
+	public String searchHerc(final HttpServletRequest request) {
+		return "searchHerculaneum";
 	}
 
 	@RequestMapping(value = "/featured-graffiti", method = RequestMethod.GET)
@@ -334,7 +323,7 @@ public class GraffitiController {
 			// Decides which jsp page to travel to when user clicks "More
 			// Information" on Search page.
 			
-			return "insulaDetails";
+			return "details";
 		}
 	}
 	
@@ -363,7 +352,7 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
-		return "searchResults";
+		return "results";
 	}
 	
 	@ApiOperation(value="Filters the inscriptions and returns the results without any styling. The base URI lists "

@@ -1,69 +1,66 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+ <%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<%@include file="../../resources/common_head.txt"%>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
-  integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
-  crossorigin=""/>
-<%@ page import= "java.util.*" %>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Ancient Graffiti Project :: Search Results</title>
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/js/filterSearch.js"/>"></script>
-
-	
-<!-- Resources to display the new map -->	
-
+<%@ include file="/resources/common_head.txt" %>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
+  integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
+  crossorigin=""/>
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
 <script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
   integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
-  crossorigin=""></script>dist/leaflet.js"></script>
-<script type="text/javascript"
+  crossorigin=""></script>
+  
+ <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
+	
+ <script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
+	
+<%@ page import= "java.util.*" %>
 
-	
-	
 <script type="text/javascript">
 
 
-
-
-function generatePompeii(name) {
-	xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("GET",
-			"map?clickedRegion="+name+"&city="+name, false); 
-	xmlHttp.send(null);
-	document.getElementById("pompeiiCityMap").innerHTML = xmlHttp.responseText;
-	start();
+function start() {
+$('img').mapster({
+	areas: [
+		<c:forEach var="locKey" items="${requestScope.findLocationKeys}">
+		{
+			key: '${locKey}',
+			fillColor: '0000FF',
+			staticState: true
+		},
+		</c:forEach>
+	], 
+	isSelectable: false,
+	mapKey: 'data-key',
+	clickNavigate: false,
+}); 
 }
 
-//setTimeout(function(){ map.invalidateSize()}, 1000);
-//function generatePompeii(name) {
-		//xmlHttp = new XMLHttpRequest();
-		//xmlHttp.open("GET",
-			//"map?clickedRegion="+name+"&city="+name, false); 
-		
-		//document.getElementById("pompeiimap").innerHTML = xmlHttp.responseText;
-		//start();
-//		window.initmap();
-//}
+var locationKeys; 
 
-
-
-function generateHerculaneum(name) {
-	xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("GET",
-			"map?clickedRegion="+name+"&second=yes"+"&city="+name, false); 
-	xmlHttp.send(null);
-	document.getElementById("herculaneumCityMap").innerHTML = xmlHttp.responseText;
-	start();
+function setLocationKeys(){
+	<%
+	List<String> locationKeys=(List<String>)request.getAttribute("findLocationKeys");
+	if(locationKeys==null){
+		locationKeys=new ArrayList();
+	}
+	%>
+	locationKeys = <%=locationKeys%>;
 }
+
+
+
 
 function selectImg(ind, k, shortId, longId){
 	if (ind == 0){
@@ -81,6 +78,15 @@ function selectImg2(ind, k, page, thumbnail){
 	document.getElementById("imgSrc"+k).src = thumbnail;
 }
 
+function printResults() {
+	var labels = document.getElementsByClassName("search-term-label");
+	//xmlHttp = new XMLHttpRequest();
+	newUrl = createURL("print");
+	//xmlHttp.open("GET", newUrl, false);
+	//xmlHttp.send(null);
+	window.open(newUrl, '_blank');
+}
+
 function checkAlreadyClicked(ids){
 	idList = ids.split(";");
 	for (var i = 0; i < idList.length-1; i++){
@@ -90,94 +96,78 @@ function checkAlreadyClicked(ids){
 
 function checkboxesAfterBack() {
 	contentsUrl = window.location.href;
-	var params = contentsUrl.split("?")[1].split("&");
-	
-	var dict = {
-			"drawing_category" : "dc",
-			"property" : "p",
-			"property_type" : "pt",
-			"insula" : "i",
-			"city" : "c",
-			"writing_style" : "ws",
-			"language" : "l"
-	};
-	
-	var cities = {
-			"Herculaneum" : 0,
-			"Pompeii" : 1
-	};
-	
-	var writingStyle = {
-		"Graffito/incised" : 1,
-		"charcoal" : 2,
-		"other" : 3
-	};
+	if(contentsUrl.split("?")[1]) {
+		var params = contentsUrl.split("?")[1].split("&");
+		
+		var dict = {
+				"drawing_category" : "dc",
+				"property" : "p",
+				"property_type" : "pt",
+				"insula" : "i",
+				"city" : "c",
+				"writing_style" : "ws",
+				"language" : "l"
+		};
+		
+		var cities = {
+				"Herculaneum" : 0,
+				"Pompeii" : 1
+		};
+		
+		var writingStyle = {
+			"Graffito/incised" : 1,
+			"charcoal" : 2,
+			"other" : 3
+		};
 
-	
-	var languages = {
-		"Latin" : 1,
-		"Greek" : 2,
-		"Latin/Greek" : 3,
-		"other" : 4
-	};
-	
-	
-	for (var i in params){
-		if (params[i] != "query_all=false"){
-			var param = params[i];
-			var term = param.split("=");
-			var type = term[0];
-			var value = term[1];
-			if (type == "drawing_category" && value == "All") {
-				value = 0;
-			}
-			if (type in dict) {
-				var typeToken = dict[type];
-				// convert the human-readable description into IDs for checkboxes
-				if (typeToken == "ws") {
-					value = writingStyle[value];
-				} else if (typeToken == "c") {
-					value = cities[value];
-				} else if (typeToken == "l") {
-					value = languages[value];
-				} else if (typeToken == "dc" && value == 0) {
-					// do nothing if All is selected
-				} else {
-				value = value.replace("_", " ");
+		
+		var languages = {
+			"Latin" : 1,
+			"Greek" : 2,
+			"Latin/Greek" : 3,
+			"other" : 4
+		};
+		
+		
+		for (var i in params){
+			if (params[i] != "query_all=false"){
+				var param = params[i];
+				var term = param.split("=");
+				var type = term[0];
+				var value = term[1];
+				if (type == "drawing_category" && value == "All") {
+					value = 0;
 				}
-				var id = typeToken+value;
-				//type = type.replace("_", " ");
-				//alert(id);
-				$("#"+id).click();
-			} else if (type == "content") {
-				addSearchTerm("Content", value, value);
-			} else if (type == "global") {
-				addSearchTerm("Global", value, value);
+				if (type in dict) {
+					var typeToken = dict[type];
+					// convert the human-readable description into IDs for checkboxes
+					if (typeToken == "ws") {
+						value = writingStyle[value];
+					} else if (typeToken == "c") {
+						value = cities[value];
+					} else if (typeToken == "l") {
+						value = languages[value];
+					} else if (typeToken == "dc" && value == 0) {
+						// do nothing if All is selected
+						var locationKeys = "<%=locationKeys%>";		} else {
+					value = value.replace("_", " ");
+					}
+					var id = typeToken+value;
+					//type = type.replace("_", " ");
+					//alert(id);import java.util.List;
+					$("#"+id).click();
+				} else if (type == "content") {
+					addSearchTerm("Content", value, value);
+				} else if (type == "global") {
+					addSearchTerm("Global", value, value);
+				}
 			}
 		}
-	}
+	} 
 }
 
+</script>	
 
-function getLocationKeys(){
-	var locationKeys=request.getAttribute("findLocationKeys");
-	for(i=0;i<locationKeys.length;i++){
-		alert(locationKeys[i]);
-	}
-}
-
-
-
-function updatePage(){
-	checkboxesAfterBack();
-	
-	<c:if test="${not empty sessionScope.returnFromEDR}">
-	document.getElementById("${sessionScope.returnFromEDR}").scrollIntoView();
-	<c:set var="returnFromEDR" value="" scope="session" />
-	</c:if>
-	
-}
-</script>
 <style>
 th {
 	vertical-align: top;
@@ -198,8 +188,9 @@ hr.main-table {
 	position: fixed;
 	color: white;
 	cursor: pointer;
+	align: right;
 	display: inline;
-	margin: 225px 0px 0px 560px;
+	margin: 225px 0px 0px 818px;
 }
 
 .map-override1 {
@@ -215,41 +206,56 @@ ul#searchTerms li {
     margin: 0 0 7px 0;
 }
 </style>
-</head>
-<body onload="updatePage();">
-
-	<%@include file="header.jsp"%>
 	
-	<script>getLocationKeys();</script>
+</head>
 
-	<div id="contain" class="container" style="margin-bottom: 50px;">
+<body>
+<%@include file="header.jsp"%>
 
+<div id="contain" class="container" style="margin-bottom: 50px;">
 		<%@include file="sidebarSearchMenu.jsp"%>
 		<!--  SideBar Map  -->
-		<div class="map-override1">
-			<div id="herculaneumCityMap"></div>
-			<div id="pompeiiCityMap"></div>
-
-		</div>
-		
+		<div id="herculaneummap" class="searchResultsHerculaneum"></div>
+		<div id="pompeiimap" class="searchResultsPompeii"></div>
 
 		<div style="margin-left: 200px;">
-			<div style="width: 475px; padding-bottom: 10px;">
+			<div style="width: 480px; padding-bottom: 10px;">
 				<ul id="searchTerms" style="width: 525px; margin-left: -40px;"></ul>
 			</div>
-			<div id="search-results">
+			<div id="search-results"> 
 				<%@include file="filter.jsp"%>
 			</div>
 		</div>
 	</div>
 
-	<script type="text/javascript"
-				src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
-	<script type="text/javascript">
-			generateHerculaneum("Herculaneum");
-			generatePompeii("Pompeii");
-			
-	</script>
+
+<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
+  integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
+  crossorigin=""></script>
+
+
+
 	
+<script type="text/javascript">
+	//generateHerculaneum("Herculaneum");
+</script>
+
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
+	
+<script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
+
+<script>
+	setLocationKeys();
+	//Apparently, these need to be used in same order as they are in div. 
+	//This jsp is used and needed. 
+	window.inithercmap(true,false,false,false,0,locationKeys);
+	window.initpompmap(true,false,false,false,0,locationKeys);
+
+</script>
 </body>
+
+
+
 </html>
