@@ -352,6 +352,17 @@ button:disabled {
 </div>
 
 <script type="text/javascript">
+	function createButton(i) {
+		var textBox = document.getElementById("keyword");
+		var v = document.createElement("input");
+		v.type = "button";
+		v.value = String.fromCharCode(i);
+		v.addEventListener("click", function(event) {
+			textBox.value += this.value;
+		});
+		document.getElementById("greekKeys").appendChild(v);
+	}
+	
 	// Create the keyboard buttons
 	window.onload = function() {
 		checkboxesAfterBack();
@@ -360,24 +371,25 @@ button:disabled {
 		document.getElementById("${sessionScope.returnFromEDR}").scrollIntoView();
 		<c:set var="returnFromEDR" value="" scope="session" />
 		</c:if>
+		
 		var brCount = 1;
 
-		for (var i = 945; i < 970; i++) {
-			var textBox = document.getElementById("keyword");
-			var v = document.createElement("input");
-			v.type = "button";
-			v.value = String.fromCharCode(i);
-			v.addEventListener("click", function(event) {
-				textBox.value += this.value;
-			});
-			document.getElementById("greekKeys").appendChild(v);
-
-			if (brCount == 9) {
+		for (var i = 945; i < 962; i++) {
+			createButton(i);
+			if (brCount == 8) {
 				var brTag = document.createElement("br");
 				document.getElementById("greekKeys").appendChild(brTag);
 				brCount = 0;
 			}
-
+			brCount++;
+		}
+		for (var i = 963; i < 970; i++) {
+			createButton(i);
+			if (brCount == 8) {
+				var brTag = document.createElement("br");
+				document.getElementById("greekKeys").appendChild(brTag);
+				brCount = 0;
+			}
 			brCount++;
 		}
 	}

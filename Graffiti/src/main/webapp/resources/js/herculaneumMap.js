@@ -20,10 +20,10 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	var insulaViewZoomLevel=17;
 	
 	if(!moreZoom){
-		currentZoomLevel=16;
+		currentZoomLevel=17;
 	}
 	else{
-		currentZoomLevel=15;
+		currentZoomLevel=16;
 	}
 	var zoomLevelForIndividualProperty=18;
 	var initialZoomNotCalled=true;
