@@ -24,7 +24,6 @@ import edu.wlu.graffiti.bean.Insula;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-
 /**
  * Class to extract property information
  * 
@@ -33,8 +32,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 public class FindspotDao extends JdbcTemplate {
 	/**
-	 * Order by the properties.id --> if order by properties.property_number, ordered as strings because
-	 * property_number is a var char.
+	 * Order by the properties.id --> if order by properties.property_number,
+	 * ordered as strings because property_number is a var char.
 	 */
 	private static final String ORDER_BY_CLAUSE = "ORDER BY properties.id ASC";
 
@@ -48,14 +47,14 @@ public class FindspotDao extends JdbcTemplate {
 			+ "cities.pleiades_id as city_pleiades_id, " + "insula.pleiades_id as insula_pleiades_id, "
 			+ "properties.pleiades_id as property_pleiades_id " + " FROM properties "
 			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
-			+ "LEFT JOIN cities ON insula.modern_city=cities.name " 
-			+ "WHERE UPPER(modern_city) = UPPER(?) " + ORDER_BY_CLAUSE;
+			+ "LEFT JOIN cities ON insula.modern_city=cities.name " + "WHERE UPPER(modern_city) = UPPER(?) "
+			+ ORDER_BY_CLAUSE;
 
 	private static final String SELECT_BY_CITY_AND_INSULA_STATEMENT = "SELECT *, " + "cities.name as city_name, "
 			+ "cities.pleiades_id as city_pleiades_id, " + "insula.pleiades_id as insula_pleiades_id, "
 			+ "properties.pleiades_id as property_pleiades_id " + " FROM properties "
 			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
-			+ "LEFT JOIN cities ON insula.modern_city=cities.name " 
+			+ "LEFT JOIN cities ON insula.modern_city=cities.name "
 			+ "WHERE UPPER(modern_city) = UPPER(?) and insula.short_name = ? " + ORDER_BY_CLAUSE;
 
 	public static final String SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT = "SELECT *, "
@@ -64,13 +63,11 @@ public class FindspotDao extends JdbcTemplate {
 			+ "FROM properties " + "LEFT JOIN insula ON properties.insula_id=insula.id "
 			+ "LEFT JOIN cities ON insula.modern_city=cities.name "
 			+ "WHERE UPPER(modern_city) = UPPER(?) and insula.short_name = ? and property_number = ?";
-	
+
 	public static final String SELECT_BY_CITY_AND_PROPERTY_NAME_STATEMENT = "SELECT *, "
 			+ "cities.name as city_name, cities.pleiades_id as city_pleiades_id, "
-			+ "insula.pleiades_id as insula_pleiades_id, " 
-			+ "properties.pleiades_id as property_pleiades_id "
-			+ "FROM properties " 
-			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
+			+ "insula.pleiades_id as insula_pleiades_id, " + "properties.pleiades_id as property_pleiades_id "
+			+ "FROM properties " + "LEFT JOIN insula ON properties.insula_id=insula.id "
 			+ "LEFT JOIN cities ON insula.modern_city=cities.name "
 			+ "WHERE UPPER(modern_city) = UPPER(?) and property_name = ?";
 
@@ -79,8 +76,6 @@ public class FindspotDao extends JdbcTemplate {
 			+ "properties.pleiades_id as property_pleiades_id " + " FROM properties "
 			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
 			+ "LEFT JOIN cities ON insula.modern_city=cities.name WHERE properties.id = ?";
-	
-	
 
 	private static final String SELECT_PROPERTY_TYPES = "SELECT * " + " FROM propertyTypes";
 
@@ -88,15 +83,15 @@ public class FindspotDao extends JdbcTemplate {
 
 	public static final String SELECT_PROP_TYPES_BY_PROP_ID = "SELECT propertyTypes.id, propertyTypes.name, propertyTypes.description from propertyTypes, propertytopropertytype "
 			+ "WHERE propertytopropertytype.property_id = ? AND propertytopropertytype.property_type = propertytypes.id";
-	
-	public static final String SELECT_BY_OSM_WAY_ID_STATEMENT = "SELECT * "
-		 + " FROM properties WHERE osm_way_id = ?";
+
+	public static final String SELECT_BY_OSM_WAY_ID_STATEMENT = "SELECT * " + " FROM properties WHERE osm_way_id = ?";
+	public static final String SELECT_BY_OSM_ID_STATEMENT = "SELECT * " + " FROM properties WHERE osm_id = ?";
 
 	public static final String SELECT_CITY_NAMES = "SELECT name from cities ORDER BY name";
-	
+
 	@Resource
 	private GraffitiDao graffitiDao;
-	
+
 	private static final class PropertyTypeRowMapper implements RowMapper<PropertyType> {
 		public PropertyType mapRow(final ResultSet resultSet, final int rowNum) throws SQLException {
 			final PropertyType propType = new PropertyType();
@@ -106,20 +101,21 @@ public class FindspotDao extends JdbcTemplate {
 			return propType;
 		}
 	}
-	
+
 	@Cacheable("cities")
 	public List<String> getCityNames() {
 		List<String> results = queryForList(SELECT_CITY_NAMES, String.class);
 		return results;
 	}
-	
+
 	// TODO: set up caching for this
-	//@Cacheable("citiesUpperCase")
+	// @Cacheable("citiesUpperCase")
 	public List<String> getCityNamesUpperCase() {
 		List<String> results = queryForList(SELECT_CITY_NAMES, String.class);
-		// change names to upper case to allow for either lower or upper case in URIs
+		// change names to upper case to allow for either lower or upper case in
+		// URIs
 		ListIterator<String> iterator = results.listIterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			iterator.set(iterator.next().toUpperCase());
 		}
 		return results;
@@ -178,10 +174,11 @@ public class FindspotDao extends JdbcTemplate {
 		result.setNumberOfGraffiti(graffitiDao.getInscriptionCountByFindSpot(result.getId()));
 		return result;
 	}
-	
+
 	public Property getPropertyByCityAndProperty(String city, String propertyName) {
-		Property result = queryForObject(SELECT_BY_CITY_AND_PROPERTY_NAME_STATEMENT, new PropertyRowMapper(), city, propertyName);
-		if( result == null ) {
+		Property result = queryForObject(SELECT_BY_CITY_AND_PROPERTY_NAME_STATEMENT, new PropertyRowMapper(), city,
+				propertyName);
+		if (result == null) {
 			return result;
 		}
 		result.setPropertyTypes(getPropertyTypeForProperty(result.getId()));

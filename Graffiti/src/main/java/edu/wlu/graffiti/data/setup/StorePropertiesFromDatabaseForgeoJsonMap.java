@@ -66,6 +66,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	
 	final static String SELECT_BY_OSM_WAY_ID=FindspotDao.SELECT_BY_OSM_WAY_ID_STATEMENT;
 	
+	final static String SELECT_BY_OWM_ID=FindspotDao.SELECT_BY_OSM_ID_STATEMENT;
+	
 	final static String SELECT_BY_CITY_AND_INSULA=FindspotDao.SELECT_BY_PROPERTY_ID_STATEMENT;
 
 	final static String GET_NUMBER = GraffitiDao.FIND_BY_PROPERTY;
