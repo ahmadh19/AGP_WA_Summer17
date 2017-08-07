@@ -41,8 +41,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//Holds the center latitudes and longitudes of all insula on the map. 
 	var insulaCentersDict=[];
-	
-	
+	var insulaGroupIdsList=[];
+	var insulaShortNamesDict=[];
 	//Fires when the map is initialized
 
 	map = new L.map('pompeiimap', {
@@ -61,6 +61,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//This adds more realistic features to the background like streets. Commented out bc/shape files are off positionally and more details shows it to users. 
 	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
 
+	//L.marker(new L.LatLng(40.750, 14.4884), {icon:createLabelIcon("textLabelclass","a place")}).addTo(map);
 	
 	//map.addLayer(grayscale);
 	L.geoJson(pompeiiPropertyData).addTo(map);
@@ -69,6 +70,11 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	makeTotalInsulaGraffitiDict();
 	//This builds the dictionary(centers do not change so needs to be built only once)
 	makeInsulaCentersDict();
+	//Makes the list of all insula ids.
+	//Used below for quick iteration for center labeling. 
+	makeInsulaIdsListShortNamesList();
+	
+	displayInsulaLabels();
 	
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
@@ -86,7 +92,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
 					}
 				}	
-				
 			});
 		}
 		else if(propertyIdListToHighlight.length==1){
@@ -103,10 +108,34 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		}
 	}
 	
-	
 	showCloseUpView();
 	
-	
+	//Builds the global list of insula ids. 
+	function makeInsulaIdsListShortNamesList(){
+		var currentInsulaId=-1;
+		map.eachLayer(function(layer){
+			if(layer.feature!=undefined){
+				if(layer.feature.properties.insula_id!=currentInsulaId){
+					if(currentInsulaId!=-1){
+						//It is concerning that this boolean statement is needed to prevent
+						//there from being multiple copies of the same id in the list.
+						//This could be an indication that somehow they are not being iterated through in order
+						//which could mean my center measurements are off. If forEach is iterating wrong, my function
+						//may have to be more complicated and take up more run time.
+						if(insulaGroupIdsList.indexOf(currentInsulaId)==-1){
+							insulaGroupIdsList.push(currentInsulaId);
+							insulaShortNamesDict[currentInsulaId]=layer.feature.properties.short_insula_name;
+						}
+						
+					}
+					currentInsulaId=layer.feature.properties.insula_id;
+				}
+			}
+			
+		});
+		console.log("Here is the list of insula ids:");
+		console.log(insulaGroupIdsList+":");
+	}
 	//Builds the dictionary of the graffiti in each insula
 	//This works well as graffiti numbers should not change over the session.
 	//Modifies the clojure wide variable once and only once at the beginning of the program
@@ -123,37 +152,117 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
 				}
 			}
-			
-			
 		});
 		
+	}
+	
+	var createLabelIcon = function(labelClass,labelText){
+	  return L.divIcon({ 
+	    className: labelClass,
+	    html: labelText
+	  });
+	}
+	
+	
+	//Meant to show the insula short name labels at the given x/y coordinates
+	//(given as a normal list in Java array form)
+	function showALabelOnMap(xYCoordinates,textToDisplay){
+		var myIcon = L.divIcon({ 
+		    //iconSize: new L.Point(10, 10), 
+		    html: textToDisplay
+		});
+		// you can set .my-div-icon styles in CSS
+		L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
+		alert(xYCoordinates+":");
+	}
+	
+	//Shows the short names of each insula in black
+	//at the center ccoordinates. 
+	function displayInsulaLabels(){
+		//alert("ahhh");
+		var i;
+		var insulaId;
+		var insulaCenterCoordinates;
+		var shortInsulaName;
+		//Alerts are working console.log is not
+		//alert("Inside of display insula labels\n");
+		
+		for(i=0;i<insulaGroupIdsList.length;i++){
+			insulaId=insulaGroupIdsList[i];
+			insulaCenterCoordinates=insulaCentersDict[insulaId];
+			shortInsulaName=insulaShortNamesDict[insulaId];
+			showALabelOnMap(insulaCenterCoordinates,shortInsulaName);
+			//alert("Insula id:");
+			//alert(insulaId+":");
+			//alert("Insula center coordinates:");
+			//alert(insulaCenterCoordinates+":");
+			//alert("Short insula name:");
+			//alert(shortInsulaName+":");
+		}
 	}
 	
 	//This function gets and returns a "dictionary" of the latitude and longitude of each insula given its id(as index).
 	//Used to find where to place the labels of each insula on the map, upon iteration through this list.
 	function makeInsulaCentersDict(){
-		/*var currentInsulaNumber;
-		var oldInsulaNumber;
-		var insulaCenterCoordinates=[];
-		//A variable for the coordinates as they are collected for each insula
-		var coordinatesSoFar=[];
+		var currentInsulaNumber;
+		//Manually set as the first insula id for pompeii
+		var oldInsulaNumber=183;
+		var xSoFar=0;
+		var ySoFar=0;
+		var latLngList;
+		var currentCoordinatesList;
+		var propertiesSoFar=0;
 		map.eachLayer(function(layer){
+			propertiesSoFar+=1;
 			if(layer.feature!=undefined && interactive){
 				currentInsulaNumber=layer.feature.properties.insula_id;
-				//If a change in insula number has occurred, find the center of the coordinates and add them to the dictionary
-				if(currentInsulaNumber!=oldInsulaNumber){
-					//Not working?????????????????????????????
-					//insulaCenterCoordinates=coordinatesSoFar.getCenter();
-					//alert("Here are center coordinates:"+insulaCenterCoordinates);
-					
-					//coordinatesSoFar=[];
+				currentCoordinatesList=layer.feature.geometry.coordinates;
+				if(currentInsulaNumber==oldInsulaNumber){
+					currentInsulaNumber=layer.feature.properties.insula_id;
+					//If a change in insula number has occurred, find the center of the coordinates and add them to the dictionary
+					var i=0;
+					//This passes in the coordinates list for just one property in the insula which are then added
+					xAndYAddition=findCenter(currentCoordinatesList[0]);
+					xSoFar+=xAndYAddition[0];
+					ySoFar+=xAndYAddition[1];
 				}
-				oldInsulaNumber=currentInsulaNumber;
-				coordinatesSoFar.push(layer.feature.geometry.coordinates);
-				//console.log("Here are coordinates so far:");
-				//console.log(coordinatesSoFar+":");
+				else{
+					//Add to dictionary:
+					//Both divisions are required
+					latLngList=[xSoFar/propertiesSoFar,ySoFar/propertiesSoFar];
+					//This treats the currentInsulaNumber as a key(dictionary form)
+					insulaCentersDict[currentInsulaNumber]=latLngList;
+					//Reset old variables:
+					xSoFar=0;
+					ySoFar=0;
+					propertiesSoFar=0;
+					oldInsulaNumber=currentInsulaNumber;
+					//This passes in the coordinates list for just one property in the insula which are then added
+					xAndYAddition=findCenter(currentCoordinatesList[0]);
+					xSoFar+=xAndYAddition[0];
+					ySoFar+=xAndYAddition[1];
+				}
 			}
-		});*/
+		});
+		console.log("Final insula centers dictionary:");
+		console.log(insulaCentersDict+":");
+	}
+	
+	//Uses math to directly find and return the latitude and longitude of the center of a list of coordinates. 
+	//Returns a list of the latitude, x and the longitude, y
+	function findCenter(coordinatesList){
+		//console.log("Here are coords passed to find center:");
+		//console.log(coordinatesList+":");
+		var i=0;
+		var x=0;
+		var y=0
+		var pointsSoFar=0;
+		for(i;i<coordinatesList.length;i++){
+			x+=coordinatesList[i][0];
+			y+=coordinatesList[i][1];
+			pointsSoFar+=1;
+		}
+		return [x/pointsSoFar,y/pointsSoFar];
 	}
 	
 	
@@ -593,7 +702,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		el2.addEventListener("click", displayHighlightedRegions, false);
 	}
 	
-
 }
 	
 	
