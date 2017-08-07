@@ -22,7 +22,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		currentZoomLevel=16;
 	}
 	else{
-		
 		currentZoomLevel=15;
 	}
 	var zoomLevelForIndividualProperty=18;
@@ -66,15 +65,21 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//map.addLayer(grayscale);
 	L.geoJson(pompeiiPropertyData).addTo(map);
 	
-	//Builds the dictionary of number of graffiti per insula
-	makeTotalInsulaGraffitiDict();
+	
 	//This builds the dictionary(centers do not change so needs to be built only once)
-	makeInsulaCentersDict();
+	
+	if( interactive){
+		makeInsulaCentersDict();
 	//Makes the list of all insula ids.
 	//Used below for quick iteration for center labeling. 
-	makeInsulaIdsListShortNamesList();
 	
-	displayInsulaLabels();
+		//Builds the dictionary of number of graffiti per insula
+		makeTotalInsulaGraffitiDict();
+		
+		makeInsulaIdsListShortNamesList();
+	
+		displayInsulaLabels();
+	}
 	
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
@@ -133,8 +138,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			}
 			
 		});
-		console.log("Here is the list of insula ids:");
-		console.log(insulaGroupIdsList+":");
+		//console.log("Here is the list of insula ids:");
+		//console.log(insulaGroupIdsList+":");
 	}
 	//Builds the dictionary of the graffiti in each insula
 	//This works well as graffiti numbers should not change over the session.
