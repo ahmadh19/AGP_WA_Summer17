@@ -2,15 +2,20 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <c:set var="num" value="${fn:length(requestScope.resultsLyst)}" />
+
 <%@ page import= "java.util.*" %>
 
-<% List<String> newLocationKeys=(List<String>)request.getAttribute("findLocationKeys");%>
-<div id="mapkeys" style="display:none;"><%=newLocationKeys %></div>
-
-<p class="alert alert-info" style="width: 475px">
+<p>
+	<c:choose>
+		<c:when test="${num == 1}">
+			<c:out value="${num} result found ${searchQueryDesc}" />
+		</c:when>
+		<c:otherwise>
+			<c:out value="${num} results found ${searchQueryDesc}" />
+		</c:otherwise>
+	</c:choose>
 	
-	<c:out value="${num} results found ${searchQueryDesc}" />
-	<br/>
+	<br />
 </p>
 
 <c:if test="${num == 0}">

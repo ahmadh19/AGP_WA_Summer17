@@ -1,6 +1,6 @@
 /*
  * Drawing tag class holds the photos information for Inscription.java class it receives its information
- * from drawing_tags table in the database. 
+ * from photos table in the database. 
  */
 package edu.wlu.graffiti.bean;
 
