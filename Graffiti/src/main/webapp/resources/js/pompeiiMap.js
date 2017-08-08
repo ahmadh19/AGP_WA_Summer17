@@ -95,6 +95,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 					showInsulaMarkers=false;
 					//This shows selected properties from the insula when the map zooms in.
 					 updateBorderColors();
+					 
 				}
 			}
 			else if(!showInsulaMarkers){
@@ -646,7 +647,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Used to acquire all of the items clicked for search(red button "Click here to search).
 	//Does this by iterating through the list of clicked items and adding them to uniqueClicked,
 	//then returning uniqueClicked. 
-	function getUniqueClicked(accountForZoomIncrease=false) {
+	function getUniqueClicked() {
 		var uniqueClicked = [];
 		var listInSelectedInsula;
 		var length = clickedAreas.length;
@@ -706,7 +707,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		// when you click anywhere on the map, it updates the table
 		if(! zoomedOutThresholdReached()){
 			var clickedAreasTable = getUniqueClicked();
-			
 			var html = "<table><tr><th>Selected Properties:</th></tr>";
 			var length = clickedAreasTable.length;
 			for (var i=0; i<length; i++) {
@@ -725,10 +725,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			  }
 		}
 		else{
+			displayHighlightedInsula();
 			var clickedAreasTable = getUniqueClicked();
-		}
-			
-		
+		}	
 	}
 	
 	
