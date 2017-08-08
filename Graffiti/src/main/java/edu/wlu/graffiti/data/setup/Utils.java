@@ -27,18 +27,18 @@ public class Utils {
 	public static Properties getConfigurationProperties() {
 		InputStream inputStream = null;
 		Properties prop = null;
-		System.out.println("Stage 1 utils");
+		//System.out.println("Stage 1 utils");
 		try {
 			prop = new Properties();
 			String propFileName = "configuration.properties";
-			System.out.println("Stage 2 utils");
+			//System.out.println("Stage 2 utils");
 			inputStream = Utils.class.getClassLoader().getResourceAsStream(propFileName);
-			System.out.println("Stage 2.5 util");
-			System.out.println(inputStream);
+			//System.out.println("Stage 2.5 util");
+			//System.out.println(inputStream);
 			prop.load(inputStream);
-			System.out.println(prop);
+			//System.out.println(prop);
 			inputStream.close();
-			System.out.println("Stage 3 utils");
+			//System.out.println("Stage 3 utils");
 		} catch (FileNotFoundException f) {
 			System.err.println("property file 'configuration.properties' not found in the classpath");
 		} catch (Exception e) {

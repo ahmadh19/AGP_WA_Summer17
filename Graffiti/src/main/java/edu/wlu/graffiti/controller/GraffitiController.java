@@ -11,7 +11,6 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -25,28 +24,20 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import edu.wlu.graffiti.bean.DrawingTag;
 import edu.wlu.graffiti.bean.Inscription;
@@ -117,8 +108,8 @@ public class GraffitiController {
 	private static String[] searchDescs = { "Content Keyword", "Global Keyword", "City", "Insula", "Property",
 			PROPERTY_TYPE_SEARCH_DESC, DRAWING_CATEGORY_SEARCH_DESC, WRITING_STYLE_SEARCH_DESC, "Language" };
 
-	private static String[] searchFields = { "content",
-			"content content_translation summary city insula.insula_name property.property_name property.property_types"
+	private static String[] searchFields = { "content content.ngrams",
+			"content content.ngrams content_translation summary city insula.insula_name property.property_name property.property_types"
 					+ "cil description writing_style language edr_id bibliography"
 					+ " drawing.description_in_english drawing.description_in_latin drawing.drawing_tags",
 			CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, PROPERTY_ID_FIELD_NAME, PROPERTY_TYPES_FIELD_NAME,
@@ -473,36 +464,27 @@ public class GraffitiController {
 				// writing style, language, EAGLE id, and bibliography for a
 				// keyword match
 				BoolQueryBuilder globalQuery;
-				// QueryBuilder fuzzyQuery;
-				// QueryBuilder exactQuery;
-				QueryBuilder myTestQuery;
+				QueryBuilder multiMatch;
 
 				String[] a = fieldNames.get(i).split(" ");
 
 				globalQuery = boolQuery();
-
-				/*
-				 * fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1],
-				 * a[2], a[3], a[4], a[5], a[6], a[7], a[8]).fuzziness("AUTO");
-				 * exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
-				 * 
-				 * // For EDR id and bibliography, users want exact results.
-				 * 
-				 * globalQuery.should(fuzzyQuery);
-				 * globalQuery.should(exactQuery);
-				 */
-
-				myTestQuery = multiMatchQuery(parameters.get(i), a).minimumShouldMatch("80%");
-				globalQuery.should(myTestQuery);
-
+				multiMatch = multiMatchQuery(parameters.get(i), a).minimumShouldMatch("80%");
+				
+				globalQuery.should(multiMatch);
 				query.must(globalQuery);
 			} else if (searchTerms.get(i).equals("Content Keyword")) {
 				BoolQueryBuilder contentQuery = boolQuery();
 				String[] params = parameters.get(i).split(" ");
+				String[] a = fieldNames.get(i).split(" ");
 
 				for (String param : params) {
-					contentQuery.must(matchQuery(fieldNames.get(i), param).minimumShouldMatch("80%")); //.fuzziness("AUTO"));
+					BoolQueryBuilder orQuery = boolQuery(); // 'or' for n-gram and regular
+					orQuery.should(matchQuery(a[0], param)); // regular query
+					orQuery.should(matchQuery(a[1], param).minimumShouldMatch("80%")); // n-gram query
+					contentQuery.must(orQuery); // 'and' for search terms
 				}
+				
 				query.must(contentQuery);
 			} else if (searchTerms.get(i).equals("Property")) {
 				BoolQueryBuilder propertiesQuery = boolQuery();
@@ -540,10 +522,13 @@ public class GraffitiController {
 			}
 		}
 		
+		//System.out.println(query);
+		
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
 		
 		for (SearchHit hit : response.getHits()) {
+			System.out.println(hit.getField("content") + ":\t" + hit.getScore());
 			inscriptions.add(hitToInscription(hit));
 		}
 		
