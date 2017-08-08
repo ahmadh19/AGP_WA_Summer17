@@ -109,7 +109,7 @@ public class GraffitiController {
 			PROPERTY_TYPE_SEARCH_DESC, DRAWING_CATEGORY_SEARCH_DESC, WRITING_STYLE_SEARCH_DESC, "Language" };
 
 	private static String[] searchFields = { "content content.ngrams",
-			"content content_translation summary city insula.insula_name property.property_name property.property_types"
+			"content content.ngrams content_translation summary city insula.insula_name property.property_name property.property_types"
 					+ "cil description writing_style language edr_id bibliography"
 					+ " drawing.description_in_english drawing.description_in_latin drawing.drawing_tags",
 			CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, PROPERTY_ID_FIELD_NAME, PROPERTY_TYPES_FIELD_NAME,
@@ -491,12 +491,13 @@ public class GraffitiController {
 			}
 		}
 		
-		System.out.println(query);
+		//System.out.println(query);
 		
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
 		
 		for (SearchHit hit : response.getHits()) {
+			System.out.println(hit.getField("content") + ":\t" + hit.getScore());
 			inscriptions.add(hitToInscription(hit));
 		}
 		
