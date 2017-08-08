@@ -7,7 +7,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>More Graffito Information</title>
+<title>Ancient Graffiti Project :: Graffito Information</title>
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
 <script type="text/javascript"
