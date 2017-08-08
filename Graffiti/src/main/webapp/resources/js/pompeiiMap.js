@@ -59,21 +59,15 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//This adds more realistic features to the background like streets. Commented out bc/shape files are off positionally and more details shows it to users. 
 	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
-
-	//L.marker(new L.LatLng(40.750, 14.4884), {icon:createLabelIcon("textLabelclass","a place")}).addTo(map);
 	
 	//map.addLayer(grayscale);
+	
 	L.geoJson(pompeiiPropertyData).addTo(map);
 	
-	
-	//This builds the dictionary(centers do not change so needs to be built only once)
-	
 	if( interactive){
+		
 		makeInsulaCentersDict();
-	//Makes the list of all insula ids.
-	//Used below for quick iteration for center labeling. 
-	
-		//Builds the dictionary of number of graffiti per insula
+		
 		makeTotalInsulaGraffitiDict();
 		
 		makeInsulaIdsListShortNamesList();
@@ -117,26 +111,18 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//Builds the global list of insula ids. 
 	function makeInsulaIdsListShortNamesList(){
-		var currentInsulaId=-1;
+		var currentInsulaId=183;
 		map.eachLayer(function(layer){
 			if(layer.feature!=undefined){
 				if(layer.feature.properties.insula_id!=currentInsulaId){
-					if(currentInsulaId!=-1){
-						//It is concerning that this boolean statement is needed to prevent
-						//there from being multiple copies of the same id in the list.
-						//This could be an indication that somehow they are not being iterated through in order
-						//which could mean my center measurements are off. If forEach is iterating wrong, my function
-						//may have to be more complicated and take up more run time.
-						if(insulaGroupIdsList.indexOf(currentInsulaId)==-1){
-							insulaGroupIdsList.push(currentInsulaId);
-							insulaShortNamesDict[currentInsulaId]=layer.feature.properties.short_insula_name;
-						}
+					if(insulaGroupIdsList.indexOf(currentInsulaId)==-1){
+						insulaGroupIdsList.push(currentInsulaId);
 						
 					}
-					currentInsulaId=layer.feature.properties.insula_id;
 				}
+				currentInsulaId=layer.feature.properties.insula_id;
+				insulaShortNamesDict[currentInsulaId]=layer.feature.properties.short_insula_name;	
 			}
-			
 		});
 		//console.log("Here is the list of insula ids:");
 		//console.log(insulaGroupIdsList+":");
@@ -221,7 +207,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 					//Both divisions are required
 					latLngList=[xSoFar/propertiesSoFar,ySoFar/propertiesSoFar];
 					//This treats the currentInsulaNumber as a key(dictionary form)
-					insulaCentersDict[currentInsulaNumber]=latLngList;
+					
+					insulaCentersDict[oldInsulaNumber]=latLngList;
 					//Reset old variables:
 					xSoFar=0;
 					ySoFar=0;
@@ -515,7 +502,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		if(indexOfInsulaName==-1){
 			clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
 		}
-		//Otherwise, removed the insula id from the list
+		//Otherwise, removed the insula id from the list to deselect it
 		else{
 			clickedInsula=removeStringedListFromArray(clickedInsula,targetInsulaString);
 		}
@@ -528,7 +515,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var html = "<table><tr><th>Selected Insula:</th></tr>";
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
-			html += "<tr><td><li>"+clickedInsula[i][0] + ", " + 
+			/*html += "<tr><td><li>"+clickedInsula[i][2] + ", " + */
+			html += "<tr><td><li>"+clickedInsula[i][2] + ", " +
 					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li></td></tr>"
 		}
 		html += "</table";
