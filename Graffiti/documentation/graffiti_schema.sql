@@ -326,6 +326,8 @@ CREATE TABLE propertytypes (
 
 ALTER TABLE propertytypes OWNER TO sprenkle;
 
+create table property_links ( property_id integer references properties(id) on delete cascade, link_name varchar(70), link varchar(200));
+
 --
 -- Name: roles; Type: TABLE; Schema: public; Owner: sprenkle
 --
