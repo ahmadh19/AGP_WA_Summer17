@@ -124,8 +124,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				insulaShortNamesDict[currentInsulaId]=layer.feature.properties.short_insula_name;	
 			}
 		});
-		//console.log("Here is the list of insula ids:");
-		//console.log(insulaGroupIdsList+":");
 	}
 	//Builds the dictionary of the graffiti in each insula
 	//This works well as graffiti numbers should not change over the session.
@@ -155,7 +153,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//(given as a normal list in Java array form)
 	function showALabelOnMap(xYCoordinates,textToDisplay){
 		var myIcon = L.divIcon({ 
-		    //iconSize: new L.Point(10, 10), 
+		    iconSize: new L.Point(0, 0), 
 		    html: textToDisplay
 		});
 		// you can set .my-div-icon styles in CSS
@@ -221,8 +219,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				}
 			}
 		});
-		console.log("Final insula centers dictionary:");
-		console.log(insulaCentersDict+":");
+		//console.log("Final insula centers dictionary:");
+		//console.log(insulaCentersDict+":");
 	}
 	
 	//Uses math to directly find and return the latitude and longitude of the center of a list of coordinates. 
@@ -515,8 +513,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var html = "<table><tr><th>Selected Insula:</th></tr>";
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
-			/*html += "<tr><td><li>"+clickedInsula[i][2] + ", " + */
-			html += "<tr><td><li>"+clickedInsula[i][2] + ", " +
+			html += "<tr><td><li>"+clickedInsula[i][0] + ", " +
 					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li></td></tr>"
 		}
 		html += "</table";
