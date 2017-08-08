@@ -43,6 +43,13 @@ h3 {
 	text-align: center;
 }
 
+.alert-info {
+	color: black;
+	background-color: beige;
+	border-color: black;
+	background-image: none;
+}
+
 @media only screen and (max-width: 1023px) {
 	[class*="col"] {
 		width: 100%;
@@ -59,6 +66,12 @@ h3 {
 			<p style="color: red;">${requestScope.error}
 			<p />
 		</c:if>
+		<div>
+				<p class="alert alert-info">
+				This site is currently under development. As such, some features are not fully implemented and/or may
+				contain bugs.
+				</p>
+		</div>
 		<p style="font-size: 16px; text-align: center;">Welcome to The
 			Ancient Graffiti Project, a digital resource for locating and
 			studying graffiti of the early Roman empire from the cities of

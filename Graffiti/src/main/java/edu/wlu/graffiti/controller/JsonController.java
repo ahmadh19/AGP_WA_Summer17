@@ -30,9 +30,10 @@ public class JsonController {
 	private FindspotDao findspotDao;
 	
 	@ApiOperation(value="Download the individual graffito in JSON format.")
-	@RequestMapping(value = "/graffito/AGP-{edrId}/json", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	public Inscription getInscription(@PathVariable String edrId, HttpServletResponse response) {
-		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".json");
+	@RequestMapping(value = "/graffito/{agpId}/json", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	public Inscription getInscription(@PathVariable String agpId, HttpServletResponse response) {
+		String edrId = agpId.replaceFirst("AGP-", "");
+		response.addHeader("Content-Disposition", "attachment; filename="+ agpId +".json");
 		return graffitiDao.getInscriptionByEDR(edrId);
 	}
 	

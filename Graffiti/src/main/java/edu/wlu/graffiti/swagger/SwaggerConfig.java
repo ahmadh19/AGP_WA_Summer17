@@ -19,7 +19,7 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("edu.wlu.graffiti.controller"))
-				.paths(regex(".*csv|.*json|.*xml|/filter.*|/results.*"))
+				.paths(regex(".*csv|.*json|.*xml|/filter.*|/results.*|/graffito.*"))
 				.build()
 				.apiInfo(metaData());
 	}

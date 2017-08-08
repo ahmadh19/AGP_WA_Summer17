@@ -41,9 +41,10 @@ public class EpidocController {
 	private FindspotDao findspotDao;
 
 	@ApiOperation(value="Download the individual graffito as an EpiDoc file.")
-	@RequestMapping(value = "/graffito/AGP-{edrId}/xml", method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
-	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
-		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".xml");
+	@RequestMapping(value = "/graffito/{agpId}/xml", method = RequestMethod.GET, produces = "application/xml;charset=UTF-8")
+	public String getInscription(@PathVariable String agpId, HttpServletResponse response) {
+		String edrId = agpId.replaceFirst("AGP-", "");
+		response.addHeader("Content-Disposition", "attachment; filename="+ agpId +".xml");
 		return generator.serializeToXML(graffitiDao.getInscriptionByEDR(edrId));
 	}
 	
