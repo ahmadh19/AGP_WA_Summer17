@@ -19,8 +19,8 @@
 
 	<table class="main-table" style="margin-bottom: 30px;">
 		<tr>
-			<th class="propertyLabel">EDR-ID:</th>
-			<td>${i.edrId}</td>
+			<th class="propertyLabel">AGP ID:</th>
+			<td>AGP-${i.edrId}</td>
 		</tr>
 		<c:choose>
 			<c:when test="${not empty i.contentWithLineBreaks}">
@@ -113,7 +113,6 @@
 			<th class="propertyLabel">Findspot:</th>
 			<td><a
 				href="<%=request.getContextPath() %>/results?property=${i.agp.property.id}">${i.agp.property.propertyName}
-					${i.agp.property.italianPropertyName}
 					(${i.agp.property.insula.shortName}.${i.agp.property.propertyNumber})</a>
 			</td>
 		</tr>

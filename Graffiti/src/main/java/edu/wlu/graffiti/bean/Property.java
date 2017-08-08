@@ -22,8 +22,9 @@ public class Property {
 
 	private int id;
 	private String property_number;
-	private String property_name;
+	private String englishPropertyName;
 	private String italianPropertyName;
+	private String agpPropertyName;
 	private String additionalEntrances;
 	private Insula insula;
 	private List<PropertyType> propertyTypes;
@@ -70,7 +71,7 @@ public class Property {
 		this();
 		this.id = id;
 		this.property_number = property_number;
-		this.property_name = property_name;
+		this.englishPropertyName = property_name;
 		this.insula = insula;
 		this.propertyTypes = new ArrayList<PropertyType>();
 		this.locationKey = "p" + id;
@@ -164,18 +165,18 @@ public class Property {
 	}
 
 	/**
-	 * @return the property_name
+	 * @return the agpPropertyName
 	 */
 	public String getPropertyName() {
-		return property_name;
+		return agpPropertyName;
 	}
 
 	/**
-	 * @param property_name
+	 * @param agpPropertyName
 	 *            the property_name to set
 	 */
-	public void setPropertyName(String property_name) {
-		this.property_name = property_name;
+	public void setPropertyName(String propertyName) {
+		this.agpPropertyName = propertyName;
 	}
 
 	/**
@@ -315,4 +316,20 @@ public class Property {
 	public int getNumberOfGraffiti() {
 		return numberOfGraffiti;
 	}
+	
+	/**
+	 * @return the agpPropertyName
+	 */
+	@JsonIgnore
+	public String getEnglishPropertyName() {
+		return englishPropertyName;
+	}
+
+	/**
+	 * @param englishPropertyName the englishPropertyName to set
+	 */
+	public void setEnglishPropertyName(String englishPropertyName) {
+		this.englishPropertyName = englishPropertyName;
+	}
+	
 }

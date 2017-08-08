@@ -89,7 +89,6 @@
 			<th class="propertyLabel">Findspot:</th>
 			<td><a
 				href="<%=request.getContextPath() %>/results?property=${i.agp.property.id}">${i.agp.property.propertyName}
-					${i.agp.property.italianPropertyName}
 					(${i.agp.property.insula.shortName}.${i.agp.property.propertyNumber})</a>
 			</td>
 		</tr>

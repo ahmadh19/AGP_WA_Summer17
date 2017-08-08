@@ -92,7 +92,7 @@ function start() {
 			<tr>
 				<th class="propertyLabel">Property Name<br />(in English):
 				</th>
-				<td>${prop.propertyName}</td>
+				<td>${prop.englishPropertyName}</td>
 			</tr>
 			<c:if test="${not empty prop.italianPropertyName}">
 				<tr>
