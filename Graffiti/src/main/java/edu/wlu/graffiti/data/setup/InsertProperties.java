@@ -67,7 +67,7 @@ public class InsertProperties {
 		init();
 
 		try {
-			//insertProperties("data/pompeii_properties.csv");
+			// insertProperties("data/pompeii_properties.csv");
 			insertProperties("data/herculaneum_properties.csv");
 
 			newDBCon.close();
@@ -192,12 +192,15 @@ public class InsertProperties {
 						}
 					}
 				}
-				
+
 				// handle links about the properties
 				if (record.size() > HERC_PANORAMAS_LINK_LOC) {
 					String hercPanaLink = record.get(HERC_PANORAMAS_LINK_LOC).trim();
 					if (!hercPanaLink.isEmpty()) {
-						insertLink(propID, HERCULANEUM_PANORAMAS, hercPanaLink);
+						String links[] = hercPanaLink.split("\\s+");
+						for (String link : links) {
+							insertLink(propID, HERCULANEUM_PANORAMAS, link);
+						}
 					}
 
 					String parcoArcheologicLink = record.get(PARCO_ARCHELOGICO_LINK_LOC).trim();
