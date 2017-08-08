@@ -15,6 +15,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	var currentZoomLevel;
 	var propertySelected;
 	
+	var showInsulaMarkers;
+	
 	//The maximum zoom level to show insula view instead of property view(smaller zoom level means more zoomed out)
 	var insulaViewZoomLevel=17;
 	
@@ -31,6 +33,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	var graffitiInLayer;
 	var numberOfGraffitiInGroup;
 	var justStarted=true;
+	//The list of active insula markers.
+	//Can be iterated through to remove all markers from the map(?)
+	var insulaMarkersList=[];
 	
 	
 	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
@@ -78,6 +83,18 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
 		dealWithInsulaLevelView();
+		if(interactive){
+			if(!zoomedOutThresholdReached()){
+				if(showInsulaMarkers){
+					removeInsulaLabels();
+					showInsulaMarkers=false;
+				}
+			}
+			else if(!showInsulaMarkers){
+				displayInsulaLabels();
+				showInsulaMarkers=true;
+			}
+		}
 	});
 	
 	//Centers the map around a single property
@@ -153,11 +170,22 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//(given as a normal list in Java array form)
 	function showALabelOnMap(xYCoordinates,textToDisplay){
 		var myIcon = L.divIcon({ 
-		    iconSize: new L.Point(0, 0), 
+		    //iconSize: new L.Point(0, 0), 
+			iconSize:0,
 		    html: textToDisplay
 		});
 		// you can set .my-div-icon styles in CSS
-		L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
+		var myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
+		insulaMarkersList.push(myMarker);
+	}
+	
+	//Removes each of the insula labels from the map.
+	//Meant to be used for when the user zooms past the zoom threshold. 
+	function removeInsulaLabels(){
+		var i=0;
+		for(i;i<insulaMarkersList.length;i++){
+			map.removeLayer(insulaMarkersList[i]);
+		}
 	}
 	//Shows the short names of each insula in black
 	//at the center ccoordinates. 
