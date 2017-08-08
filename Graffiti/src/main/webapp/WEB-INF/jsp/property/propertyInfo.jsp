@@ -137,10 +137,9 @@ function start() {
 						<!--<br/><a href="${prop.plodURL}">Pompeii Linked Open Data</a>-->
 					</c:if>
 					<c:if test="${prop.insula.modernCity=='Herculaneum'}">
-						<a href="http://donovanimages.co.nz/proxima-veritati/Herculaneum/">
-						Herculaneum Panoramas</a>
-						<br/><a href="http://www.pompeiisites.org/Sezione.jsp?titolo=Visita%20agli%20scavi&idSezione=94">
-						Parco Archaeologico</a>
+						<c:forEach var="l" items="${prop.propertyLinks}">
+							<a href="${l.link }">${l.linkName}</a><br/>
+						</c:forEach>
 					</c:if>
 				</td>
 			</tr>
