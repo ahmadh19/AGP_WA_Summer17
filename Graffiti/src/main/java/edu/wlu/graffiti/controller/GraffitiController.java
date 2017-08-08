@@ -525,7 +525,6 @@ public class GraffitiController {
 				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
 		
 		for (SearchHit hit : response.getHits()) {
-			System.out.println(hit.getField("content") + ":\t" + hit.getScore());
 			inscriptions.add(hitToInscription(hit));
 		}
 		

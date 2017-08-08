@@ -132,7 +132,7 @@ function start() {
 				<td>
 					<c:if test="${prop.insula.modernCity=='Pompeii'}">
 						<a href="${prop.pompeiiinPicturesURL}">Pompeii in Pictures</a>
-						<!--<br/><a href="${prop.plodURL}">P-LOD Linked Open Data</a>-->
+						<!--<br/><a href="${prop.plodURL}">Pompeii Linked Open Data</a>-->
 					</c:if>
 					<c:if test="${prop.insula.modernCity=='Herculaneum'}">
 						<a href="http://donovanimages.co.nz/proxima-veritati/Herculaneum/">
