@@ -433,28 +433,14 @@ public class GraffitiController {
 				// writing style, language, EAGLE id, and bibliography for a
 				// keyword match
 				BoolQueryBuilder globalQuery;
-				// QueryBuilder fuzzyQuery;
-				// QueryBuilder exactQuery;
-				QueryBuilder myTestQuery;
+				QueryBuilder multiMatch;
 
 				String[] a = fieldNames.get(i).split(" ");
 
 				globalQuery = boolQuery();
-
-				/*
-				 * fuzzyQuery = multiMatchQuery(parameters.get(i), a[0], a[1],
-				 * a[2], a[3], a[4], a[5], a[6], a[7], a[8]).fuzziness("AUTO");
-				 * exactQuery = multiMatchQuery(parameters.get(i), a[9], a[10]);
-				 * 
-				 * // For EDR id and bibliography, users want exact results.
-				 * 
-				 * globalQuery.should(fuzzyQuery);
-				 * globalQuery.should(exactQuery);
-				 */
-
-				myTestQuery = multiMatchQuery(parameters.get(i), a).minimumShouldMatch("80%");
-				globalQuery.should(myTestQuery);
-
+				multiMatch = multiMatchQuery(parameters.get(i), a).minimumShouldMatch("80%");
+				
+				globalQuery.should(multiMatch);
 				query.must(globalQuery);
 			} else if (searchTerms.get(i).equals("Content Keyword")) {
 				BoolQueryBuilder contentQuery = boolQuery();
