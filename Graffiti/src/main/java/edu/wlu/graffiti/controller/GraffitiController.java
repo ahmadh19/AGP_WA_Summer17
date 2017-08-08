@@ -298,8 +298,11 @@ public class GraffitiController {
 
 	// Maps to the details page once an individual result has been selected in
 	// the results page
-	@RequestMapping(value = "/graffito/AGP-{edr}", method = RequestMethod.GET)
-	public String graffito(final HttpServletRequest request, @PathVariable String edr) {
+	@ApiOperation(value="Opens the details page once an individual result has been selected in the results page. Displays "
+			+ "more information pertaining to the selected inscription.")
+	@RequestMapping(value = "/graffito/{agpId}", method = RequestMethod.GET)
+	public String graffito(final HttpServletRequest request, @PathVariable String agpId) {
+		String edr = agpId.replaceFirst("AGP-", "");
 		final Inscription i = this.graffitiDao.getInscriptionByEDR(edr);
 		if (i == null) {
 			request.setAttribute("error", "Error: " + edr + " is not a valid EDR id.");

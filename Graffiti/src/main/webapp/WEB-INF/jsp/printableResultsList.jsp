@@ -1,3 +1,4 @@
+<%@page import="org.aspectj.weaver.reflect.Java14GenericSignatureInformationProvider"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
@@ -145,7 +146,11 @@
 		<c:if test="${not empty i.citation}">
 			<tr>
 				<th><span class="propertyLabel">Suggested Citation:</span></th>
-				<td>${i.citation}</td>
+				<!-- Cannot use {i.citation} here because we need the URI to be a link -->
+				<td>AGP-${i.edrId}, <i>The Ancient Graffiti Project</i>,
+				<a href="http://ancientgraffiti.org/Graffiti/graffito/AGP-${i.edrId}">&lt;http://ancientgraffiti.org/Graffiti/graffito/AGP-${i.edrId}&gt;</a> 
+				[accessed: <%= new java.text.SimpleDateFormat("dd MMM yyyy").format(new java.util.Date()) %>]
+				</td>
 			</tr>
 		</c:if>
 	</table>
