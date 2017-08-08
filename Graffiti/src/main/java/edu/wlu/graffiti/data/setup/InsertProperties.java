@@ -67,7 +67,7 @@ public class InsertProperties {
 		init();
 
 		try {
-			// insertProperties("data/pompeii_properties.csv");
+			insertProperties("data/pompeii_properties.csv");
 			insertProperties("data/herculaneum_properties.csv");
 
 			newDBCon.close();

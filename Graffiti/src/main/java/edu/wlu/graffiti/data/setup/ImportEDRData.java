@@ -92,11 +92,11 @@ public class ImportEDRData {
 
 		try {
 			readPropertiesAndInsula();
-//			updateInscriptions("data/EDRData/epigr.csv");
-//			updateContent("data/EDRData/testo_epigr.csv");
-//			updateBibliography("data/EDRData/editiones.csv");
-//			updateApparatus("data/EDRData/apparatus.csv");
-//			updatePhotoInformation("data/EDRData/foto.csv");
+			updateInscriptions("data/EDRData/epigr.csv");
+			updateContent("data/EDRData/testo_epigr.csv");
+			updateBibliography("data/EDRData/editiones.csv");
+			updateApparatus("data/EDRData/apparatus.csv");
+			updatePhotoInformation("data/EDRData/foto.csv");
 			
 			System.out.println("\nOn to Camodeca...\n");
 			
