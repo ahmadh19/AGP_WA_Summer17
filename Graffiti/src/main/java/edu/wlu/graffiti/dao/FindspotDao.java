@@ -16,7 +16,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import edu.wlu.graffiti.bean.Property;
+import edu.wlu.graffiti.bean.PropertyLink;
 import edu.wlu.graffiti.bean.PropertyType;
+import edu.wlu.graffiti.data.rowmapper.PropertyLinkRowMapper;
 import edu.wlu.graffiti.data.rowmapper.PropertyRowMapper;
 import edu.wlu.graffiti.bean.City;
 import edu.wlu.graffiti.bean.Insula;
@@ -76,12 +78,16 @@ public class FindspotDao extends JdbcTemplate {
 			+ "properties.pleiades_id as property_pleiades_id " + " FROM properties "
 			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
 			+ "LEFT JOIN cities ON insula.modern_city=cities.name WHERE properties.id = ?";
+	
+	private static final String SELECT_PROPERTY_LINKS = "SELECT * FROM property_links";
+	
+	private static final String SELECT_PROPERTY_LINKS_BY_ID = "SELECT * from property_links WHERE property_id = ?";
 
-	private static final String SELECT_PROPERTY_TYPES = "SELECT * " + " FROM propertyTypes";
+	private static final String SELECT_PROPERTY_TYPES = "SELECT * " + " FROM propertytypes";
 
-	private static final String SELECT_PROP_TYPES_BY_ID_STMT = "SELECT *" + " FROM propertyTypes WHERE id = ?";
+	private static final String SELECT_PROP_TYPES_BY_ID_STMT = "SELECT *" + " FROM propertytypes WHERE id = ?";
 
-	public static final String SELECT_PROP_TYPES_BY_PROP_ID = "SELECT propertyTypes.id, propertyTypes.name, propertyTypes.description from propertyTypes, propertytopropertytype "
+	public static final String SELECT_PROP_TYPES_BY_PROP_ID = "SELECT propertytypes.id, propertytypes.name, propertytypes.description from propertytypes, propertytopropertytype "
 			+ "WHERE propertytopropertytype.property_id = ? AND propertytopropertytype.property_type = propertytypes.id";
 
 	public static final String SELECT_BY_OSM_WAY_ID_STATEMENT = "SELECT * " + " FROM properties WHERE osm_way_id = ?";
@@ -128,6 +134,12 @@ public class FindspotDao extends JdbcTemplate {
 		return results;
 	}
 
+	// TODO: set up caching for this
+	public List<PropertyLink> getPropertyLinks() {
+		List<PropertyLink> results = query(SELECT_PROPERTY_LINKS, new PropertyLinkRowMapper());
+		return results;
+	}
+	
 	@Cacheable("propertyNames")
 	public String getPropertyName(int propertyTypeID) {
 		PropertyType results = queryForObject(SELECT_PROP_TYPES_BY_ID_STMT, new PropertyTypeRowMapper(),
@@ -135,6 +147,12 @@ public class FindspotDao extends JdbcTemplate {
 		return results.getName();
 	}
 
+	// TODO: set up caching for this
+	public List<PropertyLink> getPropertyLinksForProperty(int propertyID) {
+		List<PropertyLink> propertyLinks = query(SELECT_PROPERTY_LINKS_BY_ID, new PropertyLinkRowMapper(), propertyID);
+		return propertyLinks;
+	}
+	
 	@Cacheable("propertyTypesByPropertyId")
 	public List<PropertyType> getPropertyTypeForProperty(int propertyID) {
 		List<PropertyType> propertyTypes = query(SELECT_PROP_TYPES_BY_PROP_ID, new PropertyTypeRowMapper(), propertyID);
@@ -152,6 +170,7 @@ public class FindspotDao extends JdbcTemplate {
 		List<Property> results = query(SELECT_BY_CITY_STATEMENT, new PropertyRowMapper(), city);
 		for (Property prop : results) {
 			prop.setPropertyTypes(getPropertyTypeForProperty(prop.getId()));
+			prop.setPropertyLinks(getPropertyLinksForProperty(prop.getId()));
 		}
 		return results;
 	}
@@ -161,6 +180,7 @@ public class FindspotDao extends JdbcTemplate {
 		List<Property> results = query(SELECT_BY_CITY_AND_INSULA_STATEMENT, new PropertyRowMapper(), city, insulaName);
 		for (Property prop : results) {
 			prop.setPropertyTypes(getPropertyTypeForProperty(prop.getId()));
+			prop.setPropertyLinks(getPropertyLinksForProperty(prop.getId()));
 		}
 		return results;
 	}
@@ -171,6 +191,7 @@ public class FindspotDao extends JdbcTemplate {
 		Property result = queryForObject(SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT, new PropertyRowMapper(),
 				city, insulaName, property_number);
 		result.setPropertyTypes(getPropertyTypeForProperty(result.getId()));
+		result.setPropertyLinks(getPropertyLinksForProperty(result.getId()));
 		result.setNumberOfGraffiti(graffitiDao.getInscriptionCountByFindSpot(result.getId()));
 		return result;
 	}
@@ -182,6 +203,7 @@ public class FindspotDao extends JdbcTemplate {
 			return result;
 		}
 		result.setPropertyTypes(getPropertyTypeForProperty(result.getId()));
+		result.setPropertyLinks(getPropertyLinksForProperty(result.getId()));
 		result.setNumberOfGraffiti(graffitiDao.getInscriptionCountByFindSpot(result.getId()));
 		return result;
 	}
@@ -191,6 +213,7 @@ public class FindspotDao extends JdbcTemplate {
 		Property result = queryForObject(SELECT_BY_PROPERTY_ID_STATEMENT, new PropertyRowMapper(), property_id);
 		result.setPropertyTypes(getPropertyTypeForProperty(property_id));
 		result.setNumberOfGraffiti(graffitiDao.getInscriptionCountByFindSpot(result.getId()));
+		result.setPropertyLinks(getPropertyLinksForProperty(result.getId()));
 		return result;
 	}
 }

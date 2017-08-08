@@ -39,9 +39,10 @@ public class CSVController {
 	private FindspotDao findspotDao;
 	
 	@ApiOperation(value="Download the individual graffito as a CSV file.")
-	@RequestMapping(value = "/graffito/AGP-{edrId}/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
-	public String getInscription(@PathVariable String edrId, HttpServletResponse response) {
-		response.addHeader("Content-Disposition", "attachment; filename=AGP-"+ edrId +".csv");
+	@RequestMapping(value = "/graffito/{agpId}/csv", method = RequestMethod.GET, produces = "text/csv;charset=UTF-8")
+	public String getInscription(@PathVariable String agpId, HttpServletResponse response) {
+		String edrId = agpId.replaceFirst("AGP-", "");
+		response.addHeader("Content-Disposition", "attachment; filename="+ agpId +".csv");
 		return generator.serializeToCSV(graffitiDao.getInscriptionByEDR(edrId));
 	}
 	

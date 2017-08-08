@@ -22,11 +22,13 @@ public class Property {
 
 	private int id;
 	private String property_number;
-	private String property_name;
+	private String englishPropertyName;
 	private String italianPropertyName;
+	private String agpPropertyName;
 	private String additionalEntrances;
 	private Insula insula;
 	private List<PropertyType> propertyTypes;
+	private List<PropertyLink> propertyLinks;
 	private String pleiadesId = "";
 	private String commentary = "";
 	private String locationKey = "";
@@ -70,7 +72,7 @@ public class Property {
 		this();
 		this.id = id;
 		this.property_number = property_number;
-		this.property_name = property_name;
+		this.englishPropertyName = property_name;
 		this.insula = insula;
 		this.propertyTypes = new ArrayList<PropertyType>();
 		this.locationKey = "p" + id;
@@ -78,6 +80,11 @@ public class Property {
 
 	public List<PropertyType> getPropertyTypes() {
 		return propertyTypes;
+	}
+	
+	@JsonIgnore
+	public List<PropertyLink> getPropertyLinks() {
+		return propertyLinks;
 	}
 	
 	@JsonIgnore
@@ -98,6 +105,10 @@ public class Property {
 
 	public void setPropertyTypes(List<PropertyType> propertyTypes) {
 		this.propertyTypes = propertyTypes;
+	}
+	
+	public void setPropertyLinks(List<PropertyLink> propertyLinks) {
+		this.propertyLinks = propertyLinks;
 	}
 
 	/**
@@ -164,18 +175,18 @@ public class Property {
 	}
 
 	/**
-	 * @return the property_name
+	 * @return the agpPropertyName
 	 */
 	public String getPropertyName() {
-		return property_name;
+		return agpPropertyName;
 	}
 
 	/**
-	 * @param property_name
+	 * @param agpPropertyName
 	 *            the property_name to set
 	 */
-	public void setPropertyName(String property_name) {
-		this.property_name = property_name;
+	public void setPropertyName(String agpPropertyName) {
+		this.agpPropertyName = agpPropertyName;
 	}
 
 	/**
@@ -315,4 +326,19 @@ public class Property {
 	public int getNumberOfGraffiti() {
 		return numberOfGraffiti;
 	}
+	
+	/**
+	 * @return the englishPropertyName
+	 */
+	public String getEnglishPropertyName() {
+		return englishPropertyName;
+	}
+
+	/**
+	 * @param englishPropertyName the englishPropertyName to set
+	 */
+	public void setEnglishPropertyName(String englishPropertyName) {
+		this.englishPropertyName = englishPropertyName;
+	}
+	
 }
