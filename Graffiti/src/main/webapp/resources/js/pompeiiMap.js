@@ -82,12 +82,19 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
-		dealWithInsulaLevelView();
+		dealWithInsulaLevePropertylView();
+		dealWithInsulaLabelsAndSelectionOnZoom();
+	});
+	
+	//Shows or hides insula labels depending on zoom levels and if the map is interactive
+	function dealWithInsulaLabelsAndSelectionOnZoom(){
 		if(interactive){
 			if(!zoomedOutThresholdReached()){
 				if(showInsulaMarkers){
 					removeInsulaLabels();
 					showInsulaMarkers=false;
+					//This shows selected properties from the insula when the map zooms in.
+					 updateBorderColors();
 				}
 			}
 			else if(!showInsulaMarkers){
@@ -95,7 +102,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				showInsulaMarkers=true;
 			}
 		}
-	});
+	}
 	
 	//Centers the map around a single property
 	function showCloseUpView(){
@@ -203,6 +210,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		}
 	}
 	
+	
 	//This function gets and returns a "dictionary" of the latitude and longitude of each insula given its id(as index).
 	//Used to find where to place the labels of each insula on the map, upon iteration through this list.
 	function makeInsulaCentersDict(){
@@ -247,8 +255,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				}
 			}
 		});
-		//console.log("Final insula centers dictionary:");
-		//console.log(insulaCentersDict+":");
 	}
 	
 	//Uses math to directly find and return the latitude and longitude of the center of a list of coordinates. 
@@ -270,17 +276,11 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	
 	//Responsible for showing the map view on the insula level. 
-	function dealWithInsulaLevelView(){
-		
-		//The second loop fills in the colors of the properties to match the total group color. 
-		//Again, only runs if the above conditions are true. 
-		//Empty slots are caused by there not yet being a group at those indexes yet them being surrounded by values. 
+	function dealWithInsulaLevePropertylView(){
 		map.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
-				//For an unknown reason, forEachLayer loops through two times instead of one. 
-				//We compensate by dividing number of graffiti by two(?). 
 				newFillColor=getFillColor(numberOfGraffitiInGroup);
 				layer.setStyle({fillColor:newFillColor});
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
@@ -288,7 +288,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			//Resets properties when user zooms back in
 			if (!zoomedOutThresholdReached() && colorDensity && layer.feature!=undefined){
 				layer.setStyle({color: getBorderColorForCloseZoom(layer.feature)});
-				//Again, we must divide by 2 here
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
 			}
@@ -308,6 +307,15 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			return 'black';
 		}
 		return 'white';
+	}
+	
+	function updateBorderColors(){
+		map.eachLayer(function(layer){
+			if(layer.feature!=undefined && layer.feature.properties.clicked){
+				borderColor=getBorderColorForCloseZoom(layer.feature);
+				//layer.feature.setStyle(color,borderColor);
+			}
+		});
 	}
 	
 	//Sets the style of the portions of the map. Color is the outside borders. There are different colors for 
@@ -510,6 +518,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		}
 		return newArray;
 	}
+	
+	
 	//On click, sees if a new insula id # has been selected. If so, adds it to the list of 
 	//selected insula. 
 	function checkForInsulaClick(clickedProperty){
@@ -581,7 +591,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}).addTo(map);
 	//Putting this after the above appears to make it this start correctly.
 	 if(initialZoomNotCalled==true){
-		   dealWithInsulaLevelView();
+		   dealWithInsulaLevePropertylView();
 		   initialZoomNotCalled=false;
 	 }
 	
@@ -607,19 +617,47 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	
 	updateHoverText();
-	
+	//Marks all properties inside of selected insula as selected by
+	//adding them to the clickedInsula list.
+	function selectPropertiesInAllSelectedInsula(uniqueClicked){
+		if(interactive){
+			var i=0;
+			var currentInsulaId;
+			var currentInsula;
+			var listOfSelectedInsulaIds=[];
+			for(i;i<clickedInsula.length;i++){
+				currentInsula=clickedInsula[i];
+				currentInsulaId=currentInsula[1];
+				listOfSelectedInsulaIds.push(currentInsulaId);	
+			}
+			map.eachLayer(function(layer){
+				if(layer.feature!=undefined){
+					if(listOfSelectedInsulaIds.indexOf(layer.feature.properties.insula_id)!=-1 && !uniqueClicked.includes(layer)){
+						uniqueClicked.push(layer);
+						layer.feature.properties.clicked=true;
+
+					}
+				}
+			});
+		}
+		return uniqueClicked;
+
+	}
 	//Used to acquire all of the items clicked for search(red button "Click here to search).
 	//Does this by iterating through the list of clicked items and adding them to uniqueClicked,
 	//then returning uniqueClicked. 
-	function getUniqueClicked() {
+	function getUniqueClicked(accountForZoomIncrease=false) {
 		var uniqueClicked = [];
+		var listInSelectedInsula;
 		var length = clickedAreas.length;
 		for (var i = 0; i < length; i++) {
 			var property = clickedAreas[i];
 			if (!uniqueClicked.includes(property)) {
+				
 				uniqueClicked.push(property)
 			}
 		}
+		uniqueClicked=selectPropertiesInAllSelectedInsula(uniqueClicked);
 		return uniqueClicked;
 	}
 	//Collects the ids of the clicked item objects(the id property).
@@ -636,6 +674,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			var propertyID = property.feature.properties.Property_Id;
 			propIdsOfClicked.push(propertyID);
 		}
+		propIdsOfClicked=selectPropertiesInAllSelectedInsula;
 		
 		return propIdsOfClicked;
 	}
@@ -665,7 +704,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Achieved by mixing html and javascript, accessing text properties of the regions(items). 
 	function displayHighlightedRegions() {
 		// when you click anywhere on the map, it updates the table
-		
 		if(! zoomedOutThresholdReached()){
 			var clickedAreasTable = getUniqueClicked();
 			
@@ -687,7 +725,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			  }
 		}
 		else{
-			displayHighlightedInsula();
+			var clickedAreasTable = getUniqueClicked();
 		}
 			
 		
