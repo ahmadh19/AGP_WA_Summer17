@@ -89,11 +89,13 @@ function start() {
 					<td>${prop.additionalEntrances}</td>
 				</tr>
 			</c:if>
-			<tr>
-				<th class="propertyLabel">Property Name<br />(in English):
-				</th>
-				<td>${prop.englishPropertyName}</td>
-			</tr>
+			<c:if test="${not empty prop.englishPropertyName}">
+				<tr>
+					<th class="propertyLabel">Property Name<br />(in English):
+					</th>
+					<td>${prop.englishPropertyName}</td>
+				</tr>
+			</c:if>
 			<c:if test="${not empty prop.italianPropertyName}">
 				<tr>
 					<th class="propertyLabel">Property Name<br />(in Italian):

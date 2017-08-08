@@ -28,6 +28,7 @@ public class Property {
 	private String additionalEntrances;
 	private Insula insula;
 	private List<PropertyType> propertyTypes;
+	private List<PropertyLink> propertyLinks;
 	private String pleiadesId = "";
 	private String commentary = "";
 	private String locationKey = "";
@@ -82,6 +83,11 @@ public class Property {
 	}
 	
 	@JsonIgnore
+	public List<PropertyLink> getPropertyLinks() {
+		return propertyLinks;
+	}
+	
+	@JsonIgnore
 	public String getPropertyTypesAsString() {
 		StringBuilder returnStr = new StringBuilder();
 		if(this.propertyTypes.size() > 1) {
@@ -99,6 +105,10 @@ public class Property {
 
 	public void setPropertyTypes(List<PropertyType> propertyTypes) {
 		this.propertyTypes = propertyTypes;
+	}
+	
+	public void setPropertyLinks(List<PropertyLink> propertyLinks) {
+		this.propertyLinks = propertyLinks;
 	}
 
 	/**

@@ -143,16 +143,15 @@
 			<td>http://ancientgraffiti.org<%=request.getContextPath() %>/graffito/AGP-${i.edrId}</td>
 		</tr>
 		-->
-		<c:if test="${not empty i.citation}">
-			<tr>
-				<th><span class="propertyLabel">Suggested Citation:</span></th>
-				<!-- Cannot use {i.citation} here because we need the URI to be a link -->
-				<td>AGP-${i.edrId}, <i>The Ancient Graffiti Project</i>,
-				<a href="http://ancientgraffiti.org/Graffiti/graffito/AGP-${i.edrId}">&lt;http://ancientgraffiti.org/Graffiti/graffito/AGP-${i.edrId}&gt;</a> 
-				[accessed: <%= new java.text.SimpleDateFormat("dd MMM yyyy").format(new java.util.Date()) %>]
-				</td>
-			</tr>
-		</c:if>
+		
+		<tr>
+			<th><span class="propertyLabel">Suggested Citation:</span></th>
+			<!-- Cannot use {i.citation} here because we need the URI to be a link -->
+			<td>AGP-${i.edrId}, <i>The Ancient Graffiti Project</i>,
+			<a href="http://ancientgraffiti.org/Graffiti/graffito/AGP-${i.edrId}">&lt;http://ancientgraffiti.org/Graffiti/graffito/AGP-${i.edrId}&gt;</a> 
+			[accessed: <%= new java.text.SimpleDateFormat("dd MMM yyyy").format(new java.util.Date()) %>]
+			</td>
+		</tr>
 	</table>
 	<hr class="main-table" />
 
