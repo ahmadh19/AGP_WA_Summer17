@@ -175,8 +175,8 @@ public class Property {
 	 * @param agpPropertyName
 	 *            the property_name to set
 	 */
-	public void setPropertyName(String propertyName) {
-		this.agpPropertyName = propertyName;
+	public void setPropertyName(String agpPropertyName) {
+		this.agpPropertyName = agpPropertyName;
 	}
 
 	/**
@@ -318,9 +318,8 @@ public class Property {
 	}
 	
 	/**
-	 * @return the agpPropertyName
+	 * @return the englishPropertyName
 	 */
-	@JsonIgnore
 	public String getEnglishPropertyName() {
 		return englishPropertyName;
 	}
