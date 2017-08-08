@@ -518,9 +518,7 @@ public class GraffitiController {
 				query.must(otherQuery);
 			}
 		}
-		
-		//System.out.println(query);
-		
+				
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
 		
