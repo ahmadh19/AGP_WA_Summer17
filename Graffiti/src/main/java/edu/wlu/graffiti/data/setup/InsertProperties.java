@@ -28,15 +28,22 @@ import edu.wlu.graffiti.bean.PropertyType;
  */
 public class InsertProperties {
 
+	private static final int OSM_WAY_ID_LOC = 10;
+	private static final int OSM_ID_LOC = 9;
+	private static final int PROPERTY_TYPE_LOC = 7;
+	private static final int PARCO_ARCHELOGICO_LINK_LOC = 12;
+	private static final int HERC_PANORAMAS_LINK_LOC = 11;
 	private static String DB_DRIVER;
 	private static String DB_URL;
 	private static String DB_USER;
 	private static String DB_PASSWORD;
 
 	private static final String INSERT_PROPERTY_STMT = "INSERT INTO properties "
-			+ "(insula_id, property_number, additional_properties, property_name, italian_property_name) "
-			+ "VALUES (?,?,?,?,?)";
+			+ "(insula_id, property_number, additional_properties, property_name, english_property_name, italian_property_name) "
+			+ "VALUES (?,?,?,?,?,?)";
 
+	private static final String INSERT_PROPERTY_LINK = "INSERT INTO property_links "
+			+ "(property_id, link_name, link) values (?,?,?)";
 	private static final String UPDATE_OSM_ID = "UPDATE properties SET osm_id = ? WHERE id = ?";
 	private static final String UPDATE_OSM_WAY_ID = "UPDATE properties SET osm_way_id = ? WHERE id = ?";
 
@@ -47,10 +54,14 @@ public class InsertProperties {
 
 	private static final String INSERT_PROPERTY_TYPE_MAPPING = "INSERT INTO propertyToPropertyType VALUES (?,?)";
 
+	private static String HERCULANEUM_PANORAMAS = "Herculaneum Panaramas";
+	private static String PARCO_ARCHEOLOGICO = "Parco Acheologoico";
+
 	private static PreparedStatement selectInsulaStmt;
 	private static PreparedStatement selectPropStmt;
 
 	static Connection newDBCon;
+	private static PreparedStatement propertyLinkStmt;
 
 	public static void main(String[] args) {
 		init();
@@ -71,7 +82,6 @@ public class InsertProperties {
 			PreparedStatement insertPTStmt = newDBCon.prepareStatement(INSERT_PROPERTY_TYPE_MAPPING);
 			PreparedStatement osmStmt = newDBCon.prepareStatement(UPDATE_OSM_ID);
 			PreparedStatement osmWayStmt = newDBCon.prepareStatement(UPDATE_OSM_WAY_ID);
-
 			List<PropertyType> propertyTypes = getPropertyTypes();
 
 			Reader in = new FileReader(datafileName);
@@ -82,6 +92,7 @@ public class InsertProperties {
 				String propertyNumber = "";
 				String additionalProperties = "";
 				String propertyName = "";
+				String englishPropName = "";
 				String italianPropName = "";
 
 				if (modernCity.isEmpty()) {
@@ -99,7 +110,10 @@ public class InsertProperties {
 					propertyName = record.get(4).trim();
 				}
 				if (record.size() > 5) {
-					italianPropName = record.get(5).trim();
+					englishPropName = record.get(5).trim();
+				}
+				if (record.size() > 6) {
+					italianPropName = record.get(6).trim();
 				}
 				int insula_id = lookupInsulaId(modernCity, insula);
 
@@ -113,7 +127,8 @@ public class InsertProperties {
 				pstmt.setString(2, propertyNumber);
 				pstmt.setString(3, additionalProperties);
 				pstmt.setString(4, propertyName);
-				pstmt.setString(5, italianPropName);
+				pstmt.setString(5, englishPropName);
+				pstmt.setString(6, italianPropName);
 
 				try {
 					pstmt.executeUpdate();
@@ -133,8 +148,8 @@ public class InsertProperties {
 				}
 
 				// handle property tags
-				if (record.size() > 6) {
-					String[] tagArray = record.get(6).trim().split(",");
+				if (record.size() > PROPERTY_TYPE_LOC) {
+					String[] tagArray = record.get(PROPERTY_TYPE_LOC).trim().split(",");
 					for (String t : tagArray) {
 						t = t.trim();
 						for (PropertyType propType : propertyTypes) {
@@ -158,26 +173,43 @@ public class InsertProperties {
 					}
 				}
 
-				// handle adding OSM ids
-				if (record.size() > 7) {
+				// handle adding OSM ids and OSM WAY ids
+				if (record.size() > OSM_ID_LOC) {
 
-					/*
-					 * We don't seem to have the OSM id in the spreadsheet yet.
-					 * String osmId = record.get(7).trim(); if (!osmId.isEmpty()
-					 * && !NumberUtils.isCreatable(osmId)) { osmStmt.setInt(2,
-					 * propID); osmStmt.setString(1, osmId);
-					 * osmStmt.executeUpdate(); }
-					 */
+					String osmId = record.get(OSM_ID_LOC).trim();
+					if (!osmId.isEmpty() && NumberUtils.isCreatable(osmId)) {
+						osmStmt.setInt(2, propID);
+						osmStmt.setString(1, osmId);
+						osmStmt.executeUpdate();
+					}
 
-					if (record.size() > 8) {
-						String osmWayId = record.get(8).trim();
+					if (record.size() > OSM_WAY_ID_LOC) {
+						String osmWayId = record.get(OSM_WAY_ID_LOC).trim();
 						if (!osmWayId.isEmpty() && NumberUtils.isCreatable(osmWayId)) {
 							osmWayStmt.setInt(2, propID);
 							osmWayStmt.setString(1, osmWayId);
 							osmWayStmt.executeUpdate();
 						}
 					}
+				}
 
+				// handle links about the properties
+				if (record.size() > HERC_PANORAMAS_LINK_LOC) {
+					String hercPanaLink = record.get(HERC_PANORAMAS_LINK_LOC).trim();
+					if (!hercPanaLink.isEmpty()) {
+						String links[] = hercPanaLink.split("\\s+");
+						for (String link : links) {
+							insertLink(propID, HERCULANEUM_PANORAMAS, link);
+						}
+					}
+
+					String parcoArcheologicLink = record.get(PARCO_ARCHELOGICO_LINK_LOC).trim();
+					if (!parcoArcheologicLink.isEmpty()) {
+						String links[] = parcoArcheologicLink.split("\\s+");
+						for (String link : links) {
+							insertLink(propID, PARCO_ARCHEOLOGICO, link);
+						}
+					}
 				}
 
 			}
@@ -187,11 +219,21 @@ public class InsertProperties {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	private static int insertLink(int property_id, String linkname, String link) {
+		try {
+			propertyLinkStmt.setInt(1, property_id);
+			propertyLinkStmt.setString(2, linkname);
+			propertyLinkStmt.setString(3, link);
+			return propertyLinkStmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
 		}
 	}
 
@@ -267,10 +309,10 @@ public class InsertProperties {
 			newDBCon = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 			selectInsulaStmt = newDBCon.prepareStatement(LOOKUP_INSULA_ID);
 			selectPropStmt = newDBCon.prepareStatement(LOOKUP_PROP_ID);
+			propertyLinkStmt = newDBCon.prepareStatement(INSERT_PROPERTY_LINK);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public static void getConfigurationProperties() {
