@@ -44,11 +44,11 @@ public class ImportEDRData {
 	private static String DB_PASSWORD;
 
 	private static final String INSERT_INSCRIPTION_STATEMENT = "INSERT INTO edr_inscriptions "
-			+ "(edr_id, ancient_city, find_spot, measurements, writing_style, \"language\", date_of_origin) "
-			+ "VALUES (?,?,?,?,?,?,?)";
+			+ "(edr_id, ancient_city, find_spot, measurements, writing_style, \"language\", date_beginning, date_end) "
+			+ "VALUES (?,?,?,?,?,?,?,?)";
 
 	private static final String UPDATE_INSCRIPTION_STATEMENT = "UPDATE edr_inscriptions SET "
-			+ "ancient_city=?, find_spot=?, measurements=?, writing_style=?, \"language\"=?, date_of_origin=?"
+			+ "ancient_city=?, find_spot=?, measurements=?, writing_style=?, \"language\"=?, date_beginning=?, date_end=?"
 			+ "WHERE edr_id = ?";
 
 	private static final String CHECK_INSCRIPTION_STATEMENT = "SELECT COUNT(*) FROM edr_inscriptions"
@@ -403,7 +403,8 @@ public class ImportEDRData {
 				}
 
 				String findSpot = Utils.cleanData(record.get(5));
-				String dateOfOrigin = Utils.cleanData(record.get(16));
+				String dateBeginning = Utils.cleanData(record.get(15));
+				String dateEnd = Utils.cleanData(record.get(16));
 				String alt = Utils.cleanData(record.get(18));
 				String lat = Utils.cleanData(record.get(19));
 				String littAlt = Utils.cleanData(record.get(21));
@@ -430,10 +431,10 @@ public class ImportEDRData {
 
 				if (count == 0) {
 					successUpdate = insertEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle,
-							language, dateOfOrigin);
+							language, dateBeginning, dateEnd);
 				} else {
 					successUpdate = updateEagleInscription(eagleID, ancient_city, findSpot, measurements, writingStyle,
-							language, dateOfOrigin);
+							language, dateBeginning, dateEnd);
 				}
 
 				// update AGP Metadata
@@ -560,14 +561,15 @@ public class ImportEDRData {
 	}
 
 	private static int insertEagleInscription(String eagleID, String ancient_city, String findSpot, String measurements,
-			String writingStyle, String language, String date_of_origin) throws SQLException {
+			String writingStyle, String language, String dateBeginning, String dateEnd) throws SQLException {
 		insertPStmt.setString(1, eagleID);
 		insertPStmt.setString(2, ancient_city);
 		insertPStmt.setString(3, findSpot);
 		insertPStmt.setString(4, measurements);
 		insertPStmt.setString(5, writingStyle);
 		insertPStmt.setString(6, language);
-		insertPStmt.setString(7, date_of_origin);
+		insertPStmt.setString(7, dateBeginning);
+		insertPStmt.setString(8, dateEnd);
 
 		try {
 			return insertPStmt.executeUpdate();
@@ -578,14 +580,15 @@ public class ImportEDRData {
 	}
 
 	private static int updateEagleInscription(String eagleID, String ancient_city, String findSpot, String measurements,
-			String writingStyle, String language, String date_of_origin) throws SQLException {
+			String writingStyle, String language, String dateBeginning, String dateEnd) throws SQLException {
 		updatePStmt.setString(1, ancient_city);
 		updatePStmt.setString(2, findSpot);
 		updatePStmt.setString(3, measurements);
 		updatePStmt.setString(4, writingStyle);
 		updatePStmt.setString(5, language);
-		updatePStmt.setString(6, date_of_origin);
-		updatePStmt.setString(7, eagleID);
+		updatePStmt.setString(6, dateBeginning);
+		updatePStmt.setString(7, dateEnd);
+		updatePStmt.setString(8, eagleID);
 
 		try {
 			return updatePStmt.executeUpdate();
