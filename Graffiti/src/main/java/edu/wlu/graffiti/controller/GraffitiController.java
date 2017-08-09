@@ -479,10 +479,7 @@ public class GraffitiController {
 				String[] a = fieldNames.get(i).split(" ");
 
 				for (String param : params) {
-					BoolQueryBuilder orQuery = boolQuery(); // 'or' for n-gram and regular
-					orQuery.should(matchQuery(a[0], param)); // regular query
-					orQuery.should(matchQuery(a[1], param).minimumShouldMatch("80%")); // n-gram query
-					contentQuery.must(orQuery); // 'and' for search terms
+					contentQuery.must(multiMatchQuery(param, a).minimumShouldMatch("80%"));
 				}
 				
 				query.must(contentQuery);
@@ -521,7 +518,7 @@ public class GraffitiController {
 				query.must(otherQuery);
 			}
 		}
-				
+						
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
 		
@@ -529,7 +526,7 @@ public class GraffitiController {
 			inscriptions.add(hitToInscription(hit));
 		}
 		
-		//client.close(); // This line slows down searching tremendously for some reason
+		//client.close(); // This line slows down searching
 		HttpSession session = request.getSession();
 		if (inscriptions.size() > 0) {
 			// System.out.println(inscriptions.get(0));
