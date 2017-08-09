@@ -230,9 +230,6 @@ function backToResults(){
 
 			<!-- sets the findspot -->
 			<c:choose>
-				<c:when test="${not empty i.agp.property.italianPropertyName}">
-					<c:set var="findspot" value="${i.agp.property.italianPropertyName}" />
-				</c:when>
 				<c:when test="${not empty i.agp.property.propertyName}">
 					<c:set var="findspot" value="${i.agp.property.propertyName}" />
 				</c:when>
