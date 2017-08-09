@@ -107,7 +107,7 @@ public class GenerateCSV {
 		inscriptionRecord.add(i.getAgp().getProperty().getInsula().getCity().getPleiadesId());
 		inscriptionRecord.add(i.getContent());
 		inscriptionRecord.add(i.getEDRFindSpot());
-		inscriptionRecord.add(i.getDate());
+		inscriptionRecord.add(i.getDateBeginning());
 		inscriptionRecord.add(i.getAgp().getLanguageInEnglish());
 		inscriptionRecord.add(i.getAgp().getWritingStyleInEnglish());
 		

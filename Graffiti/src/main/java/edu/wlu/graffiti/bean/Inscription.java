@@ -39,7 +39,8 @@ public class Inscription implements Comparable<Inscription> {
 	private List<Photo> photos;
 	private AGPInfo agp;
 	private String edrFindSpot;
-	private String date;
+	private String dateBeginning;
+	private String dateEnd;
 	
 	public Inscription() {
 		
@@ -55,12 +56,21 @@ public class Inscription implements Comparable<Inscription> {
 	}
 	
 	@JsonIgnore
-	public String getDate() {
-		return this.date;
+	public String getDateBeginning() {
+		return this.dateBeginning;
 	}
 
-	public void setDate(final String date) {
-		this.date = date;
+	public void setDateBeginning(final String date) {
+		this.dateBeginning = date;
+	}
+	
+	@JsonIgnore
+	public String getDateEnd() {
+		return this.dateEnd;
+	}
+
+	public void setDateEnd(final String date) {
+		this.dateEnd = date;
 	}
 
 	@JsonIgnore

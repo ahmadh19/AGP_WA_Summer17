@@ -252,10 +252,10 @@ public class GenerateEpidoc {
 					"/" + i.getAgp().getProperty().getInsula().getShortName() + "/" + 
 					i.getAgp().getProperty().getPropertyNumber());
 		Element origDate = new Element("origDate");
-		if(i.getDate() == null) {
+		if(i.getDateBeginning() == null) {
 			origDate.setText("unknown");
 		} else {
-			origDate.setText(i.getDate());
+			origDate.setText(i.getDateBeginning());
 		}
 		origin.addContent(origPlace);
 		origin.addContent(placeName);

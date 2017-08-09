@@ -21,7 +21,8 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		inscription.setId(resultSet.getInt("local_id"));
 		inscription.setEdrId(resultSet.getString("edr_id"));
 		inscription.setAncientCity(resultSet.getString("ANCIENT_CITY"));
-		inscription.setDate(resultSet.getString("date_of_origin"));
+		inscription.setDateBeginning(resultSet.getString("date_beginning"));
+		inscription.setDateBeginning(resultSet.getString("date_end"));
 
 		inscription.setEDRFindSpot(resultSet.getString("find_spot"));
 		inscription.setMeasurements(resultSet.getString("MEASUREMENTS"));
