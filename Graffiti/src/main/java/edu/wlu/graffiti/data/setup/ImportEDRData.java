@@ -347,7 +347,7 @@ public class ImportEDRData {
 		return returnString.toString().trim();
 	}
 
-	// ARE WE ONLY GOING TO EVER HAVE ONE DRAWING PER CONTENT?
+	// TODO: ARE WE ONLY GOING TO EVER HAVE ONE DRAWING PER CONTENT?
 	private static void markContentWithDrawing(String content, StringBuilder returnString) {
 		String nonFiguralContent = content.substring(0, content.indexOf("((:"));
 		String figuralContent = content.substring(content.indexOf("((:") + 3, content.indexOf("))")); 
