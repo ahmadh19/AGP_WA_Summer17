@@ -55,7 +55,6 @@ function contentSearch() {
 	var input = document.getElementById("keyword").value;
 	if (input.trim() != "") {
 		addSearchTerm("Content", input, input, 0);
-		refineResults();
 	}
 	document.getElementById("keyword").value = "";
 }
@@ -68,7 +67,6 @@ function globalSearch() {
 	if (input.trim() != "") {
 		//input = "Global: " + input;
 		addSearchTerm("Global", input, input, 0);
-		refineResults();
 	}
 	document.getElementById("keyword").value = "";
 }
