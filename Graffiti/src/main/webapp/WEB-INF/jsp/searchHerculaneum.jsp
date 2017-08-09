@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>herculaneum Map</title>
+<title>Ancient Graffiti Project :: Herculaneum Map</title>
 <%@ include file="/resources/common_head.txt" %>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
   integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
@@ -44,7 +44,7 @@ function setButton(){
 </script>
 
 <div class="container">
-	<h2>Search herculaneum by Map</h2>
+	<h2>Search Herculaneum by Map</h2>
 	<p>Click on one or more properties within the map, then hit the "Search" button below.</p>
 	<div id="moreInfo"><button id="search" class="btn btn-agp">Search Properties</button></div>
 	

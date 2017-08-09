@@ -6,7 +6,7 @@
 -- Dumped by pg_dump version 9.5.7
 
 SET statement_timeout = 0;
-SET lock_timeout = 0;
+SET lock_timeout = 0;\
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
@@ -135,10 +135,10 @@ CREATE TABLE drawing_tags (
 ALTER TABLE drawing_tags OWNER TO sprenkle;
 
 --
--- Name: eagle_inscription_id_seq; Type: SEQUENCE; Schema: public; Owner: sprenkle
+-- Name: edr_inscription_id_seq; Type: SEQUENCE; Schema: public; Owner: sprenkle
 --
 
-CREATE SEQUENCE eagle_inscription_id_seq
+CREATE SEQUENCE edr_inscription_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -146,14 +146,14 @@ CREATE SEQUENCE eagle_inscription_id_seq
     CACHE 1;
 
 
-ALTER TABLE eagle_inscription_id_seq OWNER TO sprenkle;
+ALTER TABLE edr_inscription_id_seq OWNER TO sprenkle;
 
 --
 -- Name: edr_inscriptions; Type: TABLE; Schema: public; Owner: sprenkle
 --
 
 CREATE TABLE edr_inscriptions (
-    id integer DEFAULT nextval('eagle_inscription_id_seq'::regclass) NOT NULL,
+    id integer DEFAULT nextval('edr_inscription_id_seq'::regclass) NOT NULL,
     edr_id character(9) NOT NULL,
     ancient_city character varying(30),
     find_spot character varying(150),
@@ -326,6 +326,8 @@ CREATE TABLE propertytypes (
 
 ALTER TABLE propertytypes OWNER TO sprenkle;
 
+create table property_links ( property_id integer references properties(id) on delete cascade, link_name varchar(70), link varchar(200));
+
 --
 -- Name: roles; Type: TABLE; Schema: public; Owner: sprenkle
 --
@@ -369,11 +371,11 @@ CREATE TABLE users (
 ALTER TABLE users OWNER TO sprenkle;
 
 --
--- Name: agp_inscription_annotations_eagle_id_key; Type: CONSTRAINT; Schema: public; Owner: sprenkle
+-- Name: agp_inscription_annotations_edr_id_key; Type: CONSTRAINT; Schema: public; Owner: sprenkle
 --
 
 ALTER TABLE ONLY agp_inscription_info
-    ADD CONSTRAINT agp_inscription_annotations_eagle_id_key UNIQUE (edr_id);
+    ADD CONSTRAINT agp_inscription_annotations_edr_id_key UNIQUE (edr_id);
 
 
 --
@@ -409,19 +411,19 @@ ALTER TABLE ONLY drawing_tags
 
 
 --
--- Name: eagle_inscriptions_eagle_id_key; Type: CONSTRAINT; Schema: public; Owner: sprenkle
+-- Name: edr_inscriptions_edr_id_key; Type: CONSTRAINT; Schema: public; Owner: sprenkle
 --
 
 ALTER TABLE ONLY edr_inscriptions
-    ADD CONSTRAINT eagle_inscriptions_eagle_id_key UNIQUE (edr_id);
+    ADD CONSTRAINT edr_inscriptions_edr_id_key UNIQUE (edr_id);
 
 
 --
--- Name: eagle_inscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: sprenkle
+-- Name: edr_inscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: sprenkle
 --
 
 ALTER TABLE ONLY edr_inscriptions
-    ADD CONSTRAINT eagle_inscriptions_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT edr_inscriptions_pkey PRIMARY KEY (id);
 
 
 --
@@ -521,11 +523,11 @@ ALTER TABLE ONLY drawing_tags
 
 
 --
--- Name: agp_inscription_annotations_eagle_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprenkle
+-- Name: agp_inscription_annotations_edr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprenkle
 --
 
 ALTER TABLE ONLY agp_inscription_info
-    ADD CONSTRAINT agp_inscription_annotations_eagle_id_fkey FOREIGN KEY (edr_id) REFERENCES edr_inscriptions(edr_id) ON DELETE CASCADE;
+    ADD CONSTRAINT agp_inscription_annotations_edr_id_fkey FOREIGN KEY (edr_id) REFERENCES edr_inscriptions(edr_id) ON DELETE CASCADE;
 
 
 --
@@ -545,11 +547,11 @@ ALTER TABLE ONLY greatest_hits_info
 
 
 --
--- Name: figural_graffiti_info_eagle_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprenkle
+-- Name: figural_graffiti_info_edr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: sprenkle
 --
 
 ALTER TABLE ONLY figural_graffiti_info
-    ADD CONSTRAINT figural_graffiti_info_eagle_id_fkey FOREIGN KEY (edr_id) REFERENCES edr_inscriptions(edr_id) ON DELETE CASCADE;
+    ADD CONSTRAINT figural_graffiti_info_edr_id_fkey FOREIGN KEY (edr_id) REFERENCES edr_inscriptions(edr_id) ON DELETE CASCADE;
 
 
 --
@@ -657,12 +659,12 @@ GRANT ALL ON TABLE drawing_tags TO sprenkle;
 
 
 --
--- Name: eagle_inscription_id_seq; Type: ACL; Schema: public; Owner: sprenkle
+-- Name: edr_inscription_id_seq; Type: ACL; Schema: public; Owner: sprenkle
 --
 
-REVOKE ALL ON SEQUENCE eagle_inscription_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE eagle_inscription_id_seq FROM sprenkle;
-GRANT ALL ON SEQUENCE eagle_inscription_id_seq TO sprenkle;
+REVOKE ALL ON SEQUENCE edr_inscription_id_seq FROM PUBLIC;
+REVOKE ALL ON SEQUENCE edr_inscription_id_seq FROM sprenkle;
+GRANT ALL ON SEQUENCE edr_inscription_id_seq TO sprenkle;
 
 
 --
