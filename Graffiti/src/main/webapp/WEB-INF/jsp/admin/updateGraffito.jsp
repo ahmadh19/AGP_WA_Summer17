@@ -535,25 +535,69 @@ input[name*="image"] {
 		
 		var modal = document.getElementById("epidocModal");
 		
-		var persNameTypes = ["attested", "emperor", "divine", "consular", "other"];
+		var nameTypes = []; // used only if the user selects two words (with a space between them) and marks the selection as a persName
 		
-		function markAsPersonName(text) {
-			modal.style.display = "none";
+		function getPersNameType(text) {
+			$(".modal .modal-content").html("<p>Marking '" + text + "' as a &lt;persName&gt;. Select a type for the &lt;persName&gt; tag: <p>" + 
+					"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"getNameType(\'"+ text +"\', 'attested')\">attested</button>" + 
+					"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"getNameType(\'"+ text +"\', 'emperor')\">emperor</button>" + 
+					"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"getNameType(\'"+ text +"\', 'divine')\">divine</button>" + 
+					"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"getNameType(\'"+ text +"\', 'consular')\">consular</button>" + 
+					"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"getNameType(\'"+ text +"\', 'other')\">other</button>");
+		}
+		
+		function getNameType(text, persNameType) {
 			
-			var epidocMarkup;
-	
-			// check if the selected name contains two words (firstName and lastName)
+			//if the user selects two words (with a space between them) -- i.e., firstName and lastName
 			if(text.includes(" ") && text.split(" ").length == 2) {
 				var temp = text.split(" ");
-				epidocMarkup = "<persName type=\"attested\"><name nymRef=\"\" type=\"\">" + temp[0] + "</name><name nymRef=\"\" type=\"\">" + temp[1] + "</name></persName>";
+				$(".modal .modal-content").html("<p>Marking '" + text + "' as a &lt;persName&gt;. The type for the &lt;persName&gt; tag is: " + persNameType + ". <br/> <br/> Select a type for the &lt;name&gt; tag for \'" + temp[0] + "\': <p>" + 
+						"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"getOtherNameType(\'"+ text +"\', \'"+ persNameType +"\', 'praenomen')\">praenomen</button>" + 
+						"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"getOtherNameType(\'"+ text +"\', \'"+ persNameType +"\', 'gentilicium')\">gentilicium</button>" + 
+						"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"getOtherNameType(\'"+ text +"\', \'"+ persNameType +"\', 'cognomen')\">cognomen</button>");
 			} else {
-				epidocMarkup = "<persName type=\"attested\"><name nymRef=\"\" type=\"\">" + text + "</name></persName>";
+				$(".modal .modal-content").html("<p>Marking '" + text + "' as a &lt;persName&gt;. The type for the &lt;persName&gt; tag is: " + persNameType + ". <br/> <br/> Select a type for the &lt;name&gt; tag: <p>" + 
+						"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"markAsPersonName(\'"+ text +"\', \'"+ persNameType +"\', 'praenomen')\">praenomen</button>" + 
+						"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"markAsPersonName(\'"+ text +"\', \'"+ persNameType +"\', 'gentilicium')\">gentilicium</button>" + 
+						"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"markAsPersonName(\'"+ text +"\', \'"+ persNameType +"\', 'cognomen')\">cognomen</button>");
+			}
+		}
+		
+		/*
+		* Gets the other <name> type if the user has selected a firstName and a lastName.
+		* Pushes the secondNameType to the array nameTypes.
+		* Note: This function calls markAsPersonName with an integer value as nameType (the result of nameTypes.push(secondNameType)).
+		*/
+		function getOtherNameType(text, persNameType, firstNameType) {
+			nameTypes.push(firstNameType);
+			var temp = text.split(" ");
+			$(".modal .modal-content").html("<p>Marking '" + text + "' as a &lt;persName&gt;. The type for the &lt;persName&gt; tag is: " + persNameType + ". <br/><br/>The type for the &lt;name&gt; tag for \'" + temp[0] + "\' is: " + firstNameType + 
+			".<br/> <br/> Select a type for the &lt;name&gt; tag for \'" + temp[1] + "\': <p>" + 
+					"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"markAsPersonName(\'"+ text +"\', \'"+ persNameType +"\', nameTypes.push('praenomen'))\">praenomen</button>" + 
+					"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"markAsPersonName(\'"+ text +"\', \'"+ persNameType +"\', nameTypes.push('gentilicium'))\">gentilicium</button>" + 
+					"<button type='button' class='btn btn-agp' style='width:100px;' onclick=\"markAsPersonName(\'"+ text +"\', \'"+ persNameType +"\', nameTypes.push('cognomen'))\">cognomen</button>");
+		}
+		
+		function markAsPersonName(text, persNameType, nameType) {
+		
+			var epidocMarkup;
+			
+			// nameType is an integer if and only if the user has selected two words to be marked as a persName
+			// this is because the index position of an element is return when the element is pushed to an array
+			if(Number.isInteger(nameType)) {
+				var temp = text.split(" ");
+				epidocMarkup = "<persName type=\"" + persNameType + "\"><name nymRef=\"\" type=\"" + nameTypes[0] + "\">" + temp[0] + "</name><name nymRef=\"\" type=\"" + nameTypes[1] + "\">" + temp[1] + "</name></persName>";
+			} else {
+				epidocMarkup = "<persName type=\"" + persNameType + "\"><name nymRef=\"\" type=\"" + nameType + "\">" + text + "</name></persName>";
 			}
 			
 			var tempStart = document.getElementById("epidocContent").value.substring(0, selectionStart);
 			var tempEnd = document.getElementById("epidocContent").value.substring(selectionEnd, 
 					document.getElementById("epidocContent").value.length);
 			document.getElementById("epidocContent").value = tempStart + epidocMarkup + tempEnd;
+			modal.style.display = "none";
+			document.getElementById("epidocContent").setSelectionRange(selectionStart, selectionEnd + epidocMarkup.length - text.length);
+			document.getElementById("epidocContent").focus();
 		}
 		
 		/*
@@ -587,6 +631,8 @@ input[name*="image"] {
 					document.getElementById("epidocContent").value.length);
 			document.getElementById("epidocContent").value = tempStart + epidocMarkup + tempEnd;
 			modal.style.display = "none";
+			document.getElementById("epidocContent").setSelectionRange(selectionStart, selectionEnd + epidocMarkup.length - text.length);
+			document.getElementById("epidocContent").focus();
 		}
 
 		$(document).ready(function() {
@@ -615,8 +661,8 @@ input[name*="image"] {
 						
 						//alert("<button type='button' class='btn btn-agp' onclick=markAsPersonName('"+ selection.txt +"')>Person Name</button>");
 						$(".modal .modal-content").html("<p>Mark '" + selection.txt + "' as one of the following: </p>" +
-							"<button type='button' class='btn btn-agp' onclick=\"markAsPersonName(\'"+ selection.txt +"\')\">Person Name</button>" +
-							"<button type='button' class='btn btn-agp' onclick=\"markAsPlaceName(\'"+ selection.txt +"\')\">Place Name</button>");
+							"<button type='button' class='btn btn-agp' style='width:200px;' onclick=\"getPersNameType(\'"+ selection.txt +"\')\">Person Name</button>" +
+							"<button type='button' class='btn btn-agp' style='width:200px;' onclick=\"markAsPlaceName(\'"+ selection.txt +"\')\">Place Name</button>");
 					}
 				}).mousedown(function() {
 
