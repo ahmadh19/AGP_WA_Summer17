@@ -535,21 +535,57 @@ input[name*="image"] {
 		
 		var modal = document.getElementById("epidocModal");
 		
+		var persNameTypes = ["attested", "emperor", "divine", "consular", "other"];
+		
 		function markAsPersonName(text) {
-			var epidoc = "<persName>" + text + "</persName>";
+			modal.style.display = "none";
+			
+			var epidocMarkup;
+	
+			// check if the selected name contains two words (firstName and lastName)
+			if(text.includes(" ") && text.split(" ").length == 2) {
+				var temp = text.split(" ");
+				epidocMarkup = "<persName type=\"attested\"><name nymRef=\"\" type=\"\">" + temp[0] + "</name><name nymRef=\"\" type=\"\">" + temp[1] + "</name></persName>";
+			} else {
+				epidocMarkup = "<persName type=\"attested\"><name nymRef=\"\" type=\"\">" + text + "</name></persName>";
+			}
+			
 			var tempStart = document.getElementById("epidocContent").value.substring(0, selectionStart);
 			var tempEnd = document.getElementById("epidocContent").value.substring(selectionEnd, 
 					document.getElementById("epidocContent").value.length);
-			document.getElementById("epidocContent").value = tempStart + epidoc + tempEnd;
-			modal.style.display = "none";
+			document.getElementById("epidocContent").value = tempStart + epidocMarkup + tempEnd;
 		}
 		
-		function markAsPlaceName(text) {
-			var epidoc = "<placeName>" + text + "</placeName>";
+		/*
+		function markAsPersonName(text) {
+			modal.style.display = "none";
+			var epidocMarkup;
+			var persNameType = window.prompt("Please enter the type attribute of <persName>: ", "attested");
+	
+			// check if the selected name contains two words (firstName and lastName)
+			if(text.includes(" ") && text.split(" ").length == 2) {
+				var temp = text.split(" ");
+				var nameType1 = window.prompt("Please enter the type attribute of the first <name> tag, " + text[0] + ": ", "");
+				var nameType2 = window.prompt("Please enter the type attribute of the second <name> tag, " + text[1] + ": ", "");
+				epidocMarkup = "<persName type=\"" + persNameType + "\"><name type=\"" + nameType1 + "\">" + temp[0] + "</name><name type=\"" + nameType2 + "\">" + temp[1] + "</name></persName>";
+			} else {
+				var nameType = window.prompt("Please enter the type attribute of the <name> tag, " + text + ": ", "");
+				epidocMarkup = "<persName type=\"" + persNameType + "\"><name type=\"" + nameType + "\">" + text + "</name></persName>";
+			}
+			
 			var tempStart = document.getElementById("epidocContent").value.substring(0, selectionStart);
 			var tempEnd = document.getElementById("epidocContent").value.substring(selectionEnd, 
 					document.getElementById("epidocContent").value.length);
-			document.getElementById("epidocContent").value = tempStart + epidoc + tempEnd;
+			document.getElementById("epidocContent").value = tempStart + epidocMarkup + tempEnd;
+		}
+		*/
+		
+		function markAsPlaceName(text) {
+			var epidocMarkup = "<placeName>" + text + "</placeName>";
+			var tempStart = document.getElementById("epidocContent").value.substring(0, selectionStart);
+			var tempEnd = document.getElementById("epidocContent").value.substring(selectionEnd, 
+					document.getElementById("epidocContent").value.length);
+			document.getElementById("epidocContent").value = tempStart + epidocMarkup + tempEnd;
 			modal.style.display = "none";
 		}
 
