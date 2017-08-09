@@ -7,7 +7,7 @@ Herculaneum,II,5,,,,,,,,321565900,http://donovanimages.co.nz/proxima-veritati/He
 Herculaneum,II,7,6,Thermopolium ,Thermopolium ,Thermapolium,Tavern,,,321565898,,http://www.pompeiisites.org/Sezione.jsp?titolo=Il+thermopolivm+%28II%2C6-7%29+%28VI%2C19%29&idSezione=211,,
 Herculaneum,II,8,,,,,,,,321565899,,,,"Note to SS: no graffiti found here, shall we leave off drop-down menu?"
 ,,,,,,,,,,,,,,
-Herculaneum,III,19,"1,2,18",House of the Inn,House of the Inn,Casa dell'Albergo ,"House,Inn ",,,314801622,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/Albergo/F42-05_Albergo/F42-05_Albergo.html,http://www.pompeiisites.org/Sezione.jsp?titolo=La+casa+dell%27albergo&idSezione=188,,"RB: This was ""House of the Hotel"" on OSM -- which to use?"
+Herculaneum,III,19,"1,2,18",House of the Inn,House of the Inn,Casa dell'Albergo ,"House,Inn ",,5424672,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/Albergo/F42-05_Albergo/F42-05_Albergo.html,http://www.pompeiisites.org/Sezione.jsp?titolo=La+casa+dell%27albergo&idSezione=188,,"RB: This was ""House of the Hotel"" on OSM -- which to use?"
 Herculaneum,III,3,,House of the Skeleton,House of the Skeleton,Casa dello Scheletro ,House,,,314801624,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/Scheletro/F26-09_Scheletro/F26-09_Scheletro.html,http://www.pompeiisites.org/Sezione.jsp?titolo=La+casa+dello+Scheletro&idSezione=187,,
 Herculaneum,III,11,"4,6",House of the Wooden Screen/Partition ,House of the Wooden Screen/Partition ,Casa del Tramezzo di Legno ,House,,,314801027,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/Tramezzo_di_Legno/F40-05/F40-05.html,http://www.pompeiisites.org/Sezione.jsp?titolo=La+casa+del+Tramezzo+di+legno&idSezione=183,,Varone shows III.4-6 connected with house; we're following him
 Herculaneum,III,5,,Stairs to upper level,Stairs to upper level,Scalae,,,,,,,,"Note to SS: no graffiti found here, shall we leave off drop-down menu?"
@@ -128,7 +128,7 @@ Herculaneum,WithinWalls,ww2,,Water Tower,Water Tower,Castellum Aquae,Public buil
 Herculaneum,WithinWalls,ww3,,Sewer Access,Sewer Access,Accesso alla Fogna/Clivus ad Cloacam,Public building,,,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/Sistema_fognario/HTML5_panos/F09-05_sewer/F09-05_sewer.html,,,
 Herculaneum,WithinWalls,ww4,,Decumanus Maximus,Decumanus Maximus,Decumano Massimo,Public building,,364727733,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/Decumano_Massimo/HTML5_panos/2016/Dec-Max-no-10/Dec-Max-no-10-6k-sRGB.html,,,
 ,,,,,,,,,,,,,,
-Herculaneum,OutsideWalls,ow1,,Ramp,Ramp,Rampa,Public building,,364727733,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F21-04_ramp/F21-04_ramp.html,,,
+Herculaneum,OutsideWalls,ow1,,Ramp,Ramp,Rampa,Public building,,364727736,,http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F21-04_ramp/F21-04_ramp.html,,,
 Herculaneum,OutsideWalls,ow2,,Suburban Baths,Suburban Baths,Terme Suburbane,Public building,,,311208578,"http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F20-05_calidarium/F20-05_calidarium.html
 
 http://donovanimages.co.nz/proxima-veritati/Herculaneum/media/2001_HTML5_panos/F20-01_vestibule/F20-01_vestibule.html
