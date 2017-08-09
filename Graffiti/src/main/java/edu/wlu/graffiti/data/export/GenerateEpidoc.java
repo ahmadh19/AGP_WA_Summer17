@@ -3,11 +3,21 @@
  */
 package edu.wlu.graffiti.data.export;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.jdom2.*;
+import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import edu.wlu.graffiti.bean.Inscription;
 
@@ -314,11 +324,19 @@ public class GenerateEpidoc {
 		div1.setAttribute("type", "edition");
 		div1.setAttribute("space", "preserve", Namespace.XML_NAMESPACE);
 		div1.setAttribute("lang", "en", Namespace.XML_NAMESPACE);
-		Element ab = new Element("ab");
-		Element lb = new Element("lb").setAttribute("n", "1"); // TODO:why does this not show up?
-		ab.addContent(lb);
-		ab.setText(i.getAgp().getEpidoc());
-		div1.addContent(ab);
+		
+		// Use SAXBuilder + StringReader to turn the string content into XML elements	
+		SAXBuilder contentBuilder = new SAXBuilder();
+		try {
+			Document tempDoc = contentBuilder.build(new StringReader("<ab>" + i.getAgp().getEpidoc() + "</ab>"));
+			Element temp = tempDoc.detachRootElement();
+			div1.addContent(temp);
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		body.addContent(div1);
 		
 		Element div2 = new Element("div").setAttribute("type", "apparatus");
