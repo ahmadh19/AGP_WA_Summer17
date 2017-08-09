@@ -583,7 +583,7 @@ input[name*="image"] {
 			var epidocMarkup;
 			
 			// nameType is an integer if and only if the user has selected two words to be marked as a persName
-			// this is because the index position of an element is return when the element is pushed to an array
+			// this is because the index position of an element is returned when the element is pushed to an array
 			if(Number.isInteger(nameType)) {
 				var temp = text.split(" ");
 				epidocMarkup = "<persName type=\"" + persNameType + "\"><name nymRef=\"\" type=\"" + nameTypes[0] + "\">" + temp[0] + "</name><name nymRef=\"\" type=\"" + nameTypes[1] + "\">" + temp[1] + "</name></persName>";
