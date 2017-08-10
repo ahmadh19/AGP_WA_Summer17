@@ -26,7 +26,7 @@ import org.apache.commons.csv.CSVRecord;
 public class HandleFindspotsWithoutAddresses {
 
 	private static Connection dbCon;
-	private static String LOCATION_FILE_NAME = "data/AGPData/atypical_findspots.csv";
+	public static String LOCATION_FILE_NAME = "data/AGPData/atypical_findspots.csv";
 
 	private static final String SELECT_PROPERTY = "select id from properties where property_name = ?";
 

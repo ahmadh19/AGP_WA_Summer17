@@ -160,7 +160,7 @@ function backToResults(){
 
 <body>
 	<%@include file="header.jsp"%>
-	
+
 	<c:set var="i" value="${requestScope.inscription}" />
 
 	<script>
@@ -234,9 +234,6 @@ function backToResults(){
 
 			<!-- sets the findspot -->
 			<c:choose>
-				<c:when test="${not empty i.agp.property.italianPropertyName}">
-					<c:set var="findspot" value="${i.agp.property.italianPropertyName}" />
-				</c:when>
 				<c:when test="${not empty i.agp.property.propertyName}">
 					<c:set var="findspot" value="${i.agp.property.propertyName}" />
 				</c:when>
@@ -398,40 +395,39 @@ function backToResults(){
 					<c:if test="${not empty i.measurements}">
 
 						<tr>
-							
-							
+
+
 							<th class="propertyLabel"><input type="button"
-								id="showMeasure" class="btn btn-agp" 
-								value="Show Measurements"></th>
-							
+								id="showMeasure" class="btn btn-agp" value="Show Measurements"></th>
+
 
 							<td>
 								<div id="measurements">
-								<ul>
-									<c:if test="${not empty i.agp.graffitoHeight }">
-										<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.graffitoLength }">
-										<li>Graffito Length: ${i.agp.graffitoLength }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.heightFromGround }">
-										<li>Height from Ground: ${i.agp.heightFromGround }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.minLetterHeight }">
-										<li>Min Letter Height: ${i.agp.minLetterHeight}</li>
-									</c:if>
-									<c:if test="${not empty i.agp.maxLetterHeight }">
-										<li>Max Letter Height: ${i.agp.maxLetterHeight }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.minLetterWithFlourishesHeight }">
-										<li>Min Letter Height with Flourishes:
-											${i.agp.minLetterWithFlourishesHeight }</li>
-									</c:if>
-									<c:if test="${not empty i.agp.maxLetterWithFlourishesHeight }">
-										<li>Max Letter Height with Flourishes:
-											${i.agp.maxLetterWithFlourishesHeight }</li>
-									</c:if>
-								</ul> 
+									<ul>
+										<c:if test="${not empty i.agp.graffitoHeight }">
+											<li>Graffito Height: ${ i.agp.graffitoHeight }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.graffitoLength }">
+											<li>Graffito Length: ${i.agp.graffitoLength }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.heightFromGround }">
+											<li>Height from Ground: ${i.agp.heightFromGround }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.minLetterHeight }">
+											<li>Min Letter Height: ${i.agp.minLetterHeight}</li>
+										</c:if>
+										<c:if test="${not empty i.agp.maxLetterHeight }">
+											<li>Max Letter Height: ${i.agp.maxLetterHeight }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.minLetterWithFlourishesHeight }">
+											<li>Min Letter Height with Flourishes:
+												${i.agp.minLetterWithFlourishesHeight }</li>
+										</c:if>
+										<c:if test="${not empty i.agp.maxLetterWithFlourishesHeight }">
+											<li>Max Letter Height with Flourishes:
+												${i.agp.maxLetterWithFlourishesHeight }</li>
+										</c:if>
+									</ul>
 								</div>
 							</td>
 
@@ -473,7 +469,7 @@ function backToResults(){
 			%>
 		</div>
 		<div class="rightcol">
-			
+
 			<c:set var="len" value="${fn:length(i.photos)}" />
 			<c:choose>
 				<c:when test="${len == 1}">

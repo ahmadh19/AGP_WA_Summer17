@@ -67,10 +67,8 @@ h3 {
 			<p />
 		</c:if>
 		<div>
-				<p class="alert alert-info">
-				This site is currently under development. As such, some features are not fully implemented and/or may
-				contain bugs.
-				</p>
+			<p class="alert alert-info">This site is an active work in
+				progress. Something about partial graffiti.</p>
 		</div>
 		<p style="font-size: 16px; text-align: center;">Welcome to The
 			Ancient Graffiti Project, a digital resource for locating and
@@ -103,33 +101,37 @@ h3 {
 	<p style="text-align: center;">
 		Special acknowledgements to <a
 			href="http://digitalhumanities.umass.edu/pbmp/">Eric Poehler</a> for
-		the map of Pompeii and the creators of <a
-			href="http://www.outsharked.com/imagemapster/">ImageMapster</a> for
-		the highlighting map feature.
+		the geospatial data used to create the map of Pompeii.
 	</p>
 	<footer>
 		<p style="text-align: center;">
-			<br/>This work is licensed under a 
-			<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
+			<br />This work is licensed under a <a rel="license"
+				href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
+				Commons Attribution-NonCommercial-ShareAlike 4.0 International
+				License</a>
 		</p>
 		<p style="text-align: center;">
-			<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
-			<img class="footer-img" style="height:40px;" src="<%=request.getContextPath()%>/resources/images/cc_license.png"
-			alt="CC License"></a>
-			<a href="http://www.neh.gov/">			
-			<img class="footer-img" style="height:26px;" src="http://www.neh.gov/files/neh_at_logo.png" alt="NEH"></a>
-			<a href="http://digitalhumanities.wlu.edu/">			
-			<img class="footer-img" style="height:40px;" src="http://ancientgraffiti.wlu.edu/files/2016/07/dh_at_wandl.png"
-			alt="W&L Digital Humanitites"></a>
-			<a href="https://mellon.org/">			
-			<img class="footer-img" style="height:40px;" src="http://ancientgraffiti.wlu.edu/files/2015/06/mellon-e1467740285109.jpeg"
-			alt="Mellon Foundation"></a>
-			<a href="http://chs.harvard.edu/">			
-			<img class="footer-img" style ="height:62px;" src="http://ancientgraffiti.org/about/wp-content/uploads/2017/06/CHS.png"
-			alt="CHS Harvard"></a>
-			<a href="https://github.com/AncientGraffitiProject/AGP">
-			<img class="footer-img" style="height:40px;" src="<%=request.getContextPath()%>/resources/images/octocat.png"
-			alt="Github"></a>
+			<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> <img
+				class="footer-img" style="height: 40px;"
+				src="<%=request.getContextPath()%>/resources/images/cc_license.png"
+				alt="CC License"></a> <a href="http://www.neh.gov/"> <img
+				class="footer-img" style="height: 26px;"
+				src="http://www.neh.gov/files/neh_at_logo.png" alt="NEH"></a> <a
+				href="http://digitalhumanities.wlu.edu/"> <img
+				class="footer-img" style="height: 40px;"
+				src="http://ancientgraffiti.wlu.edu/files/2016/07/dh_at_wandl.png"
+				alt="W&L Digital Humanitites"></a> <a href="https://mellon.org/">
+				<img class="footer-img" style="height: 40px;"
+				src="http://ancientgraffiti.wlu.edu/files/2015/06/mellon-e1467740285109.jpeg"
+				alt="Mellon Foundation">
+			</a> <a href="http://chs.harvard.edu/"> <img class="footer-img"
+				style="height: 62px;"
+				src="http://ancientgraffiti.org/about/wp-content/uploads/2017/06/CHS.png"
+				alt="CHS Harvard"></a> <a
+				href="https://github.com/AncientGraffitiProject/AGP"> <img
+				class="footer-img" style="height: 40px;"
+				src="<%=request.getContextPath()%>/resources/images/octocat.png"
+				alt="Github"></a>
 		</p>
 	</footer>
 </body>

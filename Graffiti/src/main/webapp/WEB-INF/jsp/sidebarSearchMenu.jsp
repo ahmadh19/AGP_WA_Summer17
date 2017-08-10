@@ -9,7 +9,8 @@
 	});
 </script>
 
-<script type="text/javascript" src="<c:url value="/resources/js/bootstrap-modal-popover.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/bootstrap-modal-popover.js"/>"></script>
 
 <style type="text/css">
 .panel-default>.panel-heading {
@@ -45,15 +46,13 @@ table.center {
 	background-color: #ddd;
 }
 
-
 #greekKeys input[type="button"] {
-    padding-top: 2px;
-    padding-right: 6px;
-    padding-bottom: 3px;
-    padding-left: 6px;
-    border-width: 2px;
+	padding-top: 2px;
+	padding-right: 6px;
+	padding-bottom: 3px;
+	padding-left: 6px;
+	border-width: 2px;
 }
-
 
 .label-primary, .label {
 	border: 2px solid #428bca;
@@ -109,9 +108,11 @@ button:disabled {
 	<div class="arrow"></div>
 	<div class="popover-content">
 		<p>
-			<table class="center">
-				<tr><td nowrap align="center"><div id="greekKeys"></div></tr>
-			</table>
+		<table class="center">
+			<tr>
+				<td nowrap align="center"><div id="greekKeys"></div>
+			</tr>
+		</table>
 		</p>
 	</div>
 </div>
@@ -335,8 +336,9 @@ button:disabled {
 						style="float: right; margin-bottom: 3px;" data-toggle="tooltip"
 						data-placement="bottom"
 						title="Perform a search based on all data fields">Global</button>
-					<a href="#popupButton" role="button" class="btn btn-default btn-keyboard" 
-						data-toggle="modal-popover" data-placement="bottom">Greek Alphabet</a>
+					<a href="#popupButton" role="button"
+						class="btn btn-default btn-keyboard" data-toggle="modal-popover"
+						data-placement="bottom">Greek Alphabet</a>
 				</div>
 			</div>
 		</div>
@@ -362,16 +364,17 @@ button:disabled {
 		});
 		document.getElementById("greekKeys").appendChild(v);
 	}
-	
+
 	// Create the keyboard buttons
 	window.onload = function() {
 		checkboxesAfterBack();
-		
+
 		<c:if test="${not empty sessionScope.returnFromEDR}">
-		document.getElementById("${sessionScope.returnFromEDR}").scrollIntoView();
+		document.getElementById("${sessionScope.returnFromEDR}")
+				.scrollIntoView();
 		<c:set var="returnFromEDR" value="" scope="session" />
 		</c:if>
-		
+
 		var brCount = 1;
 
 		for (var i = 945; i < 962; i++) {

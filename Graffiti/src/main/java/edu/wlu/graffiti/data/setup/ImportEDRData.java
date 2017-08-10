@@ -111,6 +111,7 @@ public class ImportEDRData {
 			AddEDRLinksToApparatus.addEDRLinksToApparatus();
 			ExtractEDRLanguageForAGPInfo.updateAGPLanguage();
 			ExtractWritingStyleForAGPInfo.updateWritingStyle();
+			HandleFindspotsWithoutAddresses.updateGraffitiLocations(HandleFindspotsWithoutAddresses.LOCATION_FILE_NAME);
 			
 		} catch (SQLException e1) {
 			e1.printStackTrace();
