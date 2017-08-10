@@ -25,12 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -479,7 +479,10 @@ public class GraffitiController {
 				String[] a = fieldNames.get(i).split(" ");
 
 				for (String param : params) {
-					contentQuery.must(multiMatchQuery(param, a).minimumShouldMatch("80%"));
+					BoolQueryBuilder orQuery = boolQuery();
+					orQuery.should(matchQuery(a[0], param).boost(50)); // boost exact match
+					orQuery.should(matchQuery(a[1], param).minimumShouldMatch("80%")); // ngrams
+					contentQuery.must(orQuery);
 				}
 				
 				query.must(contentQuery);
@@ -518,12 +521,10 @@ public class GraffitiController {
 				query.must(otherQuery);
 			}
 		}
-						
+								
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
-		
-		System.out.println("searching...");
-		
+				
 		for (SearchHit hit : response.getHits()) {
 			inscriptions.add(hitToInscription(hit));
 		}
