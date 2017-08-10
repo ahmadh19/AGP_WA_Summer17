@@ -41,7 +41,7 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
 		maxZoom:20,
-		maxBounds: bounds,
+		//maxBounds: bounds,
 		//Here is the +/- button for zoom
 	})
 	
