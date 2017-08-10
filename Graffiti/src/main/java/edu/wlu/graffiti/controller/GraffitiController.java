@@ -146,9 +146,10 @@ public class GraffitiController {
 		request.setAttribute("figuralHits", greatestFiguralHits);
 		request.setAttribute("translationHits", greatestTranslationHits);
 
-		return "featuredGraffiti";
+		return "newFeaturedGraffiti";
 
 	}
+	/*
 
 	@RequestMapping(value = "/new-featured-graffiti", method = RequestMethod.GET)
 	public String newFeaturedHits(final HttpServletRequest request) {
@@ -161,6 +162,7 @@ public class GraffitiController {
 		return "newFeaturedGraffiti";
 
 	}
+	*/
 
 	// maps to inputData.jsp page which is used to input inscription to the
 	// database using a csv file
