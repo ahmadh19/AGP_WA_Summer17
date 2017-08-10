@@ -7,12 +7,12 @@
 <%
 	List<String> newLocationKeys = (List<String>) request.getAttribute("findLocationKeys");
 %>
+
 <div id="mapkeys" style="display: none;"><%=newLocationKeys%></div>
 <div style="width: 480px">
 <p class="alert alert-info">
 
 <c:out value="${num} results found ${searchQueryDesc}" /></p>
-<div style="justify-content: space-between;">
 <a href="<%=request.getContextPath()%>/filtered-results/json"
 	id="bulkJson">
 	<button class="btn btn-agp btn-sm">Export as JSON</button>
@@ -25,17 +25,15 @@
 </a>
 <button id="print" class="btn btn-agp btn-sm"
 	onclick="printResults();">Print</button>
-</div>
-<div class="dropdown">
-	<button class="btn btn-primary dropdown-toggle" type="button"
-		data-toggle="dropdown" style="float: right;">
-		Sort By <span class="caret"></span>
-	</button>
-	<ul class="dropdown-menu dropdown-menu-right">
-		<li><a href="#">Relevance</a></li>
-		<li><a href="#">Findspot</a></li>
-		<li><a href="#">CIL #</a></li>
-	</ul>
+<div style="float: right">
+Sort By
+<form method="POST" name="sortForm">
+<select name="sortParam" id="sortParam">
+	<option value="relevance">Relevance</option>
+	<option value="findspot">Findspot</option>
+	<option value="cil">CIL #</option>
+</select>
+</form>
 </div>
 </div>
 <c:if test="${num == 0}">
