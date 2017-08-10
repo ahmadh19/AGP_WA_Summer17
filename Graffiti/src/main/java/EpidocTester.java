@@ -40,49 +40,52 @@ public class EpidocTester {
 	private static String content3 = "Mula fellaat (:fellat) [A]ntoni"
 			+ "\nFortunata a(eris) a(ssibus) II\n((:herma mulieris))";
 	
+	private static String regexClass = "[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]";
+	
 	public static String transformContentToEpidoc(String content) {
 		StringBuilder returnString = new StringBuilder();
 		Pattern pattern;
 		Matcher matcher;
 		
-		if(content.contains("columna")) { // if content is split across columns, mark those columns
+		if(content.contains(":columna")) { // if content is split across columns, mark those columns
 			content = markContentWithColumns(content);
 		} else { 
 			content = addLBTagsToContent(content);
 		}	
 		
-		pattern = Pattern.compile("[a-zA-Z]*\\([a-zA-Z]+\\)");
+		pattern = Pattern.compile("[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\([^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]+\\)");
 		matcher = pattern.matcher(content);
 		if(matcher.find()) {
 			content = addAbbreviationTags(content);
 		}
 		
-		
-		pattern = Pattern.compile("[a-zA-Z]*\\([a-zA-Z]+\\?\\)");
+		pattern = Pattern.compile("[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\([^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]+\\?\\)");
 		matcher = pattern.matcher(content);
 		if(matcher.find()) {
 			content = addAbbreviationTagsWithUncertainty(content);
 		}
 		
-		pattern = Pattern.compile("\\[\\- \\- \\-\\]");
+		pattern = Pattern.compile("\\[\\- \\- \\-\\]|\\[\\-\\-\\-\\]");
 		matcher = pattern.matcher(content);
 		if(matcher.find()) {
+			System.out.println("here");
 			content = addLostContentTags(content);
 		}
 		
-		pattern = Pattern.compile("\\(\\(\\:[a-zA-Z]*\\)\\)");
+		pattern = Pattern.compile("\\(\\(\\:[^\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\)\\)");
 		matcher = pattern.matcher(content);
 		if(matcher.find()) {
+			//System.out.println("here");
 			content = markContentWithFigureTags(content);
 		}
 		
-		pattern = Pattern.compile("\\[\\[[a-zA-Z]*\\]\\]");
+		pattern = Pattern.compile("\\[\\[[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\]\\]");
 		matcher = pattern.matcher(content);
 		if(matcher.find()) {
 			content = addIntentionallyErasedTags(content);
 		}
 		
-		pattern = Pattern.compile("\\[[a-zA-Z]*\\]");
+		pattern = Pattern.compile("\\[[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\]");
 		matcher = pattern.matcher(content);
 		if(matcher.find()) {
 			content = addOncePresentButNowErasedTags(content);
@@ -93,7 +96,7 @@ public class EpidocTester {
 
 	private static String markContentWithFigureTags(String content) {
 		String temp;
-		Pattern pattern = Pattern.compile("\\(\\(\\:[a-zA-Z]*\\)\\)");
+		Pattern pattern = Pattern.compile("\\(\\(\\:[^\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\)\\)");
 		Matcher matcher = pattern.matcher(content);
 		while(matcher.find()) {
 			temp = matcher.group(0);
@@ -104,7 +107,7 @@ public class EpidocTester {
 
 	private static String markContentWithColumns(String content) {
 		StringBuilder returnString = new StringBuilder();
-		String[] splitContentAcrossColumns = content.split(".*columna.*");
+		String[] splitContentAcrossColumns = content.split(".*\\:columna.*");
 		for(int i = 1; i < splitContentAcrossColumns.length; i++) {
 			char letter = (char) ('a'+ i-1);
 			returnString.append("<div type='textpart' subtype='column' n='" + letter + "'>");
@@ -125,7 +128,7 @@ public class EpidocTester {
 	
 	private static String addAbbreviationTags(String content) {
 		String temp;
-		Pattern pattern = Pattern.compile("[a-zA-Z]*\\([a-zA-Z]+\\)");
+		Pattern pattern = Pattern.compile("[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\([^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]+\\)");
 		Matcher matcher = pattern.matcher(content);
 		while(matcher.find()) {
 			temp = matcher.group(0);
@@ -138,7 +141,7 @@ public class EpidocTester {
 	
 	private static String addAbbreviationTagsWithUncertainty(String content) {
 		String temp;
-		Pattern pattern = Pattern.compile("[a-zA-Z]*\\([a-zA-Z]+\\?\\)");
+		Pattern pattern = Pattern.compile("[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\([^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]+\\?\\)");
 		Matcher matcher = pattern.matcher(content);
 		while(matcher.find()) {
 			temp = matcher.group(0);
@@ -151,18 +154,18 @@ public class EpidocTester {
 	
 	private static String addLostContentTags(String content) {
 		String temp;
-		Pattern pattern = Pattern.compile("\\[\\- \\- \\-\\]");
+		Pattern pattern = Pattern.compile("\\[\\- \\- \\-\\]|\\[\\-\\-\\-\\]");
 		Matcher matcher = pattern.matcher(content);
 		while(matcher.find()) {
 			temp = matcher.group(0);
-			content = content.replace(temp, temp.replaceAll("\\[\\- \\- \\-\\]", "<gap reason='lost' extent='unknown' unit='character'/>"));
+			content = content.replace(temp, temp.replaceAll("\\[\\- \\- \\-\\]|\\[\\-\\-\\-\\]", "<gap reason='lost' extent='unknown' unit='character'/>"));
 			}
 		return content;
 	}
 	
 	private static String addIntentionallyErasedTags(String content) {
 		String temp;
-		Pattern pattern = Pattern.compile("\\[\\[[a-zA-Z]*\\]\\]");
+		Pattern pattern = Pattern.compile("\\[\\[[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\]\\]");
 		Matcher matcher = pattern.matcher(content);
 		while(matcher.find()) {
 			temp = matcher.group(0);
@@ -173,7 +176,7 @@ public class EpidocTester {
 	
 	private static String addOncePresentButNowErasedTags(String content) {
 		String temp;
-		Pattern pattern = Pattern.compile("\\[[a-zA-Z]*\\]");
+		Pattern pattern = Pattern.compile("\\[[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\]");
 		Matcher matcher = pattern.matcher(content);
 		while(matcher.find()) {
 			temp = matcher.group(0);
@@ -203,7 +206,7 @@ public class EpidocTester {
 		//System.out.println("Original Content: \n" + content2 + "\n");
 		/*
 		String temp;
-		Pattern pattern = Pattern.compile("\\[[a-zA-Z]*\\]");
+		Pattern pattern = Pattern.compile("\\[[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\]");
 		Matcher matcher = pattern.matcher(content);
 		while(matcher.find()) {
 			temp = matcher.group(0);
@@ -211,7 +214,8 @@ public class EpidocTester {
 		}
 		System.out.println(content);
 		*/
-		System.out.println(transformContentToEpidoc(content));
+		System.out.println(transformContentToEpidoc("((:herma viri))"));
+		//System.out.println(transformContentToEpidoc("[---]culus"));
 		
 		//String nonFiguralContent = content.substring(0, content.indexOf("((:"));
 		//String figuralContent = content.substring(content.indexOf("((:") + 3, content.indexOf("))")); 

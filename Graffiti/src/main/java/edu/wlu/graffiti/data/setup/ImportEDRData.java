@@ -329,49 +329,144 @@ public class ImportEDRData {
 		}
 	}
 
-	/**
-	 * 
-	 * @param content
-	 * @return
-	 */
 	public static String transformContentToEpidoc(String content) {
+		Pattern pattern;
+		Matcher matcher;
+		
+		if(content.contains(":columna")) { // if content is split across columns, mark those columns
+			content = markContentWithColumns(content);
+		} else { 
+			content = addLBTagsToContent(content);
+		}	
+		
+		pattern = Pattern.compile("[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\([^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]+\\)");
+		matcher = pattern.matcher(content);
+		if(matcher.find()) {
+			content = addAbbreviationTags(content);
+		}
+		
+		pattern = Pattern.compile("[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\([^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]+\\?\\)");
+		matcher = pattern.matcher(content);
+		if(matcher.find()) {
+			content = addAbbreviationTagsWithUncertainty(content);
+		}
+		
+		pattern = Pattern.compile("\\[\\- \\- \\-\\]|\\[\\-\\-\\-\\]");
+		matcher = pattern.matcher(content);
+		if(matcher.find()) {
+			content = addLostContentTags(content);
+		}
+		
+		pattern = Pattern.compile("\\(\\(\\:[^\\(\\[\\)\\]\\:\\<\\>\\?]*\\)\\)");
+		matcher = pattern.matcher(content);
+		if(matcher.find()) {
+			content = markContentWithFigureTags(content);
+		}
+		
+		pattern = Pattern.compile("\\[\\[[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\]\\]");
+		matcher = pattern.matcher(content);
+		if(matcher.find()) {
+			content = addIntentionallyErasedTags(content);
+		}
+		
+		pattern = Pattern.compile("\\[[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\]");
+		matcher = pattern.matcher(content);
+		if(matcher.find()) {
+			content = addOncePresentButNowErasedTags(content);
+		}
+		
+		return content;
+	}
+
+	private static String markContentWithFigureTags(String content) {
+		String temp;
+		Pattern pattern = Pattern.compile("\\(\\(\\:[^\\(\\[\\)\\]\\:\\<\\>\\?]*\\)\\)");
+		Matcher matcher = pattern.matcher(content);
+		while(matcher.find()) {
+			temp = matcher.group(0);
+			content = content.replace(temp, "<figure><figDesc>" + temp.replaceAll("\\(\\(\\:", "").replaceAll("\\)\\)", "") + "</figDesc></figure>");
+		}
+		return content;
+	}
+
+	private static String markContentWithColumns(String content) {
 		StringBuilder returnString = new StringBuilder();
-		if(content.contains("columna")) { // if content is split across columns
-			markContentWithColumns(content, returnString);
-		} else if(content.contains("((:")) { // if content contains the description of a figural graffito
-			markContentWithDrawing(content, returnString);
-			
-		} else { // if no columns or images in content
-			addLBTagsToContent(content, returnString);
-		}
-		return returnString.toString().trim();
-	}
-
-	// TODO: ARE WE ONLY GOING TO EVER HAVE ONE DRAWING PER CONTENT?
-	private static void markContentWithDrawing(String content, StringBuilder returnString) {
-		String nonFiguralContent = content.substring(0, content.indexOf("((:"));
-		String figuralContent = content.substring(content.indexOf("((:") + 3, content.indexOf("))")); 
-		if(!nonFiguralContent.equals("")) {
-			addLBTagsToContent(nonFiguralContent, returnString);
-		}
-		returnString.append("<figure><figDesc>" + figuralContent + "</figDesc></figure>");
-	}
-
-	private static void markContentWithColumns(String content, StringBuilder returnString) {
 		String[] splitContentAcrossColumns = content.split(".*columna.*");
 		for(int i = 1; i < splitContentAcrossColumns.length; i++) {
 			char letter = (char) ('a'+ i-1);
 			returnString.append("<div type='textpart' subtype='column' n='" + letter + "'>");
-			addLBTagsToContent(splitContentAcrossColumns[i].trim(), returnString);
+			returnString.append(addLBTagsToContent(splitContentAcrossColumns[i].trim()));
 			returnString.append("</div>");
 		}
+		return returnString.toString().trim();
 	}
 
-	private static void addLBTagsToContent(String content, StringBuilder returnString) {
+	private static String addLBTagsToContent(String content) {
+		StringBuilder returnString = new StringBuilder();
 		String[] splitContent = content.split("\n *");
 		for(int i = 0; i < splitContent.length; i++ ) {
 			returnString.append("<lb n='" + Integer.toString(i+1) + "'/>" + splitContent[i]);
 		}
+		return returnString.toString().trim();
+	}
+	
+	private static String addAbbreviationTags(String content) {
+		String temp;
+		Pattern pattern = Pattern.compile("[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\([^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]+\\)");
+		Matcher matcher = pattern.matcher(content);
+		while(matcher.find()) {
+			temp = matcher.group(0);
+			String abbr = temp.split("\\(")[0];
+			String ex = temp.split("\\(")[1].split("\\)")[0];
+			content = content.replace(temp, "<expan><abbr>"+abbr+"</abbr><ex>"+ex+"</ex></expan>");
+		}
+		return content;
+	}
+	
+	private static String addAbbreviationTagsWithUncertainty(String content) {
+		String temp;
+		Pattern pattern = Pattern.compile("[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\([^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]+\\?\\)");
+		Matcher matcher = pattern.matcher(content);
+		while(matcher.find()) {
+			temp = matcher.group(0);
+			String abbr = temp.split("\\(")[0];
+			String ex = temp.split("\\(")[1].split("\\?\\)")[0];
+			content = content.replace(temp, "<expan><abbr>"+abbr+"</abbr><ex cert='low'>"+ex+"</ex></expan>");
+		}
+		return content;
+	}
+	
+	private static String addLostContentTags(String content) {
+		String temp;
+		Pattern pattern = Pattern.compile("\\[\\- \\- \\-\\]|\\[\\-\\-\\-\\]");
+		Matcher matcher = pattern.matcher(content);
+		while(matcher.find()) {
+			temp = matcher.group(0);
+			content = content.replace(temp, temp.replaceAll("\\[\\- \\- \\-\\]|\\[\\-\\-\\-\\]", "<gap reason='lost' extent='unknown' unit='character'/>"));
+			}
+		return content;
+	}
+	
+	private static String addIntentionallyErasedTags(String content) {
+		String temp;
+		Pattern pattern = Pattern.compile("\\[\\[[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\]\\]");
+		Matcher matcher = pattern.matcher(content);
+		while(matcher.find()) {
+			temp = matcher.group(0);
+			content = content.replace(temp, "<del rend='erasure'><supplied reason='lost'>" + temp.replaceAll("\\[\\[|\\]\\]", "") + "</supplied></del>");
+		}
+		return content;
+	}
+	
+	private static String addOncePresentButNowErasedTags(String content) {
+		String temp;
+		Pattern pattern = Pattern.compile("\\[[^\\s\\(\\[\\)\\]\\:\\<\\>\\?\\,]*\\]");
+		Matcher matcher = pattern.matcher(content);
+		while(matcher.find()) {
+			temp = matcher.group(0);
+			content = content.replace(temp, "<supplied reason='lost'>" + temp.replaceAll("\\[|\\]", "") + "</supplied>");
+		}
+		return content;
 	}
 
 	/**
