@@ -27,13 +27,11 @@
 	onclick="printResults();">Print</button>
 <div style="float: right">
 Sort By
-<form method="POST" name="sortForm">
-<select name="sortParam" id="sortParam">
+<select id="sortParam">
 	<option value="relevance">Relevance</option>
-	<option value="findspot">Findspot</option>
 	<option value="cil">CIL #</option>
+	<option value="findspot">Findspot</option>
 </select>
-</form>
 </div>
 </div>
 <c:if test="${num == 0}">

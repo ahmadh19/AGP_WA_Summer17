@@ -11,6 +11,7 @@
 var currentParams = new Array(); // the ending array of parameters
 var requestUrl = "filter"; // request url for filtering
 var reportUrl = "admin/report"; // report url for reports
+var sortUrl = "sort"; // sort url for sorting
 var filters = new Array(); // an array of the filters applied so far on the search
 
 /**
@@ -102,6 +103,13 @@ function filterBy(type, label, choice, id) {
 	} else {
 		addSearchTerm(type, label, choice, id);
 	}
+}
+
+/**
+ * @param choice the item to sort results by
+ */
+function sortBy(choice) {
+	
 }
 
 /**
@@ -294,24 +302,31 @@ function termExists(desc) {
 	return false;
 }
 
-function createURL(baseURL) {
-	var labels = document.getElementsByClassName("search-term-label");
-
-	currentParams = new Array();
-	for (var i = 0; i < labels.length; i++) {
-		currentParams.push(labels[i].childNodes[3].textContent);
-	}
-
+function createURL(type, baseURL) {
 	var myUrl = baseURL;
-
-	if (currentParams.length != 0) {
-		myUrl += "?";
-		for (var i = 0; i < currentParams.length; i++) {
-			desc = currentParams[i].split(": ");
-			myUrl += "&" + desc[0].toLowerCase() + "=" + desc[1];
-			myUrl = myUrl.replace(/\s/g, '_');
-		}
+	
+	switch(type) {
+		case "filter":
+			var labels = document.getElementsByClassName("search-term-label");
+		
+			currentParams = new Array();
+			for (var i = 0; i < labels.length; i++) {
+				currentParams.push(labels[i].childNodes[3].textContent);
+			}
+				
+			if (currentParams.length != 0) {
+				myUrl += "?";
+				for (var i = 0; i < currentParams.length; i++) {
+					desc = currentParams[i].split(": ");
+					myUrl += "&" + desc[0].toLowerCase() + "=" + desc[1];
+					myUrl = myUrl.replace(/\s/g, '_');
+				}
+			}
+			break;
+		case "sort":
+			break;
 	}
+	
 	return myUrl;
 }
 
@@ -324,7 +339,7 @@ function createURL(baseURL) {
 function refineResults() {
 	var labels = document.getElementsByClassName("search-term-label");
 	xmlHttp = new XMLHttpRequest();
-	newUrl = createURL(requestUrl);
+	newUrl = createURL("filter", requestUrl);
 	//alert(newUrl);
 	xmlHttp.open("GET", newUrl, false);
 	xmlHttp.send(null);
@@ -342,7 +357,7 @@ function refineResults() {
 function generateReport() {
 	var labels = document.getElementsByClassName("search-term-label");
 	xmlHttp = new XMLHttpRequest();
-	newUrl = createURL(reportUrl);
+	newUrl = createURL("filter", reportUrl);
 	window.location = newUrl;
 }
 
