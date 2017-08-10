@@ -50,7 +50,8 @@ import java.sql.SQLException;
  * @author Kelly McCaffrey -Created functionality for getting the number of
  *         Graffiti and automating the process of copying to
  *         pompeiiPropertyData.js -Also added all functionality for the
- *         Herculaneum map and insula information such as insula name and insula id to the .txt and .js files. 
+ *         Herculaneum map and insula information such as insula name and insula
+ *         id to the .txt and .js files.
  * @author Sara Sprenkle - refactored code to make it easier to change later;
  */
 
@@ -63,26 +64,26 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	private static final String POMPEII_GEOJSON_FILE_LOC = "src/main/resources/geoJSON/eschebach.json";
 
 	final static String SELECT_PROPERTY = FindspotDao.SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT;
-	
-	final static String SELECT_BY_OSM_WAY_ID=FindspotDao.SELECT_BY_OSM_WAY_ID_STATEMENT;
-	
-	final static String SELECT_BY_OWM_ID=FindspotDao.SELECT_BY_OSM_ID_STATEMENT;
-	
-	final static String SELECT_BY_CITY_AND_INSULA=FindspotDao.SELECT_BY_PROPERTY_ID_STATEMENT;
+
+	final static String SELECT_BY_OSM_WAY_ID = FindspotDao.SELECT_BY_OSM_WAY_ID_STATEMENT;
+
+	final static String SELECT_BY_OSM_ID = FindspotDao.SELECT_BY_OSM_ID_STATEMENT;
+
+	final static String SELECT_BY_CITY_AND_INSULA = FindspotDao.SELECT_BY_PROPERTY_ID_STATEMENT;
 
 	final static String GET_NUMBER = GraffitiDao.FIND_BY_PROPERTY;
-	
 
 	final static String GET_PROPERTY_TYPE = "SELECT * FROM properties, propertytypes,"
 			+ " propertytopropertytype WHERE properties.id = propertytopropertytype.property_id"
 			+ " AND propertytypes.id = propertytopropertytype.property_type AND properties.id = ?";
-	
+
 	static Connection dbCon;
 
 	private static PreparedStatement selectPropertyStatement;
 	private static PreparedStatement getPropertyTypeStatement;
 	private static PreparedStatement getNumberStatement;
 	private static PreparedStatement osmWayIdSelectionStatement;
+	private static PreparedStatement osmIdSelectionStatement;
 	private static PreparedStatement selectCityAndInsulaStatement;
 
 	@Resource
@@ -113,8 +114,9 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		try {
 			dbCon = DriverManager.getConnection(prop.getProperty("db.url"), prop.getProperty("db.user"),
 					prop.getProperty("db.password"));
-			selectCityAndInsulaStatement=dbCon.prepareStatement(SELECT_BY_CITY_AND_INSULA);
-			osmWayIdSelectionStatement=dbCon.prepareStatement(SELECT_BY_OSM_WAY_ID);
+			selectCityAndInsulaStatement = dbCon.prepareStatement(SELECT_BY_CITY_AND_INSULA);
+			osmWayIdSelectionStatement = dbCon.prepareStatement(SELECT_BY_OSM_WAY_ID);
+			osmIdSelectionStatement = dbCon.prepareStatement(SELECT_BY_OSM_ID);
 			selectPropertyStatement = dbCon.prepareStatement(SELECT_PROPERTY);
 			getPropertyTypeStatement = dbCon.prepareStatement(GET_PROPERTY_TYPE);
 			getNumberStatement = dbCon.prepareStatement(GET_NUMBER);
@@ -129,20 +131,13 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	 */
 	private static void storeHerculaneum() {
 		try {
-			// creates the file we will later write the updated graffito to
-			// This will write to updated eschebach.txt(where the graffito is
-			// the combination of properties with attributes)
-			// Want to add number of graffiti to this.
+			// creates the file we will later write the updated graffito to.
 
-			System.out.println(0);
 			PrintWriter herculaneumTextWriter = new PrintWriter(
 					"src/main/webapp/resources/js/herculaneumPropertyData.txt", "UTF-8");
 
 			ObjectMapper herculaneumMapper = new ObjectMapper();
 			JsonFactory herculaneumJsonFactory = new JsonFactory();
-			// JsonParser herculaneumJsonParser =
-			// herculaneumJsonFactory.createParser(new
-			// File("src/main/resources/geoJSON/herculaneum.json"));
 			JsonParser herculaneumJsonParser = herculaneumJsonFactory
 					.createParser(new File("src/main/resources/geoJSON/herculaneum.json"));
 
@@ -151,116 +146,41 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 			Iterator<JsonNode> herculaneumIterator = herculaneumFeaturesNode.elements();
 
-			System.out.println(1);
 			while (herculaneumIterator.hasNext()) {
-				JsonNode field = herculaneumIterator.next();
-				String fieldText = field.toString();
+				JsonNode hercProperty = herculaneumIterator.next();
 
-				// System.out.println("Herc field text "+fieldText);
+				JsonNode osmWayNode = hercProperty.findValue("osm_way_id");
+				JsonNode osmNode = hercProperty.findValue("osm_id");
 
-				// converts the above string into an InputStream so I can use it
-				// in
-				// the json parser to iterate through the different tokens
-				InputStream stream = new ByteArrayInputStream(fieldText.getBytes(StandardCharsets.UTF_8));
+				if (osmWayNode != null && osmWayNode.textValue() != null) {
+					String osm_way_id = osmWayNode.textValue();
+					try {
+						osmWayIdSelectionStatement.setString(1, osm_way_id);
 
-				JsonParser parseLine = herculaneumJsonFactory.createParser(stream);
-				System.out.println(2);
-				while (parseLine.nextToken() != JsonToken.END_OBJECT) {
-					String fieldname = parseLine.getCurrentName();
-					//System.out.println(3);
-					// System.out.println("Herculaneum fieldname: "+fieldname);
+						ResultSet propertyRS = osmWayIdSelectionStatement.executeQuery();
 
-					// System.out.println("PRIMARY_DO");
-
-					// when the token is the PRIMARY_DO field, we go to the next
-					// token and that is the value
-					// if("PRIMARY_DO".equals(fieldname)) {
-					//System.out.println("Current name: "+fieldname);
-					if ("osm_way_id".equals(fieldname)) {
-						System.out.println(4);
-						parseLine.nextToken();
-						String osm_way_id = parseLine.getText();
-						/*if (!primarydo.contains(".")) {
-							System.out.println("Stopped at continue 173");
-							continue;
-						}*/
-						/*String[] parts = osm_way_id.split("\\.");
-
-						String pt1 = parts[0];
-						String pt2 = parts[1];
-						String pt3 = parts[2];
-						*/
-						//String insulaName = pt1 + "." + pt2;
-						
-						//Created static value for now
-						System.out.println(4.5);
-						try {
-							System.out.println(5);
-							osmWayIdSelectionStatement.setString(1, osm_way_id);
-
-							ResultSet rs = osmWayIdSelectionStatement.executeQuery();
-							
-
-							if (rs.next()) {
-								System.out.println(6);
-								int propertyId = rs.getInt("id");
-
-								String propertyName = rs.getString("property_name");
-								String addProperties = rs.getString("additional_properties");
-								String italPropName = rs.getString("italian_property_name");
-								String insulaId=rs.getString("insula_id");
-								//String insulaDescription = rs.getString("description");
-								//String insulaPleiadesId = rs.getString("insula_pleiades_id");
-								//String propPleiadesId = rs.getString("property_pleiades_id");
-
-								getNumberStatement.setInt(1, propertyId);
-								ResultSet numberOnPropResultSet = getNumberStatement.executeQuery();
-								int numberOfGraffitiOnProperty = 0;
-								if (numberOnPropResultSet.next()) {
-									numberOfGraffitiOnProperty = numberOnPropResultSet.getInt(1);
-								}
-
-								getPropertyTypeStatement.setInt(1, propertyId);
-								ResultSet resultset = getPropertyTypeStatement.executeQuery();
-								String propertyType = "";
-								if (resultset.next()) {
-									System.out.println(7);
-									propertyType = resultset.getString("name");
-								}
-
-								ObjectNode graffito = (ObjectNode) field;
-								ObjectNode properties = (ObjectNode) graffito.path("properties");
-								System.out.println(8);
-								properties.put("Property_Id", propertyId);
-								properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
-								properties.put("Property_Name", propertyName);
-								properties.put("Additional_Properties", addProperties);
-								properties.put("Italian_Property_Name", italPropName);
-								properties.put("insula_id", insulaId);
-								
-								//These are not in the database.
-								//properties.put("Insula_Description", insulaDescription);
-								//properties.put("Insula_Pleiades_Id", insulaPleiadesId);
-								//properties.put("Property_Pleiades_Id", propPleiadesId);
-								
-								properties.put("Property_Type", propertyType);
-								System.out.println(9);
-								JsonNode updatedProps = (JsonNode) properties;
-								graffito.set("properties", updatedProps);
-								System.out.println(10);
-								// write the newly updated graffito to text file
-								// System.out.println(graffito);
-
-								// jsWriter.println(graffito+",");
-								herculaneumTextWriter.println(graffito + ",");
-								System.out.println(11);
-							}
-							else{
-								System.out.println("No rs.next");
-							}
-						} catch (SQLException e) {
-							e.printStackTrace();
+						if (propertyRS.next()) {
+							writePropertyInfoToFile(herculaneumTextWriter, hercProperty, propertyRS);
+						} else {
+							System.out.println("Property with osm way id " + osm_way_id + " not in database.");
 						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				} else if( osmNode != null ) {
+					String osm_id = osmNode.textValue();
+					try {
+						osmIdSelectionStatement.setString(1, osm_id);
+
+						ResultSet propertyRS = osmIdSelectionStatement.executeQuery();
+
+						if (propertyRS.next()) {
+							writePropertyInfoToFile(herculaneumTextWriter, hercProperty, propertyRS);
+						} else {
+							System.out.println("Property with osm id " + osm_id + " not in database.");
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
 					}
 				}
 			}
@@ -272,6 +192,59 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void writePropertyInfoToFile(PrintWriter herculaneumTextWriter, JsonNode hercProperty, ResultSet rs)
+			throws SQLException {
+		int propertyId = rs.getInt("id");
+
+		String propertyName = rs.getString("property_name");
+		String addProperties = rs.getString("additional_properties");
+		String italPropName = rs.getString("italian_property_name");
+		String insulaId = rs.getString("insula_id");
+		// String insulaDescription =
+		// rs.getString("description");
+		// String insulaPleiadesId =
+		// rs.getString("insula_pleiades_id");
+		// String propPleiadesId =
+		// rs.getString("property_pleiades_id");
+
+		getNumberStatement.setInt(1, propertyId);
+		ResultSet numberOnPropResultSet = getNumberStatement.executeQuery();
+		int numberOfGraffitiOnProperty = 0;
+		if (numberOnPropResultSet.next()) {
+			numberOfGraffitiOnProperty = numberOnPropResultSet.getInt(1);
+		}
+
+		getPropertyTypeStatement.setInt(1, propertyId);
+		ResultSet resultset = getPropertyTypeStatement.executeQuery();
+		String propertyType = "";
+		if (resultset.next()) {
+			propertyType = resultset.getString("name");
+		}
+
+		ObjectNode graffito = (ObjectNode) hercProperty;
+		ObjectNode properties = (ObjectNode) graffito.path("properties");
+		properties.put("Property_Id", propertyId);
+		properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
+		properties.put("Property_Name", propertyName);
+		properties.put("Additional_Properties", addProperties);
+		properties.put("Italian_Property_Name", italPropName);
+		properties.put("insula_id", insulaId);
+
+		// These are not in the database.
+		// properties.put("Insula_Description",
+		// insulaDescription);
+		// properties.put("Insula_Pleiades_Id",
+		// insulaPleiadesId);
+		// properties.put("Property_Pleiades_Id",
+		// propPleiadesId);
+
+		properties.put("Property_Type", propertyType);
+		JsonNode updatedProps = (JsonNode) properties;
+		graffito.set("properties", updatedProps);
+		// write the newly updated graffito to text file
+		herculaneumTextWriter.println(graffito + ",");
 	}
 
 	/**
@@ -302,13 +275,14 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 				JsonNode primaryDONode = featureNode.findValue("PRIMARY_DO");
 				if (primaryDONode == null) {
-					//System.out.println("No PRIMARY_DO in " + featureNode);
+					// System.out.println("No PRIMARY_DO in " + featureNode);
 					continue;
 				}
 
 				String primaryDO = primaryDONode.textValue();
 				if (primaryDO == null || !primaryDO.contains(".")) {
-					//System.out.println("Problem with primaryDO?: " + primaryDO);
+					// System.out.println("Problem with primaryDO?: " +
+					// primaryDO);
 					continue;
 				}
 
@@ -325,11 +299,9 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 				Polygon p = parseGeometryAndRemoveCoordinates(featureNode);
 
 				try {
-					
-					//Get the insula names from the database and store. 
-					//Removed a parameter (insula short name) bc/we don't have it. It is one of the things
-					//we are trying to get. Should still work(?)
-					
+
+					// Get the insula names from the database and store.
+
 					selectPropertyStatement.setString(1, "Pompeii");
 					selectPropertyStatement.setString(2, insulaName);
 					selectPropertyStatement.setString(3, propertyNum);
@@ -337,25 +309,22 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 					ResultSet propertyResultSet = selectPropertyStatement.executeQuery();
 
 					if (propertyResultSet.next()) {
-						
-						
-						int propertyId=propertyResultSet.getInt("id");
-						selectCityAndInsulaStatement.setInt(1,propertyId);
-						
-						ResultSet insulaResultSet=selectCityAndInsulaStatement.executeQuery();
-						
+
+						int propertyId = propertyResultSet.getInt("id");
+						selectCityAndInsulaStatement.setInt(1, propertyId);
+
+						ResultSet insulaResultSet = selectCityAndInsulaStatement.executeQuery();
+
 						ObjectNode propertyNode = (ObjectNode) featureNode;
 						ObjectNode properties = (ObjectNode) propertyNode.path("properties");
-						
-						if(insulaResultSet.next()){
-							String shortInsulaName=insulaResultSet.getString("short_name");
-							String fullInsulaName=insulaResultSet.getString("full_name");
-							
+
+						if (insulaResultSet.next()) {
+							String shortInsulaName = insulaResultSet.getString("short_name");
+							String fullInsulaName = insulaResultSet.getString("full_name");
+
 							properties.put("short_insula_name", shortInsulaName);
 							properties.put("full_insula_name", fullInsulaName);
 						}
-						
-						
 
 						String propertyName = propertyResultSet.getString("property_name");
 						String addProperties = propertyResultSet.getString("additional_properties");
@@ -363,7 +332,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						String insulaDescription = propertyResultSet.getString("description");
 						String insulaPleiadesId = propertyResultSet.getString("insula_pleiades_id");
 						String propPleiadesId = propertyResultSet.getString("property_pleiades_id");
-						String insulaId=propertyResultSet.getString("insula_id");
+						String insulaId = propertyResultSet.getString("insula_id");
 
 						getNumberStatement.setInt(1, propertyId);
 						ResultSet numberOnPropResultSet = getNumberStatement.executeQuery();
@@ -378,7 +347,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						if (resultset.next()) {
 							propertyType = resultset.getString("name");
 						}
-						
+
 						properties.put("Property_Id", propertyId);
 						properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 						properties.put("Property_Name", propertyName);
@@ -389,13 +358,10 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						properties.put("Property_Pleiades_Id", propPleiadesId);
 						properties.put("Property_Type", propertyType);
 						properties.put("insula_id", insulaId);
-						
-						
-						
 
 						JsonNode updatedProps = (JsonNode) properties;
 						propertyNode.set("properties", updatedProps);
-						
+
 						String jsonPoly = new ObjectMapper().writeValueAsString(p);
 						JsonNode updatedGeometry = new ObjectMapper().readTree(jsonPoly);
 
@@ -469,7 +435,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	 */
 	private static void copyToJavascriptFiles() throws FileNotFoundException, UnsupportedEncodingException {
 		PrintWriter pompeiiJsWriter = new PrintWriter(POMPEII_JAVASCRIPT_DATA_FILE_LOC, "UTF-8");
-		PrintWriter herculaneumJsWriter = new PrintWriter("src/main/webapp/resources/js/herculaneumPropertyData.js", "UTF-8");
+		PrintWriter herculaneumJsWriter = new PrintWriter("src/main/webapp/resources/js/herculaneumPropertyData.js",
+				"UTF-8");
 		// Writes the beginning part of the js file, which it fetches from
 		// another text file called jsEschebachFirst.txt.
 		// This is the only way I found to format this part of the javascript.
@@ -501,25 +468,28 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		pompeiiReadFromText.close();
 		pompeiiJsWriter.close();
 
-		
-		 
-		 jsFirstPompeii = new File(POMPEII_INIT_JAVASCRIPT_LOC); jsReadFirstPompeii = new
-		 Scanner(jsFirstPompeii); while (jsReadFirstPompeii.hasNext()) { String content =
-		 jsReadFirstPompeii.nextLine(); // herculaneumJsWriter.println(content); }
-		 
-		 // Copies from herculaneumPropertyData.txt to  herculaneumPropertyData.js 
-		 // for the body portion of the file. 
-		 File herculaneumUpdatedPText = new File("src/main/webapp/resources/js/herculaneumPropertyData.txt");
-		 Scanner herculaneumReadFromText = new
-		 Scanner(herculaneumUpdatedPText); String herculaneumContent; while
-		 (herculaneumReadFromText.hasNext()) { herculaneumContent =
-		 herculaneumReadFromText.nextLine();
-		 herculaneumJsWriter.println(herculaneumContent); }
-		 
-		 herculaneumJsWriter.println("]};"); herculaneumReadFromText.close();
-		 herculaneumJsWriter.close();
-		 
-		 }
+		jsFirstPompeii = new File(POMPEII_INIT_JAVASCRIPT_LOC);
+		jsReadFirstPompeii = new Scanner(jsFirstPompeii);
+		while (jsReadFirstPompeii.hasNext()) {
+			String content = jsReadFirstPompeii.nextLine(); // herculaneumJsWriter.println(content);
+															// }
+
+			// Copies from herculaneumPropertyData.txt to
+			// herculaneumPropertyData.js
+			// for the body portion of the file.
+			File herculaneumUpdatedPText = new File("src/main/webapp/resources/js/herculaneumPropertyData.txt");
+			Scanner herculaneumReadFromText = new Scanner(herculaneumUpdatedPText);
+			String herculaneumContent;
+			while (herculaneumReadFromText.hasNext()) {
+				herculaneumContent = herculaneumReadFromText.nextLine();
+				herculaneumJsWriter.println(herculaneumContent);
+			}
+
+			herculaneumJsWriter.println("]};");
+			herculaneumReadFromText.close();
+			herculaneumJsWriter.close();
+
+		}
 	}
 
 }

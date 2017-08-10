@@ -6,7 +6,8 @@ package edu.wlu.graffiti.controller;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
-import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.elasticsearch.index.query.QueryBuilders.regexpQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.io.BufferedReader;
@@ -107,8 +108,8 @@ public class GraffitiController {
 	private static String[] searchDescs = { "Content Keyword", "Global Keyword", "City", "Insula", "Property",
 			PROPERTY_TYPE_SEARCH_DESC, DRAWING_CATEGORY_SEARCH_DESC, WRITING_STYLE_SEARCH_DESC, "Language" };
 
-	private static String[] searchFields = { "content content.ngrams",
-			"content content.ngrams content_translation summary city insula.insula_name property.property_name property.property_types"
+	private static String[] searchFields = { "content",
+			"content content_translation summary city insula.insula_name property.property_name property.property_types"
 					+ "cil description writing_style language edr_id bibliography"
 					+ " drawing.description_in_english drawing.description_in_latin drawing.drawing_tags",
 			CITY_FIELD_NAME, INSULA_ID_FIELD_NAME, PROPERTY_ID_FIELD_NAME, PROPERTY_TYPES_FIELD_NAME,
@@ -145,9 +146,10 @@ public class GraffitiController {
 		request.setAttribute("figuralHits", greatestFiguralHits);
 		request.setAttribute("translationHits", greatestTranslationHits);
 
-		return "featuredGraffiti";
+		return "newFeaturedGraffiti";
 
 	}
+	/*
 
 	@RequestMapping(value = "/new-featured-graffiti", method = RequestMethod.GET)
 	public String newFeaturedHits(final HttpServletRequest request) {
@@ -160,6 +162,7 @@ public class GraffitiController {
 		return "newFeaturedGraffiti";
 
 	}
+	*/
 
 	// maps to inputData.jsp page which is used to input inscription to the
 	// database using a csv file
@@ -463,24 +466,18 @@ public class GraffitiController {
 				// writing style, language, EAGLE id, and bibliography for a
 				// keyword match
 				BoolQueryBuilder globalQuery;
-				QueryBuilder multiMatch;
-
-				String[] a = fieldNames.get(i).split(" ");
-
-				globalQuery = boolQuery();
-				multiMatch = multiMatchQuery(parameters.get(i), a).minimumShouldMatch("80%");
-				
-				globalQuery.should(multiMatch);
+				globalQuery = boolQuery();				
+				globalQuery.should(queryStringQuery(parameters.get(i)).useAllFields(true));
+				globalQuery.should(queryStringQuery("*"+parameters.get(i)+"*").useAllFields(true));
 				query.must(globalQuery);
 			} else if (searchTerms.get(i).equals("Content Keyword")) {
 				BoolQueryBuilder contentQuery = boolQuery();
 				String[] params = parameters.get(i).split(" ");
-				String[] a = fieldNames.get(i).split(" ");
 
 				for (String param : params) {
 					BoolQueryBuilder orQuery = boolQuery();
-					orQuery.should(matchQuery(a[0], param).boost(50)); // boost exact match
-					orQuery.should(matchQuery(a[1], param).minimumShouldMatch("80%")); // ngrams
+					orQuery.should(matchQuery(fieldNames.get(i), param));
+					orQuery.should((regexpQuery(fieldNames.get(i), ".*"+param+".*")));
 					contentQuery.must(orQuery);
 				}
 				
@@ -520,6 +517,8 @@ public class GraffitiController {
 				query.must(otherQuery);
 			}
 		}
+		
+		System.out.println(query);
 								
 		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
 				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();

@@ -1,3 +1,5 @@
+EDR entry,CIL#,"a, b, etc.",Langner,City,Regio,Insula # or OutsideWalls or WithinWalls,Main Entrance,Property Name - English,Drawing Category,Caption for Graffito,Latin Description of Figural Graffito,English Description of Figural Graffito
+ ,,,Does the CIL # have a drawing with a Langner #,,,(no spaces in the names),,,,,Latin Description ,
 EDR144356,,,40,Herculaneum,,VI,"1,7-10",Central Baths,Geometric designs,,sex circuli quorum duo simplices et quattor duplices sunt,"six circles, two single and four double"
 EDR145941,10493,,187,Herculaneum,,Within Walls,,Decumanus Inferior,Human figures,,viri caput,head of a man
 EDR145942 ,10526,,213,Herculaneum,,IV,10,Taberna,Human figures,,herma viri,bust of a man
@@ -59,4 +61,5 @@ EDR159866,,,,Herculaneum,,IV,17,Taberna of Priapus,Human figures,,caput viri bar
 EDR159867,,,,Herculaneum,,IV,17,Taberna of Priapus,Human figures,,facies,face
 EDR159868,,,,Herculaneum,,V,15,House of the Bicentenary,Other,,duae lanternae,two lanterns
 EDR159869,,,,Herculaneum,,WithinWalls,,Decumanus Maximus ,Boats,,navis oneraria,cargo ship
-EDR159886,,,,Herculaneum,,WithinWalls,,Cardo III,Human figures,,caput viri,head of man    
+EDR159886,,,,Herculaneum,,WithinWalls,,Cardo III,Human figures,,caput viri cum nomine Γαιοc in collo,head of a man with the name Γαιοc written on his neck   
+EDR159880,,,,Herculaneum,,WithinWalls,,Decumanus Maximus ,Human figures,,caput viri galeati,head of man wearing helmet
