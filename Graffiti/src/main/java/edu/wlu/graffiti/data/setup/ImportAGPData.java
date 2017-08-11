@@ -22,7 +22,7 @@ public class ImportAGPData {
 		ExtractWritingStyleForAGPInfo.updateWritingStyle();
 
 		InsertFiguralInformation.insertFiguralInfo();
-		UpdateSummaryTranslationCommentary.updateInfo();
+		UpdateSummaryTranslationCommentaryPlus.updateInfo();
 	}
 
 }

@@ -13,12 +13,12 @@ import java.util.Properties;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
-public class UpdateSummaryTranslationCommentary {
+public class UpdateSummaryTranslationCommentaryPlus {
 
 	private static final String CSV_LOCATION = "data/AGPData/summaryTranslationCommentary.csv";
 
 	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_info "
-			+ "SET summary = ?, content_translation = ?, comment = ?, langner = ? WHERE edr_id = ? ";
+			+ "SET summary = ?, content_translation = ?, comment = ?, langner = ?, cil = ? WHERE edr_id = ? ";
 
 	private static Connection newDBCon;
 	private static String DB_DRIVER;
@@ -35,9 +35,7 @@ public class UpdateSummaryTranslationCommentary {
 
 		try {
 			updateInscriptions(CSV_LOCATION);
-
 			newDBCon.close();
-
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
@@ -70,6 +68,7 @@ public class UpdateSummaryTranslationCommentary {
 				if (edrID.equals(""))
 					continue;
 
+				String cil = Utils.cleanData(record.get(1));
 				String langner = Utils.cleanData(record.get(3));
 				String summary = Utils.cleanData(record.get(6));
 				String translation = Utils.cleanData(record.get(7));
@@ -81,8 +80,8 @@ public class UpdateSummaryTranslationCommentary {
 				pstmt.setString(3, commentary);
 				pstmt.setString(4, langner);
 				pstmt.setString(5, edrID);
+				pstmt.setString(6, cil);
 				try {
-					//System.out.println(pstmt.executeUpdate());
 					pstmt.executeUpdate();
 				} catch (SQLException e) {
 					e.printStackTrace();
