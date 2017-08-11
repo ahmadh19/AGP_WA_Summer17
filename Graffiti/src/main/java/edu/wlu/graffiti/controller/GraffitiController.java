@@ -1,5 +1,5 @@
 /*
-sudo * GraffitiController.java is the main backend controller of the Ancient Graffiti Project. It handles most of the
+ * GraffitiController.java is the main backend controller of the Ancient Graffiti Project. It handles most of the
  * controls regarding the requests.
  */
 package edu.wlu.graffiti.controller;
