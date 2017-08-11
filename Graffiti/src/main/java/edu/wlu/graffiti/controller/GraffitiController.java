@@ -429,7 +429,7 @@ public class GraffitiController {
 		// parameters, searchTerms, and fieldNames lists accordingly
 		for (int i = 0; i < searches.length; i++) {
 			if (searches[i] != null) {
-				parameters.add(arrayToString(searches[i]));
+				parameters.add(arrayToString(searches[i]).toLowerCase());
 				searchTerms.add(searchDescs[i]);
 				fieldNames.add(searchFields[i]);
 			}

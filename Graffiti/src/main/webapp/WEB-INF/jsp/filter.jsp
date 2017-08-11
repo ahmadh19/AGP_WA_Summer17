@@ -36,6 +36,8 @@ Sort By
 	%>
 	<option value="relevance" <%=!isNull && param.equals("relevance")?"selected":""%>>
 	Relevance</option>
+	<option value="summary" <%=!isNull && param.equals("summary")?"selected":""%>>
+	Caption</option>
 	<option value="cil" <%=!isNull && param.equals("cil")?"selected":""%>>
 	CIL #</option>
 	<option value="property.property_id" <%=!isNull && param.equals("property.property_id")?"selected":""%>>
