@@ -13,12 +13,12 @@ import java.util.Properties;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
-public class UpdateSummaryTranslationCommentary {
+public class UpdateSummaryTranslationCommentaryPlus {
 
 	private static final String CSV_LOCATION = "data/AGPData/summaryTranslationCommentary.csv";
 
 	private static final String UPDATE_ANNOTATION_STMT = "UPDATE agp_inscription_info "
-			+ "SET summary = ?, content_translation = ?, comment = ?, langner = ? WHERE edr_id = ? ";
+			+ "SET summary = ?, content_translation = ?, comment = ?, langner = ?, cil = ? WHERE edr_id = ? ";
 
 	private static Connection newDBCon;
 	private static String DB_DRIVER;
@@ -27,13 +27,15 @@ public class UpdateSummaryTranslationCommentary {
 	private static String DB_PASSWORD;
 
 	public static void main(String[] args) {
+		updateInfo();
+	}
+
+	public static void updateInfo() {
 		init();
 
 		try {
 			updateInscriptions(CSV_LOCATION);
-
 			newDBCon.close();
-
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
@@ -65,6 +67,8 @@ public class UpdateSummaryTranslationCommentary {
 
 				if (edrID.equals(""))
 					continue;
+				String cil = Utils.cleanData(record.get(1));
+				System.out.println(edrID + " " + cil);
 
 				String langner = Utils.cleanData(record.get(3));
 				String summary = Utils.cleanData(record.get(6));
@@ -76,9 +80,9 @@ public class UpdateSummaryTranslationCommentary {
 				pstmt.setString(2, translation);
 				pstmt.setString(3, commentary);
 				pstmt.setString(4, langner);
-				pstmt.setString(5, edrID);
+				pstmt.setString(5, cil);
+				pstmt.setString(6, edrID);
 				try {
-					//System.out.println(pstmt.executeUpdate());
 					pstmt.executeUpdate();
 				} catch (SQLException e) {
 					e.printStackTrace();
