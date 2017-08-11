@@ -147,7 +147,11 @@ function backToResults(){
 	xmlHttp.open("GET", "<%=request.getContextPath()%>/backToResults?edr=" + "${inscription.edrId}", false);
 	xmlHttp.send(null);
 	var url = "${sessionScope.returnURL}";
-	url = url.replace("filter", "results"); // generate the results page--makes sure the page is formatted
+	if(url.includes("filter")) {
+		url = url.replace("filter", "results"); // generate the results page--makes sure the page is formatted
+	} else if(url.includes("print")) {
+		url = url.replace("print", "results");
+	}
 	window.location.href = url;
 }
 </script>
