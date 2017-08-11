@@ -45,6 +45,7 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		//Here is the +/- button for zoom
 	})
 	
+	//map.addControl( new L.Control.Compass());
 	
 	//Sinks with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;

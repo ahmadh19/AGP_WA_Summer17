@@ -13,8 +13,12 @@
 
  <link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/resources/css/details.css"/>
 <link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
+<link rel="stylesheet" href="C:\Users\lenovo\git\AGP_WA_Development\Graffiti\src\main\webapp\resources\js\leaflet-compass-master\src\leaflet-compass.css" />
 <script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
+	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>">
+</script>
+
+<script src="C:\Users\lenovo\git\AGP_WA_Development\Graffiti\src\main\webapp\resources\js\leaflet-compass-master\src\leaflet-compass.js"></script>
 
 <style>
 
