@@ -94,7 +94,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		if(interactive){
 			if(!zoomedOutThresholdReached()){
 				if(showInsulaMarkers){
-					removeInsulaLabels();
+					//removeInsulaLabels();
 					showInsulaMarkers=false;
 					//This shows selected properties from the insula when the map zooms in.
 					 updateBorderColors();
