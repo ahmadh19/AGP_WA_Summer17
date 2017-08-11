@@ -106,13 +106,9 @@ public class ImportEDRData {
 			updateBibliography("data/EDRData/camodeca_editiones.csv");
 			updateApparatus("data/EDRData/camodeca_apparatus.csv");
 			
-			
-			dbCon.close();
-			AddEDRLinksToApparatus.addEDRLinksToApparatus();
-			ExtractEDRLanguageForAGPInfo.updateAGPLanguage();
-			ExtractWritingStyleForAGPInfo.updateWritingStyle();
 			HandleFindspotsWithoutAddresses.updateGraffitiLocations(HandleFindspotsWithoutAddresses.LOCATION_FILE_NAME);
-			
+			StorePropertiesFromDatabaseForgeoJsonMap.storeProperties();
+			dbCon.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}

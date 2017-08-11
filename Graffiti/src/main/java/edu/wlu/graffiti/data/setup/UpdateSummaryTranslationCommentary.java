@@ -27,6 +27,10 @@ public class UpdateSummaryTranslationCommentary {
 	private static String DB_PASSWORD;
 
 	public static void main(String[] args) {
+		updateInfo();
+	}
+
+	public static void updateInfo() {
 		init();
 
 		try {

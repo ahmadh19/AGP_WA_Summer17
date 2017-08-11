@@ -89,8 +89,11 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	@Resource
 	private static GraffitiDao graffitiDaoObject;
 
-	public static void main(String args[]) throws JsonProcessingException, IOException {
+	public static void main(String args[]) {
+		storeProperties();
+	}
 
+	public static void storeProperties() {
 		init();
 
 		storeHerculaneum();
@@ -98,7 +101,6 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		storePompeii();
 
 		copyToJavascriptFiles();
-
 	}
 
 	private static void init() {
@@ -167,7 +169,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
-				} else if( osmNode != null ) {
+				} else if (osmNode != null) {
 					String osm_id = osmNode.textValue();
 					try {
 						osmIdSelectionStatement.setString(1, osm_id);
@@ -254,7 +256,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	 * @throws IOException
 	 * @throws JsonProcessingException
 	 */
-	private static void storePompeii() throws JsonProcessingException, IOException {
+	private static void storePompeii() {
 
 		try {
 			PrintWriter pompeiiTextWriter = new PrintWriter(POMPEII_PROPERTY_DATA_TXT_FILE, "UTF-8");
@@ -433,63 +435,75 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	 * @throws FileNotFoundException
 	 * @throws UnsupportedEncodingException
 	 */
-	private static void copyToJavascriptFiles() throws FileNotFoundException, UnsupportedEncodingException {
-		PrintWriter pompeiiJsWriter = new PrintWriter(POMPEII_JAVASCRIPT_DATA_FILE_LOC, "UTF-8");
-		PrintWriter herculaneumJsWriter = new PrintWriter("src/main/webapp/resources/js/herculaneumPropertyData.js",
-				"UTF-8");
-		// Writes the beginning part of the js file, which it fetches from
-		// another text file called jsEschebachFirst.txt.
-		// This is the only way I found to format this part of the javascript.
-		File jsFirstPompeii = new File(POMPEII_INIT_JAVASCRIPT_LOC);
-		File jsFirstHerculaneum = new File(HERCULANEUM_INIT_JAVASCRIPT_LOC);
-		Scanner jsReadFirstPompeii = new Scanner(jsFirstPompeii);
-		Scanner jsReadFirstHerculaneum = new Scanner(jsFirstHerculaneum);
-		while (jsReadFirstPompeii.hasNext()) {
-			String content = jsReadFirstPompeii.nextLine();
-			pompeiiJsWriter.println(content);
-		}
-		jsReadFirstHerculaneum = new Scanner(jsFirstHerculaneum);
-		while (jsReadFirstHerculaneum.hasNext()) {
-			String content = jsReadFirstHerculaneum.nextLine();
-			herculaneumJsWriter.println(content);
-		}
+	private static void copyToJavascriptFiles() {
+		PrintWriter pompeiiJsWriter;
+		PrintWriter herculaneumJsWriter;
+		try {
+			pompeiiJsWriter = new PrintWriter(POMPEII_JAVASCRIPT_DATA_FILE_LOC, "UTF-8");
+			herculaneumJsWriter = new PrintWriter("src/main/webapp/resources/js/herculaneumPropertyData.js", "UTF-8");
 
-		// Copies from pompeiiPropertyData.txt to pompeiiPropertyData.js for the
-		// body portion of the file.
-		File pompeiiUpdatedPText = new File(POMPEII_PROPERTY_DATA_TXT_FILE);
-		Scanner pompeiiReadFromText = new Scanner(pompeiiUpdatedPText);
-		String pompeiiContent;
-		while (pompeiiReadFromText.hasNext()) {
-			pompeiiContent = pompeiiReadFromText.nextLine();
-			pompeiiJsWriter.println(pompeiiContent);
-		}
-		pompeiiJsWriter.println("]};");
-		jsReadFirstPompeii.close();
-		pompeiiReadFromText.close();
-		pompeiiJsWriter.close();
+			// Writes the beginning part of the js file, which it fetches from
+			// another text file called jsEschebachFirst.txt.
+			// This is the only way I found to format this part of the
+			// javascript.
+			File jsFirstPompeii = new File(POMPEII_INIT_JAVASCRIPT_LOC);
+			File jsFirstHerculaneum = new File(HERCULANEUM_INIT_JAVASCRIPT_LOC);
+			Scanner jsReadFirstPompeii;
+			Scanner jsReadFirstHerculaneum;
+			jsReadFirstPompeii = new Scanner(jsFirstPompeii);
+			jsReadFirstHerculaneum = new Scanner(jsFirstHerculaneum);
 
-		jsFirstPompeii = new File(POMPEII_INIT_JAVASCRIPT_LOC);
-		jsReadFirstPompeii = new Scanner(jsFirstPompeii);
-		while (jsReadFirstPompeii.hasNext()) {
-			String content = jsReadFirstPompeii.nextLine(); // herculaneumJsWriter.println(content);
-															// }
-
-			// Copies from herculaneumPropertyData.txt to
-			// herculaneumPropertyData.js
-			// for the body portion of the file.
-			File herculaneumUpdatedPText = new File("src/main/webapp/resources/js/herculaneumPropertyData.txt");
-			Scanner herculaneumReadFromText = new Scanner(herculaneumUpdatedPText);
-			String herculaneumContent;
-			while (herculaneumReadFromText.hasNext()) {
-				herculaneumContent = herculaneumReadFromText.nextLine();
-				herculaneumJsWriter.println(herculaneumContent);
+			while (jsReadFirstPompeii.hasNext()) {
+				String content = jsReadFirstPompeii.nextLine();
+				pompeiiJsWriter.println(content);
+			}
+			jsReadFirstHerculaneum = new Scanner(jsFirstHerculaneum);
+			while (jsReadFirstHerculaneum.hasNext()) {
+				String content = jsReadFirstHerculaneum.nextLine();
+				herculaneumJsWriter.println(content);
 			}
 
-			herculaneumJsWriter.println("]};");
-			herculaneumReadFromText.close();
-			herculaneumJsWriter.close();
+			// Copies from pompeiiPropertyData.txt to pompeiiPropertyData.js for
+			// the
+			// body portion of the file.
+			File pompeiiUpdatedPText = new File(POMPEII_PROPERTY_DATA_TXT_FILE);
+			Scanner pompeiiReadFromText = new Scanner(pompeiiUpdatedPText);
+			String pompeiiContent;
+			while (pompeiiReadFromText.hasNext()) {
+				pompeiiContent = pompeiiReadFromText.nextLine();
+				pompeiiJsWriter.println(pompeiiContent);
+			}
+			pompeiiJsWriter.println("]};");
+			jsReadFirstPompeii.close();
+			pompeiiReadFromText.close();
+			pompeiiJsWriter.close();
 
+			jsFirstPompeii = new File(POMPEII_INIT_JAVASCRIPT_LOC);
+			jsReadFirstPompeii = new Scanner(jsFirstPompeii);
+			while (jsReadFirstPompeii.hasNext()) {
+				String content = jsReadFirstPompeii.nextLine(); // herculaneumJsWriter.println(content);
+																// }
+
+				// Copies from herculaneumPropertyData.txt to
+				// herculaneumPropertyData.js
+				// for the body portion of the file.
+				File herculaneumUpdatedPText = new File("src/main/webapp/resources/js/herculaneumPropertyData.txt");
+				Scanner herculaneumReadFromText = new Scanner(herculaneumUpdatedPText);
+				String herculaneumContent;
+				while (herculaneumReadFromText.hasNext()) {
+					herculaneumContent = herculaneumReadFromText.nextLine();
+					herculaneumJsWriter.println(herculaneumContent);
+				}
+
+				herculaneumJsWriter.println("]};");
+				herculaneumReadFromText.close();
+				herculaneumJsWriter.close();
+			}
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 	}
 
 }
