@@ -5,7 +5,9 @@ package edu.wlu.graffiti.data.export;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
@@ -261,6 +263,29 @@ public class GenerateEpidoc {
 			origDate.setText("unknown");
 		} else {
 			boolean inBC = false;
+			
+			// map the Italion explanations for date to English translations
+			Map<String, String> translations = new HashMap<String, String>();
+			translations.put("archaeologia", "archaeological context");
+			translations.put("formulae", "terminology");
+			translations.put("historia, antiquitates", "historical context");
+			translations.put("lingua", "terminology");
+			translations.put("nomina", "onomastics");
+			translations.put("palaeographia", "palaeography");
+			translations.put("prosopographia", "prosopography");
+			
+			StringBuilder dateExplanation = new StringBuilder();
+			String[] dateExplanations = i.getDateExplanation().split("\\;\\s*");
+			for(int index = 0; index < dateExplanations.length - 1; index++) {
+				String str = dateExplanations[index];
+				if(translations.get(str) != null) {
+					dateExplanation.append(translations.get(str) + " and ");
+				}
+			}
+			if(translations.get(dateExplanations[dateExplanations.length - 1]) != null) {
+				dateExplanation.append(translations.get(dateExplanations[dateExplanations.length - 1]));
+			}
+			
 			// -40, for example, means 40 B.C.
 			if(dateBeginning.contains("-") && dateEnd.contains("-")) {
 				// remove the negative signs
@@ -279,7 +304,8 @@ public class GenerateEpidoc {
 			} else if(dateEnd.length() == 2) {
 				notAfter = "00" + dateEnd;
 			}
-			origDate.setAttribute("notBefore", notBefore).setAttribute("notAfter", notAfter).setAttribute("evidence", "");
+			origDate.setAttribute("notBefore", notBefore).setAttribute("notAfter", notAfter);
+			origDate.setAttribute("evidence", dateExplanation.toString());
 			if(inBC) {
 				origDate.setText(dateBeginning + "-" + dateEnd + " B.C.");
 			} else {

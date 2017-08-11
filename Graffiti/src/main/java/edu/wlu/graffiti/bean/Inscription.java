@@ -41,7 +41,8 @@ public class Inscription implements Comparable<Inscription> {
 	private String edrFindSpot;
 	private String dateBeginning;
 	private String dateEnd;
-	
+	private String dateExplanation;
+
 	public Inscription() {
 		
 	}
@@ -462,6 +463,21 @@ public class Inscription implements Comparable<Inscription> {
 			return StringEscapeUtils.unescapeHtml4(myContent);
 		
 		return null;
+	}
+	
+	/**
+	 * @return the dataExplanation
+	 */
+	@JsonIgnore
+	public String getDateExplanation() {
+		return dateExplanation;
+	}
+
+	/**
+	 * @param dataExplanation the dataExplanation to set
+	 */
+	public void setDateExplanation(String dateExplanation) {
+		this.dateExplanation = dateExplanation;
 	}
 	
 }
