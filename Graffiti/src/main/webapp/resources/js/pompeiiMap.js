@@ -1,7 +1,6 @@
 
 var map;
 
-
 function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomOnOneProperty) {
 	//this just sets my access token
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
@@ -26,7 +25,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	else{
 		currentZoomLevel=15;
 	}
-	var zoomLevelForIndividualProperty=18;
+	var zoomLevelForIndividualProperty=19;
 	var initialZoomNotCalled=true;
 	var totalInsulaGraffitisDict=new Array();
 	var currentInsulaNumber;
@@ -57,6 +56,10 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		maxBounds: bounds,
 		//Here is the +/- button for zoom
 	})
+	
+	//var comp = new L.Control.Compass({autoActive: true});
+	//map.add(comp);
+	//map.addControl(comp);
 	
 	
 	//Sinks with mapbox(?), why do we need access tokens security?
