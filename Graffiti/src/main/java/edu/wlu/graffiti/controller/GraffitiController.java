@@ -467,8 +467,8 @@ public class GraffitiController {
 				// keyword match
 				BoolQueryBuilder globalQuery;
 				globalQuery = boolQuery();				
-				globalQuery.should(queryStringQuery(parameters.get(i)).useAllFields(true));
-				globalQuery.should(queryStringQuery("*"+parameters.get(i)+"*").useAllFields(true));
+				globalQuery.should(queryStringQuery(parameters.get(i)).useAllFields(true)); // exact match
+				globalQuery.should(queryStringQuery("*"+parameters.get(i)+"*").useAllFields(true)); // partial
 				query.must(globalQuery);
 			} else if (searchTerms.get(i).equals("Content Keyword")) {
 				BoolQueryBuilder contentQuery = boolQuery();
@@ -476,8 +476,8 @@ public class GraffitiController {
 
 				for (String param : params) {
 					BoolQueryBuilder orQuery = boolQuery();
-					orQuery.should(matchQuery(fieldNames.get(i), param));
-					orQuery.should((regexpQuery(fieldNames.get(i), ".*"+param+".*")));
+					orQuery.should(matchQuery(fieldNames.get(i), param)); // exact match
+					orQuery.should((regexpQuery(fieldNames.get(i), ".*"+param+".*"))); // partial
 					contentQuery.must(orQuery);
 				}
 				
