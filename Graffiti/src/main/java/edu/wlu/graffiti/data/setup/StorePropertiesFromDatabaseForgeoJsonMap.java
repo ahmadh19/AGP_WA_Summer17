@@ -167,8 +167,6 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 					}
 				} else if (osmNode != null) {
 					String osm_id = osmNode.textValue();
-					System.out.println("Here is osm id as text:");
-					System.out.println(osm_id);
 					try {
 						osmIdSelectionStatement.setString(1, osm_id);
 
@@ -243,7 +241,6 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		graffito.set("properties", updatedProps);
 		// write the newly updated graffito to text file
 		herculaneumTextWriter.println(graffito + ",");
-		System.out.println(graffito);
 	}
 
 	/**
