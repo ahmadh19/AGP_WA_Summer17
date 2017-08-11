@@ -22,7 +22,7 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		inscription.setEdrId(resultSet.getString("edr_id"));
 		inscription.setAncientCity(resultSet.getString("ANCIENT_CITY"));
 		inscription.setDateBeginning(resultSet.getString("date_beginning"));
-		inscription.setDateBeginning(resultSet.getString("date_end"));
+		inscription.setDateEnd(resultSet.getString("date_end"));
 
 		inscription.setEDRFindSpot(resultSet.getString("find_spot"));
 		inscription.setMeasurements(resultSet.getString("MEASUREMENTS"));
