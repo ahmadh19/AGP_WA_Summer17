@@ -478,7 +478,9 @@ public class ImportEDRData {
 	 * @return
 	 */
 	private static String cleanContent(String content) {
-		return content.replace("<br>", "\n");
+		// doing this because some inscriptions have uppercase BR tags in their contents for some reason
+		return content.replaceAll("\\<br\\>|\\<BR\\>", "\n");
+		//return content.replace("<br>", "\n");
 	}
 
 	private static void updateInscriptions(String datafileName) {

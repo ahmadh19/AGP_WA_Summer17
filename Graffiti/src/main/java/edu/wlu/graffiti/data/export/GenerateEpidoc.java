@@ -252,10 +252,40 @@ public class GenerateEpidoc {
 					"/" + i.getAgp().getProperty().getInsula().getShortName() + "/" + 
 					i.getAgp().getProperty().getPropertyNumber());
 		Element origDate = new Element("origDate");
-		if(i.getDateBeginning() == null) {
+		String dateBeginning, dateEnd;
+		String notBefore = "";
+		String notAfter = "";
+		dateBeginning = i.getDateBeginning();
+		dateEnd = i.getDateEnd();
+		if(dateBeginning == null || dateEnd == null) {
 			origDate.setText("unknown");
 		} else {
-			origDate.setText(i.getDateBeginning());
+			boolean inBC = false;
+			// -40, for example, means 40 B.C.
+			if(dateBeginning.contains("-") && dateEnd.contains("-")) {
+				// remove the negative signs
+				dateBeginning = dateBeginning.replace("-", "");
+				dateEnd = dateEnd.replace("-", "");
+				inBC = true;
+			}
+			
+			if(dateBeginning.length() == 1) {
+				notBefore = "000" + dateBeginning;
+			} else if(dateBeginning.length() == 2) {
+				notBefore = "00" + dateBeginning;
+			}
+			if(dateEnd.length() == 1) {
+				notAfter = "000" + dateEnd;
+			} else if(dateEnd.length() == 2) {
+				notAfter = "00" + dateEnd;
+			}
+			origDate.setAttribute("notBefore", notBefore).setAttribute("notAfter", notAfter).setAttribute("evidence", "");
+			if(inBC) {
+				origDate.setText(dateBeginning + "-" + dateEnd + " B.C.");
+			} else {
+				origDate.setText(dateBeginning + "-" + dateEnd + " C.E.");
+			}
+			
 		}
 		origin.addContent(origPlace);
 		origin.addContent(placeName);
