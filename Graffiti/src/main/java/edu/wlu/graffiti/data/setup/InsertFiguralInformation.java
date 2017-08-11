@@ -46,6 +46,10 @@ public class InsertFiguralInformation {
 	private static String DB_PASSWORD;
 
 	public static void main(String[] args) {
+		insertFiguralInfo();
+	}
+
+	public static void insertFiguralInfo() {
 		init();
 
 		try {
