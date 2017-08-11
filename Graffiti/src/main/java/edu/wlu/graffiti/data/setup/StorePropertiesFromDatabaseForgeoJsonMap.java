@@ -16,7 +16,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,14 +24,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.wlu.graffiti.dao.FindspotDao;
 import edu.wlu.graffiti.dao.GraffitiDao;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -57,6 +53,11 @@ import java.sql.SQLException;
 
 public class StorePropertiesFromDatabaseForgeoJsonMap {
 
+	private static final String HERCULANEUM_JAVASCRIPT_DATA_FILE = "src/main/webapp/resources/js/herculaneumPropertyData.js";
+	private static final String OSM_ID_KEY = "osm_id";
+	private static final String OSM_WAY_ID_KEY = "osm_way_id";
+	private static final String HERCULANEUM_JSON_FILE = "src/main/resources/geoJSON/herculaneum.json";
+	private static final String HERCULANEUM_PROPERTY_TEXT_FILE = "src/main/webapp/resources/js/herculaneumPropertyData.txt";
 	private static final String POMPEII_PROPERTY_DATA_TXT_FILE = "src/main/webapp/resources/js/pompeiiPropertyData.txt";
 	private static final String POMPEII_JAVASCRIPT_DATA_FILE_LOC = "src/main/webapp/resources/js/pompeiiPropertyData.js";
 	private static final String POMPEII_INIT_JAVASCRIPT_LOC = "src/main/webapp/resources/js/PropertyDataFirst.txt";
@@ -135,13 +136,11 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		try {
 			// creates the file we will later write the updated graffito to.
 
-			PrintWriter herculaneumTextWriter = new PrintWriter(
-					"src/main/webapp/resources/js/herculaneumPropertyData.txt", "UTF-8");
+			PrintWriter herculaneumTextWriter = new PrintWriter(HERCULANEUM_PROPERTY_TEXT_FILE, "UTF-8");
 
 			ObjectMapper herculaneumMapper = new ObjectMapper();
 			JsonFactory herculaneumJsonFactory = new JsonFactory();
-			JsonParser herculaneumJsonParser = herculaneumJsonFactory
-					.createParser(new File("src/main/resources/geoJSON/herculaneum.json"));
+			JsonParser herculaneumJsonParser = herculaneumJsonFactory.createParser(new File(HERCULANEUM_JSON_FILE));
 
 			JsonNode herculaneumRoot = herculaneumMapper.readTree(herculaneumJsonParser);
 			JsonNode herculaneumFeaturesNode = herculaneumRoot.path("features");
@@ -151,8 +150,8 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			while (herculaneumIterator.hasNext()) {
 				JsonNode hercProperty = herculaneumIterator.next();
 
-				JsonNode osmWayNode = hercProperty.findValue("osm_way_id");
-				JsonNode osmNode = hercProperty.findValue("osm_id");
+				JsonNode osmWayNode = hercProperty.findValue(OSM_WAY_ID_KEY);
+				JsonNode osmNode = hercProperty.findValue(OSM_ID_KEY);
 
 				if (osmWayNode != null && osmWayNode.textValue() != null) {
 					String osm_way_id = osmWayNode.textValue();
@@ -243,7 +242,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		// propPleiadesId);
 
 		properties.put("Property_Type", propertyType);
-		JsonNode updatedProps = (JsonNode) properties;
+		JsonNode updatedProps = properties;
 		graffito.set("properties", updatedProps);
 		// write the newly updated graffito to text file
 		herculaneumTextWriter.println(graffito + ",");
@@ -361,7 +360,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						properties.put("Property_Type", propertyType);
 						properties.put("insula_id", insulaId);
 
-						JsonNode updatedProps = (JsonNode) properties;
+						JsonNode updatedProps = properties;
 						propertyNode.set("properties", updatedProps);
 
 						String jsonPoly = new ObjectMapper().writeValueAsString(p);
@@ -436,71 +435,37 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	 * @throws UnsupportedEncodingException
 	 */
 	private static void copyToJavascriptFiles() {
-		PrintWriter pompeiiJsWriter;
-		PrintWriter herculaneumJsWriter;
+		writeJavaScriptPropertyFile(POMPEII_JAVASCRIPT_DATA_FILE_LOC, POMPEII_INIT_JAVASCRIPT_LOC,
+				POMPEII_PROPERTY_DATA_TXT_FILE);
+		writeJavaScriptPropertyFile(HERCULANEUM_JAVASCRIPT_DATA_FILE, HERCULANEUM_INIT_JAVASCRIPT_LOC,
+				HERCULANEUM_PROPERTY_TEXT_FILE);
+	}
+
+	public static void writeJavaScriptPropertyFile(String finalJavaScriptFileLoc, String initJavaScriptFileLoc,
+			String dataFile) {
 		try {
-			pompeiiJsWriter = new PrintWriter(POMPEII_JAVASCRIPT_DATA_FILE_LOC, "UTF-8");
-			herculaneumJsWriter = new PrintWriter("src/main/webapp/resources/js/herculaneumPropertyData.js", "UTF-8");
-
+			PrintWriter jsWriter = new PrintWriter(finalJavaScriptFileLoc, "UTF-8");
 			// Writes the beginning part of the js file, which it fetches from
-			// another text file called jsEschebachFirst.txt.
-			// This is the only way I found to format this part of the
-			// javascript.
-			File jsFirstPompeii = new File(POMPEII_INIT_JAVASCRIPT_LOC);
-			File jsFirstHerculaneum = new File(HERCULANEUM_INIT_JAVASCRIPT_LOC);
-			Scanner jsReadFirstPompeii;
-			Scanner jsReadFirstHerculaneum;
-			jsReadFirstPompeii = new Scanner(jsFirstPompeii);
-			jsReadFirstHerculaneum = new Scanner(jsFirstHerculaneum);
-
-			while (jsReadFirstPompeii.hasNext()) {
-				String content = jsReadFirstPompeii.nextLine();
-				pompeiiJsWriter.println(content);
+			// another text file
+			Scanner initJSReader = new Scanner(new File(initJavaScriptFileLoc));
+			while (initJSReader.hasNext()) {
+				String content = initJSReader.nextLine();
+				jsWriter.println(content);
 			}
-			jsReadFirstHerculaneum = new Scanner(jsFirstHerculaneum);
-			while (jsReadFirstHerculaneum.hasNext()) {
-				String content = jsReadFirstHerculaneum.nextLine();
-				herculaneumJsWriter.println(content);
-			}
-
 			// Copies from pompeiiPropertyData.txt to pompeiiPropertyData.js for
 			// the
 			// body portion of the file.
-			File pompeiiUpdatedPText = new File(POMPEII_PROPERTY_DATA_TXT_FILE);
-			Scanner pompeiiReadFromText = new Scanner(pompeiiUpdatedPText);
-			String pompeiiContent;
-			while (pompeiiReadFromText.hasNext()) {
-				pompeiiContent = pompeiiReadFromText.nextLine();
-				pompeiiJsWriter.println(pompeiiContent);
+			Scanner dataReader = new Scanner(new File(dataFile));
+			String content;
+			while (dataReader.hasNext()) {
+				content = dataReader.nextLine();
+				jsWriter.println(content);
 			}
-			pompeiiJsWriter.println("]};");
-			jsReadFirstPompeii.close();
-			pompeiiReadFromText.close();
-			pompeiiJsWriter.close();
-
-			jsFirstPompeii = new File(POMPEII_INIT_JAVASCRIPT_LOC);
-			jsReadFirstPompeii = new Scanner(jsFirstPompeii);
-			while (jsReadFirstPompeii.hasNext()) {
-				String content = jsReadFirstPompeii.nextLine(); // herculaneumJsWriter.println(content);
-																// }
-
-				// Copies from herculaneumPropertyData.txt to
-				// herculaneumPropertyData.js
-				// for the body portion of the file.
-				File herculaneumUpdatedPText = new File("src/main/webapp/resources/js/herculaneumPropertyData.txt");
-				Scanner herculaneumReadFromText = new Scanner(herculaneumUpdatedPText);
-				String herculaneumContent;
-				while (herculaneumReadFromText.hasNext()) {
-					herculaneumContent = herculaneumReadFromText.nextLine();
-					herculaneumJsWriter.println(herculaneumContent);
-				}
-
-				herculaneumJsWriter.println("]};");
-				herculaneumReadFromText.close();
-				herculaneumJsWriter.close();
-			}
+			jsWriter.println("]};");
+			initJSReader.close();
+			dataReader.close();
+			jsWriter.close();
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
