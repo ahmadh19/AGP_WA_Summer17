@@ -412,7 +412,7 @@ public class AddInscriptionsToElasticSearch {
 				.endObject().endObject().startObject("writing_style_in_english").field("type", "keyword")
 				.endObject().startObject("language_in_english").field("type", "keyword") 
 				.endObject().startObject("content").field("type", "text").field("analyzer", "folding").endObject()
-				.startObject("summary").field("type", "text").endObject()
+				.startObject("summary").field("type", "keyword").endObject()
 				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject()
 				.startObject("bibliography").field("type", "text").endObject()
 				.startObject("cil").field("type", "keyword").endObject().startObject("comment").field("type", "text").endObject()
