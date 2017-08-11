@@ -6,6 +6,7 @@
  * @author sprenkle -- version 2.0 filtering
  * @author ahmadh -- version 2.1 filtering, includes bug fixes
  * @author KellyM --Modified refineResults method so that it reloads the pompeiiMap with new location keys based on the filtering.
+ * @author cooperbaird -- Modified refineResults to allow for sorting
  */
 
 var currentParams = new Array(); // the ending array of parameters
