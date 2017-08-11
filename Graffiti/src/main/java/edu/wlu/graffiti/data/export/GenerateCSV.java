@@ -27,7 +27,7 @@ public class GenerateCSV {
 	
 	// the fields	
 	private static final Object[] FILE_HEADER = {"agpId","cityName","cityPleiadesId","content",
-			"edrFindspot","date","languageInEnglish","writingStyleInEnglish"};
+			"edrFindspot", "dateBeginning", "dateEnd","languageInEnglish","writingStyleInEnglish"};
 	
 	private static final Object[] FILE_HEADER_PROPERTY = {"city", "insula", " number", "name",
 			"type", "link"};
@@ -108,6 +108,7 @@ public class GenerateCSV {
 		inscriptionRecord.add(i.getContent());
 		inscriptionRecord.add(i.getEDRFindSpot());
 		inscriptionRecord.add(i.getDateBeginning());
+		inscriptionRecord.add(i.getDateEnd());
 		inscriptionRecord.add(i.getAgp().getLanguageInEnglish());
 		inscriptionRecord.add(i.getAgp().getWritingStyleInEnglish());
 		
