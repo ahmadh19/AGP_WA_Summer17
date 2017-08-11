@@ -11,7 +11,6 @@
 var currentParams = new Array(); // the ending array of parameters
 var requestUrl = "filter"; // request url for filtering
 var reportUrl = "admin/report"; // report url for reports
-var sortUrl = "sort"; // sort url for sorting
 var filters = new Array(); // an array of the filters applied so far on the search
 
 /**
@@ -103,13 +102,6 @@ function filterBy(type, label, choice, id) {
 	} else {
 		addSearchTerm(type, label, choice, id);
 	}
-}
-
-/**
- * @param choice the item to sort results by
- */
-function sortBy(choice) {
-	
 }
 
 /**
@@ -220,7 +212,7 @@ function addSearchTerm(type, label, choice, id) {
 		var searchTerms = document.getElementById("searchTerms");
 		//searchTerms.appendChild(label);
 		searchTerms.appendChild(list);
-		refineResults();
+		refineResults("filter");
 	}
 }
 
@@ -244,7 +236,7 @@ function removeSearchTerm(e) {
 	}
 	//e.target.parentElement.removeChild(e.target);
 	e.target.parentElement.parentElement.removeChild(e.target.parentElement);
-	refineResults();
+	refineResults("filter");
 }
 
 /**
@@ -264,7 +256,7 @@ function removeSearchTermBySpan(e) {
 	}
 	//e.target.parentElement.parentElement.removeChild(e.target.parentElement);
 	e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
-	refineResults();
+	refineResults("filter");
 }
 
 /**
@@ -281,7 +273,7 @@ function removeSearchTermByName(name) {
 			labels[i].parentElement.removeChild(labels[i]);
 		}
 	}
-	refineResults();
+	refineResults("filter");
 }
 
 /**
@@ -302,30 +294,27 @@ function termExists(desc) {
 	return false;
 }
 
-function createURL(type, baseURL) {
-	var myUrl = baseURL;
+function createURL(baseURL) {
+	var myUrl = baseURL + "?";
 	
-	switch(type) {
-		case "filter":
-			var labels = document.getElementsByClassName("search-term-label");
-		
-			currentParams = new Array();
-			for (var i = 0; i < labels.length; i++) {
-				currentParams.push(labels[i].childNodes[3].textContent);
-			}
-				
-			if (currentParams.length != 0) {
-				myUrl += "?";
-				for (var i = 0; i < currentParams.length; i++) {
-					desc = currentParams[i].split(": ");
-					myUrl += "&" + desc[0].toLowerCase() + "=" + desc[1];
-					myUrl = myUrl.replace(/\s/g, '_');
-				}
-			}
-			break;
-		case "sort":
-			break;
+	var labels = document.getElementsByClassName("search-term-label");
+
+	currentParams = new Array();
+	for (var i = 0; i < labels.length; i++) {
+		currentParams.push(labels[i].childNodes[3].textContent);
 	}
+		
+	if (currentParams.length != 0) {
+		for (var i = 0; i < currentParams.length; i++) {
+			desc = currentParams[i].split(": ");
+			myUrl += "&" + desc[0].toLowerCase() + "=" + desc[1];
+			myUrl = myUrl.replace(/\s/g, '_');
+		}
+	}
+
+	var selectBox = document.getElementById("sortParam");
+	var selection = selectBox.options[selectBox.selectedIndex].value;
+	myUrl += ("&sort_by=" + selection);
 	
 	return myUrl;
 }
@@ -336,10 +325,10 @@ function createURL(type, baseURL) {
  * results
  * Also re-initializes the new map with new location keys for selection. 
  */
-function refineResults() {
+function refineResults(filterOrSort) {
 	var labels = document.getElementsByClassName("search-term-label");
 	xmlHttp = new XMLHttpRequest();
-	newUrl = createURL("filter", requestUrl);
+	newUrl = createURL(requestUrl);
 	//alert(newUrl);
 	xmlHttp.open("GET", newUrl, false);
 	xmlHttp.send(null);
@@ -357,7 +346,7 @@ function refineResults() {
 function generateReport() {
 	var labels = document.getElementsByClassName("search-term-label");
 	xmlHttp = new XMLHttpRequest();
-	newUrl = createURL("filter", reportUrl);
+	newUrl = createURL(reportUrl);
 	window.location = newUrl;
 }
 

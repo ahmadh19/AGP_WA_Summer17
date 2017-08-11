@@ -27,10 +27,19 @@
 	onclick="printResults();">Print</button>
 <div style="float: right">
 Sort By
-<select id="sortParam">
-	<option value="relevance">Relevance</option>
-	<option value="cil">CIL #</option>
-	<option value="findspot">Findspot</option>
+<select id="sortParam" onchange="refineResults('sort');">
+	<%
+		String param = request.getParameter("sort_by");
+		boolean isNull = false;
+		if(param == null)
+			isNull = true;
+	%>
+	<option value="relevance" <%=!isNull && param.equals("relevance")?"selected":""%>>
+	Relevance</option>
+	<option value="cil" <%=!isNull && param.equals("cil")?"selected":""%>>
+	CIL #</option>
+	<option value="property.property_id" <%=!isNull && param.equals("property.property_id")?"selected":""%>>
+	Findspot</option>
 </select>
 </div>
 </div>
