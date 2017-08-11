@@ -67,8 +67,9 @@ public class UpdateSummaryTranslationCommentaryPlus {
 
 				if (edrID.equals(""))
 					continue;
-
 				String cil = Utils.cleanData(record.get(1));
+				System.out.println(edrID + " " + cil);
+
 				String langner = Utils.cleanData(record.get(3));
 				String summary = Utils.cleanData(record.get(6));
 				String translation = Utils.cleanData(record.get(7));
@@ -79,8 +80,8 @@ public class UpdateSummaryTranslationCommentaryPlus {
 				pstmt.setString(2, translation);
 				pstmt.setString(3, commentary);
 				pstmt.setString(4, langner);
-				pstmt.setString(5, edrID);
-				pstmt.setString(6, cil);
+				pstmt.setString(5, cil);
+				pstmt.setString(6, edrID);
 				try {
 					pstmt.executeUpdate();
 				} catch (SQLException e) {
