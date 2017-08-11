@@ -102,7 +102,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				}
 			}
 			else if(!showInsulaMarkers){
-				displayInsulaLabels();
+				//displayInsulaLabels();
 				showInsulaMarkers=true;
 			}
 		}
