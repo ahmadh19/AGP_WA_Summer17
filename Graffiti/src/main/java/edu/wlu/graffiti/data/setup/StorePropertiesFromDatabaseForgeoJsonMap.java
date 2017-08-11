@@ -87,9 +87,6 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	private static PreparedStatement osmIdSelectionStatement;
 	private static PreparedStatement selectCityAndInsulaStatement;
 
-	@Resource
-	private static GraffitiDao graffitiDaoObject;
-
 	public static void main(String args[]) {
 		storeProperties();
 	}
@@ -203,8 +200,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		String addProperties = rs.getString("additional_properties");
 		String italPropName = rs.getString("italian_property_name");
 		String insulaId = rs.getString("insula_id");
-		// String insulaDescription =
-		// rs.getString("description");
+		String propertyNumber = rs.getString("property_number");
 		// String insulaPleiadesId =
 		// rs.getString("insula_pleiades_id");
 		// String propPleiadesId =
@@ -224,22 +220,21 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			propertyType = resultset.getString("name");
 		}
 
+		// TODO:
+		// Fetch the property address (i.e., the Insula Short Name and property number ) from the database
+		
+		//		String insulaName = rs.getString("short_name");
+
+
 		ObjectNode graffito = (ObjectNode) hercProperty;
 		ObjectNode properties = (ObjectNode) graffito.path("properties");
 		properties.put("Property_Id", propertyId);
 		properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 		properties.put("Property_Name", propertyName);
+		//properties.put("Property_Address", insulaName + "." + propertyNumber);
 		properties.put("Additional_Properties", addProperties);
 		properties.put("Italian_Property_Name", italPropName);
 		properties.put("insula_id", insulaId);
-
-		// These are not in the database.
-		// properties.put("Insula_Description",
-		// insulaDescription);
-		// properties.put("Insula_Pleiades_Id",
-		// insulaPleiadesId);
-		// properties.put("Property_Pleiades_Id",
-		// propPleiadesId);
 
 		properties.put("Property_Type", propertyType);
 		JsonNode updatedProps = properties;
