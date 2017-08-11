@@ -26,7 +26,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	else{
 		currentZoomLevel=15;
 	}
-	var zoomLevelForIndividualProperty=18;
+	var zoomLevelForIndividualProperty=19;
 	var initialZoomNotCalled=true;
 	var totalInsulaGraffitisDict=new Array();
 	var currentInsulaNumber;
