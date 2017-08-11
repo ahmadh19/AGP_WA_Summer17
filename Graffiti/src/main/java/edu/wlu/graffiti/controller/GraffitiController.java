@@ -33,6 +33,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -390,10 +391,7 @@ public class GraffitiController {
 		return "print";
 	}
 	
-	private List<Inscription> searchResults(final HttpServletRequest request) {
-		// System.out.println("We're in FilterController: " +
-		// request.getQueryString());
-
+	private List<Inscription> searchResults(final HttpServletRequest request) {		
 		try {
 			client = new PreBuiltTransportClient(settings).addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(ES_HOSTNAME), ES_PORT_NUM));
@@ -424,6 +422,8 @@ public class GraffitiController {
 		String[] drawingCategory = request.getParameterValues("drawing_category");
 		String[] writingStyle = request.getParameterValues(WRITING_STYLE_PARAM_NAME);
 		String[] language = request.getParameterValues("language");
+		
+		String[] sortOrder = request.getParameterValues("sort_by");
 
 		String[][] searches = { content, global, city, insula, property, propertyType, drawingCategory, writingStyle,
 				language };
@@ -518,10 +518,13 @@ public class GraffitiController {
 			}
 		}
 		
-		System.out.println(query);
-								
-		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
-				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
+		if(sortOrder == null || sortOrder[0].equals("relevance")) {				
+			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
+					.setSize(NUM_RESULTS_TO_RETURN).get();
+		} else {
+			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
+					.setSize(NUM_RESULTS_TO_RETURN).addSort(sortOrder[0], SortOrder.ASC).get();
+		}
 				
 		for (SearchHit hit : response.getHits()) {
 			inscriptions.add(hitToInscription(hit));
