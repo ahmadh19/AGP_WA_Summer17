@@ -32,6 +32,9 @@ public class GenerateCSV {
 	private static final Object[] FILE_HEADER_PROPERTY = {"city", "insula", " number", "name",
 			"type", "link"};
 	
+	//citation
+	private static final Object[] CITATION = {"Citation: The Ancient Graffiti Project, http://ancientGraffiti.org/ [accessed: " + new java.text.SimpleDateFormat("dd MMM yyyy").format(new java.util.Date()) + "]"};
+	
 	/**
 	 * Serializes a list of inscriptions to CSV.
 	 * 
@@ -47,6 +50,7 @@ public class GenerateCSV {
 		
 		try {
 			csvFilePrinter = new CSVPrinter(stringBuilder, csvFileFormat);
+			csvFilePrinter.printRecord(CITATION);
 			csvFilePrinter.printRecord(FILE_HEADER);
 			for(Inscription i : inscriptions) {
 				writeInscriptionToCSV(i, csvFilePrinter);
@@ -77,6 +81,7 @@ public class GenerateCSV {
 		
 		try {
 			csvFilePrinter = new CSVPrinter(stringBuilder, csvFileFormat);
+			csvFilePrinter.printRecord(CITATION);
 			csvFilePrinter.printRecord(FILE_HEADER);
 			writeInscriptionToCSV(i, csvFilePrinter);
 			csvFilePrinter.close();
@@ -168,6 +173,7 @@ public class GenerateCSV {
 		
 		try {
 			csvFilePrinter = new CSVPrinter(stringBuilder, csvFileFormat);
+			csvFilePrinter.printRecord(CITATION);
 			csvFilePrinter.printRecord(FILE_HEADER_PROPERTY);
 			for(Property p : properties) {
 				writePropertyToCSV(p, csvFilePrinter);
@@ -198,6 +204,7 @@ public class GenerateCSV {
 		
 		try {
 			csvFilePrinter = new CSVPrinter(stringBuilder, csvFileFormat);
+			csvFilePrinter.printRecord(CITATION);
 			csvFilePrinter.printRecord(FILE_HEADER_PROPERTY);
 			writePropertyToCSV(p, csvFilePrinter);
 			csvFilePrinter.close();
