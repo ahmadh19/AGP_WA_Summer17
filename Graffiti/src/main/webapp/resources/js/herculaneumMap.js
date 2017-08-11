@@ -8,9 +8,9 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	var borderColor;
 	var fillColor;
 	//14.346131   40.8061619
-	var southWest = L.latLng(40.8061619, 14.346131),
+	var southWest = L.latLng(40.8040619, 14.343131),
 	
-	northEast = L.latLng(40.8061619, 14.349),
+	northEast = L.latLng(40.8082619, 14.351131),
 	bounds = L.latLngBounds(southWest, northEast);
 	
 	var currentZoomLevel;
@@ -41,7 +41,7 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
 		maxZoom:20,
-		//maxBounds: bounds,
+		maxBounds: bounds,
 		//Here is the +/- button for zoom
 	})
 	
