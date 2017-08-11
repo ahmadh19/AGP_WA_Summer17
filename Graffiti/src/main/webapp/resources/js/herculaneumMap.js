@@ -37,7 +37,7 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Fires when the map is initialized
 
 	map = new L.map('herculaneummap', {
-		center: [40.8061619, 14.346131],
+		center: [40.8059619, 14.347131],
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
 		maxZoom:20,
@@ -77,10 +77,21 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				}
 			});
 		}
+		else if(propertyIdListToHighlight.length==1){
+			newCenterCoordinates=[];
+			map.eachLayer(function(layer){
+				if(layer.feature!=undefined){
+					if(layer.feature.properties.Property_Id==propertyIdListToHighlight[0]){
+						newCenterCoordinates=layer.getBounds().getCenter();
+						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
+					}
+				}
+			});
+		}
 	}
 	
 	
-	if(propertyIdToHighlight!=0)
+	if(propertyIdToHighlight!=0 || propertyIdListToHighlight.length==1)
 	{
 		showCloseUpView();
 	}
