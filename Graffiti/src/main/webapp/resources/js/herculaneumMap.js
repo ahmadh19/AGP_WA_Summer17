@@ -8,9 +8,9 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	var borderColor;
 	var fillColor;
 	//14.346131   40.8061619
-	var southWest = L.latLng(40.8061619, 14.346131),
+	var southWest = L.latLng(40.8040619, 14.343131),
 	
-	northEast = L.latLng(40.8061619, 14.349),
+	northEast = L.latLng(40.8082619, 14.351131),
 	bounds = L.latLngBounds(southWest, northEast);
 	
 	var currentZoomLevel;
@@ -37,14 +37,15 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Fires when the map is initialized
 
 	map = new L.map('herculaneummap', {
-		center: [40.8061619, 14.346131],
+		center: [40.8059619, 14.347131],
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
 		maxZoom:20,
-		//maxBounds: bounds,
+		maxBounds: bounds,
 		//Here is the +/- button for zoom
 	})
 	
+	//map.addControl( new L.Control.Compass());
 	
 	//Sinks with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
@@ -77,10 +78,21 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				}
 			});
 		}
+		else if(propertyIdListToHighlight.length==1){
+			newCenterCoordinates=[];
+			map.eachLayer(function(layer){
+				if(layer.feature!=undefined){
+					if(layer.feature.properties.Property_Id==propertyIdListToHighlight[0]){
+						newCenterCoordinates=layer.getBounds().getCenter();
+						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
+					}
+				}
+			});
+		}
 	}
 	
 	
-	if(propertyIdToHighlight!=0)
+	if(propertyIdToHighlight!=0 || propertyIdListToHighlight.length==1)
 	{
 		showCloseUpView();
 	}
