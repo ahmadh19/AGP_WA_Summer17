@@ -162,10 +162,7 @@ CREATE TABLE edr_inscriptions (
     language character varying(30),
     content text,
     bibliography text,
-    numberofimages integer DEFAULT 0,
     apparatus text,
-    start_image_id integer,
-    stop_image_id integer,
     apparatus_displayed text
 );
 
@@ -326,7 +323,18 @@ CREATE TABLE propertytypes (
 
 ALTER TABLE propertytypes OWNER TO sprenkle;
 
-create table property_links ( property_id integer references properties(id) on delete cascade, link_name varchar(70), link varchar(200));
+create table property_links ( 
+	property_id integer references properties(id) on delete cascade, 
+	link_name varchar(70), 
+	link varchar(200)
+);
+
+create table photos (
+	edr_id character(9) references edr_inscriptions (edr_id) on delete cascade,
+	photo_id varchar(20),
+	UNIQUE(edr_id, photo_id)
+);
+
 
 --
 -- Name: roles; Type: TABLE; Schema: public; Owner: sprenkle
