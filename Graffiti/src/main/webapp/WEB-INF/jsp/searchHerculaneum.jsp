@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -27,9 +26,6 @@
 		<h2>Search Herculaneum by Map</h2>
 		<p>Click on one or more properties within the map, then hit the
 			"Search" button below.</p>
-		<div id="moreInfo">
-			<button id="search" class="btn btn-agp">Search Properties</button>
-		</div>
 
 		<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
 			integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
@@ -39,8 +35,9 @@
 			<div id="newDiv"></div>
 			<div id="herculaneummap" class="mapdiv"></div>
 		</div>
-	</div>
+		<button id="search" class="btn btn-agp" style="float:right;">Search Properties</button>
 
+	</div>
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 	<script>

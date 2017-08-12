@@ -57,13 +57,12 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		//Here is the +/- button for zoom
 	})
 	
-	//var comp = new L.Control.Compass({autoActive: true});
-	//map.add(comp);
-	//map.addControl(comp);
+	var comp = new L.Control.Compass({autoActive: true});
+	map.add(comp);
+	map.addControl(comp);
 	
-	
-	//Sinks with mapbox(?), why do we need access tokens security?
-	var mapboxUrl = 'https://api		alert("Special insula display");.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
+	//Syncs with mapbox(?), why do we need access tokens security?
+	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
 	
 	//This adds more realistic features to the background like streets. Commented out bc/shape files are off positionally and more details shows it to users. 
 	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
@@ -73,13 +72,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	L.geoJson(pompeiiPropertyData).addTo(map);
 	
 	if( interactive){
-		
 		makeInsulaCentersDict();
-		
 		makeTotalInsulaGraffitiDict();
-		
 		makeInsulaIdsListShortNamesList();
-	
 		displayInsulaLabels();
 	}
 	
@@ -98,7 +93,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 					showInsulaMarkers=false;
 					//This shows selected properties from the insula when the map zooms in.
 					 updateBorderColors();
-					 
 				}
 			}
 			else if(!showInsulaMarkers){
