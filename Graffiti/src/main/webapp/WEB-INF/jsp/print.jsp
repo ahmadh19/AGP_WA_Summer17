@@ -3,7 +3,7 @@
 
 <c:set var="num" value="${fn:length(requestScope.resultsLyst)}" />
 
-<%@ page import= "java.util.*" %>
+<%@ page import="java.util.*"%>
 <p>
 	<c:choose>
 		<c:when test="${num == 1}">
@@ -13,16 +13,14 @@
 			<c:out value="${num} results found ${searchQueryDesc}" />
 		</c:otherwise>
 	</c:choose>
-	
-	<br />
 </p>
 
 <c:if test="${num == 0}">
-	<br />
-	<c:out value="Try broadening your search" />
+	<p>
+		<c:out value="Try broadening your search" />
+	</p>
 </c:if>
 
 <h1>Search Results</h1>
-
 
 <%@ include file="printableResultsList.jsp"%>
