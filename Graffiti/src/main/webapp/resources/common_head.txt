@@ -11,13 +11,10 @@
 <link rel="stylesheet" type="text/css"
 	href="<c:url value="/resources/css/proj.css" />" />
 
-
 <!-- Link for the AGP favicon -->
 <link rel="shortcut icon" type="MIME type" href="<c:url value="/resources/images/favicon.ico"/>"/>
-
 	
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 
 <!-- 
  -- JavaScript Links --
