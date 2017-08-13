@@ -25,6 +25,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	else{
 		currentZoomLevel=15;
 	}
+	//console.log("1");
 	var zoomLevelForIndividualProperty=19;
 	var initialZoomNotCalled=true;
 	var totalInsulaGraffitisDict=new Array();
@@ -36,7 +37,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Can be iterated through to remove all markers from the map(?)
 	var insulaMarkersList=[];
 	
-	
+	//console.log("2");
 	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
 	var clickedAreas = [];
 	//A list filled with nested list of the full name, id, and short name of each insula selected. 
@@ -56,7 +57,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		maxBounds: bounds,
 		//Here is the +/- button for zoom
 	})
-	
+	//console.log("3");
 	//var comp = new L.Control.Compass({autoActive: true});
 	//map.add(comp);
 	//map.addControl(comp);
@@ -88,9 +89,10 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		dealWithInsulaLevePropertylView();
 		dealWithInsulaLabelsAndSelectionOnZoom();
 	});
-	
+	//console.log("4");
 	//Shows or hides insula labels depending on zoom levels and if the map is interactive
 	function dealWithInsulaLabelsAndSelectionOnZoom(){
+		//console.log("5");
 		if(interactive){
 			if(!zoomedOutThresholdReached()){
 				if(showInsulaMarkers){
@@ -110,6 +112,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//Centers the map around a single property
 	function showCloseUpView(){
+		//console.log("6");
 		if(propertyIdToHighlight){
 			var newCenterCoordinates=[];
 			map.eachLayer(function(layer){
@@ -122,6 +125,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			});
 		}
 		else if(propertyIdListToHighlight.length==1){
+			//console.log("7");
 			var newCenterCoordinates=[];
 			var idOfListHighlight=propertyIdListToHighlight[0];
 			map.eachLayer(function(layer){
@@ -139,6 +143,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//Builds the global list of insula ids. 
 	function makeInsulaIdsListShortNamesList(){
+		//console.log("8");
 		var currentInsulaId=183;
 		map.eachLayer(function(layer){
 			if(layer.feature!=undefined){
@@ -157,6 +162,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//This works well as graffiti numbers should not change over the session.
 	//Modifies the clojure wide variable once and only once at the beginning of the program
 	function makeTotalInsulaGraffitiDict(){
+		//console.log("9");
 		totalInsulaGraffitisDict=new Array();
 		map.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
@@ -180,6 +186,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Meant to show the insula short name labels at the given x/y coordinates
 	//(given as a normal list in Java array form)
 	function showALabelOnMap(xYCoordinates,textToDisplay){
+		//This was breaking bc/the new wall properties
+		//Commented out for now, change to deal with them later
+		/*//console.log("10");
 		var myIcon = L.divIcon({ 
 		    //iconSize: new L.Point(0, 0), 
 			iconSize:0,
@@ -187,11 +196,12 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		});
 		// you can set .my-div-icon styles in CSS
 		var myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
-		insulaMarkersList.push(myMarker);
+		insulaMarkersList.push(myMarker);*/
 	}
 	
 	//Removes each of the insula labels from the map.
 	//Meant to be used for when the user zooms past the zoom threshold. 
+	//Stopped being used due to recommendations at the demo.
 	function removeInsulaLabels(){
 		var i=0;
 		for(i;i<insulaMarkersList.length;i++){
@@ -201,6 +211,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Shows the short names of each insula in black
 	//at the center ccoordinates. 
 	function displayInsulaLabels(){
+		//console.log("11");
 		var i;
 		var insulaId;
 		var insulaCenterCoordinates;
@@ -210,7 +221,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			insulaId=insulaGroupIdsList[i];
 			insulaCenterCoordinates=insulaCentersDict[insulaId];
 			shortInsulaName=insulaShortNamesDict[insulaId];
-			showALabelOnMap(insulaCenterCoordinates,shortInsulaName);
+			if(insulaCenterCoordinates!=null){
+				showALabelOnMap(insulaCenterCoordinates,shortInsulaName);
+			}
 		}
 	}
 	
@@ -218,6 +231,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//This function gets and returns a "dictionary" of the latitude and longitude of each insula given its id(as index).
 	//Used to find where to place the labels of each insula on the map, upon iteration through this list.
 	function makeInsulaCentersDict(){
+		//console.log("12");
 		var currentInsulaNumber;
 		//Manually set as the first insula id for pompeii
 		var oldInsulaNumber=183;
@@ -264,8 +278,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Uses math to directly find and return the latitude and longitude of the center of a list of coordinates. 
 	//Returns a list of the latitude, x and the longitude, y
 	function findCenter(coordinatesList){
-		//console.log("Here are coords passed to find center:");
-		//console.log(coordinatesList+":");
+		//console.log("13");
+		////console.log("Here are coords passed to find center:");
+		////console.log(coordinatesList+":");
 		var i=0;
 		var x=0;
 		var y=0
@@ -281,8 +296,11 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//Responsible for showing the map view on the insula level. 
 	function dealWithInsulaLevePropertylView(){
+		//console.log("14");
 		map.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
+				//console.log("A layer in the map:");
+				//console.log(layer.feature.NAME);
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
 				newFillColor=getFillColor(numberOfGraffitiInGroup);
@@ -305,6 +323,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	
 	function getBorderColorForCloseZoom(feature){
+		////console.log("15");
 		borderColor='white';
 		if (feature.properties.clicked == true || feature.properties.Property_Id==propertyIdToHighlight || propertyIdListToHighlight.indexOf(feature.properties.Property_Id)>=0) {
 			propertySelected=true;
@@ -314,8 +333,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	
 	function updateBorderColors(){
+		//console.log("16");
 		map.eachLayer(function(layer){
-			if(layer.feature!=undefined && layer.feature.properties.clicked){
+			if(layer.feature!=undefined && layer.feature.properties.clicked ){
 				borderColor=getBorderColorForCloseZoom(layer.feature);
 				//layer.feature.setStyle(color,borderColor);
 			}
@@ -326,6 +346,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//clicked or normal fragments. When clicked, items are stored in a collection. These collections will have the color
 	//contained inside of else. 
 	function style(feature) {
+		//console.log("17");
 		//Displays the insula level view at the start of the run if necessary
 		propertySelected=false;
 		
@@ -350,6 +371,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	
 	function getFillColor(numberOfGraffiti){
+		
 		//Hex darkens color as number it represents decreases
 		if(colorDensity){
 
@@ -468,6 +490,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	//Sets color for properties which the cursor is moving over. 
 	function highlightFeature(e) {
+		//console.log("18");
 		if(interactive && !zoomedOutThresholdReached()){
 			var layer = e.target;
 			layer.setStyle({
@@ -488,6 +511,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//have been and are clicked again, sets to false and vice versa. I am confused what pushToFront is
 	//or how it interacts with the wider collection of items if there is one. 
 	function showDetails(e) {
+		//console.log("19");
 		if(interactive){
 			if(!zoomedOutThresholdReached()){
 				var layer = e.target;
@@ -511,6 +535,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Returns a new array with the contents of the previous index absent
 	//We must search for a string in the array because, again, indexOf does not work for nested lists. 
 	function removeStringedListFromArray(someArray,stringPortion){
+		//console.log("19.5");
 		var newArray=[];
 		var i;
 		for(i=0;i<someArray.length;i++){
@@ -527,6 +552,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//On click, sees if a new insula id # has been selected. If so, adds it to the list of 
 	//selected insula. 
 	function checkForInsulaClick(clickedProperty){
+		//console.log("20");
 		//Clicked property is a layer
 		//layer.feature.properties.insula_id
 		
@@ -551,6 +577,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Used on click for insula level view in place of display selected regions
 	//In charge of the right information only, does not impact the actual map
 	function displayHighlightedInsula(){
+		//console.log("21");
 		//clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
 		var html = "<table><tr><th>Selected Insula:</th></tr>";
 		var numberOfInsulaSelected=clickedInsula.length;
@@ -624,6 +651,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Marks all properties inside of selected insula as selected by
 	//adding them to the clickedInsula list.
 	function selectPropertiesInAllSelectedInsula(uniqueClicked){
+		//console.log("22");
 		if(interactive){
 			var i=0;
 			var currentInsulaId;
@@ -651,6 +679,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Does this by iterating through the list of clicked items and adding them to uniqueClicked,
 	//then returning uniqueClicked. 
 	function getUniqueClicked() {
+		//console.log("23");
 		var uniqueClicked = [];
 		var listInSelectedInsula;
 		var length = clickedAreas.length;
@@ -667,6 +696,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Collects the ids of the clicked item objects(the id property).
 	//I disagree with many of these function names. 
 	function collectClicked() {
+		//console.log("24");
 		var propIdsOfClicked = [];
 		
 		var selectedProps = getUniqueClicked();
@@ -707,6 +737,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Displays the Selected Properties and their corresponding information in an HTML table formatted. 
 	//Achieved by mixing html and javascript, accessing text properties of the regions(items). 
 	function displayHighlightedRegions() {
+		//console.log("25");
 		// when you click anywhere on the map, it updates the table
 		if(! zoomedOutThresholdReached()){
 			var clickedAreasTable = getUniqueClicked();

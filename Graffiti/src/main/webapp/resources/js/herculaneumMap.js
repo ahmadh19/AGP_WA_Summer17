@@ -25,6 +25,8 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	else{
 		currentZoomLevel=16;
 	}
+	
+	var showInsulaMarkers;
 	var zoomLevelForIndividualProperty=18;
 	var initialZoomNotCalled=true;
 	var totalInsulaGraffitisDict=new Array();
@@ -32,6 +34,17 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	var graffitiInLayer;
 	var numberOfGraffitiInGroup;
 	var justStarted=true;
+	
+	
+	var insulaMarkersList=[];
+	
+	
+	var clickedInsula=[];
+	
+	//Holds the center latitudes and longitudes of all insula on the map. 
+	var insulaCentersDict=[];
+	var insulaGroupIdsList=[];
+	var insulaShortNamesDict=[];
 	
 	
 	//Fires when the map is initialized
@@ -60,9 +73,22 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//map.addLayer(grayscale);
 	L.geoJson(herculaneumPropertyData).addTo(map);
 	
+	
+	
+	if( interactive){
+		
+		makeInsulaCentersDict();
+		
+		makeTotalInsulaGraffitiDict();
+		
+		makeInsulaIdsListShortNamesList();
+	
+		displayInsulaLabels();
+	}
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
 		dealWithInsulaLevelView();
+		dealWithInsulaLabelsAndSelectionOnZoom();
 	});
 	
 	//Centers the map around a single property
@@ -141,6 +167,212 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		});
 	}
 	
+	//Returns a new array with the contents of the previous index absent
+	//We must search for a string in the array because, again, indexOf does not work for nested lists. 
+	function removeStringedListFromArray(someArray,stringPortion){
+		console.log("19.5");
+		var newArray=[];
+		var i;
+		for(i=0;i<someArray.length;i++){
+			if(""+someArray[i]!=stringPortion){
+				newArray.push(someArray[i]);
+			}
+
+			
+		}
+		return newArray;
+	}
+	
+	function updateBorderColors(){
+		console.log("16");
+		map.eachLayer(function(layer){
+			if(layer.feature!=undefined && layer.feature.properties.clicked ){
+				borderColor=getBorderColorForCloseZoom(layer.feature);
+				//layer.feature.setStyle(color,borderColor);
+			}
+		});
+	}
+	
+	//Shows or hides insula labels depending on zoom levels and if the map is interactive
+	function dealWithInsulaLabelsAndSelectionOnZoom(){
+		//console.log("5");
+		if(interactive){
+			if(!zoomedOutThresholdReached()){
+				if(showInsulaMarkers){
+					//removeInsulaLabels();
+					showInsulaMarkers=false;
+					//This shows selected properties from the insula when the map zooms in.
+					 updateBorderColors();
+					 
+				}
+			}
+			else if(!showInsulaMarkers){
+				//displayInsulaLabels();
+				showInsulaMarkers=true;
+			}
+		}
+	}
+	
+	//Builds the global list of insula ids. 
+	function makeInsulaIdsListShortNamesList(){
+		//console.log("8");
+		var currentInsulaId=183;
+		map.eachLayer(function(layer){
+			if(layer.feature!=undefined){
+				if(layer.feature.properties.insula_id!=currentInsulaId){
+					if(insulaGroupIdsList.indexOf(currentInsulaId)==-1){
+						insulaGroupIdsList.push(currentInsulaId);
+						
+					}
+				}
+				currentInsulaId=layer.feature.properties.insula_id;
+				insulaShortNamesDict[currentInsulaId]=layer.feature.properties.short_insula_name;	
+			}
+		});
+	}
+	
+	//Builds the dictionary of the graffiti in each insula
+	//This works well as graffiti numbers should not change over the session.
+	//Modifies the clojure wide variable once and only once at the beginning of the program
+	function makeTotalInsulaGraffitiDict(){
+		//console.log("9");
+		totalInsulaGraffitisDict=new Array();
+		map.eachLayer(function(layer){
+			if(zoomedOutThresholdReached() && layer.feature!=undefined){
+				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
+				currentInsulaNumber=layer.feature.properties.insula_id;
+				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
+					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
+				}
+				else{
+					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
+				}
+			}
+		});
+	}
+	//This function gets and returns a "dictionary" of the latitude and longitude of each insula given its id(as index).
+	//Used to find where to place the labels of each insula on the map, upon iteration through this list.
+	function makeInsulaCentersDict(){
+		//console.log("12");
+		var currentInsulaNumber;
+		//Manually set as the first insula id for pompeii
+		var oldInsulaNumber=183;
+		var xSoFar=0;
+		var ySoFar=0;
+		var latLngList;
+		var currentCoordinatesList;
+		var propertiesSoFar=0;
+		//console.log("Into find cds loop:");
+		
+		map.eachLayer(function(layer){
+			propertiesSoFar+=1;
+			if(layer.feature!=undefined && interactive){
+				currentInsulaNumber=layer.feature.properties.insula_id;
+				currentCoordinatesList=layer.feature.geometry.coordinates;
+				//console.log("Here is current coordinates list for layer:");
+				//console.log(currentCoordinatesList+" ");
+				if(currentInsulaNumber==oldInsulaNumber){
+					currentInsulaNumber=layer.feature.properties.insula_id;
+					//If a change in insula number has occurred, find the center of the coordinates and add them to the dictionary
+					var i=0;
+					
+					//This passes in the coordinates list for just one property in the insula which are then added
+					xAndYAddition=findCenter(currentCoordinatesList[0]);
+					//console.log("Here are xY additions");
+					//console.log(xAndYAddition+":");
+					xSoFar+=xAndYAddition[0];
+					ySoFar+=xAndYAddition[1];
+				}
+				else{
+					//Add to dictionary:
+					//Both divisions are required
+					latLngList=[xSoFar/propertiesSoFar,ySoFar/propertiesSoFar];
+					//This treats the currentInsulaNumber as a key(dictionary form)
+					
+					insulaCentersDict[oldInsulaNumber]=latLngList;
+					//Reset old variables:
+					xSoFar=0;
+					ySoFar=0;
+					propertiesSoFar=0;
+					oldInsulaNumber=currentInsulaNumber;
+					//This passes in the coordinates list for just one property in the insula which are then added
+					xAndYAddition=findCenter(currentCoordinatesList[0]);
+					xSoFar+=xAndYAddition[0];
+					ySoFar+=xAndYAddition[1];
+				}
+			}
+		});
+	}
+	
+	//Uses math to directly find and return the latitude and longitude of the center of a list of coordinates. 
+	//Returns a list of the latitude, x and the longitude, y
+	function findCenter(coordinatesList){
+		coordinatesList=coordinatesList[0];
+		//console.log("Coords list in find center:");
+		//console.log(coordinatesList);
+		////console.log("Here are coords passed to find center:");
+		////console.log(coordinatesList+":");
+		var i=0;
+		var x=0;
+		var y=0
+		var pointsSoFar=0;
+		for(i;i<coordinatesList.length;i++){
+			x+=coordinatesList[i][0];
+			y+=coordinatesList[i][1];
+			pointsSoFar+=1;
+		}
+		//console.log("X in findCenter:");
+		//console.log(x+":");
+		//console.log("y in findCenter:");
+		//console.log(y+":");
+		//console.log("Points so far in find center:");
+		//console.log(pointsSoFar);
+		return [x/pointsSoFar,y/pointsSoFar];
+	}
+	
+	
+	var createLabelIcon = function(labelClass,labelText){
+		  return L.divIcon({ 
+		    className: labelClass,
+		    html: labelText
+		  });
+		}
+	
+	function showALabelOnMap(xYCoordinates,textToDisplay){
+		//console.log("14");
+		//console.log(xYCoordinates);
+		//This was breaking bc/the new wall properties
+		//Commented out for now, change to deal with them later
+		var myIcon = L.divIcon({ 
+		    //iconSize: new L.Point(0, 0), 
+			iconSize:0,
+		    html: textToDisplay
+		});
+		// you can set .my-div-icon styles in CSS
+		var myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
+		insulaMarkersList.push(myMarker);
+	}
+	
+	//Shows the short names of each insula in black
+	//at the center coordinates. 
+	function displayInsulaLabels(){
+		////console.log("15");
+		var i;
+		var insulaId;
+		var insulaCenterCoordinates;
+		var shortInsulaName;
+		//Alerts are working console.log is not(why?)
+		for(i=0;i<insulaGroupIdsList.length;i++){
+			insulaId=insulaGroupIdsList[i];
+			insulaCenterCoordinates=insulaCentersDict[insulaId];
+			//console.log(insulaCentersDict+"h");
+			shortInsulaName=insulaShortNamesDict[insulaId];
+			if(! isNaN(insulaCenterCoordinates[0]) && ! isNaN(insulaCenterCoordinates[1])){
+				showALabelOnMap(insulaCenterCoordinates,shortInsulaName);
+			}
+		}
+	}
+	
 	function zoomedOutThresholdReached(){
 		currentZoomLevel=map.getZoom();
 		return (currentZoomLevel<=insulaViewZoomLevel && colorDensity);
@@ -182,9 +414,9 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	    
 	}
 	
-	function getFillColor(){
+	/*function getFillColor(){
 		return '#fda668';
-	}
+	}*/
 	
 	function getFillColor(numberOfGraffiti){
 		//Hex darkens color as number it represents decreases
@@ -302,6 +534,52 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	var geojson;
 	
+	//On click, sees if a new insula id # has been selected. If so, adds it to the list of 
+	//selected insula. 
+	function checkForInsulaClick(clickedProperty){
+		//console.log("20");
+		//Clicked property is a layer
+		//layer.feature.properties.insula_id
+		
+		//indexOf does not work for nested lists. Thus, we have no choice but to use it with strings. 
+		var clickedInsulaAsString=""+clickedInsula;
+		var clickedInsulaFullName=clickedProperty.feature.properties.full_insula_name;
+		var clickedInsulaId=clickedProperty.feature.properties.insula_id;
+		var clickedInsulaShortName=clickedProperty.feature.properties.short_insula_name;
+		var targetInsulaString=""+[clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName];
+		var indexOfInsulaName=clickedInsulaAsString.indexOf(targetInsulaString);
+		//Only adds the new id if it is already in the list
+		
+		if(indexOfInsulaName==-1){
+			clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
+		}
+		//Otherwise, removed the insula id from the list to deselect it
+		else{
+			clickedInsula=removeStringedListFromArray(clickedInsula,targetInsulaString);
+		}
+	}
+	
+	//Used on click for insula level view in place of display selected regions
+	//In charge of the right information only, does not impact the actual map
+	function displayHighlightedInsula(){
+		//console.log("21");
+		//clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
+		var html = "<table><tr><th>Selected Insula:</th></tr>";
+		var numberOfInsulaSelected=clickedInsula.length;
+		for (var i=0; i<numberOfInsulaSelected; i++) {
+			html += "<tr><td><li>"+clickedInsula[i][0] + ", " +
+					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li></td></tr>"
+		}
+		html += "</table";
+		//Checks to avoid error for element is null.
+		var elem = document.getElementById("newDiv");
+		  if(typeof elem !== 'undefined' && elem !== null) {
+			  document.getElementById("newDiv").innerHTML = html;
+		  }
+	}
+	
+	
+	
 	//Sets color for properties which the cursor is moving over. 
 	function highlightFeature(e) {
 		if(interactive && !zoomedOutThresholdReached()){
@@ -324,19 +602,29 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//have been and are clicked again, sets to false and vice versa. I am confused what pushToFront is
 	//or how it interacts with the wider collection of items if there is one. 
 	function showDetails(e) {
-		if(interactive && !zoomedOutThresholdReached()){
-			var layer = e.target;
-			if (layer.feature.properties.clicked != null) {
-				layer.feature.properties.clicked = !layer.feature.properties.clicked;
-			} else {
-				layer.feature.properties.clicked = true;
+		
+		if(interactive){
+			if(!zoomedOutThresholdReached()){
+				var layer = e.target;
+				if (layer.feature.properties.clicked != null) {
+					layer.feature.properties.clicked = !layer.feature.properties.clicked;
+				} else {
+					layer.feature.properties.clicked = true;
+				}
+				if (!L.Browser.ie && !L.Browser.opera) {
+			        layer.bringToFront();
+			    }
+				clickedAreas.push(layer);
+				info.update(layer.feature.properties);
+				
 			}
-			if (!L.Browser.ie && !L.Browser.opera) {
-		        layer.bringToFront();
-		    }
-			clickedAreas.push(layer);
-			info.update(layer.feature.properties);
+			else{
+				checkForInsulaClick(e.target);
+			}
+			
 		}
+		
+		
 	}
 	
 	
@@ -369,6 +657,7 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}).addTo(map);
 	//Putting this after the above appears to make it this start correctly.
 	 if(initialZoomNotCalled==true){
+		   //console.log("16");
 		   dealWithInsulaLevelView();
 		   initialZoomNotCalled=false;
 	 }
@@ -450,27 +739,32 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Displays the Selected Properties and their corresponding information in an HTML table formatted. 
 	//Achieved by mixing html and javascript, accessing text properties of the regions(items). 
 	function displayHighlightedRegions() {
-		var clickedAreasTable = getUniqueClicked();
-		
-		var html = "<table><tr><th>Selected Properties:</th></tr>";
-		var length = clickedAreasTable.length;
-		for (var i=0; i<length; i++) {
-			var property = clickedAreasTable[i];
-			/*alert(property.feature.geometry.coordinates);*/
-			if (property.feature.properties.clicked === true) {
-				
-				html += "<tr><td><li>" +property.feature.properties.Property_Name + ", " + 
-						"<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li></td></tr>";
-			}
-		}
-		html += "</table";
-		//Checks to avoid error for element is null.
-		var elem = document.getElementById("newDiv");
-		  if(typeof elem !== 'undefined' && elem !== null) {
-			  document.getElementById("newDiv").innerHTML = html;
-		  }
+		if(!zoomedOutThresholdReached()){
+			var clickedAreasTable = getUniqueClicked();
 			
-		// when you click anywhere on the map, it updates the table
+			var html = "<table><tr><th>Selected Properties:</th></tr>";
+			var length = clickedAreasTable.length;
+			for (var i=0; i<length; i++) {
+				var property = clickedAreasTable[i];
+				/*alert(property.feature.geometry.coordinates);*/
+				if (property.feature.properties.clicked === true) {
+					
+					html += "<tr><td><li>" +property.feature.properties.Property_Name + ", " + 
+							"<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li></td></tr>";
+				}
+			}
+			html += "</table";
+			//Checks to avoid error for element is null.
+			var elem = document.getElementById("newDiv");
+			  if(typeof elem !== 'undefined' && elem !== null) {
+				  document.getElementById("newDiv").innerHTML = html;
+			  }
+				
+		}
+		  else{
+				displayHighlightedInsula();
+				var clickedAreasTable = getUniqueClicked();
+			}	
 	}
 	
 	

@@ -90,11 +90,11 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	@Resource
 	private static GraffitiDao graffitiDaoObject;
 
-	public static void main(String args[]) {
+	public static void main(String args[]) throws SQLException {
 		storeProperties();
 	}
 
-	public static void storeProperties() {
+	public static void storeProperties() throws SQLException {
 		init();
 
 		storeHerculaneum();
@@ -131,8 +131,9 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 	/**
 	 * Stores the data for Herculaneum in herculaneumPropertyData.txt
+	 * @throws SQLException 
 	 */
-	private static void storeHerculaneum() {
+	private static void storeHerculaneum() throws SQLException {
 		try {
 			// creates the file we will later write the updated graffito to.
 
@@ -148,6 +149,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			Iterator<JsonNode> herculaneumIterator = herculaneumFeaturesNode.elements();
 
 			while (herculaneumIterator.hasNext()) {
+				
 				JsonNode hercProperty = herculaneumIterator.next();
 
 				JsonNode osmWayNode = hercProperty.findValue(OSM_WAY_ID_KEY);
@@ -205,6 +207,22 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		String addProperties = rs.getString("additional_properties");
 		String italPropName = rs.getString("italian_property_name");
 		String insulaId = rs.getString("insula_id");
+		
+		ObjectNode graffito = (ObjectNode) hercProperty;
+		ObjectNode properties = (ObjectNode) graffito.path("properties");
+		
+		selectCityAndInsulaStatement.setInt(1, propertyId);
+
+		ResultSet insulaResultSet = selectCityAndInsulaStatement.executeQuery();
+
+		if (insulaResultSet.next()) {
+			String shortInsulaName = insulaResultSet.getString("short_name");
+			String fullInsulaName = insulaResultSet.getString("full_name");
+
+			properties.put("short_insula_name", shortInsulaName);
+			properties.put("full_insula_name", fullInsulaName);
+		}
+		
 		// String insulaDescription =
 		// rs.getString("description");
 		// String insulaPleiadesId =
@@ -226,15 +244,14 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			propertyType = resultset.getString("name");
 		}
 
-		ObjectNode graffito = (ObjectNode) hercProperty;
-		ObjectNode properties = (ObjectNode) graffito.path("properties");
+		
 		properties.put("Property_Id", propertyId);
 		properties.put("Number_Of_Graffiti", numberOfGraffitiOnProperty);
 		properties.put("Property_Name", propertyName);
 		properties.put("Additional_Properties", addProperties);
 		properties.put("Italian_Property_Name", italPropName);
 		properties.put("insula_id", insulaId);
-
+		
 		// These are not in the database.
 		// properties.put("Insula_Description",
 		// insulaDescription);
