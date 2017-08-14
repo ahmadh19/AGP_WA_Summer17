@@ -57,17 +57,14 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		maxBounds: bounds,
 		//Here is the +/- button for zoom
 	})
-<<<<<<< HEAD
 	//console.log("3");
 	//var comp = new L.Control.Compass({autoActive: true});
 	//map.add(comp);
 	//map.addControl(comp);
-=======
 	
-	var comp = new L.Control.Compass({autoActive: true});
+	//var comp = new L.Control.Compass({autoActive: true});
 	map.add(comp);
 	map.addControl(comp);
->>>>>>> branch 'development' of https://github.com/sprenks18/AGP_WA_Development.git
 	
 	//Syncs with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
