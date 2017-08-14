@@ -464,7 +464,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	function dealWithInsulaLevePropertylView(){
 		//console.log("14");
 		map.eachLayer(function(layer){
-			if(insulaViewZoomThresholdReached() && layer.feature!=undefined){
+			if(insulaViewZoomThresholdReached() && layer.feature!=undefined && !regioViewZoomThresholdReached()){
 				//console.log("A layer in the map:");
 				//console.log(layer.feature.NAME);
 				currentInsulaNumber=layer.feature.properties.insula_id;
@@ -473,11 +473,20 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				layer.setStyle({fillColor:newFillColor});
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
 			}
+			else if(regioViewZoomThresholdReached() && colorDensity && layer.feature!=undefined){
+				regioName=layer.feature.properties.PRIMARY_DO[0];
+				numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
+				newFillColor=getFillColor(numberOfGraffitiInGroup);
+				layer.setStyle({fillColor:newFillColor});
+				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
+			}	
 			//Resets properties when user zooms back in
 			if (!insulaViewZoomThresholdReached() && colorDensity && layer.feature!=undefined){
 				layer.setStyle({color: getBorderColorForCloseZoom(layer.feature)});
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
+				layer.setStyle({fillColor:newFillColor});
+				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
 			}
 			
 		});
@@ -697,7 +706,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				clickedAreas.push(layer);
 				info.update(layer.feature.properties);
 			}
-			else{
+			else if(! regioViewZoomThresholdReached()){
 				checkForInsulaClick(e.target);
 			}
 		}
@@ -764,7 +773,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	
 	function displayHighlightedRegio(){
-		var html = "<table><tr><th>Selected Regio:</th></tr>";
+		/*var html = "<table><tr><th>Selected Regio:</th></tr>";
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
 			html += "<tr><td><li>"+clickedInsula[i][0] + ", " +
@@ -775,7 +784,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var elem = document.getElementById("newDiv");
 		  if(typeof elem !== 'undefined' && elem !== null) {
 			  document.getElementById("newDiv").innerHTML = html;
-		  }
+		  }*/
 	}
 	
 	
@@ -944,7 +953,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			  }
 		}
 		
-		else{
+		else if( !regioViewZoomThresholdReached()){
 			displayHighlightedInsula();
 			var clickedAreasTable = getUniqueClicked();
 		}	
