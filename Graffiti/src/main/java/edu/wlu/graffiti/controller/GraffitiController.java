@@ -429,7 +429,7 @@ public class GraffitiController {
 		// parameters, searchTerms, and fieldNames lists accordingly
 		for (int i = 0; i < searches.length; i++) {
 			if (searches[i] != null) {
-				parameters.add(arrayToString(searches[i]).toLowerCase());
+				parameters.add(arrayToString(searches[i]));
 				searchTerms.add(searchDescs[i]);
 				fieldNames.add(searchFields[i]);
 			}
@@ -464,9 +464,9 @@ public class GraffitiController {
 				// keyword match
 				BoolQueryBuilder globalQuery;
 				globalQuery = boolQuery();
-				globalQuery.should(queryStringQuery(parameters.get(i)).useAllFields(true)); // exact
+				globalQuery.should(queryStringQuery(parameters.get(i).toLowerCase()).useAllFields(true)); // exact
 																							// match
-				globalQuery.should(queryStringQuery("*" + parameters.get(i) + "*").useAllFields(true)); // partial
+				globalQuery.should(queryStringQuery("*" + parameters.get(i).toLowerCase() + "*").useAllFields(true)); // partial
 				query.must(globalQuery);
 			} else if (searchTerms.get(i).equals("Content Keyword")) {
 				BoolQueryBuilder contentQuery = boolQuery();
@@ -474,9 +474,9 @@ public class GraffitiController {
 
 				for (String param : params) {
 					BoolQueryBuilder orQuery = boolQuery();
-					orQuery.should(matchQuery(fieldNames.get(i), param)); // exact
+					orQuery.should(matchQuery(fieldNames.get(i).toLowerCase(), param)); // exact
 																			// match
-					orQuery.should((regexpQuery(fieldNames.get(i), ".*" + param + ".*"))); // partial
+					orQuery.should((regexpQuery(fieldNames.get(i).toLowerCase(), ".*" + param + ".*"))); // partial
 					contentQuery.must(orQuery);
 				}
 
