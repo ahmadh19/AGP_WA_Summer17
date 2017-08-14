@@ -188,7 +188,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	function showALabelOnMap(xYCoordinates,textToDisplay){
 		//This was breaking bc/the new wall properties
 		//Commented out for now, change to deal with them later
-		/*//console.log("10");
+		//console.log("10");
 		var myIcon = L.divIcon({ 
 		    //iconSize: new L.Point(0, 0), 
 			iconSize:0,
@@ -196,7 +196,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		});
 		// you can set .my-div-icon styles in CSS
 		var myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
-		insulaMarkersList.push(myMarker);*/
+		insulaMarkersList.push(myMarker);
 	}
 	
 	//Removes each of the insula labels from the map.
@@ -578,7 +578,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//In charge of the right information only, does not impact the actual map
 	function displayHighlightedInsula(){
 		//console.log("21");
-		//clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
 		var html = "<table><tr><th>Selected Insula:</th></tr>";
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
