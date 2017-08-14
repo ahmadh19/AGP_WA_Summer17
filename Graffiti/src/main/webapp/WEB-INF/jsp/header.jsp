@@ -22,24 +22,34 @@
 				role="navigation">
 				<ul class="nav navbar-nav" id="nav">
 					<li><a href="<%=request.getContextPath()%>/">Home</a></li>
-					<li><a href="<%=request.getContextPath()%>/results">Browse
-							All Inscriptions</a></li>
+					<li><a href="<%=request.getContextPath()%>/results">Inscriptions</a></li>
 					<li><a
-						href="<%=request.getContextPath()%>/results?drawing_category=All">Browse
-							Figural Graffiti (Drawings)</a></li>
+						href="<%=request.getContextPath()%>/results?drawing_category=All">Figural
+							Graffiti (Drawings)</a></li>
 
-					<li><a href="<%=request.getContextPath()%>/searchHerculaneum">Search
-							Herculaneum</a></li>
-					<li><a href="<%=request.getContextPath()%>/searchPompeii">Search
-							Pompeii</a></li>
-
+					<li>Interactive Maps:
+						<ul>
+							<li><a
+								href="<%=request.getContextPath()%>/searchHerculaneum">Herculaneum</a></li>
+							<li><a href="<%=request.getContextPath()%>/searchPompeii">
+									Pompeii</a></li>
+						</ul>
+					</li>
+					<li>Data:
+						<ul>
+							<li><a href="<%=request.getContextPath()%>/properties">Properties</a>
+						</ul>
+					</li>
 					<li><a href="<%=request.getContextPath()%>/featured-graffiti">Featured
 							Graffiti</a></li>
-					<!--  <li><a href="<%=request.getContextPath()%>/new-featured-graffiti">New Featured Graffiti</a></li>
-					-->
-					<li><a href="/about">About the Project</a></li>
-					<!-- If user is authenticated, Login disappears and Logout appears. Vice versa if admin is not authenticated -->
+					<li><a href="/about">About the Project</a>
+					<ul>
+						<li><a href="/about/">Teams</a></li>
+					</ul>
+					
+					</li>
 					<%
+						/* If user is authenticated, Login disappears and Logout appears. Vice versa if admin is not authenticated */
 						if (sess == true) {
 					%>
 					<li><a href="<%=request.getContextPath()%>/admin">Admin</a></li>

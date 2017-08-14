@@ -58,7 +58,7 @@
 	margin-bottom: 0px;
 }
 
-.navbar-inverse .navbar-nav>li>a {
+.navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-nav>li {
 	color: white;
 }
 
