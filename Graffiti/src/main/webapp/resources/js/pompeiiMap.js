@@ -16,7 +16,9 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	var showInsulaMarkers;
 	
-	//The maximum zoom level to show insula view instead of property view(smaller zoom level means more zoomed out)
+	var regioViewZoomLevel=16;
+	
+	//The minimum zoom level to show insula view instead of property view(smaller zoom level means more zoomed out)
 	var insulaViewZoomLevel=17;
 	
 	if(!moreZoom){
@@ -47,6 +49,14 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	var insulaCentersDict=[];
 	var insulaGroupIdsList=[];
 	var insulaShortNamesDict=[];
+	
+	
+	
+	//Variables for all things regio:
+	var regioCentersDict={};
+	var regioNamesList=[];
+	var graffitiInEachRegioDict={};
+	
 	//Fires when the map is initialized
 
 	map = new L.map('pompeiimap', {
@@ -55,7 +65,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		minZoom: currentZoomLevel,
 		maxZoom:20,
 		maxBounds: bounds,
-		//Here is the +/- button for zoom
 	})
 	//console.log("3");
 	//var comp = new L.Control.Compass({autoActive: true});
@@ -76,34 +85,46 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	
 	L.geoJson(pompeiiPropertyData).addTo(map);
 	
-	if( interactive){
+	if( interactive && colorDensity){
+		//Insula Functions:
 		makeInsulaCentersDict();
 		makeTotalInsulaGraffitiDict();
 		makeInsulaIdsListShortNamesList();
-		displayInsulaLabels();
+		
+		//Regio Functions:
+		makeRegioCentersDict();
+		makeTotalRegioGraffitiDict();
+		makeListOfRegioNames();
+		
+		
+		dealWithLabelsAndSelection();
+		
 	}
 	
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
 		dealWithInsulaLevePropertylView();
-		dealWithInsulaLabelsAndSelectionOnZoom();
+		dealWithLabelsAndSelection();
 	});
 	//console.log("4");
 	//Shows or hides insula labels depending on zoom levels and if the map is interactive
-	function dealWithInsulaLabelsAndSelectionOnZoom(){
+	function dealWithLabelsAndSelection(){
 		//console.log("5");
 		if(interactive){
-			if(!zoomedOutThresholdReached()){
-				if(showInsulaMarkers){
+			if(!insulaViewZoomThresholdReached() && !regioViewZoomThresholdReached()){
+				//if(showInsulaMarkers){
 					//removeInsulaLabels();
-					showInsulaMarkers=false;
+					//showInsulaMarkers=false;
 					//This shows selected properties from the insula when the map zooms in.
-					 updateBorderColors();
-				}
+				updateBorderColors();
 			}
-			else if(!showInsulaMarkers){
-				//displayInsulaLabels();
-				showInsulaMarkers=true;
+			else if(regioViewZoomThresholdReached()){
+				removeInsulaLabels();
+				displayRegioLabels();
+			}
+			else{
+				displayInsulaLabels();
+				//showInsulaMarkers=true;
 			}
 		}
 	}
@@ -156,6 +177,44 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			}
 		});
 	}
+	
+	function makeListOfRegioNames(){
+		var someName;
+		map.eachLayer(function(layer){
+			if(layer.feature!=undefined){
+				someName=layer.feature.properties.PRIMARY_DO[0];
+				if(regioNamesList.indexOf(someName)==-1){
+					regioNamesList.push(someName);
+				}
+			}
+		});
+	}
+	
+	
+	function makeTotalRegioGraffitiDict(){
+		var currentNumberOfGraffiti;
+		var currentRegioName;
+		var regioNamesSoFar=[];
+		map.eachLayer(function(layer){
+			if(layer.feature!=undefined){
+				currentRegioName=layer.feature.properties.PRIMARY_DO[0];
+				currentNumberOfGraffiti=layer.feature.properties.Number_Of_Graffiti;
+				if(regioNamesSoFar.indexOf(currentRegioName)==-1){
+					regioNamesSoFar.push(currentRegioName);
+					graffitiInEachRegioDict[currentRegioName]=currentNumberOfGraffiti;
+				}
+				else{
+					graffitiInEachRegioDict[currentRegioName]+=currentNumberOfGraffiti;
+				}
+			}
+		});
+		console.log("Number of Graffiti placed in for I:");
+		console.log(graffitiInEachRegioDict["I"]);
+		console.log("Number of Graffiti placed in for V:");
+		console.log(graffitiInEachRegioDict["V"]);
+	}
+	
+	
 	//Builds the dictionary of the graffiti in each insula
 	//This works well as graffiti numbers should not change over the session.
 	//Modifies the clojure wide variable once and only once at the beginning of the program
@@ -163,7 +222,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		//console.log("9");
 		totalInsulaGraffitisDict=new Array();
 		map.eachLayer(function(layer){
-			if(zoomedOutThresholdReached() && layer.feature!=undefined){
+			if(insulaViewZoomThresholdReached() && layer.feature!=undefined){
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
@@ -175,25 +234,53 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			}
 		});
 	}
-	var createLabelIcon = function(labelClass,labelText){
-	  return L.divIcon({ 
-	    className: labelClass,
-	    html: labelText
-	  });
+	var createLabelIcon = function(labelClass,labelText,textSize="small"){
+		if(textSize=="small"){
+		  return L.divIcon({ 
+		    className: labelClass,
+		    html: labelText
+		  });
+		}
+		else if(textSize=="large"){
+			  return L.divIcon({ 
+				    className: labelClass,
+				    html: labelText
+				});
+		}
 	}
 	//Meant to show the insula short name labels at the given x/y coordinates
 	//(given as a normal list in Java array form)
-	function showALabelOnMap(xYCoordinates,textToDisplay){
+	function showALabelOnMap(xYCoordinates,textToDisplay,textSize="small"){
 		//This was breaking bc/the new wall properties
 		//Commented out for now, change to deal with them later
 		//console.log("10");
-		var myIcon = L.divIcon({ 
+		var myIcon= L.divIcon({ 
 		    //iconSize: new L.Point(0, 0), 
 			iconSize:0,
 		    html: textToDisplay
 		});
+		
+		
+		//Says this should work online but it does not?
+		//myIconLargelText.getElement().style.width='50px';
+		//myIconLargelText.getElement().style.height='50px';
 		// you can set .my-div-icon styles in CSS
-		var myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
+		var myMarker;
+		myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
+		
+		//Tried the below to increase text size for Regio view it would not work
+		/*if(textSize=="small"){
+			myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
+		} 
+		//else if(textSize=="large"){
+			myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon});
+			myMarker.getElement().style.width="50px";
+			myMarker.getElement().style.height="50px";
+			myMarker.addTo(map);
+		}
+		else{
+			alert("Error with leaflet label textSize!");
+		}*/
 		insulaMarkersList.push(myMarker);
 	}
 	
@@ -225,6 +312,87 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		}
 	}
 	
+	function displayRegioLabels(){
+		var i;
+		var regioCenterCoordinates;
+		var regioName;
+		for(i=0;i<regioNamesList.length;i++){ 
+			regioName=regioNamesList[i];
+			regioCenterCoordinates=regioCentersDict[regioName];
+			if(regioCenterCoordinates!=null){
+				showALabelOnMap(regioCenterCoordinates,regioName,"large");
+			}
+			
+		}
+	}
+	
+	function addMoreLatLng(oldList,newList){
+		oldList=[oldList[0]+newList[0],oldList[1]+newList[1]];
+		return oldList;
+	}
+	
+	//This way will take more compiler time.
+	//Trying to do it inside make center dict was too confusing/complex for me. 
+	function makeTotalPropsPerRegioDict(totalPropsSoFarDict){
+		var regioList=[];
+		var currentRegio;
+		var currentCount;
+		map.eachLayer(function(layer){
+			if(layer.feature!=undefined){
+				currentRegio=layer.feature.properties.PRIMARY_DO[0];
+				
+				if(regioList.indexOf(currentRegio)==-1){
+					currentCount=1;
+					totalPropsSoFarDict[currentRegio]=currentCount; 
+					regioList.push(currentRegio);
+				}
+				else{
+					currentCount=totalPropsSoFarDict[currentRegio];
+					totalPropsSoFarDict[currentRegio]=currentCount+1;
+				}
+			}
+		});
+		return totalPropsSoFarDict;
+	}
+	
+	
+	//Works like the maker for insula centers dict but for Regio instead. 
+	//Needed to account for the fact that Regio were not ordered one to the other in database. 
+	function makeRegioCentersDict(){
+		var currentRegioName;
+		var latLngList;
+		var totalPropsSoFarDict={};
+		var regioNamesSoFar=[];
+		var currentRegioName;
+		totalPropsSoFarDict=makeTotalPropsPerRegioDict(totalPropsSoFarDict);
+		map.eachLayer(function(layer){
+			if(layer.feature!=undefined){
+				currentRegioName=layer.feature.properties.PRIMARY_DO[0];
+				if(regioNamesSoFar.indexOf(currentRegioName)==-1){
+					regioNamesSoFar.push(currentRegioName);
+					if(layer.feature.geometry.coordinates!=undefined){
+						regioCentersDict[currentRegioName]=findCenter(layer.feature.geometry.coordinates[0]);
+					}
+					else{
+						regioCentersDict[currentRegioName]=0;
+					}
+				}
+				else{
+					if(layer.feature.geometry.coordinates!=undefined){
+						regioCentersDict[currentRegioName]=addMoreLatLng(regioCentersDict[currentRegioName],[findCenter(layer.feature.geometry.coordinates[0])[0],findCenter(layer.feature.geometry.coordinates[0])[1]]);
+					}
+				}
+			}
+		});
+		for(var key in regioCentersDict){
+			var div=[regioCentersDict[key][0]/totalPropsSoFarDict[key],regioCentersDict[key][1]/totalPropsSoFarDict[key]];
+			regioCentersDict[key]=div;
+		}
+		console.log("Center coords for V:");
+		console.log(regioCentersDict["V"]+":");
+		console.log("Center coords for I:");
+		console.log(regioCentersDict["I"]+":");
+	}
 	
 	//This function gets and returns a "dictionary" of the latitude and longitude of each insula given its id(as index).
 	//Used to find where to place the labels of each insula on the map, upon iteration through this list.
@@ -296,7 +464,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	function dealWithInsulaLevePropertylView(){
 		//console.log("14");
 		map.eachLayer(function(layer){
-			if(zoomedOutThresholdReached() && layer.feature!=undefined){
+			if(insulaViewZoomThresholdReached() && layer.feature!=undefined){
 				//console.log("A layer in the map:");
 				//console.log(layer.feature.NAME);
 				currentInsulaNumber=layer.feature.properties.insula_id;
@@ -306,7 +474,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
 			}
 			//Resets properties when user zooms back in
-			if (!zoomedOutThresholdReached() && colorDensity && layer.feature!=undefined){
+			if (!insulaViewZoomThresholdReached() && colorDensity && layer.feature!=undefined){
 				layer.setStyle({color: getBorderColorForCloseZoom(layer.feature)});
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
@@ -315,7 +483,12 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		});
 	}
 	
-	function zoomedOutThresholdReached(){
+	function regioViewZoomThresholdReached(){
+		currentZoomLevel=map.getZoom();
+		return (currentZoomLevel<=regioViewZoomLevel && colorDensity);
+	}
+	
+	function insulaViewZoomThresholdReached(){
 		currentZoomLevel=map.getZoom();
 		return (currentZoomLevel<=insulaViewZoomLevel && colorDensity);
 	}
@@ -489,7 +662,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//Sets color for properties which the cursor is moving over. 
 	function highlightFeature(e) {
 		//console.log("18");
-		if(interactive && !zoomedOutThresholdReached()){
+		if(interactive && !insulaViewZoomThresholdReached()){
 			var layer = e.target;
 			layer.setStyle({
 			color:'yellow',
@@ -511,7 +684,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	function showDetails(e) {
 		//console.log("19");
 		if(interactive){
-			if(!zoomedOutThresholdReached()){
+			if(!insulaViewZoomThresholdReached()){
 				var layer = e.target;
 				if (layer.feature.properties.clicked != null) {
 					layer.feature.properties.clicked = !layer.feature.properties.clicked;
@@ -590,11 +763,26 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		  }
 	}
 	
+	function displayHighlightedRegio(){
+		var html = "<table><tr><th>Selected Regio:</th></tr>";
+		var numberOfInsulaSelected=clickedInsula.length;
+		for (var i=0; i<numberOfInsulaSelected; i++) {
+			html += "<tr><td><li>"+clickedInsula[i][0] + ", " +
+					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li></td></tr>"
+		}
+		html += "</table";
+		//Checks to avoid error for element is null.
+		var elem = document.getElementById("newDiv");
+		  if(typeof elem !== 'undefined' && elem !== null) {
+			  document.getElementById("newDiv").innerHTML = html;
+		  }
+	}
+	
 	
 	//Try: just commenting first line. Then, the map still works but colors remain unchanged when clicked twice. 
 	//Used to reset the color, size, etc of items to their default state(ie. after being clicked twice)
 	function resetHighlight(e) {
-		if(interactive && !zoomedOutThresholdReached()){
+		if(interactive && !insulaViewZoomThresholdReached()){
 		geojson.resetStyle(e.target);
 	    info.update();
 		}
@@ -736,7 +924,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	function displayHighlightedRegions() {
 		//console.log("25");
 		// when you click anywhere on the map, it updates the table
-		if(! zoomedOutThresholdReached()){
+		if(!insulaViewZoomThresholdReached()){
 			var clickedAreasTable = getUniqueClicked();
 			var html = "<table><tr><th>Selected Properties:</th></tr>";
 			var length = clickedAreasTable.length;
@@ -755,6 +943,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				  document.getElementById("newDiv").innerHTML = html;
 			  }
 		}
+		
 		else{
 			displayHighlightedInsula();
 			var clickedAreasTable = getUniqueClicked();
