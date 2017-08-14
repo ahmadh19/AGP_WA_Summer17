@@ -269,6 +269,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
 		
 		//Tried the below to increase text size for Regio view it would not work
+		//Could also try to style with css
+		//https://gis.stackexchange.com/questions/59571/how-to-add-text-only-labels-on-leaflet-map-with-no-icon
 		/*if(textSize=="small"){
 			myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
 		} 
