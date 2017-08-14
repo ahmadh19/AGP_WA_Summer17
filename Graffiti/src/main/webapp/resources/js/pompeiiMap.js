@@ -705,7 +705,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			var propertyID = property.feature.properties.Property_Id;
 			propIdsOfClicked.push(propertyID);
 		}
-		propIdsOfClicked=selectPropertiesInAllSelectedInsula;
+		//propIdsOfClicked=selectPropertiesInAllSelectedInsula;
 		
 		return propIdsOfClicked;
 	}

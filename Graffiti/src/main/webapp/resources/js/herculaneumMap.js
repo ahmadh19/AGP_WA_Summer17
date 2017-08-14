@@ -331,6 +331,34 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	
 	
+	//Marks all properties inside of selected insula as selected by
+	//adding them to the clickedInsula list.
+	function selectPropertiesInAllSelectedInsula(uniqueClicked){
+		//console.log("22");
+		if(interactive){
+			var i=0;
+			var currentInsulaId;
+			var currentInsula;
+			var listOfSelectedInsulaIds=[];
+			for(i;i<clickedInsula.length;i++){
+				currentInsula=clickedInsula[i];
+				currentInsulaId=currentInsula[1];
+				listOfSelectedInsulaIds.push(currentInsulaId);	
+			}
+			map.eachLayer(function(layer){
+				if(layer.feature!=undefined){
+					if(listOfSelectedInsulaIds.indexOf(layer.feature.properties.insula_id)!=-1 && !uniqueClicked.includes(layer)){
+						uniqueClicked.push(layer);
+						layer.feature.properties.clicked=true;
+
+					}
+				}
+			});
+		}
+		return uniqueClicked;
+
+	}
+	
 	var createLabelIcon = function(labelClass,labelText){
 		  return L.divIcon({ 
 		    className: labelClass,
@@ -696,6 +724,7 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				uniqueClicked.push(property)
 			}
 		}
+		uniqueClicked=selectPropertiesInAllSelectedInsula(uniqueClicked);
 		return uniqueClicked;
 	}
 	//Collects the ids of the clicked item objects(the id property).
