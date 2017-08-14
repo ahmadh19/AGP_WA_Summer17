@@ -63,8 +63,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//map.addControl(comp);
 	
 	//var comp = new L.Control.Compass({autoActive: true});
-	map.add(comp);
-	map.addControl(comp);
+	//map.add(comp);
+	//map.addControl(comp);
 	
 	//Syncs with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
