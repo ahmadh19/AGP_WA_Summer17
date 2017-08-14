@@ -172,8 +172,6 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 					}
 				} else if (osmNode != null) {
 					String osm_id = osmNode.textValue();
-					System.out.println("Here is osm id as text:");
-					System.out.println(osm_id);
 					try {
 						osmIdSelectionStatement.setString(1, osm_id);
 
@@ -265,7 +263,6 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		graffito.set("properties", updatedProps);
 		// write the newly updated graffito to text file
 		herculaneumTextWriter.println(graffito + ",");
-		System.out.println(graffito);
 	}
 
 	/**
@@ -296,14 +293,11 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 				JsonNode primaryDONode = featureNode.findValue("PRIMARY_DO");
 				if (primaryDONode == null) {
-					// System.out.println("No PRIMARY_DO in " + featureNode);
 					continue;
 				}
 
 				String primaryDO = primaryDONode.textValue();
 				if (primaryDO == null || !primaryDO.contains(".")) {
-					// System.out.println("Problem with primaryDO?: " +
-					// primaryDO);
 					continue;
 				}
 
@@ -320,9 +314,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 				Polygon p = parseGeometryAndRemoveCoordinates(featureNode);
 
 				try {
-
 					// Get the insula names from the database and store.
-
 					selectPropertyStatement.setString(1, "Pompeii");
 					selectPropertyStatement.setString(2, insulaName);
 					selectPropertyStatement.setString(3, propertyNum);
