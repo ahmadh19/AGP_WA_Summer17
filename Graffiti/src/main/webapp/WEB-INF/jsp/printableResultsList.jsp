@@ -67,44 +67,6 @@
 				<td>${i.language}</td>
 			</tr>
 		</c:if>
-		<!--
-		<c:if test="${fn:length(i.photos) gt 0}">
-			<c:set var="len" value="${fn:length(i.photos)}" />
-			<c:set var="images" value="${i.images}" />
-			<c:set var="thumbnails" value="${i.thumbnails}" />
-			<c:set var="pages" value="${i.pages}" />
-
-			<c:choose>
-				<c:when test="${len == 1}">
-					<tr>
-						<td colspan="2"><a target="_blank" href="${pages[0]}"><img
-								style="display: block; margin-left: auto; margin-right: auto;"
-								class="thumbnail" src="${thumbnails[0]}" /></a></td>
-					</tr>
-				</c:when>
-				<c:otherwise>
-					<c:set var="k" value="${i.edrId}" />
-
-					<tr>
-						<td colspan="2"><a target="_blank" href="${pages[0]}"
-							id="imgLink${k}"><img class="thumbnail"
-								src="${thumbnails[0]}" id="imgSrc${k}" /></a>
-							<table class="buttons">
-								<tr>
-									<c:forEach var="j" begin="${0}" end="${len-1}">
-										<td><input type="radio" name="image${k}"
-											onclick="selectImg2(${j},'${k}','${pages[j] }','${thumbnails[j]}');"
-											id="${k}${j}" /> <label for="${k}${j}"> <img
-												src="${thumbnails[j] }" height="60px" />
-										</label></td>
-									</c:forEach>
-								</tr>
-							</table></td>
-					</tr>
-				</c:otherwise>
-			</c:choose>
-		</c:if>
-		-->
 		<tr>
 			<th class="propertyLabel">City:</th>
 			<td><a
@@ -137,13 +99,6 @@
 					</td>
 			</tr>
 		</c:if>
-		<!-- 
-		<tr>
-			<th>URI:</th>
-			<td>http://ancientgraffiti.org<%=request.getContextPath() %>/graffito/AGP-${i.edrId}</td>
-		</tr>
-		-->
-		
 		<tr>
 			<th><span class="propertyLabel">Suggested Citation:</span></th>
 			<!-- Cannot use {i.citation} here because we need the URI to be a link -->

@@ -1,9 +1,8 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -30,12 +29,10 @@
 	integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
 	crossorigin=""></script>
 
-
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
-
 
 <style type="text/css">
 #pompCityMap {
@@ -92,9 +89,6 @@ h4 {
 </style>
 <script type="text/javascript">
 
-
-
-
 function displayConventions() { 
 	document.getElementById("convention_table").style.display = 'inline';
 	document.getElementById("hideConvBtn").style.display = 'inline';
@@ -117,24 +111,6 @@ function displayDefinition(currentDef) {
 	document.getElementById(currentDef).style.display = 'inline';
 }
 
-function start() {
-$('img').mapster({
-	areas: [
-		<c:forEach var="locKey" items="${requestScope.findLocationKeys}">
-		{
-			key: '${locKey}',
-			fillColor: '0000FF',
-			staticState: true
-		},
-		</c:forEach>
-	], 
-	isSelectable: false,
-	mapKey: 'data-key',
-	clickNavigate: false,
-}); 
-}
-
-
 function selectImg(ind) {
 	var hrefs = "${requestScope.imagePages}".slice(1,-1).split(','); //turns string of urls into array
 	var srcs = "${requestScope.images}".slice(1,-1).split(',');
@@ -155,9 +131,7 @@ function backToResults(){
 	window.location.href = url;
 }
 </script>
-
 </head>
-
 <body>
 	<%@include file="header.jsp"%>
 
@@ -169,7 +143,6 @@ function backToResults(){
 	$(document).ready(function() {
 		$("#measurements").hide();
 		});
-	
 	
 	//Do NOT delete the commented out code in this function. It is for the Show/Hide
 	//measurements button and will be re-implemented when we have the data that we need.  
@@ -193,7 +166,6 @@ function backToResults(){
 	</script>
 
 	<div class="button_bar">
-
 		<button class="btn btn-agp" onclick="backToResults();">Back
 			to Results</button>
 		<a href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}/csv"
@@ -311,17 +283,17 @@ function backToResults(){
 							</tr>
 							<tr>
 								<td onclick="displayDefinition('def6')">a&#803;b&#803;</td>
-								<Anthem /tr>
-								<tr>
-									<td onclick="displayDefinition('def7')"><span
-										style="text-decoration: underline">abc</span></td>
-								</tr>
-								<tr>
-									<td onclick="displayDefinition('def8')">((:abc))</td>
-								</tr>
-								<tr>
-									<td onclick="displayDefinition('def9')">(:abc)</td>
-								</tr>
+							</tr>
+							<tr>
+								<td onclick="displayDefinition('def7')"><span
+									style="text-decoration: underline">abc</span></td>
+							</tr>
+							<tr>
+								<td onclick="displayDefinition('def8')">((:abc))</td>
+							</tr>
+							<tr>
+								<td onclick="displayDefinition('def9')">(:abc)</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -338,14 +310,6 @@ function backToResults(){
 							<td>${i.agp.figuralInfo.descriptionInEnglish}</td>
 						</tr>
 					</c:if>
-					<!-- 
-					<c:if test="${not empty i.agp.commentary}">
-						<tr>
-							<th class="propertyLabel">Commentary:</th>
-							<td>${i.agp.commentary}</td>
-						</tr>
-					</c:if>
-					 -->
 					<tr>
 						<th class="propertyLabel">Findspot:</th>
 						<td><a
@@ -393,14 +357,9 @@ function backToResults(){
 						</tr>
 					</c:if>
 					<c:if test="${not empty i.measurements}">
-
 						<tr>
-
-
 							<th class="propertyLabel"><input type="button"
 								id="showMeasure" class="btn btn-agp" value="Show Measurements"></th>
-
-
 							<td>
 								<div id="measurements">
 									<ul>
@@ -430,7 +389,6 @@ function backToResults(){
 									</ul>
 								</div>
 							</td>
-
 						</tr>
 					</c:if>
 					<c:if test="${not empty i.apparatusDisplay}">
@@ -455,7 +413,6 @@ function backToResults(){
 						<td>${i.citation}</td>
 					</tr>
 				</table>
-
 			</div>
 			<%
 				if (session.getAttribute("authenticated") != null) {
@@ -469,7 +426,6 @@ function backToResults(){
 			%>
 		</div>
 		<div class="rightcol">
-
 			<c:set var="len" value="${fn:length(i.photos)}" />
 			<c:choose>
 				<c:when test="${len == 1}">
@@ -494,13 +450,11 @@ function backToResults(){
 								<%
 									if (counter % 3 == 0) {
 								%>
-							
 						</tr>
 						<tr>
 							<%
 								}
 							%>
-
 							<td><input type="radio" name="image"
 								onclick="selectImg(${k});" id="${k}" /> <label for="${k}">
 									<img src="${requestScope.thumbnails[k-1]}" class="thumb" />
@@ -513,15 +467,11 @@ function backToResults(){
 					</table>
 				</c:when>
 			</c:choose>
-
 			<div id="maps">
 				<h4>Findspot:</h4>
-				<!-- <div id="pompCityMap"></div> -->
 				<div id="pompeiimap" class="findspotMap"></div>
 				<div id="herculaneummap" class="findspotMap"></div>
 			</div>
-
-			<script src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 
 			<script type="text/javascript">
 				hideConventions();
@@ -536,9 +486,7 @@ function backToResults(){
 				}
 				
 			</script>
-
 		</div>
 	</div>
-
 </body>
 </html>

@@ -674,7 +674,7 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	function updateHoverText(){
 		info.update = function (props) {
 			if(showHover){
-				this._div.innerHTML = (props ? props.Property_Name + ", " + props.PRIMARY_DO
+				this._div.innerHTML = (props ? props.Property_Name /* + props.Property_Address */
 						: 'Hover over property to see name');
 			}
 		};

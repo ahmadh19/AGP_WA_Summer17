@@ -2,11 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <title>Ancient Graffiti Project</title>
 <!--    Fix responsive navbar-->
@@ -27,18 +25,13 @@
 		$("#gallery").hide();
 	});
 </script>
-
 </head>
 <body>
-
 	<%@include file="header.jsp"%>
 	<div class="container">
-
 		<h2>Translation Quiz</h2>
-
 		<c:set var="figuralHits" value="${figuralHits}" />
 		<c:set var="translationHits" value="${translationHits}" />
-
 		<%@include file="translation_greatest_hits.jsp"%>
 
 		<!-- JS for modal view, toggling, show translations-->

@@ -1,5 +1,5 @@
 /*
-sudo * GraffitiController.java is the main backend controller of the Ancient Graffiti Project. It handles most of the
+ * GraffitiController.java is the main backend controller of the Ancient Graffiti Project. It handles most of the
  * controls regarding the requests.
  */
 package edu.wlu.graffiti.controller;
@@ -33,6 +33,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +54,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @Controller
-@Api(value="Graffiti", description="Operations pertaining to the graffiti.")
+@Api(value = "Graffiti", description = "Operations pertaining to the graffiti.")
 public class GraffitiController {
 
 	@Resource
@@ -133,6 +134,7 @@ public class GraffitiController {
 	public String searchMap(final HttpServletRequest request) {
 		return "searchPompeii";
 	}
+
 	@RequestMapping(value = "/searchHerculaneum", method = RequestMethod.GET)
 	public String searchHerc(final HttpServletRequest request) {
 		return "searchHerculaneum";
@@ -150,19 +152,21 @@ public class GraffitiController {
 
 	}
 	/*
-
-	@RequestMapping(value = "/new-featured-graffiti", method = RequestMethod.GET)
-	public String newFeaturedHits(final HttpServletRequest request) {
-
-		final List<Inscription> greatestFiguralHits = this.graffitiDao.getGreatestFiguralHits();
-		final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
-		request.setAttribute("figuralHits", greatestFiguralHits);
-		request.setAttribute("translationHits", greatestTranslationHits);
-
-		return "newFeaturedGraffiti";
-
-	}
-	*/
+	 * 
+	 * @RequestMapping(value = "/new-featured-graffiti", method =
+	 * RequestMethod.GET) public String newFeaturedHits(final HttpServletRequest
+	 * request) {
+	 * 
+	 * final List<Inscription> greatestFiguralHits =
+	 * this.graffitiDao.getGreatestFiguralHits(); final List<Inscription>
+	 * greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
+	 * request.setAttribute("figuralHits", greatestFiguralHits);
+	 * request.setAttribute("translationHits", greatestTranslationHits);
+	 * 
+	 * return "newFeaturedGraffiti";
+	 * 
+	 * }
+	 */
 
 	// maps to inputData.jsp page which is used to input inscription to the
 	// database using a csv file
@@ -291,7 +295,7 @@ public class GraffitiController {
 
 	// Maps to the details page once an individual result has been selected in
 	// the results page
-	@ApiOperation(value="Opens the details page once an individual result has been selected in the results page. Displays "
+	@ApiOperation(value = "Opens the details page once an individual result has been selected in the results page. Displays "
 			+ "more information pertaining to the selected inscription.")
 	@RequestMapping(value = "/graffito/{agpId}", method = RequestMethod.GET)
 	public String graffito(final HttpServletRequest request, @PathVariable String agpId) {
@@ -318,31 +322,28 @@ public class GraffitiController {
 
 			// Decides which jsp page to travel to when user clicks "More
 			// Information" on Search page.
-			
+
 			return "details";
 		}
 	}
-	
+
 	// TODO: add annotation produces = "text/html" for the api docs?
-	@ApiOperation(value="Searches for inscriptions and returns the results. The base URI lists "
+	@ApiOperation(value = "Searches for inscriptions and returns the results. The base URI lists "
 			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
-			+ "results as the user wishes.",
-			 notes="A detailed overview of possible parameters is as follows: <br/> "
-			+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
-			+ "insula={insulaID} <br/>"
-			+ "property={propertyID} <br/>"
-			+ "property_type={propertyType}<br/>"
-			+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
-			+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
-			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
-			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
-			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
-			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
+			+ "results as the user wishes.", notes = "A detailed overview of possible parameters is as follows: <br/> "
+					+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
+					+ "insula={insulaID} <br/>" + "property={propertyID} <br/>" + "property_type={propertyType}<br/>"
+					+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
+					+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
+					+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
+					+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
+					+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
+					+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
 	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	public String search(final HttpServletRequest request) {
 		init();
 		HttpSession s = request.getSession();
-		
+
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 		List<Inscription> inscriptions = searchResults(request);
 		request.setAttribute("resultsLyst", inscriptions);
@@ -350,21 +351,18 @@ public class GraffitiController {
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
 		return "results";
 	}
-	
-	@ApiOperation(value="Filters the inscriptions and returns the results without any styling. The base URI lists "
+
+	@ApiOperation(value = "Filters the inscriptions and returns the results without any styling. The base URI lists "
 			+ "all inscriptions by default. Various parameters can be added to the URI to filter "
-			+ "results as the user wishes.",
-			 notes="A detailed overview of possible parameters is as follows: <br/> "
-			+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
-			+ "insula={insulaID} <br/>"
-			+ "property={propertyID} <br/>"
-			+ "property_type={propertyType}<br/>"
-			+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
-			+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
-			+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
-			+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
-			+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
-			+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
+			+ "results as the user wishes.", notes = "A detailed overview of possible parameters is as follows: <br/> "
+					+ "city={cityName}, where the cities are as follows: [Pompeii, Herculaneum]. <br/>"
+					+ "insula={insulaID} <br/>" + "property={propertyID} <br/>" + "property_type={propertyType}<br/>"
+					+ "drawing_category={dcID}, where the dcIDs are as follows: [All=0, Boats=1, Geometric designs=2, Animals=3, Erotic Images=4, Other=5, Human figures=6, Gladiators=7, Plants=8]. <br/>"
+					+ "writing_style={writingStyle}, where the writing styles are as follows: [Graffito/incised, charcoal, other].<br/>"
+					+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
+					+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
+					+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
+					+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
 	public String filterResults(final HttpServletRequest request) {
 		init();
@@ -389,11 +387,8 @@ public class GraffitiController {
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
 		return "print";
 	}
-	
-	private List<Inscription> searchResults(final HttpServletRequest request) {
-		// System.out.println("We're in FilterController: " +
-		// request.getQueryString());
 
+	private List<Inscription> searchResults(final HttpServletRequest request) {
 		try {
 			client = new PreBuiltTransportClient(settings).addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(ES_HOSTNAME), ES_PORT_NUM));
@@ -425,6 +420,8 @@ public class GraffitiController {
 		String[] writingStyle = request.getParameterValues(WRITING_STYLE_PARAM_NAME);
 		String[] language = request.getParameterValues("language");
 
+		String[] sortOrder = request.getParameterValues("sort_by");
+
 		String[][] searches = { content, global, city, insula, property, propertyType, drawingCategory, writingStyle,
 				language };
 
@@ -432,7 +429,7 @@ public class GraffitiController {
 		// parameters, searchTerms, and fieldNames lists accordingly
 		for (int i = 0; i < searches.length; i++) {
 			if (searches[i] != null) {
-				parameters.add(arrayToString(searches[i]));
+				parameters.add(arrayToString(searches[i]).toLowerCase());
 				searchTerms.add(searchDescs[i]);
 				fieldNames.add(searchFields[i]);
 			}
@@ -466,9 +463,10 @@ public class GraffitiController {
 				// writing style, language, EAGLE id, and bibliography for a
 				// keyword match
 				BoolQueryBuilder globalQuery;
-				globalQuery = boolQuery();				
-				globalQuery.should(queryStringQuery(parameters.get(i)).useAllFields(true));
-				globalQuery.should(queryStringQuery("*"+parameters.get(i)+"*").useAllFields(true));
+				globalQuery = boolQuery();
+				globalQuery.should(queryStringQuery(parameters.get(i)).useAllFields(true)); // exact
+																							// match
+				globalQuery.should(queryStringQuery("*" + parameters.get(i) + "*").useAllFields(true)); // partial
 				query.must(globalQuery);
 			} else if (searchTerms.get(i).equals("Content Keyword")) {
 				BoolQueryBuilder contentQuery = boolQuery();
@@ -476,11 +474,12 @@ public class GraffitiController {
 
 				for (String param : params) {
 					BoolQueryBuilder orQuery = boolQuery();
-					orQuery.should(matchQuery(fieldNames.get(i), param));
-					orQuery.should((regexpQuery(fieldNames.get(i), ".*"+param+".*")));
+					orQuery.should(matchQuery(fieldNames.get(i), param)); // exact
+																			// match
+					orQuery.should((regexpQuery(fieldNames.get(i), ".*" + param + ".*"))); // partial
 					contentQuery.must(orQuery);
 				}
-				
+
 				query.must(contentQuery);
 			} else if (searchTerms.get(i).equals("Property")) {
 				BoolQueryBuilder propertiesQuery = boolQuery();
@@ -517,17 +516,28 @@ public class GraffitiController {
 				query.must(otherQuery);
 			}
 		}
-		
-		System.out.println(query);
-								
-		response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query).addStoredField("edr_id")
-				.setSize(NUM_RESULTS_TO_RETURN)/*.addSort("edr_id", SortOrder.ASC)*/.get();
-				
+
+		if (sortOrder == null || sortOrder[0].equals("relevance")) {
+			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+					.addStoredField("edr_id").setSize(NUM_RESULTS_TO_RETURN).get();
+		} else {
+			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+					.addStoredField("edr_id").setSize(NUM_RESULTS_TO_RETURN).addSort(sortOrder[0], SortOrder.ASC).get();
+		}
+
 		for (SearchHit hit : response.getHits()) {
 			inscriptions.add(hitToInscription(hit));
 		}
-		
-		//client.close(); // This line slows down searching
+
+		// client.close(); // This line slows down searching
+
+		Thread closeClient = new Thread() {
+			public void run() {
+				client.close();
+			}
+		};
+		closeClient.start();
+
 		HttpSession session = request.getSession();
 		if (inscriptions.size() > 0) {
 			// System.out.println(inscriptions.get(0));
@@ -571,19 +581,19 @@ public class GraffitiController {
 			final Set<String> locationKeysSet = new TreeSet<String>();
 			for (final Inscription inscription : inscriptions) {
 				locationKeysSet.add(inscription.getSpotKey());
-				/*locationKeysSet.add(inscription.getGenSpotKey());*/
+				/* locationKeysSet.add(inscription.getGenSpotKey()); */
 			}
 			locationKeys.addAll(locationKeysSet);
 		}
 		return locationKeys;
 	}
-	
+
 	private static List<String> findLocationKeys(final Inscription inscription) {
 		final List<String> locationKeys = new ArrayList<String>();
 		final Set<String> locationKeysSet = new TreeSet<String>();
 
 		locationKeysSet.add(inscription.getSpotKey());
-		/*locationKeysSet.add(inscription.getGenSpotKey());*/
+		/* locationKeysSet.add(inscription.getGenSpotKey()); */
 		locationKeys.addAll(locationKeysSet);
 		return locationKeys;
 	}

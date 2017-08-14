@@ -13,8 +13,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="<c:url value="/resources/css/proj.css" />" type="text/css"
-	rel="stylesheet">
 <title>Ancient Graffiti Project :: JSON</title>
 <%@include file="../../resources/common_head.txt"%>
 </head>

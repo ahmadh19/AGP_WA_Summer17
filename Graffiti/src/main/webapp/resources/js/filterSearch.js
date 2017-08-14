@@ -6,6 +6,7 @@
  * @author sprenkle -- version 2.0 filtering
  * @author ahmadh -- version 2.1 filtering, includes bug fixes
  * @author KellyM --Modified refineResults method so that it reloads the pompeiiMap with new location keys based on the filtering.
+ * @author cooperbaird -- Modified refineResults to allow for sorting
  */
 
 var currentParams = new Array(); // the ending array of parameters
@@ -212,7 +213,7 @@ function addSearchTerm(type, label, choice, id) {
 		var searchTerms = document.getElementById("searchTerms");
 		//searchTerms.appendChild(label);
 		searchTerms.appendChild(list);
-		refineResults();
+		refineResults("filter");
 	}
 }
 
@@ -236,7 +237,7 @@ function removeSearchTerm(e) {
 	}
 	//e.target.parentElement.removeChild(e.target);
 	e.target.parentElement.parentElement.removeChild(e.target.parentElement);
-	refineResults();
+	refineResults("filter");
 }
 
 /**
@@ -256,7 +257,7 @@ function removeSearchTermBySpan(e) {
 	}
 	//e.target.parentElement.parentElement.removeChild(e.target.parentElement);
 	e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
-	refineResults();
+	refineResults("filter");
 }
 
 /**
@@ -273,7 +274,7 @@ function removeSearchTermByName(name) {
 			labels[i].parentElement.removeChild(labels[i]);
 		}
 	}
-	refineResults();
+	refineResults("filter");
 }
 
 /**
@@ -295,23 +296,27 @@ function termExists(desc) {
 }
 
 function createURL(baseURL) {
+	var myUrl = baseURL + "?";
+	
 	var labels = document.getElementsByClassName("search-term-label");
 
 	currentParams = new Array();
 	for (var i = 0; i < labels.length; i++) {
 		currentParams.push(labels[i].childNodes[3].textContent);
 	}
-
-	var myUrl = baseURL;
-
+		
 	if (currentParams.length != 0) {
-		myUrl += "?";
 		for (var i = 0; i < currentParams.length; i++) {
 			desc = currentParams[i].split(": ");
 			myUrl += "&" + desc[0].toLowerCase() + "=" + desc[1];
 			myUrl = myUrl.replace(/\s/g, '_');
 		}
 	}
+
+	var selectBox = document.getElementById("sortParam");
+	var selection = selectBox.options[selectBox.selectedIndex].value;
+	myUrl += ("&sort_by=" + selection);
+	
 	return myUrl;
 }
 
@@ -321,7 +326,7 @@ function createURL(baseURL) {
  * results
  * Also re-initializes the new map with new location keys for selection. 
  */
-function refineResults() {
+function refineResults(filterOrSort) {
 	var labels = document.getElementsByClassName("search-term-label");
 	xmlHttp = new XMLHttpRequest();
 	newUrl = createURL(requestUrl);
