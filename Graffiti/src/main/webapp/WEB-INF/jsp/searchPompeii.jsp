@@ -27,7 +27,8 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiWallsPropertyData.js"/>">
 </script>
-
+<script
+	src="<c:url value="resources/js/leaflet-compass-master/src/leaflet-compass.js"/>"></script>
 <style>
 button {
 	margin-top: 200%;
@@ -43,8 +44,6 @@ button {
 		<div id="moreInfo">
 			<button id="search" class="btn btn-agp">Search Properties</button>
 		</div>
-		<script
-			src="<c:url value="resources/js/leaflet-compass-master/src/leaflet-compass.js"/>"></script>
 		<div>
 			<div id="newDiv"></div>
 			<div id="pompeiimap" class="mapdiv"></div>

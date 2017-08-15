@@ -14,13 +14,16 @@
  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
    integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
    crossorigin=""></script>
-
+<link rel="stylesheet"
+	href="<c:url value="resources/js/leaflet-compass-master/src/leaflet-compass.css"/>"/>
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/resources/css/main.css" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
+<script
+	src="<c:url value="resources/js/leaflet-compass-master/src/leaflet-compass.js"/>"></script>
 </head>
 
 <body>

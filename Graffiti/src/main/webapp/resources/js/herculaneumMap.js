@@ -78,7 +78,8 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		makeTotalInsulaGraffitiDict();
 		makeInsulaIdsListShortNamesList();
 		displayInsulaLabels();
-		//map.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"}));
+		
+		map.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"}));
 	}
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {
