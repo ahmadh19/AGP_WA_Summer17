@@ -2,14 +2,12 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Ancient Graffiti Project</title>
 <%@include file="../../resources/common_head.txt"%>
-
 <style>
 .fluid-img {
 	margin-right: auto;
@@ -83,7 +81,7 @@ h3 {
 	<div style="max-width: 1100px; float: center; margin: auto;">
 		<div class="leftcol">
 			<h3>Herculaneum</h3>
-			<a href="search?city=Herculaneum"><img class="fluid-img"
+			<a href="searchHerculaneum"><img class="fluid-img"
 				src="<%=request.getContextPath()%>/resources/images/Herculaneum.jpg"
 				onmouseover="this.src='<%=request.getContextPath()%>/resources/images/exploreHerculaneum.jpg'"
 				onmouseout="this.src='<%=request.getContextPath()%>/resources/images/Herculaneum.jpg'" /></a>
@@ -91,7 +89,7 @@ h3 {
 
 		<div class="rightcol">
 			<h3>Pompeii</h3>
-			<a href="search?city=Pompeii"><img class="fluid-img"
+			<a href="searchPompeii"><img class="fluid-img"
 				src="<%=request.getContextPath()%>/resources/images/Pompeii.jpg"
 				onmouseover="this.src='<%=request.getContextPath()%>/resources/images/explorePompeii.jpg'"
 				onmouseout="this.src='<%=request.getContextPath()%>/resources/images/Pompeii.jpg'" /></a>
