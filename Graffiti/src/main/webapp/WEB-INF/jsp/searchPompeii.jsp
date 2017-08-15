@@ -24,6 +24,9 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>">
 </script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiWallsPropertyData.js"/>">
+</script>
 
 <style>
 button {

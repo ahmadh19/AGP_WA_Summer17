@@ -73,17 +73,12 @@ function inithercmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//map.addLayer(grayscale);
 	L.geoJson(herculaneumPropertyData).addTo(map);
 	
-	
-	
-	if( interactive){
-		
+	if(interactive){
 		makeInsulaCentersDict();
-		
 		makeTotalInsulaGraffitiDict();
-		
 		makeInsulaIdsListShortNamesList();
-	
 		displayInsulaLabels();
+		//map.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"}));
 	}
 	//A listener for zoom events. 
 	map.on('zoomend', function(e) {

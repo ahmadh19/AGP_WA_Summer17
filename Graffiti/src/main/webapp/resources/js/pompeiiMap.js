@@ -22,10 +22,10 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	var insulaViewZoomLevel=17;
 	
 	if(!moreZoom){
-		currentZoomLevel=16;
+		currentZoomLevel=15;
 	}
 	else{
-		currentZoomLevel=15;
+		currentZoomLevel=14;
 	}
 	//console.log("1");
 	var zoomLevelForIndividualProperty=19;
@@ -72,8 +72,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//map.add(comp);
 	//map.addControl(comp);
 	
-	map.addControl(new L.Control.Compass({autoActive: true, position: "topright"}));
-	
 	//var comp = new L.Control.Compass({autoActive: true});
 	//map.add(comp);
 	//map.addControl(comp);
@@ -85,8 +83,13 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
 	
 	//map.addLayer(grayscale);
+	var geojson = L.geoJson(pompeiiPropertyData, {
+		style: style,
+	    onEachFeature: onEachFeature  
+	}).addTo(map);
 	
-	L.geoJson(pompeiiPropertyData).addTo(map);
+	
+	//L.geoJson(pompeiiWallsPropertyData).addTo(map);
 	
 	if( interactive && colorDensity){
 		//Insula Functions:
@@ -101,7 +104,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		
 		
 		dealWithLabelsAndSelection();
-		
+		map.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"}));
 	}
 	
 	//A listener for zoom events. 
@@ -129,7 +132,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				displayInsulaLabels();
 			}
 			
-			else{
+			else {
 				displayInsulaLabels();
 				//showInsulaMarkers=true;
 			}
@@ -188,7 +191,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	function makeListOfRegioNames(){
 		var someName;
 		map.eachLayer(function(layer){
-			if(layer.feature!=undefined){
+			if(layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
 				//console.log(layer.feature.properties.PRIMARY_DO);
 				someName=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				if(regioNamesList.indexOf(someName)==-1){
@@ -204,7 +207,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var currentRegioName;
 		var regioNamesSoFar=[];
 		map.eachLayer(function(layer){
-			if(layer.feature!=undefined){
+			if(layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
 				currentRegioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				currentNumberOfGraffiti=layer.feature.properties.Number_Of_Graffiti;
 				if(regioNamesSoFar.indexOf(currentRegioName)==-1){
@@ -363,7 +366,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var currentRegio;
 		var currentCount;
 		map.eachLayer(function(layer){
-			if(layer.feature!=undefined){
+			if(layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
 				currentRegio=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				
 				if(regioList.indexOf(currentRegio)==-1){
@@ -391,7 +394,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var currentRegioName;
 		totalPropsSoFarDict=makeTotalPropsPerRegioDict(totalPropsSoFarDict);
 		map.eachLayer(function(layer){
-			if(layer.feature!=undefined){
+			if(layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
 				currentRegioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				if(regioNamesSoFar.indexOf(currentRegioName)==-1){
 					regioNamesSoFar.push(currentRegioName);
@@ -500,12 +503,14 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				layer.setStyle({fillColor:newFillColor});
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
 			}
-			else if(regioViewZoomThresholdReached() && colorDensity && layer.feature!=undefined){
+			else if(regioViewZoomThresholdReached() && colorDensity && layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
 				regioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
 				newFillColor=getFillColor(numberOfGraffitiInGroup);
 				layer.setStyle({fillColor:newFillColor});
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
+			} else if(layer.feature && !layer.feature.properties.PRIMARY_DO){
+				layer.setStyle({fillColor:'#FFFFFF'});
 			}	
 			//Resets properties when user zooms back in
 			if (!insulaViewZoomThresholdReached() && colorDensity && layer.feature!=undefined){
@@ -556,7 +561,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		//console.log("17");
 		//Displays the insula level view at the start of the run if necessary
 		propertySelected=false;
-		
 		borderColor=getBorderColorForCloseZoom(feature);
 		fillColor=getFillColor(feature.properties.Number_Of_Graffiti);
 		//Try: setStyle instead of returning if this was called using the zoomListener(extra boolean param to check this??)
@@ -576,124 +580,6 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	    //Maybe I need to use the return contents in my zoom listener?
 		//L.geoJson(pompeiiPropertyData, {style: style}).addTo(map);
 	}
-	
-	/*
-	function getFillColor(numberOfGraffiti){
-		
-		//Hex darkens color as number it represents decreases
-		if(colorDensity){
-
-			if(0<=numberOfGraffiti && numberOfGraffiti<=2){
-				return '#FFEDC0';
-			}
-			
-			else if(2<numberOfGraffiti && numberOfGraffiti<=5){
-				return '#FFEDA0';
-				
-			}
-			
-			else if(5<numberOfGraffiti && numberOfGraffiti<=10){
-				return '#fed39a';
-				
-			}
-			
-			else if(10<numberOfGraffiti && numberOfGraffiti<=20){
-				return '#fec880';
-				
-			}
-			
-			else if(20<numberOfGraffiti && numberOfGraffiti<=30){
-				return '#FEB24C';
-				
-			}
-			
-			else if(30<numberOfGraffiti && numberOfGraffiti<=40){
-				return '#fe9b1b';
-				
-			}
-			
-			else if(40<numberOfGraffiti && numberOfGraffiti<=60){
-				return '#fda668';
-			}
-			
-			else if(60<numberOfGraffiti && numberOfGraffiti<=80){
-				return '#FD8D3C';
-			}
-			
-			else if(80<numberOfGraffiti && numberOfGraffiti<=100){
-				return '#fd7a1c';
-			}
-			
-			
-			else if(100<numberOfGraffiti && numberOfGraffiti<=130){
-				return '#fc6c4f' ;
-			}
-			
-			else if(130<numberOfGraffiti && numberOfGraffiti<=160){
-				return '#FC4E2A' ;
-			}
-			
-			else if(160<numberOfGraffiti && numberOfGraffiti<=190){
-				return '#fb2d04' ;
-			}
-			else if(190<numberOfGraffiti && numberOfGraffiti<=210){
-				return '#ea484b';
-				
-			}
-			
-			else if(210<numberOfGraffiti && numberOfGraffiti<=240){
-				return '#E31A1C';
-				
-			}
-			
-			else if(240<numberOfGraffiti && numberOfGraffiti<=270){
-				return '#b71518';
-				
-			}
-			
-			else if(270<numberOfGraffiti && numberOfGraffiti<=300){
-				return '#cc0029';
-			}
-			
-			else if(300<numberOfGraffiti && numberOfGraffiti<=330){
-				return '#b30024';
-			}
-			
-			else if(330<numberOfGraffiti && numberOfGraffiti<=360){
-				return '99001f';
-			}
-			
-			else if(360<numberOfGraffiti && numberOfGraffiti<=390){
-				return '#80001a';
-			}
-			
-			else if(390 <numberOfGraffiti && numberOfGraffiti<=420){
-				return '#660014';
-			}
-			
-			else if(420<numberOfGraffiti && numberOfGraffiti<=460){
-				return '#4d000f';
-			}
-			
-			else if(460<numberOfGraffiti && numberOfGraffiti<=500){
-				return '#33000a';
-			}
-			
-			else{
-				return '#000000';
-			}
-			}
-		//If the property is selected and there is no colorDensity, make the fill color be maroon(dark red).
-		//PropertySelected is a global variable altered within getBorderColorForCloseZoom and style.
-		if(propertySelected){
-			return '#800000';
-		}
-		//What should this be?
-		//return '#800026';
-		//return 'green';
-		return '#FEB24C' ;
-	}
-	*/
 	
 function getFillColor(numberOfGraffiti){
 	if(colorDensity){
@@ -732,7 +618,7 @@ function getFillColor(numberOfGraffiti){
 		return '#FEB24C' ;
 	}
 	
-	var geojson;
+	var pompeiiWalls;
 	
 	//Sets color for properties which the cursor is moving over. 
 	function highlightFeature(e) {
@@ -873,18 +759,33 @@ function getFillColor(numberOfGraffiti){
 	   
 	}
 	
+	function onEachFeatureWall(feature, layer) {
+	    layer.on({
+	        mouseover: highlightFeature
+	    });
+	   
+	}
+	
 	
 	//What does this do?
+	/*
 	geojson = L.geoJson(pompeiiPropertyData, {
 		style: style,
 	    onEachFeature: onEachFeature
 	    
-	}).addTo(map);
+	}).addTo(map);*/
 	//Putting this after the above appears to make it this start correctly.
 	 if(initialZoomNotCalled==true){
 		   dealWithInsulaLevePropertylView();
 		   initialZoomNotCalled=false;
 	 }
+	
+	pompeiiWalls = L.geoJson(pompeiiWallsPropertyData, {
+		style: style,
+	    onEachFeature: onEachFeatureWall
+	    
+	}).addTo(map);
+	
 	
 	var info = L.control();
 	info.onAdd = function(map) {
@@ -897,7 +798,7 @@ function getFillColor(numberOfGraffiti){
 	// method that we will use to update the control based on feature properties passed
 	function updateHoverText(){
 		info.update = function (props) {
-			if(showHover){
+			if(showHover && props && props.PRIMARY_DO){
 				this._div.innerHTML = (props ? props.Property_Name + ", " + props.PRIMARY_DO
 						: 'Hover over property to see name');
 				
@@ -1005,7 +906,7 @@ function getFillColor(numberOfGraffiti){
 			var length = clickedAreasTable.length;
 			for (var i=0; i<length; i++) {
 				var property = clickedAreasTable[i];
-				if (property.feature.properties.clicked === true) {
+				if (property.feature.properties.clicked === true && property.feature.properties.PRIMARY_DO) {
 					
 					html += "<tr><td><li>" +property.feature.properties.Property_Name + ", " + 
 							property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li></td></tr>";
