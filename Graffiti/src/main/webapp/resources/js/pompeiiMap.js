@@ -38,6 +38,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//The list of active insula markers.
 	//Can be iterated through to remove all markers from the map(?)
 	var insulaMarkersList=[];
+	var regioMarkersList=[];
 	
 	//console.log("2");
 	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
@@ -70,6 +71,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	//var comp = new L.Control.Compass({autoActive: true});
 	//map.add(comp);
 	//map.addControl(comp);
+	
+	map.addControl(new L.Control.Compass({autoActive: true, position: "topright"}));
 	
 	//var comp = new L.Control.Compass({autoActive: true});
 	//map.add(comp);
@@ -121,7 +124,11 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			else if(regioViewZoomThresholdReached()){
 				removeInsulaLabels();
 				displayRegioLabels();
+			} else if(insulaViewZoomThresholdReached()) {
+				removeRegioLabels();
+				displayInsulaLabels();
 			}
+			
 			else{
 				displayInsulaLabels();
 				//showInsulaMarkers=true;
@@ -182,7 +189,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var someName;
 		map.eachLayer(function(layer){
 			if(layer.feature!=undefined){
-				someName=layer.feature.properties.PRIMARY_DO[0];
+				//console.log(layer.feature.properties.PRIMARY_DO);
+				someName=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				if(regioNamesList.indexOf(someName)==-1){
 					regioNamesList.push(someName);
 				}
@@ -197,7 +205,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var regioNamesSoFar=[];
 		map.eachLayer(function(layer){
 			if(layer.feature!=undefined){
-				currentRegioName=layer.feature.properties.PRIMARY_DO[0];
+				currentRegioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				currentNumberOfGraffiti=layer.feature.properties.Number_Of_Graffiti;
 				if(regioNamesSoFar.indexOf(currentRegioName)==-1){
 					regioNamesSoFar.push(currentRegioName);
@@ -208,10 +216,12 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				}
 			}
 		});
+		/*
 		console.log("Number of Graffiti placed in for I:");
 		console.log(graffitiInEachRegioDict["I"]);
 		console.log("Number of Graffiti placed in for V:");
 		console.log(graffitiInEachRegioDict["V"]);
+		*/
 	}
 	
 	
@@ -250,7 +260,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 	}
 	//Meant to show the insula short name labels at the given x/y coordinates
 	//(given as a normal list in Java array form)
-	function showALabelOnMap(xYCoordinates,textToDisplay,textSize="small"){
+	function showALabelOnMap(xYCoordinates,textToDisplay,textSize="small", markerType){
 		//This was breaking bc/the new wall properties
 		//Commented out for now, change to deal with them later
 		//console.log("10");
@@ -283,7 +293,11 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		else{
 			alert("Error with leaflet label textSize!");
 		}*/
-		insulaMarkersList.push(myMarker);
+		if(markerType=="insula") {
+			insulaMarkersList.push(myMarker);
+		} else if (markerType=="regio") {
+			regioMarkersList.push(myMarker)
+		}
 	}
 	
 	//Removes each of the insula labels from the map.
@@ -295,6 +309,14 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			map.removeLayer(insulaMarkersList[i]);
 		}
 	}
+	
+	function removeRegioLabels(){
+		var i=0;
+		for(i;i<regioMarkersList.length;i++){
+			map.removeLayer(regioMarkersList[i]);
+		}
+	}
+	
 	//Shows the short names of each insula in black
 	//at the center ccoordinates. 
 	function displayInsulaLabels(){
@@ -309,7 +331,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			insulaCenterCoordinates=insulaCentersDict[insulaId];
 			shortInsulaName=insulaShortNamesDict[insulaId];
 			if(insulaCenterCoordinates!=null){
-				showALabelOnMap(insulaCenterCoordinates,shortInsulaName);
+				showALabelOnMap(insulaCenterCoordinates,shortInsulaName, "small", "insula");
 			}
 		}
 	}
@@ -322,7 +344,8 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			regioName=regioNamesList[i];
 			regioCenterCoordinates=regioCentersDict[regioName];
 			if(regioCenterCoordinates!=null){
-				showALabelOnMap(regioCenterCoordinates,regioName,"large");
+				//console.log("Regio Name: " + regioName + " Coordinates: " + regioCenterCoordinates);
+				showALabelOnMap(regioCenterCoordinates,regioName,"large", "regio");
 			}
 			
 		}
@@ -341,7 +364,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		var currentCount;
 		map.eachLayer(function(layer){
 			if(layer.feature!=undefined){
-				currentRegio=layer.feature.properties.PRIMARY_DO[0];
+				currentRegio=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				
 				if(regioList.indexOf(currentRegio)==-1){
 					currentCount=1;
@@ -369,7 +392,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		totalPropsSoFarDict=makeTotalPropsPerRegioDict(totalPropsSoFarDict);
 		map.eachLayer(function(layer){
 			if(layer.feature!=undefined){
-				currentRegioName=layer.feature.properties.PRIMARY_DO[0];
+				currentRegioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				if(regioNamesSoFar.indexOf(currentRegioName)==-1){
 					regioNamesSoFar.push(currentRegioName);
 					if(layer.feature.geometry.coordinates!=undefined){
@@ -390,10 +413,12 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 			var div=[regioCentersDict[key][0]/totalPropsSoFarDict[key],regioCentersDict[key][1]/totalPropsSoFarDict[key]];
 			regioCentersDict[key]=div;
 		}
+		/*
 		console.log("Center coords for V:");
 		console.log(regioCentersDict["V"]+":");
 		console.log("Center coords for I:");
 		console.log(regioCentersDict["I"]+":");
+		*/
 	}
 	
 	//This function gets and returns a "dictionary" of the latitude and longitude of each insula given its id(as index).
@@ -476,7 +501,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
 			}
 			else if(regioViewZoomThresholdReached() && colorDensity && layer.feature!=undefined){
-				regioName=layer.feature.properties.PRIMARY_DO[0];
+				regioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
 				numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
 				newFillColor=getFillColor(numberOfGraffitiInGroup);
 				layer.setStyle({fillColor:newFillColor});
@@ -552,6 +577,7 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 		//L.geoJson(pompeiiPropertyData, {style: style}).addTo(map);
 	}
 	
+	/*
 	function getFillColor(numberOfGraffiti){
 		
 		//Hex darkens color as number it represents decreases
@@ -657,6 +683,44 @@ function initpompmap(moreZoom=false,showHover=true,colorDensity=true,interactive
 				return '#000000';
 			}
 			}
+		//If the property is selected and there is no colorDensity, make the fill color be maroon(dark red).
+		//PropertySelected is a global variable altered within getBorderColorForCloseZoom and style.
+		if(propertySelected){
+			return '#800000';
+		}
+		//What should this be?
+		//return '#800026';
+		//return 'green';
+		return '#FEB24C' ;
+	}
+	*/
+	
+function getFillColor(numberOfGraffiti){
+	if(colorDensity){
+		return numberOfGraffiti <= 2   ? '#FFEDC0' :
+			   numberOfGraffiti <= 5   ? '#FFEDA0' :
+			   numberOfGraffiti <= 10  ? '#fed39a' :
+			   numberOfGraffiti <= 20  ? '#fec880' :
+			   numberOfGraffiti <= 30  ? '#FEB24C' :
+			   numberOfGraffiti <= 40  ? '#fe9b1b' :
+			   numberOfGraffiti <= 60  ? '#fda668' :
+		       numberOfGraffiti <= 80  ? '#FD8D3C' :
+			   numberOfGraffiti <= 100 ? '#fd7a1c' :
+		       numberOfGraffiti <= 130 ? '#fc6c4f' :
+			   numberOfGraffiti <= 160 ? '#FC4E2A' :
+			   numberOfGraffiti <= 190 ? '#fb2d04' :
+			   numberOfGraffiti <= 210 ? '#ea484b' :
+			   numberOfGraffiti <= 240 ? '#E31A1C' :
+			   numberOfGraffiti <= 270 ? '#b71518' :
+			   numberOfGraffiti <= 300 ? '#cc0029' :
+			   numberOfGraffiti <= 330 ? '#b30024' :
+			   numberOfGraffiti <= 360 ? '99001f' :
+			   numberOfGraffiti <= 390 ? '#80001a' :
+			   numberOfGraffiti <= 420 ? '#660014' :
+			   numberOfGraffiti <= 460 ? '#4d000f' :
+			   numberOfGraffiti <= 500 ? '#33000a' :
+										 '#000000';
+	}
 		//If the property is selected and there is no colorDensity, make the fill color be maroon(dark red).
 		//PropertySelected is a global variable altered within getBorderColorForCloseZoom and style.
 		if(propertySelected){
