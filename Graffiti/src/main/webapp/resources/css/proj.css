@@ -1,20 +1,3 @@
-#property_names {
-	display: none;
-}
-
-#property_names_chosen {
-	margin-left: 100px;
-}
-
-#property_names_chosen .chosen-choices, #property_names_chosen .chosen-drop {
-	width: 500px !important;
-}
-
-#property_names_chosen .default {
-	padding: 0 !important;
-	width: 500px !important;
-}
-
 .jumbotron {
 	/* background-image: url("/resources/images/herculaneum_banner.jpg"); */
 	background-image:
@@ -56,14 +39,21 @@
 
 .navbar {
 	margin-bottom: 0px;
-}
-
-.navbar-inverse .navbar-nav>li>a {
 	color: white;
 }
 
-.navbar-inverse .navbar-nav>li>a:hover {
+.navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-nav>li {
+	color: white;
+}
+
+.navbar-inverse .navbar-nav>li>a:hover, navbar-inverse .navbar-nav>.active>a,
+	.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:focus, .navbar-inverse .navbar-nav > .open > a:hover{
 	background-color: maroon;
+}
+
+.navbar-nav li ul, .navbar-nav li ul a {
+	background-color: #333;
+	color: white;
 }
 
 #map img {
@@ -90,10 +80,6 @@ img.thumbnail {
 	padding-bottom: 15px;
 }
 
-#person {
-	height: 300px;
-}
-
 .pic {
 	float: left;
 }
@@ -112,44 +98,6 @@ th, td {
 	color: maroon;
 }
 
-#headerMap, #sidebarMap, #headerMap1, #headerMap2 {
-	border-style: solid;
-	border-color: #CE8177;
-}
-
-#headerMap, #headerMap1 {
-	top: 50px;
-	margin-left: 675px;
-	position: absolute;
-}
-
-#headerMap2 {
-	top: 50px;
-	margin-left: 890px;
-	position: absolute;
-}
-
-#headerMap img, #headerMap1 img {
-	height: 135px;
-	width: auto;
-}
-
-#headerMap2 img {
-	height: 135px;
-	width: auto;
-}
-
-#sidebarMap {
-	width: 200px;
-	position: absolute;
-	margin-left: 675px;
-}
-
-#sidebarMap img {
-	width: 190px;
-	height: auto;
-}
-
 #pompeiiCityMap {
 	width: 200px;
 	position: absolute;
@@ -163,10 +111,9 @@ th, td {
 	height: auto;
 }
 
-
 #herculaneumCityMap img {
 	width: 290px;
-	height:auto;
+	height: auto;
 }
 
 #pompCityMap img {
@@ -233,11 +180,6 @@ input[name*="image"] {
 .buttons {
 	max-width: 100%;
 	margin: 0 auto;
-}
-
-#refine {
-	margin-top: 10px;
-	/*	color: maroon; */
 }
 
 img {
