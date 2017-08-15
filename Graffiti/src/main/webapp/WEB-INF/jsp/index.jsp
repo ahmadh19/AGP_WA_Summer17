@@ -81,7 +81,7 @@ h3 {
 	<div style="max-width: 1100px; float: center; margin: auto;">
 		<div class="leftcol">
 			<h3>Herculaneum</h3>
-			<a href="search?city=Herculaneum"><img class="fluid-img"
+			<a href="searchHerculaneum"><img class="fluid-img"
 				src="<%=request.getContextPath()%>/resources/images/Herculaneum.jpg"
 				onmouseover="this.src='<%=request.getContextPath()%>/resources/images/exploreHerculaneum.jpg'"
 				onmouseout="this.src='<%=request.getContextPath()%>/resources/images/Herculaneum.jpg'" /></a>
@@ -89,7 +89,7 @@ h3 {
 
 		<div class="rightcol">
 			<h3>Pompeii</h3>
-			<a href="search?city=Pompeii"><img class="fluid-img"
+			<a href="searchPompeii"><img class="fluid-img"
 				src="<%=request.getContextPath()%>/resources/images/Pompeii.jpg"
 				onmouseover="this.src='<%=request.getContextPath()%>/resources/images/explorePompeii.jpg'"
 				onmouseout="this.src='<%=request.getContextPath()%>/resources/images/Pompeii.jpg'" /></a>
