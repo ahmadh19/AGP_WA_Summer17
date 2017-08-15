@@ -64,8 +64,6 @@
 				<%
 					}
 				%>
-
-
 			</nav>
 			<!--/.navbar-collapse -->
 		</div>

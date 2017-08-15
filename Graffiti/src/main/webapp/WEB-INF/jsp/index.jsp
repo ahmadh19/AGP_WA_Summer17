@@ -2,14 +2,12 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Ancient Graffiti Project</title>
 <%@include file="../../resources/common_head.txt"%>
-
 <style>
 .fluid-img {
 	margin-right: auto;

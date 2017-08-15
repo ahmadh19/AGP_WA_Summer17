@@ -42,6 +42,10 @@
 	color: white;
 }
 
+.navbar-brand {
+	color: maroon;
+}
+
 .navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-nav>li {
 	color: white;
 }
