@@ -51,7 +51,7 @@ Sort By
 </c:if>
 
 <a href="#top">
-	<button class="btn btn-agp scroll_top">Return To Top</button>
+	<button class="btn btn-agp scroll_top" style="float:right;">Return To Top</button>
 </a>
 
 <%@ include file="resultsList.jsp"%>

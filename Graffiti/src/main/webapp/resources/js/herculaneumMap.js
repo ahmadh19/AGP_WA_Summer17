@@ -438,123 +438,36 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	    
 	}
 	
-	/*function getFillColor(){
-		return '#fda668';
-	}*/
 	
 	function getFillColor(numberOfGraffiti){
-		//Hex darkens color as number it represents decreases
 		if(colorDensity){
-
-			if(0<=numberOfGraffiti && numberOfGraffiti<=2){
-				return '#FFEDC0';
-			}
-			
-			else if(2<numberOfGraffiti && numberOfGraffiti<=5){
-				return '#FFEDA0';
-				
-			}
-			
-			else if(5<numberOfGraffiti && numberOfGraffiti<=10){
-				return '#fed39a';
-				
-			}
-			
-			else if(10<numberOfGraffiti && numberOfGraffiti<=20){
-				return '#fec880';
-				
-			}
-			
-			else if(20<numberOfGraffiti && numberOfGraffiti<=30){
-				return '#FEB24C';
-				
-			}
-			
-			else if(30<numberOfGraffiti && numberOfGraffiti<=40){
-				return '#fe9b1b';
-				
-			}
-			
-			else if(40<numberOfGraffiti && numberOfGraffiti<=60){
-				return '#fda668';
-			}
-			
-			else if(60<numberOfGraffiti && numberOfGraffiti<=80){
-				return '#FD8D3C';
-			}
-			
-			else if(80<numberOfGraffiti && numberOfGraffiti<=100){
-				return '#fd7a1c';
-			}
-			
-			
-			else if(100<numberOfGraffiti && numberOfGraffiti<=130){
-				return '#fc6c4f' ;
-			}
-			
-			else if(130<numberOfGraffiti && numberOfGraffiti<=160){
-				return '#FC4E2A' ;
-			}
-			
-			else if(160<numberOfGraffiti && numberOfGraffiti<=190){
-				return '#fb2d04' ;
-			}
-			else if(190<numberOfGraffiti && numberOfGraffiti<=210){
-				return '#ea484b';
-				
-			}
-			
-			else if(210<numberOfGraffiti && numberOfGraffiti<=240){
-				return '#E31A1C';
-				
-			}
-			
-			else if(240<numberOfGraffiti && numberOfGraffiti<=270){
-				return '#b71518';
-				
-			}
-			
-			else if(270<numberOfGraffiti && numberOfGraffiti<=300){
-				return '#cc0029';
-			}
-			
-			else if(300<numberOfGraffiti && numberOfGraffiti<=330){
-				return '#b30024';
-			}
-			
-			else if(330<numberOfGraffiti && numberOfGraffiti<=360){
-				return '99001f';
-			}
-			
-			else if(360<numberOfGraffiti && numberOfGraffiti<=390){
-				return '#80001a';
-			}
-			
-			else if(390 <numberOfGraffiti && numberOfGraffiti<=420){
-				return '#660014';
-			}
-			
-			else if(420<numberOfGraffiti && numberOfGraffiti<=460){
-				return '#4d000f';
-			}
-			
-			else if(460<numberOfGraffiti && numberOfGraffiti<=500){
-				return '#33000a';
-			}
-			
-			else{
-				return '#000000';
-			}
-			}
-		//If the property is selected and there is no colorDensity, make the fill color be maroon(dark red).
-		//PropertySelected is a global variable altered within getBorderColorForCloseZoom and style.
-		if(propertySelected){
-			return '#800000';
+			return numberOfGraffiti <= 2   ? '#FFEDC0' :
+			   numberOfGraffiti <= 5   ? '#FFEDA0' :
+			   numberOfGraffiti <= 10  ? '#fed39a' :
+			   numberOfGraffiti <= 20  ? '#fec880' :
+			   numberOfGraffiti <= 30  ? '#FEB24C' :
+			   numberOfGraffiti <= 40  ? '#fe9b1b' :
+			   numberOfGraffiti <= 60  ? '#fda668' :
+		       numberOfGraffiti <= 80  ? '#FD8D3C' :
+			   numberOfGraffiti <= 100 ? '#fd7a1c' :
+		       numberOfGraffiti <= 130 ? '#fc6c4f' :
+			   numberOfGraffiti <= 160 ? '#FC4E2A' :
+			   numberOfGraffiti <= 190 ? '#fb2d04' :
+			   numberOfGraffiti <= 210 ? '#ea484b' :
+			   numberOfGraffiti <= 240 ? '#E31A1C' :
+			   numberOfGraffiti <= 270 ? '#b71518' :
+			   numberOfGraffiti <= 300 ? '#cc0029' :
+			   numberOfGraffiti <= 330 ? '#b30024' :
+			   numberOfGraffiti <= 360 ? '99001f' :
+			   numberOfGraffiti <= 390 ? '#80001a' :
+			   numberOfGraffiti <= 420 ? '#660014' :
+			   numberOfGraffiti <= 460 ? '#4d000f' :
+			   numberOfGraffiti <= 500 ? '#33000a' :
+										 '#000000';
 		}
-		//What should this be?
-		//return '#800026';
-		//return 'green';
-		return '#FEB24C' ;
+		
+		// an orangey-yellow
+		return '#FEB24C';
 	}
 	var geojson;
 	
@@ -588,7 +501,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	function displayHighlightedInsula(){
 		//console.log("21");
 		//clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
-		var html = "<table><tr><th>Selected Insula:</th></tr>";
+		var html = "<button id='search' class='btn btn-agp' style='float:left;'>Search Properties</button><br/><br/><table><tr><th>Selected Insula:</th></tr>";
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
 			html += "<tr><td><li>"+clickedInsula[i][0] + ", " +

@@ -33,10 +33,10 @@
 		<p>Click on one or more properties within the map, then hit the
 			"Search" button below.</p>
 		<div>
-			<div id="newDiv"></div>
+			<div id="newDiv"><button id="search" class="btn btn-agp" style="float:left;">Search Properties</button></div>
 			<div id="herculaneummap" class="mapdiv"></div>
 		</div>
-		<button id="search" class="btn btn-agp" style="float:right;">Search Properties</button>
+		
 
 	</div>
 	<script type="text/javascript"
