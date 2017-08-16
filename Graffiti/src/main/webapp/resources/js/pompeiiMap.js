@@ -56,8 +56,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// Syncs with mapbox
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
 	
-	// var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light',
-	// attribution: 'Mapbox Light'});
+	var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
 	
 	
 	// Fires when the map is initialized
@@ -75,7 +74,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	var pompeiiWalls = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
 	pompeiiWalls.addTo(pompeiiMap);
 	
-	// pompeiiMap.addLayer(grayscale);
+	pompeiiMap.addLayer(grayscale);
 	
 	
 	if( interactive && colorDensity){ 
