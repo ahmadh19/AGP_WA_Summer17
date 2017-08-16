@@ -23,10 +23,10 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	var insulaViewZoomLevel=17;
 	
 	if(moreZoom){
-		currentZoomLevel=14;
+		currentZoomLevel=15;
 	}
 	else{
-		currentZoomLevel=15;
+		currentZoomLevel=16;
 	}
 	
 	var zoomLevelForIndividualProperty=19;
@@ -56,12 +56,13 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// Syncs with mapbox
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
 	
-	var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
+	// var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light',
+	// attribution: 'Mapbox Light'});
 	
 	
 	// Fires when the map is initialized
 	pompeiiMap = new L.map('pompeiimap', {
-		//center: [40.750, 14.4884],
+		center: [40.750, 14.4884],
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
 		maxZoom:20,
@@ -69,24 +70,29 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	});
 	
 	var propertyLayer = L.geoJson(pompeiiPropertyData, { style: propertyStyle, onEachFeature: onEachPropertyFeature });
-	//propertyLayer.addTo(pompeiiMap);
+	propertyLayer.addTo(pompeiiMap);
 	
 	var pompeiiWalls = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
 	pompeiiWalls.addTo(pompeiiMap);
 	
-	pompeiiMap.addLayer(grayscale);
-
+	// pompeiiMap.addLayer(grayscale);
 	
-	/*
-	 * if( interactive && colorDensity){ // Insula Functions:
-	 * makeInsulaCentersDict(); makeTotalInsulaGraffitiDict();
-	 * makeInsulaIdsListShortNamesList(); // Regio Functions:
-	 * makeRegioCentersDict(); makeTotalRegioGraffitiDict();
-	 * makeListOfRegioNames();
-	 * 
-	 * dealWithLabelsAndSelection(); pompeiiMap.addControl(new
-	 * L.Control.Compass({autoActive: true, position: "bottomleft"})); }
-	 */
+	
+	if( interactive && colorDensity){ 
+		// Insula Functions:
+		makeInsulaCentersDict(); 
+		makeTotalInsulaGraffitiDict();
+		makeInsulaIdsListShortNamesList(); 
+
+		// Regio Functions:
+		makeRegioCentersDict(); 
+		makeTotalRegioGraffitiDict();
+		makeListOfRegioNames();
+
+		dealWithLabelsAndSelection(); 
+		pompeiiMap.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"})); 
+	}
+	 
 	
 	// A listener for zoom events.
 	pompeiiMap.on('zoomend', function(e) {
