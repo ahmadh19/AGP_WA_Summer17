@@ -1,4 +1,18 @@
 
+<style>
+	a:hover, .dropdown:hover .dropbtn {
+		background-color: maroon;
+	}
+	
+	.dropdown-menu a:hover {
+		background-color: #ddd;
+	}
+	
+	.dropdown:hover .dropdown-menu {
+		display: block;
+	}
+</style>
+
 <header class="navbar navbar-static-top bs-docs-nav" id="top"
 	role="banner">
 
@@ -31,7 +45,7 @@
 									Pompeii</a></li>
 						</ul></li>
 					<li class="dropdown"><a class="dropdown-toggle"
-						data-toggle="dropdown">Data: <span class="caret"></span></a>
+						data-toggle="dropdown">Data <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="<%=request.getContextPath()%>/properties">Properties</a>
 						</ul></li>

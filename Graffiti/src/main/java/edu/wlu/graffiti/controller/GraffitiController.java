@@ -338,6 +338,7 @@ public class GraffitiController {
 					+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
 					+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
 					+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
+					+ "sort_by={sortParameter}, where the sort parameters are as follows: [summary, cil, property.property_id]. <br/>"
 					+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
 	@RequestMapping(value = "/results", method = RequestMethod.GET)
 	public String search(final HttpServletRequest request) {
@@ -362,6 +363,7 @@ public class GraffitiController {
 					+ "language={language}, where the languages are as follows: [Latin, Greek, Latin/Greek, other].<br/>"
 					+ "global={searchString}, where the search string can be any text to search globally for. <br/>"
 					+ "content={searchString}, where the search string can be any text to search the content for. <br/>"
+					+ "sort_by={sortParameter}, where the sort parameters are as follows: [summary, cil, property.property_id]. <br/>"
 					+ "Mutiple parameters passed in the URI can be separated using an ampersand symbol, '&'.")
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
 	public String filterResults(final HttpServletRequest request) {

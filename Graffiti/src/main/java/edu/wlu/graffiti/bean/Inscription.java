@@ -33,9 +33,6 @@ public class Inscription implements Comparable<Inscription> {
 	private String writingStyle;
 	private String apparatus;
 	private String apparatusDisplay;
-	private int numberOfImages; // TODO: remove this
-	private int startImageId; // TODO: remove this
-	private int stopImageId; // TODO: remove this
 	private List<Photo> photos;
 	private AGPInfo agp;
 	private String edrFindSpot;
@@ -230,15 +227,6 @@ public class Inscription implements Comparable<Inscription> {
 		this.apparatusDisplay = apparatusDisplay;
 	}
 
-	@JsonIgnore
-	public int getNumberOfImages() {
-		return this.numberOfImages;
-	}
-
-	public void setNumberOfImages(final int num) {
-		this.numberOfImages = num;
-	}
-
 	public AGPInfo getAgp() {
 		return agp;
 	}
@@ -277,38 +265,6 @@ public class Inscription implements Comparable<Inscription> {
 
 	public int compareTo(final Inscription inscription) {
 		return this.getEdrId().compareTo(inscription.getEdrId());
-	}
-
-	/**
-	 * @return the startImageId
-	 */
-	@JsonIgnore
-	public int getStartImageId() {
-		return startImageId;
-	}
-
-	/**
-	 * @param startImageId
-	 *            the startImageId to set
-	 */
-	public void setStartImageId(int startImageId) {
-		this.startImageId = startImageId;
-	}
-
-	/**
-	 * @return the stopImageId
-	 */
-	@JsonIgnore
-	public int getStopImageId() {
-		return stopImageId;
-	}
-
-	/**
-	 * @param stopImageId
-	 *            the stopImageId to set
-	 */
-	public void setStopImageId(int stopImageId) {
-		this.stopImageId = stopImageId;
 	}
 
 	/**

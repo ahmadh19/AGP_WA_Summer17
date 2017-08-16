@@ -92,6 +92,12 @@
 					(${i.agp.property.insula.shortName}.${i.agp.property.propertyNumber})</a>
 			</td>
 		</tr>
+		<c:if test="${not empty i.agp.cil}">
+			<tr>
+				<th><span class="propertyLabel">CIL:</span></th>
+				<td>${i.agp.cil}</td>
+			</tr>
+		</c:if>
 		<c:if test="${i.agp.figuralInfo.getDrawingTags().size() > 0}">
 			<tr>
 				<c:choose>

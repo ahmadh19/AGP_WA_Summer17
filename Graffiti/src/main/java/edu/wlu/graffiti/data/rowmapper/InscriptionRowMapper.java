@@ -33,9 +33,6 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		inscription.setWritingStyle(resultSet.getString("writing_style"));
 		inscription.setApparatus(resultSet.getString("APPARATUS"));
 		inscription.setApparatusDisplay(resultSet.getString("apparatus_displayed"));
-		inscription.setNumberOfImages(resultSet.getInt("NUMBEROFIMAGES"));
-		inscription.setStartImageId(resultSet.getInt("start_image_id"));
-		inscription.setStopImageId(resultSet.getInt("stop_image_id"));
 
 		agp.setSummary(resultSet.getString("summary"));
 		agp.setCommentary(resultSet.getString("comment"));
