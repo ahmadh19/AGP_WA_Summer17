@@ -37,7 +37,7 @@
 
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Interactive Maps <span
-							class="expander" aria-hidden="true"></span></a>
+							class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a
 								href="<%=request.getContextPath()%>/searchHerculaneum">Herculaneum</a></li>

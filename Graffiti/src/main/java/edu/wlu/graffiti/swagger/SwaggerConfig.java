@@ -31,7 +31,7 @@ public class SwaggerConfig {
 				"REST API for Ancient Graffiti Project",
 				"1.0",
 				"Terms of Service",
-				"AGP Dev Team", 
+				"Hammad Ahmad", 
 				"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License",
 				"https://creativecommons.org/licenses/by-nc-sa/4.0/"
 				);

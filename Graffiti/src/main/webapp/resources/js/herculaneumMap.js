@@ -680,7 +680,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		if(!zoomedOutThresholdReached()){
 			var clickedAreasTable = getUniqueClicked();
 			
-			var html = "<table><tr><th>Selected Properties:</th></tr>";
+			var html = "<button id='search' class='btn btn-agp' style='float:left;'>Search Properties</button><br/><br/><table><tr><th>Selected Properties:</th></tr>";
 			var length = clickedAreasTable.length;
 			for (var i=0; i<length; i++) {
 				var property = clickedAreasTable[i];
