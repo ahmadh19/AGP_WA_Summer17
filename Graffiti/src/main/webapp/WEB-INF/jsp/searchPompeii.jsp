@@ -25,15 +25,12 @@
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>">
 </script>
 <script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiWallsPropertyData.js"/>">
+	src="<c:url value="/resources/js/pompeiiWallsData.js"/>">
 </script>
 <script
 	src="<c:url value="resources/js/leaflet-compass-master/src/leaflet-compass.js"/>"></script>
-<style>
-button {
-	margin-top: 200%;
-}
-</style>
+<script type="text/javascript"
+		src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 </head>
 <body>
 	<%@include file="header.jsp"%>
@@ -45,14 +42,12 @@ button {
 			<button id="search" class="btn btn-agp">Search Properties</button>
 		</div>
 		<div>
-			<div id="newDiv"></div>
+			<div id="selectionDiv"></div>
 			<div id="pompeiimap" class="mapdiv"></div>
 		</div>
 	</div>
-	<script type="text/javascript"
-		src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 	<script>
-		window.initpompmap();
+		window.initPompeiiMap();
 	</script>
 </body>
 </html>

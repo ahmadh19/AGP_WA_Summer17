@@ -479,10 +479,10 @@ function backToResults(){
 				console.log(<c:out value = "${i.agp.property.id}"/>);
 				
 				if ("${i.ancientCity}" == "Pompeii"){
-					window.initpompmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
+					window.initPompeiiMap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
 				}
 				else{
-					window.inithercmap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
+					window.initHerculaneumMap(true,false,false,false,<c:out value = "${i.agp.property.id}"/>,[],true);
 				}
 				
 			</script>

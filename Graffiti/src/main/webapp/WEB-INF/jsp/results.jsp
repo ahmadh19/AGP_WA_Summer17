@@ -250,8 +250,8 @@ ul#searchTerms li {
 	setLocationKeys();
 	//Apparently, these need to be used in same order as they are in div. 
 	//This jsp is used and needed. 
-	window.inithercmap(true,false,false,false,0,locationKeys);
-	window.initpompmap(true,false,false,false,0,locationKeys);
+	window.initHerculaneumMap(true,false,false,false,0,locationKeys);
+	window.initPompeiiMap(true,false,false,false,0,locationKeys);
 
 </script>
 </body>
