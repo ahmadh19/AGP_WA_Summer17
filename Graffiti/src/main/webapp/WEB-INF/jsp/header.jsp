@@ -1,6 +1,6 @@
 
 <style>
-	a:hover, .dropdown:hover .dropbtn {
+	.dropdown:hover .dropbtn {
 		background-color: maroon;
 	}
 	
