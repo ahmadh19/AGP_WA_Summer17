@@ -10,6 +10,7 @@ import edu.wlu.graffiti.bean.FiguralInfo;
 import edu.wlu.graffiti.bean.GreatestHitsInfo;
 import edu.wlu.graffiti.bean.Inscription;
 import edu.wlu.graffiti.bean.Property;
+import edu.wlu.graffiti.data.setup.ImportEDRData;
 
 public final class InscriptionRowMapper implements RowMapper<Inscription> {
 	public Inscription mapRow(final ResultSet resultSet, final int rowNum) throws SQLException {
@@ -38,7 +39,7 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		agp.setCommentary(resultSet.getString("comment"));
 		agp.setContentTranslation(resultSet.getString("content_translation"));
 		agp.setEdrId(inscription.getEdrId());
-		agp.setCil(resultSet.getString("CIL"));
+		agp.setCil(ImportEDRData.extractCIL(resultSet.getString("bibliography"))); //TODO: fix this!
 		agp.setLangner(resultSet.getString("langner"));
 		agp.setWritingStyleInEnglish(resultSet.getString("writing_style_in_english"));
 		agp.setLanguageInEnglish(resultSet.getString("lang_in_english"));

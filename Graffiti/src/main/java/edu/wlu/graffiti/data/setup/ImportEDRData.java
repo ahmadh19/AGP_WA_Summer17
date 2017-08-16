@@ -62,7 +62,8 @@ public class ImportEDRData {
 	private static final String UPDATE_CONTENT = "UPDATE edr_inscriptions SET " + "content = ? WHERE edr_id = ?";
 	private static final String UPDATE_CONTENT_EPIDOC = "UPDATE agp_inscription_info SET "
 			+ "epidoc = ? WHERE edr_id = ?";
-
+	private static final String UPDATE_CIL = "UPDATE agp_inscription_info SET "
+			+ "cil = ? WHERE edr_id = ?";
 	private static final String UPDATE_BIB = "UPDATE edr_inscriptions SET " + "bibliography = ? WHERE edr_id = ?";
 	private static final String UPDATE_APPARATUS = "UPDATE edr_inscriptions SET " + "apparatus = ? WHERE edr_id = ?";
 	private static final String SELECT_INSULA_AND_PROPERTIES = "select *, insula.id as insula_id, properties.id as property_id from insula, properties where insula_id = insula.id";
@@ -326,6 +327,15 @@ public class ImportEDRData {
 		}
 	}
 
+	public static String extractCIL(String bib) {
+		Pattern pattern = Pattern.compile("CIL\\s04\\,\\s[0-9]{5}[a-zA-Z]*\\s*\\([0-9]\\)");
+		Matcher matcher = pattern.matcher(bib);
+		if(matcher.find()) {
+			return matcher.group(0).split("\\s*\\(")[0];	
+		}
+		return "";
+	}
+	
 	public static String transformContentToEpidoc(String content) {
 		Pattern pattern;
 		Matcher matcher;

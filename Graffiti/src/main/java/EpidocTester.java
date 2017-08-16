@@ -185,6 +185,15 @@ public class EpidocTester {
 		return content;
 	}
 	
+	private static String extractCIL(String bib) {
+		Pattern pattern = Pattern.compile("CIL\\s04\\,\\s[0-9]{5}[a-zA-Z]*\\s*\\([0-9]\\)");
+		Matcher matcher = pattern.matcher(bib);
+		if(matcher.find()) {
+			return matcher.group(0).split("\\s*\\(")[0];	
+		}
+		return "";
+	}
+	
 	public static void main(String[] args) {
 		//System.out.print(content + "\n\n\n");
 		//System.out.println("Content with images example:\n" + transformContentToEpidoc(content3) + "\n\n");
@@ -214,7 +223,7 @@ public class EpidocTester {
 		}
 		System.out.println(content);
 		*/
-		System.out.println(transformContentToEpidoc("((:herma viri))"));
+		//System.out.println(transformContentToEpidoc("((:herma viri))"));
 		//System.out.println(transformContentToEpidoc("[---]culus"));
 		
 		//String nonFiguralContent = content.substring(0, content.indexOf("((:"));
@@ -225,7 +234,9 @@ public class EpidocTester {
 		//System.out.println(content2);
 		//String[] temp = content.split("[a-zA-Z]*\\([a-zA-Z]+\\)");
 		//for(String str : temp) System.out.println(str);
-
+		
+		System.out.println(extractCIL("CIL 04, 08600 (1)<br>A. Varone, Titulorum graphio exaratorum qui in CIL Vol. IV collecti sunt imagines, Roma 2012, vol. I, p. 136 con foto (2)"));
+	
 	}
 
 }
