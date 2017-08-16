@@ -338,7 +338,8 @@ function refineResults(filterOrSort) {
 	//making locationKeys of the list type.
 	var locationKeys=eval(document.getElementById("mapkeys").innerHTML);
 	map.remove();
-	window.initpompmap(true,false,false,false,0,locationKeys);
+	window.initPompeiiMap(true,false,false,false,0,locationKeys);
+	window.initHerculaneumMap(true,false,false,false,0,locationKeys);
 }
 
 /*
