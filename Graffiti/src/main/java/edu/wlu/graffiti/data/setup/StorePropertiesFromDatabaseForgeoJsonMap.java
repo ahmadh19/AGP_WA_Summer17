@@ -62,7 +62,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	private static final String POMPEII_JAVASCRIPT_DATA_FILE_LOC = "src/main/webapp/resources/js/pompeiiPropertyData.js";
 	private static final String POMPEII_INIT_JAVASCRIPT_LOC = "src/main/webapp/resources/js/PropertyDataFirst.txt";
 	private static final String HERCULANEUM_INIT_JAVASCRIPT_LOC = "src/main/webapp/resources/js/HerculaneumDataFirst.txt";
-	private static final String POMPEII_GEOJSON_FILE_LOC = "src/main/resources/geoJSON/eschebach.json";
+	private static final String POMPEII_GEOJSON_FILE_LOC = "src/main/resources/geoJSON/pompeii_properties.json";
 
 	final static String SELECT_PROPERTY = FindspotDao.SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT;
 
