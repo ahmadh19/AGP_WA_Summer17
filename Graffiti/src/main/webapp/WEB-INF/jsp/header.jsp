@@ -68,17 +68,17 @@
 						data-toggle="dropdown" href="#">Resources <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="<%=request.getContextPath()%>/properties">Properties</a></li>
-							<li><a href="http://ancientgraffiti.org/about/teaching-resources/">Teaching
+							<li><a href="/about/teaching-resources/">Teaching
 									Resources</a></li>
-							<li><a href="swagger-ui.html">API Documentation</a></li>
-							<li><a href="http://ancientgraffiti.org/about/main/epigraphic-conventions"/>Epigraphic Conventions</a></li>
+							<li><a href="<%=request.getContextPath()%>/swagger-ui.html">API Documentation</a></li>
+							<li><a href="/about/main/epigraphic-conventions"/>Epigraphic Conventions</a></li>
 						</ul></li>
 					<li class="dropdown"><a href="/about" class="dropdown-toggle"
 						data-toggle="dropdown">About the Project <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="http://ancientgraffiti.org/about/teams/">Teams</a></li>
-							<li><a href="http://ancientgraffiti.org/about/fieldwork/">Fieldwork</a></li>
-							<li><a href="http://ancientgraffiti.org/about/main/funding/">Funding</a></li>
+							<li><a href="/about/teams/">Teams</a></li>
+							<li><a href="/about/fieldwork/">Fieldwork</a></li>
+							<li><a href="/about/main/funding/">Funding</a></li>
 						</ul></li>
 				</ul>
 				<form class="navbar-form navbar-left">
