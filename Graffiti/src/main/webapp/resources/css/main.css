@@ -7,25 +7,20 @@
 
 a.leaflet-control-zoom-in,a.leaflet-control-zoom-out,.leaflet-bar a.leaflet-disabled{
 	background:transparent;
-	
 }
 
 .mapdiv {
 	height: 400px;
 	width: 650px;
-	float: left;
 	position:absolute;
 	margin-left:auto;
+	float: left;
 }
 
-#newDiv {
-	height:800px;
-	width: 350px;
-	float: right;
-	margin-left:850px;
-	position:absolute;
+#search_info {
+	margin-left: 700px; 
+	width: 300px;"
 }
-
 
 .propertyMetadataMap{
 	width: 300px;

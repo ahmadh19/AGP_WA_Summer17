@@ -58,7 +58,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
 	
-	
 	// Fires when the map is initialized
 	pompeiiMap = new L.map('pompeiimap', {
 		center: [40.750, 14.4884],
@@ -203,7 +202,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// Modifies the clojure wide variable once and only once at the beginning of
 	// the program
 	function makeTotalInsulaGraffitiDict(){
-		// console.log("9");
 		totalInsulaGraffitisDict=new Array();
 		pompeiiMap.eachLayer(function(layer){
 			if(insulaViewZoomThresholdReached() && layer.feature!=undefined){
@@ -602,7 +600,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		}
 		return newArray;
 	}
-	
 	
 	// On click, sees if a new insula id # has been selected. If so, adds it to
 	// the list of selected insula.
