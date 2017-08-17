@@ -10,3 +10,16 @@
 	href="<c:url value="resources/js/leaflet-compass-master/src/leaflet-compass.css"/>"/>
 <script
 	src="<c:url value="resources/js/leaflet-compass-master/src/leaflet-compass.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiWallsData.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiInsulaData.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/js/herculaneumMap.js"/>">
+</script>

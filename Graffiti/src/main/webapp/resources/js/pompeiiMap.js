@@ -1,6 +1,6 @@
 var pompeiiMap;
 
-var SELECT_COLOR = '#800000';
+var SELECTED_COLOR = '#800000';
 var DEFAULT_COLOR = '#FEB24C';
 var wallBorderColor='black';
 var wallFillColor='black';
@@ -68,13 +68,15 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	});
 	
 	var propertyLayer = L.geoJson(pompeiiPropertyData, { style: propertyStyle, onEachFeature: onEachPropertyFeature });
-	propertyLayer.addTo(pompeiiMap);
+	//propertyLayer.addTo(pompeiiMap);
 	
-	var pompeiiWalls = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
-	pompeiiWalls.addTo(pompeiiMap);
+	var pompeiiWallsLayer = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
+	pompeiiWallsLayer.addTo(pompeiiMap);
 	
 	pompeiiMap.addLayer(grayscale);
 	
+	var pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: propertyStyle, onEachFeature: onEachPropertyFeature });
+	pompeiiInsulaLayer.addTo(pompeiiMap)
 	
 	if( interactive && colorDensity){ 
 		// Insula Functions:
@@ -510,7 +512,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		// If the property is selected and there is no colorDensity, make the
 		// fill color be maroon(dark red).
 		if(isPropertySelected(feature)){
-			return SELECT_COLOR;
+			return SELECTED_COLOR;
 		}
 		// an orangey-yellow
 		return DEFAULT_COLOR;

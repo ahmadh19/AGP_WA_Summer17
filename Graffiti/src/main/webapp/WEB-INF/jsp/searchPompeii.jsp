@@ -12,14 +12,6 @@
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/resources/css/main.css" />
-<script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>">
-</script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiWallsData.js"/>">
-</script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 </head>
 <body>
 	<%@include file="header.jsp"%>
