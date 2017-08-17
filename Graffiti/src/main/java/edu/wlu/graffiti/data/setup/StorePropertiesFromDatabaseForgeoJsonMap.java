@@ -163,7 +163,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						ResultSet propertyRS = osmWayIdSelectionStatement.executeQuery();
 
 						if (propertyRS.next()) {
-							writePropertyInfoToFile(herculaneumTextWriter, hercProperty, propertyRS);
+							writeHerculaneumPropertyInfoToFile(herculaneumTextWriter, hercProperty, propertyRS);
 						} else {
 							System.out.println("Property with osm way id " + osm_way_id + " not in database.");
 						}
@@ -178,7 +178,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 						ResultSet propertyRS = osmIdSelectionStatement.executeQuery();
 
 						if (propertyRS.next()) {
-							writePropertyInfoToFile(herculaneumTextWriter, hercProperty, propertyRS);
+							writeHerculaneumPropertyInfoToFile(herculaneumTextWriter, hercProperty, propertyRS);
 						} else {
 							System.out.println("Property with osm id " + osm_id + " not in database.");
 						}
@@ -197,14 +197,16 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		}
 	}
 
-	public static void writePropertyInfoToFile(PrintWriter herculaneumTextWriter, JsonNode hercProperty, ResultSet rs)
+	public static void writeHerculaneumPropertyInfoToFile(PrintWriter herculaneumTextWriter, JsonNode hercProperty, ResultSet rs)
 			throws SQLException {
 		int propertyId = rs.getInt("id");
-
+		
+		String propertyNumber = rs.getString("property_number");
 		String propertyName = rs.getString("property_name");
 		String addProperties = rs.getString("additional_properties");
 		String italPropName = rs.getString("italian_property_name");
 		String insulaId = rs.getString("insula_id");
+		String propertyAddress = "";
 		
 		ObjectNode graffito = (ObjectNode) hercProperty;
 		ObjectNode properties = (ObjectNode) graffito.path("properties");
@@ -219,6 +221,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 			properties.put("short_insula_name", shortInsulaName);
 			properties.put("full_insula_name", fullInsulaName);
+			propertyAddress += shortInsulaName + "." + propertyNumber;
 		}
 		
 		// String insulaDescription =
@@ -249,6 +252,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 		properties.put("Additional_Properties", addProperties);
 		properties.put("Italian_Property_Name", italPropName);
 		properties.put("insula_id", insulaId);
+		properties.put("Property_Address", propertyAddress);
 		
 		// These are not in the database.
 		// properties.put("Insula_Description",
