@@ -1,6 +1,4 @@
-
-var map;
-
+var hercMap;
 
 function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomOnOneProperty) {
 	//this just sets my access token
@@ -8,7 +6,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	var borderColor;
 	var fillColor;
 	var southWest = L.latLng(40.8040619, 14.343131),
-	
 	northEast = L.latLng(40.8082619, 14.351131),
 	bounds = L.latLngBounds(southWest, northEast);
 	
@@ -32,12 +29,8 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	var currentInsulaNumber;
 	var graffitiInLayer;
 	var numberOfGraffitiInGroup;
-	var justStarted=true;
-	
 	
 	var insulaMarkersList=[];
-	
-	
 	var clickedInsula=[];
 	
 	//Holds the center latitudes and longitudes of all insula on the map. 
@@ -45,10 +38,8 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	var insulaGroupIdsList=[];
 	var insulaShortNamesDict=[];
 	
-	
 	//Fires when the map is initialized
-
-	map = new L.map('herculaneummap', {
+	hercMap = new L.map('herculaneummap', {
 		center: [40.8059619, 14.347131],
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
@@ -56,8 +47,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		maxBounds: bounds,
 		//Here is the +/- button for zoom
 	})
-	
-	//map.addControl( new L.Control.Compass());
 	
 	//Sinks with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
@@ -68,9 +57,8 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
 	var clickedAreas = [];
 	
-	
-	//map.addLayer(grayscale);
-	L.geoJson(herculaneumPropertyData).addTo(map);
+	//hercMap.addLayer(grayscale);
+	L.geoJson(herculaneumPropertyData).addTo(hercMap);
 	
 	if(interactive){
 		makeInsulaCentersDict();
@@ -78,10 +66,11 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		makeInsulaIdsListShortNamesList();
 		displayInsulaLabels();
 		
-		map.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"}));
+		hercMap.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"}));
 	}
+	
 	//A listener for zoom events. 
-	map.on('zoomend', function(e) {
+	hercMap.on('zoomend', function(e) {
 		dealWithInsulaLevelView();
 		dealWithInsulaLabelsAndSelectionOnZoom();
 	});
@@ -90,40 +79,37 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	function showCloseUpView(){
 		if(propertyIdToHighlight){
 			var newCenterCoordinates=[];
-			map.eachLayer(function(layer){
+			hercMap.eachLayer(function(layer){
 				if(layer.feature!=undefined){
 					if(layer.feature.properties.Property_Id==propertyIdToHighlight){
 						newCenterCoordinates=layer.getBounds().getCenter();
-						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
+						hercMap.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
 					}
 				}
 			});
 		}
 		else if(propertyIdListToHighlight.length==1){
 			newCenterCoordinates=[];
-			map.eachLayer(function(layer){
+			hercMap.eachLayer(function(layer){
 				if(layer.feature!=undefined){
 					if(layer.feature.properties.Property_Id==propertyIdListToHighlight[0]){
 						newCenterCoordinates=layer.getBounds().getCenter();
-						map.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
+						hercMap.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
 					}
 				}
 			});
 		}
 	}
 	
-	
-	if(propertyIdToHighlight!=0 || propertyIdListToHighlight.length==1)
-	{
+	if(propertyIdToHighlight!=0 || propertyIdListToHighlight.length==1)	{
 		showCloseUpView();
 	}
 	
 	//Responsible for showing the map view on the insula level. 
 	function dealWithInsulaLevelView(){
-		
 		//This must be reset
 		totalInsulaGraffitisDict=new Array();
-		map.eachLayer(function(layer){
+		hercMap.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({color: getFillColor(graffitiInLayer)});
@@ -146,7 +132,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		//The second loop fills in the colors of the properties to match the total group color. 
 		//Again, only runs if the above conditions are true. 
 		//Empty slots are caused by there not yet being a group at those indexes yet them being surrounded by values. 
-		map.eachLayer(function(layer){
+		hercMap.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
@@ -180,7 +166,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	
 	function updateBorderColors(){
 		console.log("16");
-		map.eachLayer(function(layer){
+		hercMap.eachLayer(function(layer){
 			if(layer.feature!=undefined && layer.feature.properties.clicked ){
 				borderColor=getBorderColorForCloseZoom(layer.feature);
 				//layer.feature.setStyle(color,borderColor);
@@ -212,7 +198,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	function makeInsulaIdsListShortNamesList(){
 		//console.log("8");
 		var currentInsulaId=183;
-		map.eachLayer(function(layer){
+		hercMap.eachLayer(function(layer){
 			if(layer.feature!=undefined){
 				if(layer.feature.properties.insula_id!=currentInsulaId){
 					if(insulaGroupIdsList.indexOf(currentInsulaId)==-1){
@@ -232,7 +218,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	function makeTotalInsulaGraffitiDict(){
 		//console.log("9");
 		totalInsulaGraffitisDict=new Array();
-		map.eachLayer(function(layer){
+		hercMap.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				currentInsulaNumber=layer.feature.properties.insula_id;
@@ -259,7 +245,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		var propertiesSoFar=0;
 		//console.log("Into find cds loop:");
 		
-		map.eachLayer(function(layer){
+		hercMap.eachLayer(function(layer){
 			propertiesSoFar+=1;
 			if(layer.feature!=undefined && interactive){
 				currentInsulaNumber=layer.feature.properties.insula_id;
@@ -340,7 +326,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				currentInsulaId=currentInsula[1];
 				listOfSelectedInsulaIds.push(currentInsulaId);	
 			}
-			map.eachLayer(function(layer){
+			hercMap.eachLayer(function(layer){
 				if(layer.feature!=undefined){
 					if(listOfSelectedInsulaIds.indexOf(layer.feature.properties.insula_id)!=-1 && !uniqueClicked.includes(layer)){
 						uniqueClicked.push(layer);
@@ -372,7 +358,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		    html: textToDisplay
 		});
 		// you can set .my-div-icon styles in CSS
-		var myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(map);
+		var myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(hercMap);
 		insulaMarkersList.push(myMarker);
 	}
 	
@@ -397,7 +383,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	}
 	
 	function zoomedOutThresholdReached(){
-		currentZoomLevel=map.getZoom();
+		currentZoomLevel=hercMap.getZoom();
 		return (currentZoomLevel<=insulaViewZoomLevel && colorDensity);
 	}
 	
@@ -590,7 +576,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		style: style,
 	    onEachFeature: onEachFeature
 	    
-	}).addTo(map);
+	}).addTo(hercMap);
 	//Putting this after the above appears to make it this start correctly.
 	 if(initialZoomNotCalled==true){
 		   //console.log("16");
@@ -615,7 +601,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			}
 		};
 	
-		info.addTo(map);
+		info.addTo(hercMap);
 	}
 	
 	updateHoverText();

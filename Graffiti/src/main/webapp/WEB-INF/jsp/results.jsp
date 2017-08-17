@@ -1,5 +1,6 @@
- <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,22 +8,21 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Ancient Graffiti Project :: Search Results</title>
 <script type="text/javascript"
-	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
-<script type="text/javascript"
 	src="<c:url value="/resources/js/filterSearch.js"/>"></script>
-<%@ include file="/resources/common_head.txt" %>
-<%@ include file="/resources/leaflet_common.txt" %>
-<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/main.css" />
- <script type="text/javascript"
+<%@ include file="/resources/common_head.txt"%>
+<%@ include file="/resources/leaflet_common.txt"%>
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/resources/css/main.css" />
+<script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
-	
- <script type="text/javascript"
+<script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiWallsData.js"/>"></script>
+<script type="text/javascript"
 	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
-	
-<%@ page import= "java.util.*" %>
+
+<%@ page import="java.util.*"%>
 
 <script type="text/javascript">
-
 
 function start() {
 $('img').mapster({
@@ -44,17 +44,12 @@ $('img').mapster({
 var locationKeys; 
 
 function setLocationKeys(){
-	<%
-	List<String> locationKeys=(List<String>)request.getAttribute("findLocationKeys");
-	if(locationKeys==null){
-		locationKeys=new ArrayList();
-	}
-	%>
+	<%List<String> locationKeys = (List<String>) request.getAttribute("findLocationKeys");
+			if (locationKeys == null) {
+				locationKeys = new ArrayList();
+			}%>
 	locationKeys = <%=locationKeys%>;
 }
-
-
-
 
 function selectImg(ind, k, shortId, longId){
 	if (ind == 0){
@@ -159,9 +154,7 @@ function checkboxesAfterBack() {
 		}
 	} 
 }
-
-</script>	
-
+</script>
 <style>
 th {
 	vertical-align: top;
@@ -187,26 +180,19 @@ hr.main-table {
 	margin: 225px 0px 0px 818px;
 }
 
-.map-override1 {
-	position: static
-}
-
 .btn-agp {
 	margin-bottom: 10px;
 }
 
 ul#searchTerms li {
-    display:inline-block;
-    margin: 0 0 7px 0;
+	display: inline-block;
+	margin: 0 0 7px 0;
 }
 </style>
-	
 </head>
-
 <body>
-<%@include file="header.jsp"%>
-
-<div id="contain" class="container" style="margin-bottom: 50px;">
+	<%@include file="header.jsp"%>
+	<div id="contain" class="container" style="margin-bottom: 50px;">
 		<%@include file="sidebarSearchMenu.jsp"%>
 		<!--  SideBar Map  -->
 		<div id="herculaneummap" class="searchResultsHerculaneum"></div>
@@ -216,38 +202,24 @@ ul#searchTerms li {
 			<div style="width: 480px; padding-bottom: 10px;">
 				<ul id="searchTerms" style="width: 525px; margin-left: -40px;"></ul>
 			</div>
-			<div id="search-results"> 
+			<div id="search-results">
 				<%@include file="filter.jsp"%>
 			</div>
 		</div>
 	</div>
 
+	<script type="text/javascript"
+		src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 
-<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
-  integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
-  crossorigin=""></script>
+	<script type="text/javascript"
+		src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 
-
-
-	
-<script type="text/javascript">
-	//generateHerculaneum("Herculaneum");
-</script>
-
-<script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
-	
-<script type="text/javascript"
-	src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
-
-<script>
+	<script>
 	setLocationKeys();
 	//Apparently, these need to be used in same order as they are in div. 
-	//This jsp is used and needed. 
 	window.initHerculaneumMap(true,false,false,false,0,locationKeys);
 	window.initPompeiiMap(true,false,false,false,0,locationKeys);
-
-</script>
+	</script>
 </body>
 
 
