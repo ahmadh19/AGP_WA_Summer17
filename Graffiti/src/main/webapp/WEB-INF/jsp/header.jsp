@@ -19,7 +19,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid" style="padding: 0 25px;">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="<%=request.getContextPath()%>/">AGP</a>
+				<a class="navbar-brand" href="<%=request.getContextPath()%>/" style="color:#ffe6e6;">AGP</a>
 				<!-- THIS HAS BEEN COMMENTED OUT, BECAUSE I THOUGHT IT LOOKED BAD. IF YOU WOULD 
 					 RATHER PREFER THIS LOOK, I CAN EASILY USE THIS INSTEAD OF HOW BROWSE IS 
 					 CURRENT SET UP. -->
