@@ -78,6 +78,7 @@
 						<ul class="dropdown-menu">
 							<li><a href="http://ancientgraffiti.org/about/teams/">Teams</a></li>
 							<li><a href="http://ancientgraffiti.org/about/fieldwork/">Fieldwork</a></li>
+							<li><a href="http://ancientgraffiti.org/about/main/funding/">Funding</a></li>
 						</ul></li>
 				</ul>
 				<form class="navbar-form navbar-left">
