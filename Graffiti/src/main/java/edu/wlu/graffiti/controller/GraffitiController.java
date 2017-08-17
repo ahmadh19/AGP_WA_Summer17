@@ -476,9 +476,9 @@ public class GraffitiController {
 
 				for (String param : params) {
 					BoolQueryBuilder orQuery = boolQuery();
-					orQuery.should(matchQuery(fieldNames.get(i).toLowerCase(), param)); // exact
+					orQuery.should(matchQuery(fieldNames.get(i), param.toLowerCase())); // exact
 																			// match
-					orQuery.should((regexpQuery(fieldNames.get(i).toLowerCase(), ".*" + param + ".*"))); // partial
+					orQuery.should((regexpQuery(fieldNames.get(i), ".*" + param.toLowerCase() + ".*"))); // partial
 					contentQuery.must(orQuery);
 				}
 

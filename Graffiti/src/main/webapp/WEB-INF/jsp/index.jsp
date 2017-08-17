@@ -71,7 +71,7 @@ h3 {
 			Ancient Graffiti Project, a digital resource and search engine for locating and
 			studying graffiti of the early Roman empire. More than 500 ancient graffiti are now
 			available here, ca. 300 from Herculaneum and another 200 from Pompeii
-			(from the Lupanar, Insula I.8, and other locations). Entries for the
+			(from the Lupanar, Insula I.8, and other locations). <br/>Entries for the
 			Herculaneum graffiti now include photographs from our fieldwork in
 			2014-2016.</p>
 	</div>
