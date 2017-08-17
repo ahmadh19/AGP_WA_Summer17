@@ -153,8 +153,8 @@ public class ImportEDRData {
 		/*
 		for (String city : cityToInsulaMap.keySet()) {
 			System.out.println("city: " + city);
-			for (String s : cityToInsulaMap.get(city).keySet()) {
-				System.out.println("    - " + s + ": " + cityToInsulaMap.get(city).get(s));
+			for (String insulaName : cityToInsulaMap.get(city).keySet()) {
+				System.out.println("    - " + insulaName + ": " + cityToInsulaMap.get(city).get(s));
 			}
 		}
 		*/
@@ -609,11 +609,10 @@ public class ImportEDRData {
 
 		if (ancient_city.equals("Pompeii")) {
 			insula = address.substring(0, address.lastIndexOf('.'));
-			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		} else {
 			insula = address.substring(0, address.indexOf('.'));
-			propertyNum = address.substring(address.lastIndexOf('.') + 1);
 		}
+		propertyNum = address.substring(address.lastIndexOf('.') + 1);
 
 		if (!cityToInsulaMap.get(ancient_city).containsKey(insula)) {
 			System.err.println(edrId + ": Insula " + insula + " not found in " + ancient_city + ", " + address);
@@ -624,7 +623,7 @@ public class ImportEDRData {
 
 		if (!insulaToPropertyMap.get(insulaID).containsKey(propertyNum)) {
 			System.err.println(edrId + ": Property " + propertyNum + " in Insula " + insula + " in " + ancient_city
-					+ " not found");
+					+ " not found.  Orig Findspot: " + findSpot + " address: " + address);
 			return;
 		}
 
