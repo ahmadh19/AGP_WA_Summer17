@@ -7,7 +7,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
 	var borderColor;
 	var fillColor;
-	//14.346131   40.8061619
 	var southWest = L.latLng(40.8040619, 14.343131),
 	
 	northEast = L.latLng(40.8082619, 14.351131),
@@ -19,11 +18,11 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	//The maximum zoom level to show insula view instead of property view(smaller zoom level means more zoomed out)
 	var insulaViewZoomLevel=17;
 	
-	if(!moreZoom){
+	if(moreZoom){
 		currentZoomLevel=17;
 	}
 	else{
-		currentZoomLevel=16;
+		currentZoomLevel=18;
 	}
 	
 	var showInsulaMarkers;
@@ -654,9 +653,8 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		return propIdsOfClicked;
 	}
 	
-	//I am confused as to the workings of this function. Looks like it is the hig/results?drawing=allhest level function
-	//for searching after the user clicks the search button. 
-	function DoSubmit() {
+	// function called when user clicks the search button. 
+	function searchProperties() {
 		var highlighted = collectClicked();
 		var argString = "";
 		if (highlighted.length > 0){
@@ -664,7 +662,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				argString = argString + "property=" + highlighted[i];
 				argString = argString + "&";
 			}
-
 			window.location = "results?" + argString;
 			return true;
 		}
@@ -680,22 +677,22 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		if(!zoomedOutThresholdReached()){
 			var clickedAreasTable = getUniqueClicked();
 			
-			var html = "<button id='search' class='btn btn-agp' style='float:left;'>Search Properties</button><br/><br/><table><tr><th>Selected Properties:</th></tr>";
+			var html = "<strong>Selected Properties:</strong><ul>";
 			var length = clickedAreasTable.length;
 			for (var i=0; i<length; i++) {
 				var property = clickedAreasTable[i];
 				/*alert(property.feature.geometry.coordinates);*/
 				if (property.feature.properties.clicked === true) {
 					
-					html += "<tr><td><li>" +property.feature.properties.Property_Name + ", " + 
-							"<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li></td></tr>";
+					html += "<li>" +property.feature.properties.Property_Name + ", " + 
+							"<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
 				}
 			}
-			html += "</table";
+			html += "</ul>";
 			//Checks to avoid error for element is null.
-			var elem = document.getElementById("newDiv");
+			var elem = document.getElementById("toSearch");
 			  if(typeof elem !== 'undefined' && elem !== null) {
-				  document.getElementById("newDiv").innerHTML = html;
+				  document.getElementById("toSearch").innerHTML = html;
 			  }
 				
 		}
@@ -709,7 +706,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	//Handles the events(they're not handled above??).
 	var el = document.getElementById("search");
 	if(el!=null){
-		el.addEventListener("click", DoSubmit, false);
+		el.addEventListener("click", searchProperties, false);
 	}
 	
 	var el2 = document.getElementById("herculaneummap");
