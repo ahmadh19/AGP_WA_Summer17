@@ -197,7 +197,7 @@ ul#searchTerms li {
 		<div id="pompeiimap" class="searchResultsPompeii"></div>
 
 		<div style="margin-left: 200px;">
-			<div style="width: 480px; padding-bottom: 10px;">
+			<div style="width: 480px;">
 				<ul id="searchTerms" style="width: 525px; margin-left: -40px;"></ul>
 			</div>
 			<div id="search-results">

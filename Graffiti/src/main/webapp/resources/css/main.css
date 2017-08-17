@@ -30,25 +30,26 @@ a.leaflet-control-zoom-in,a.leaflet-control-zoom-out,.leaflet-bar a.leaflet-disa
 	height:250px;
 }
 
-.searchResultsPompeii {
-	height:300px;
+.searchResultsHerculaneum {
+	height:250px;
 	width:300px;
-	margin-top:260px;
+	margin-top:10px;
 	margin-left:715px;
 	float:right;
 	border: 3px solid #800000;
 	position:absolute;
 }
 
-.searchResultsHerculaneum {
-	height:250px;
+.searchResultsPompeii {
+	height:300px;
 	width:300px;
-	margin-top:0px;
+	margin-top:270px;
 	margin-left:715px;
 	float:right;
 	border: 3px solid #800000;
 	position:absolute;
 }
+
 
 .findspotMap{
 	height:400px;
