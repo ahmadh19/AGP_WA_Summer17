@@ -222,7 +222,8 @@ public class ImportEDRData {
 	private static void updateBibliography(String bibFileName) {
 		try {
 			PreparedStatement updateBibStmt = dbCon.prepareStatement(UPDATE_BIB);
-
+			PreparedStatement updateCilStmt = dbCon.prepareStatement(UPDATE_CIL);
+			
 			Reader in = new FileReader(bibFileName);
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
@@ -256,6 +257,10 @@ public class ImportEDRData {
 						if (updated != 1) {
 							System.err.println("\nSomething went wrong with bibliography for " + edrID);
 							System.err.println(bib);
+						} else {
+							updateCilStmt.setString(1, extractCIL(bib));
+							updateCilStmt.setString(2, edrID);
+							updateCilStmt.executeUpdate();
 						}
 					}
 				} catch (SQLException e) {
