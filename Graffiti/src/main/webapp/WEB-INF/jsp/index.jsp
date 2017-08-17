@@ -65,17 +65,15 @@ h3 {
 			<p />
 		</c:if>
 		<div>
-			<p class="alert alert-info">This site is an active work in
-				progress. Something about partial graffiti.</p>
+			<p class="alert alert-info">This site is an active work in progress. More updates coming soon.</p>
 		</div>
 		<p style="font-size: 16px; text-align: center;">Welcome to The
-			Ancient Graffiti Project, a digital resource for locating and
-			studying graffiti of the early Roman empire from the cities of
-			Pompeii and Herculaneum. More than 500 ancient graffiti are now
+			Ancient Graffiti Project, a digital resource and search engine for locating and
+			studying graffiti of the early Roman empire. More than 500 ancient graffiti are now
 			available here, ca. 300 from Herculaneum and another 200 from Pompeii
 			(from the Lupanar, Insula I.8, and other locations). Entries for the
 			Herculaneum graffiti now include photographs from our fieldwork in
-			2016.</p>
+			2014-2016.</p>
 	</div>
 	<!-- <h2 style="text-align:center;">Click on a map to search</h2> -->
 	<div style="max-width: 1100px; float: center; margin: auto;">
