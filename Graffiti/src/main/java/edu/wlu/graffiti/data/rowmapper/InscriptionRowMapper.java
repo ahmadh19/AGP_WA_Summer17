@@ -39,7 +39,7 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		agp.setCommentary(resultSet.getString("comment"));
 		agp.setContentTranslation(resultSet.getString("content_translation"));
 		agp.setEdrId(inscription.getEdrId());
-		agp.setCil(ImportEDRData.extractCIL(resultSet.getString("bibliography"))); //TODO: fix this!
+		agp.setCil(resultSet.getString("cil"));
 		agp.setLangner(resultSet.getString("langner"));
 		agp.setWritingStyleInEnglish(resultSet.getString("writing_style_in_english"));
 		agp.setLanguageInEnglish(resultSet.getString("lang_in_english"));
