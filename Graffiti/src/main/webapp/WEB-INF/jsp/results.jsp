@@ -109,14 +109,12 @@ function checkboxesAfterBack() {
 			"other" : 3
 		};
 
-		
 		var languages = {
 			"Latin" : 1,
 			"Greek" : 2,
 			"Latin/Greek" : 3,
 			"other" : 4
 		};
-		
 		
 		for (var i in params){
 			if (params[i] != "query_all=false"){
@@ -210,7 +208,6 @@ ul#searchTerms li {
 
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
-
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 
@@ -221,7 +218,4 @@ ul#searchTerms li {
 	window.initPompeiiMap(true,false,false,false,0,locationKeys);
 	</script>
 </body>
-
-
-
 </html>

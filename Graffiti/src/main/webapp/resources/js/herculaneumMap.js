@@ -1,5 +1,8 @@
 var hercMap;
 
+var SELECT_COLOR = '#800000';
+var DEFAULT_COLOR = '#FEB24C';
+
 function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,interactive=true,propertyIdToHighlight=0,propertyIdListToHighlight=[],zoomOnOneProperty) {
 	//this just sets my access token
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
@@ -42,7 +45,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	hercMap = new L.map('herculaneummap', {
 		center: [40.8059619, 14.347131],
 		zoom: currentZoomLevel,
-		minZoom: currentZoomLevel,
+		minZoom: currentZoomLevel-1,
 		maxZoom:20,
 		maxBounds: bounds,
 		//Here is the +/- button for zoom
@@ -51,14 +54,8 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	//Sinks with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
 	
-	//This adds more realistic features to the background like streets. Commented out bc/shape files are off positionally and more details shows it to users. 
-	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
-
 	//I see the clicked areas collection, but what about the rest of the items? Are they just obscurely stored by Leaflet or GeoJSON?
 	var clickedAreas = [];
-	
-	//hercMap.addLayer(grayscale);
-	L.geoJson(herculaneumPropertyData).addTo(hercMap);
 	
 	if(interactive){
 		makeInsulaCentersDict();
@@ -151,21 +148,17 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	//Returns a new array with the contents of the previous index absent
 	//We must search for a string in the array because, again, indexOf does not work for nested lists. 
 	function removeStringedListFromArray(someArray,stringPortion){
-		console.log("19.5");
 		var newArray=[];
 		var i;
 		for(i=0;i<someArray.length;i++){
 			if(""+someArray[i]!=stringPortion){
 				newArray.push(someArray[i]);
 			}
-
-			
 		}
 		return newArray;
 	}
 	
 	function updateBorderColors(){
-		console.log("16");
 		hercMap.eachLayer(function(layer){
 			if(layer.feature!=undefined && layer.feature.properties.clicked ){
 				borderColor=getBorderColorForCloseZoom(layer.feature);
@@ -183,8 +176,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 					//removeInsulaLabels();
 					showInsulaMarkers=false;
 					//This shows selected properties from the insula when the map zooms in.
-					 updateBorderColors();
-					 
+					updateBorderColors();
 				}
 			}
 			else if(!showInsulaMarkers){
@@ -196,14 +188,12 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	
 	//Builds the global list of insula ids. 
 	function makeInsulaIdsListShortNamesList(){
-		//console.log("8");
 		var currentInsulaId=183;
 		hercMap.eachLayer(function(layer){
 			if(layer.feature!=undefined){
 				if(layer.feature.properties.insula_id!=currentInsulaId){
 					if(insulaGroupIdsList.indexOf(currentInsulaId)==-1){
 						insulaGroupIdsList.push(currentInsulaId);
-						
 					}
 				}
 				currentInsulaId=layer.feature.properties.insula_id;
@@ -216,7 +206,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	//This works well as graffiti numbers should not change over the session.
 	//Modifies the clojure wide variable once and only once at the beginning of the program
 	function makeTotalInsulaGraffitiDict(){
-		//console.log("9");
 		totalInsulaGraffitisDict=new Array();
 		hercMap.eachLayer(function(layer){
 			if(zoomedOutThresholdReached() && layer.feature!=undefined){
@@ -225,7 +214,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
 					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
 				}
-				else{
+				else {
 					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
 				}
 			}
@@ -234,9 +223,8 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	//This function gets and returns a "dictionary" of the latitude and longitude of each insula given its id(as index).
 	//Used to find where to place the labels of each insula on the map, upon iteration through this list.
 	function makeInsulaCentersDict(){
-		//console.log("12");
 		var currentInsulaNumber;
-		//Manually set as the first insula id for pompeii
+		//Manually set as the first insula id
 		var oldInsulaNumber=183;
 		var xSoFar=0;
 		var ySoFar=0;
@@ -415,14 +403,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	        color: borderColor,
 	        fillOpacity: 0.7,
 	    };
-		
-	    //Problem: this does not appear to be called(statement not logging). 
-	    //However, when moved before the return statement console prints too much recursion and map breaks. 
-	    //Is this a form of javascript recursion?//Maybe I need to use the return contents in my zoom listener?
-		//L.geoJson(pompeiiPropertyData, {style: style}).addTo(map);
-	    
 	}
-	
 	
 	function getFillColor(numberOfGraffiti){
 		if(colorDensity){
@@ -452,14 +433,12 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		}
 		
 		// an orangey-yellow
-		return '#FEB24C';
+		return DEFAULT_COLOR;
 	}
-	var geojson;
 	
 	//On click, sees if a new insula id # has been selected. If so, adds it to the list of 
 	//selected insula. 
 	function checkForInsulaClick(clickedProperty){
-		//console.log("20");
 		//Clicked property is a layer
 		//layer.feature.properties.insula_id
 		
@@ -470,8 +449,8 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		var clickedInsulaShortName=clickedProperty.feature.properties.short_insula_name;
 		var targetInsulaString=""+[clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName];
 		var indexOfInsulaName=clickedInsulaAsString.indexOf(targetInsulaString);
+
 		//Only adds the new id if it is already in the list
-		
 		if(indexOfInsulaName==-1){
 			clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
 		}
@@ -484,32 +463,28 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	//Used on click for insula level view in place of display selected regions
 	//In charge of the right information only, does not impact the actual map
 	function displayHighlightedInsula(){
-		//console.log("21");
 		//clickedInsula.push([clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName]);
-		var html = "<button id='search' class='btn btn-agp' style='float:left;'>Search Properties</button><br/><br/><table><tr><th>Selected Insula:</th></tr>";
+		var html = "<strong>Selected Insula:</strong><ul>";
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
-			html += "<tr><td><li>"+clickedInsula[i][0] + ", " +
-					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li></td></tr>"
+			html += "<li>"+clickedInsula[i][0] + ", " +
+					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li>"
 		}
-		html += "</table";
+		html += "</ul>";
 		//Checks to avoid error for element is null.
-		var elem = document.getElementById("newDiv");
-		  if(typeof elem !== 'undefined' && elem !== null) {
-			  document.getElementById("newDiv").innerHTML = html;
-		  }
+		var elem = document.getElementById("toSearch");
+		if(typeof elem !== 'undefined' && elem !== null) {
+			document.getElementById("toSearch").innerHTML = html;
+		}
 	}
-	
-	
 	
 	//Sets color for properties which the cursor is moving over. 
 	function highlightFeature(e) {
 		if(interactive && !zoomedOutThresholdReached()){
 			var layer = e.target;
 			layer.setStyle({
-			color:'red',
-			strokeWidth:"100"
-			
+				color:'maroon',
+				strokeWidth:"100"
 			});
 		
 			if (!L.Browser.ie && !L.Browser.opera) {
@@ -538,30 +513,25 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			    }
 				clickedAreas.push(layer);
 				info.update(layer.feature.properties);
-				
 			}
 			else{
 				checkForInsulaClick(e.target);
 			}
-			
 		}
-		
-		
 	}
-	
 	
 	
 	//Try: just commenting first line. Then, the map still works but colors remain unchanged when clicked twice. 
 	//Used to reset the color, size, etc of items to their default state(ie. after being clicked twice)
 	function resetHighlight(e) {
 		if(interactive && !zoomedOutThresholdReached()){
-		geojson.resetStyle(e.target);
-	    info.update();
+			herculaneumProperties.resetStyle(e.target);
+			info.update();
 		}
 	}
 
 	//Calls the functions on their corresponding events for EVERY feature(from tutorial)
-	function onEachFeature(feature, layer) {
+	function onEachProperty(feature, layer) {
 	    layer.on({
 	        mouseover: highlightFeature,
 	        mouseout: resetHighlight,
@@ -570,13 +540,11 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	   
 	}
 	
-	
-	//What does this do?
-	geojson = L.geoJson(herculaneumPropertyData, {
+	var herculaneumProperties = L.geoJson(herculaneumPropertyData, {
 		style: style,
-	    onEachFeature: onEachFeature
-	    
+	    onEachFeature: onEachProperty
 	}).addTo(hercMap);
+	
 	//Putting this after the above appears to make it this start correctly.
 	 if(initialZoomNotCalled==true){
 		   //console.log("16");
@@ -621,17 +589,14 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		uniqueClicked=selectPropertiesInAllSelectedInsula(uniqueClicked);
 		return uniqueClicked;
 	}
+
 	//Collects the ids of the clicked item objects(the id property).
-	//I disagree with many of these function names. 
 	function collectClicked() {
 		var propIdsOfClicked = [];
-		
 		var selectedProps = getUniqueClicked();
 		var length = selectedProps.length;
 		for (var i=0; i<length; i++) {
-			
 			var property = selectedProps[i];
-			
 			var propertyID = property.feature.properties.Property_Id;
 			propIdsOfClicked.push(propertyID);
 		}
@@ -656,7 +621,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		}
 	}
 	
-	
 	//Displays the Selected Properties and their corresponding information in an HTML table formatted. 
 	//Achieved by mixing html and javascript, accessing text properties of the regions(items). 
 	function displayHighlightedRegions() {
@@ -677,19 +641,18 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			html += "</ul>";
 			//Checks to avoid error for element is null.
 			var elem = document.getElementById("toSearch");
-			  if(typeof elem !== 'undefined' && elem !== null) {
-				  document.getElementById("toSearch").innerHTML = html;
-			  }
+			if(typeof elem !== 'undefined' && elem !== null) {
+				document.getElementById("toSearch").innerHTML = html;
+			}
 				
 		}
-		  else{
-				displayHighlightedInsula();
-				var clickedAreasTable = getUniqueClicked();
-			}	
+		else{
+			displayHighlightedInsula();
+			var clickedAreasTable = getUniqueClicked();
+		}	
 	}
 	
-	
-	//Handles the events(they're not handled above??).
+	// handles additional events.
 	var el = document.getElementById("search");
 	if(el!=null){
 		el.addEventListener("click", searchProperties, false);
@@ -700,16 +663,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		el2.addEventListener("click", displayHighlightedRegions, false);
 	}
 	
-	//showCloseUpView();
-//	var locationNeeded = false;
-//	if (document.title == "Ancient Graffiti Project :: Property Info") {
-//		locationNeeded = true;
-//	}
-//	
-//	// can the propertyId even be reverse accessed? Humm...
-//	function focusOnProperty(propId) {
-//		
-//	} **** this feature is currently in the works
 }
 	
 	

@@ -10,19 +10,19 @@ a.leaflet-control-zoom-in,a.leaflet-control-zoom-out,.leaflet-bar a.leaflet-disa
 }
 
 .mapdiv {
-	height: 400px;
-	width: 650px;
+	height: 500px;
+	width: 700px;
 	position:absolute;
 	margin-left:auto;
 	float: left;
 }
 
 #search_info {
-	margin-left: 700px; 
+	margin-left: 730px; 
 	width: 300px;"
 }
 
-.propertyMetadataMap{
+.propertyMetadataMap {
 	width: 300px;
 	position: absolute;
 	margin-left: 500px;
@@ -30,17 +30,17 @@ a.leaflet-control-zoom-in,a.leaflet-control-zoom-out,.leaflet-bar a.leaflet-disa
 	height:250px;
 }
 
-.searchResultsPompeii{
+.searchResultsPompeii {
 	height:300px;
 	width:300px;
-	margin-top:250px;
+	margin-top:260px;
 	margin-left:715px;
 	float:right;
 	border: 3px solid #800000;
 	position:absolute;
 }
 
-.searchResultsHerculaneum{
+.searchResultsHerculaneum {
 	height:250px;
 	width:300px;
 	margin-top:0px;

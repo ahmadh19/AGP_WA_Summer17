@@ -26,7 +26,7 @@
 <button id="print" class="btn btn-agp btn-sm"
 	onclick="printResults();">Print</button>
 <div style="float: right">
-Sort By
+Sort by
 <select id="sortParam" onchange="refineResults('sort');">
 	<%
 		String param = request.getParameter("sort_by");
