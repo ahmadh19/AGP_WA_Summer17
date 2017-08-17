@@ -150,13 +150,14 @@ public class ImportEDRData {
 		rs.close();
 		infoStmt.close();
 
+		/*
 		for (String city : cityToInsulaMap.keySet()) {
 			System.out.println("city: " + city);
 			for (String s : cityToInsulaMap.get(city).keySet()) {
 				System.out.println("    - " + s + ": " + cityToInsulaMap.get(city).get(s));
 			}
 		}
-
+		*/
 	}
 
 	/**
