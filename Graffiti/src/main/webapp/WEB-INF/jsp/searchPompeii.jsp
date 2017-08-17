@@ -19,6 +19,9 @@
 	src="<c:url value="/resources/js/pompeiiWallsData.js"/>">
 </script>
 <script type="text/javascript"
+	src="<c:url value="/resources/js/pompeiiInsulaData.js"/>">
+</script>
+<script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 </head>
 <body>
