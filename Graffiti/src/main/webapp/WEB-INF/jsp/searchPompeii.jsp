@@ -18,9 +18,8 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/js/pompeiiWallsData.js"/>">
 </script>
-
 <script type="text/javascript"
-		src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
+	src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 </head>
 <body>
 	<%@include file="header.jsp"%>
@@ -28,12 +27,10 @@
 		<h2>Search Pompeii by Map</h2>
 		<p>Click on one or more properties within the map, then hit the
 			"Search" button below.</p>
-		<div id="moreInfo">
-			<button id="search" class="btn btn-agp">Search Properties</button>
-		</div>
-		<div>
+		<div id="pompeiimap" class="mapdiv"></div>
+		<div id="search_info">
 			<div id="selectionDiv"></div>
-			<div id="pompeiimap" class="mapdiv"></div>
+			<button id="search" class="btn btn-agp">Search</button>
 		</div>
 	</div>
 	<script>
