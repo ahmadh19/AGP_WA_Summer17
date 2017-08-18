@@ -44,7 +44,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	
 	// Fires when the map is initialized
 	hercMap = new L.map('herculaneummap', {
-		center: [40.8059619, 14.347131], 
+		center: [40.8059119, 14.3473933], 
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel-1,
 		maxZoom:20,
