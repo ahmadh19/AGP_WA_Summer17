@@ -584,7 +584,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	function updateHoverText(){
 		info.update = function (props) {
 			if(showHover){
-				this._div.innerHTML = (props ? props.Property_Name + props.Property_Address
+				this._div.innerHTML = (props ? props.Property_Address + " " + props.Property_Name
 						: 'Hover over property to see name');
 			}
 		};
