@@ -436,99 +436,104 @@ public class GraffitiController {
 				fieldNames.add(searchFields[i]);
 			}
 		}
-
-		// This is the main query; does an AND of all sub-queries
-		BoolQueryBuilder query = boolQuery();
-
-		// For each given search term, we build a sub-query
-		// Special cases are Global Keyword, Content Keyword, and Property
-		// searches; all others are simple match queries
-		for (int i = 0; i < searchTerms.size(); i++) {
-
-			// System.out.println(searchTerms.get(i) + ": " +
-			// parameters.get(i));
-
-			// Searches has_figural_component if user selected "All"
-			// drawings
-			if (searchTerms.get(i).equals(DRAWING_CATEGORY_SEARCH_DESC) && parameters.get(i).contains("All")) {
-				// SES: I think that query should be okay because the other
-				// drawing categories are numbers.
-				// As soon as we have the query "All", then we get all the
-				// figural graffiti and we can skip
-				// the rest of the drawing-related query.
-				BoolQueryBuilder allDrawingsQuery = boolQuery();
-				allDrawingsQuery.should(matchQuery("has_figural_component", true));
-				query.must(allDrawingsQuery);
-			} else if (searchTerms.get(i).equals("Global Keyword")) {
-				// Checks content, city, insula name, property name,
-				// property types, drawing description, drawing tags,
-				// writing style, language, EAGLE id, and bibliography for a
-				// keyword match
-				BoolQueryBuilder globalQuery;
-				globalQuery = boolQuery();
-				globalQuery.should(queryStringQuery(parameters.get(i).toLowerCase()).useAllFields(true)); // exact
-																							// match
-				globalQuery.should(queryStringQuery("*" + parameters.get(i).toLowerCase() + "*").useAllFields(true)); // partial
-				query.must(globalQuery);
-			} else if (searchTerms.get(i).equals("Content Keyword")) {
-				BoolQueryBuilder contentQuery = boolQuery();
-				String[] params = parameters.get(i).split(" ");
-
-				for (String param : params) {
-					BoolQueryBuilder orQuery = boolQuery();
-					orQuery.should(matchQuery(fieldNames.get(i), param.toLowerCase())); // exact
-																			// match
-					orQuery.should((regexpQuery(fieldNames.get(i), ".*" + param.toLowerCase() + ".*"))); // partial
-					contentQuery.must(orQuery);
+		
+		try {
+			// This is the main query; does an AND of all sub-queries
+			BoolQueryBuilder query = boolQuery();
+	
+			// For each given search term, we build a sub-query
+			// Special cases are Global Keyword, Content Keyword, and Property
+			// searches; all others are simple match queries
+			for (int i = 0; i < searchTerms.size(); i++) {
+	
+				// System.out.println(searchTerms.get(i) + ": " +
+				// parameters.get(i));
+	
+				// Searches has_figural_component if user selected "All"
+				// drawings
+				if (searchTerms.get(i).equals(DRAWING_CATEGORY_SEARCH_DESC) && parameters.get(i).contains("All")) {
+					// SES: I think that query should be okay because the other
+					// drawing categories are numbers.
+					// As soon as we have the query "All", then we get all the
+					// figural graffiti and we can skip
+					// the rest of the drawing-related query.
+					BoolQueryBuilder allDrawingsQuery = boolQuery();
+					allDrawingsQuery.should(matchQuery("has_figural_component", true));
+					query.must(allDrawingsQuery);
+				} else if (searchTerms.get(i).equals("Global Keyword")) {
+					// Checks content, city, insula name, property name,
+					// property types, drawing description, drawing tags,
+					// writing style, language, EAGLE id, and bibliography for a
+					// keyword match
+					BoolQueryBuilder globalQuery;
+					globalQuery = boolQuery();
+					globalQuery.should(queryStringQuery(parameters.get(i).toLowerCase()).useAllFields(true)); // exact
+																								// match
+					globalQuery.should(queryStringQuery("*" + parameters.get(i).toLowerCase() + "*").useAllFields(true)); // partial
+					query.must(globalQuery);
+				} else if (searchTerms.get(i).equals("Content Keyword")) {
+					BoolQueryBuilder contentQuery = boolQuery();
+					String[] params = parameters.get(i).split(" ");
+	
+					for (String param : params) {
+						BoolQueryBuilder orQuery = boolQuery();
+						orQuery.should(matchQuery(fieldNames.get(i), param.toLowerCase())); // exact
+																				// match
+						orQuery.should((regexpQuery(fieldNames.get(i), ".*" + param.toLowerCase() + ".*"))); // partial
+						contentQuery.must(orQuery);
+					}
+	
+					query.must(contentQuery);
+				} else if (searchTerms.get(i).equals("Property")) {
+					BoolQueryBuilder propertiesQuery = boolQuery();
+	
+					String[] properties = parameters.get(i).split(" ");
+	
+					for (int j = 0; j < properties.length; j++) {
+						QueryBuilder propertyIdQuery;
+						BoolQueryBuilder propertyQuery;
+	
+						String propertyID = properties[j];
+	
+						propertyIdQuery = termQuery(fieldNames.get(i), propertyID);
+	
+						propertyQuery = boolQuery().must(propertyIdQuery);
+	
+						propertiesQuery.should(propertyQuery);
+					}
+					query.must(propertiesQuery);
+				} else if (searchTerms.get(i).equals(WRITING_STYLE_SEARCH_DESC)
+						&& parameters.get(i).equalsIgnoreCase("other")) {
+					// special handling of the writing style being "other"
+					query.mustNot(termQuery(fieldNames.get(i), "charcoal"));
+					query.mustNot(termQuery(fieldNames.get(i), WRITING_STYLE_GRAFFITI_INSCRIBED));
+				} else {
+					BoolQueryBuilder otherQuery = boolQuery();
+					String[] params = parameters.get(i).split(" ");
+	
+					for (String param : params) {
+						// System.out.println(searchTerms.get(i) + ": match " +
+						// param + " in " + fieldNames.get(i));
+						otherQuery.should(termQuery(fieldNames.get(i), param));
+					}
+					query.must(otherQuery);
 				}
-
-				query.must(contentQuery);
-			} else if (searchTerms.get(i).equals("Property")) {
-				BoolQueryBuilder propertiesQuery = boolQuery();
-
-				String[] properties = parameters.get(i).split(" ");
-
-				for (int j = 0; j < properties.length; j++) {
-					QueryBuilder propertyIdQuery;
-					BoolQueryBuilder propertyQuery;
-
-					String propertyID = properties[j];
-
-					propertyIdQuery = termQuery(fieldNames.get(i), propertyID);
-
-					propertyQuery = boolQuery().must(propertyIdQuery);
-
-					propertiesQuery.should(propertyQuery);
-				}
-				query.must(propertiesQuery);
-			} else if (searchTerms.get(i).equals(WRITING_STYLE_SEARCH_DESC)
-					&& parameters.get(i).equalsIgnoreCase("other")) {
-				// special handling of the writing style being "other"
-				query.mustNot(termQuery(fieldNames.get(i), "charcoal"));
-				query.mustNot(termQuery(fieldNames.get(i), WRITING_STYLE_GRAFFITI_INSCRIBED));
-			} else {
-				BoolQueryBuilder otherQuery = boolQuery();
-				String[] params = parameters.get(i).split(" ");
-
-				for (String param : params) {
-					// System.out.println(searchTerms.get(i) + ": match " +
-					// param + " in " + fieldNames.get(i));
-					otherQuery.should(termQuery(fieldNames.get(i), param));
-				}
-				query.must(otherQuery);
 			}
-		}
-
-		if (sortOrder == null || sortOrder[0].equals("relevance")) {
-			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
-					.addStoredField("edr_id").setSize(NUM_RESULTS_TO_RETURN).get();
-		} else {
-			response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
-					.addStoredField("edr_id").setSize(NUM_RESULTS_TO_RETURN).addSort(sortOrder[0], SortOrder.ASC).get();
-		}
-
-		for (SearchHit hit : response.getHits()) {
-			inscriptions.add(hitToInscription(hit));
+	
+			if (sortOrder == null || sortOrder[0].equals("relevance")) {
+				response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+						.addStoredField("edr_id").setSize(NUM_RESULTS_TO_RETURN).get();
+			} else {
+				response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
+						.addStoredField("edr_id").setSize(NUM_RESULTS_TO_RETURN).addSort(sortOrder[0], SortOrder.ASC).get();
+			}
+	
+			for (SearchHit hit : response.getHits()) {
+				inscriptions.add(hitToInscription(hit));
+			}
+			
+		} catch(Exception e) { // what kind of exception should this be?
+			return new ArrayList<Inscription>(); 
 		}
 
 		// client.close(); // This line slows down searching
