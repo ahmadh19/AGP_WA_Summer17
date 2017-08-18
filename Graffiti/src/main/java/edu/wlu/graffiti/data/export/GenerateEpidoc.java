@@ -39,7 +39,6 @@ public class GenerateEpidoc {
 		Document doc = new Document(root);
 		
 		Namespace ns = Namespace.getNamespace("ns", "http://www.tei-c.org/ns/1.0");
-		root.setAttribute(new Attribute("space", "preserve", Namespace.XML_NAMESPACE));
 		root.setAttribute(new Attribute("lang", "en", Namespace.XML_NAMESPACE));
 		root.setAttribute(new Attribute("base", "ex-epidoctemplate.xml", Namespace.XML_NAMESPACE));
 		root.addNamespaceDeclaration(ns);
