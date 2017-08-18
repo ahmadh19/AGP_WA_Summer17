@@ -148,7 +148,7 @@ public class GraffitiController {
 		request.setAttribute("figuralHits", greatestFiguralHits);
 		request.setAttribute("translationHits", greatestTranslationHits);
 
-		return "newFeaturedGraffiti";
+		return "featuredGraffiti";
 
 	}
 	/*
