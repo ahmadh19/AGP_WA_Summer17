@@ -9,6 +9,11 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 
+/**
+ * 
+ * @author Hammad Ahmad
+ *
+ */
 public class InsertThemes {
 
 	private static final String INSERT_THEMES = "INSERT INTO themes " + "(name, description) "
