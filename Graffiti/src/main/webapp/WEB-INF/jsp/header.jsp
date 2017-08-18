@@ -85,7 +85,7 @@
 					<div class="form-group" >
 						<input id="globalSearch" type="text" class="form-control" placeholder="Global Search">
 					</div>
-					<button class="btn btn-agp" onclick="globalSearchFromHeader();">Search</button>
+					<button class="btn btn-agp navbar-btn" onclick="globalSearchFromHeader();">Search</button>
 				</form>
 
 				<%

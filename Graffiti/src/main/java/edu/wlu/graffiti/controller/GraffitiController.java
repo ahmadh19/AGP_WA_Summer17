@@ -541,10 +541,7 @@ public class GraffitiController {
 		closeClient.start();
 
 		HttpSession session = request.getSession();
-		if (inscriptions.size() > 0) {
-			// System.out.println(inscriptions.get(0));
-			request.setAttribute("mapName", inscriptions.get(0).getAncientCity());
-		}
+		
 		request.setAttribute("searchedProperties", searchedProperties);
 		request.setAttribute("searchedDrawings", searchedDrawings);
 
