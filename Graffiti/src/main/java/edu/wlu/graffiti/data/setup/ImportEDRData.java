@@ -287,7 +287,7 @@ public class ImportEDRData {
 			PreparedStatement updateContentStmt = dbCon.prepareStatement(UPDATE_CONTENT);
 			PreparedStatement updateEpidocStmt = dbCon.prepareStatement(UPDATE_CONTENT_EPIDOC);
 
-			Reader in = new FileReader(contentFileName);
+			Reader in = new InputStreamReader(new FileInputStream(contentFileName), "UTF-8");
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				String eagleID = Utils.cleanData(record.get(0));
