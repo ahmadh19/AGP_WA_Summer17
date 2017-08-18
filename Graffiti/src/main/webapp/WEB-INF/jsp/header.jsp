@@ -21,6 +21,7 @@
 		background-color: #900000;
 		border-color: #CE8177;
 	}
+	
 </style>
 
 <header class="navbar navbar-static-top bs-docs-nav" id="top"
@@ -29,7 +30,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid" style="padding: 0 25px;">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="<%=request.getContextPath()%>/" style="color:#ffe6e6;">AGP</a>
+				<a class="navbar-brand" href="<%=request.getContextPath()%>/" style="color: lightgray; font-weight: bold;">AGP</a>
 				<!-- THIS HAS BEEN COMMENTED OUT, BECAUSE I THOUGHT IT LOOKED BAD. IF YOU WOULD 
 					 RATHER PREFER THIS LOOK, I CAN EASILY USE THIS INSTEAD OF HOW BROWSE IS 
 					 CURRENT SET UP. -->
@@ -93,7 +94,7 @@
 				</ul>
 				<form class="navbar-form navbar-left">
 					<div class="form-group" >
-						<input id="globalSearch" type="text" class="form-control" placeholder="Global Search">
+						<input id="globalSearch" type="text" class="form-control" placeholder="Search for Graffiti">
 					</div>
 					<button class="btn navbar-btn" onclick="globalSearchFromHeader();">Search</button>
 				</form>

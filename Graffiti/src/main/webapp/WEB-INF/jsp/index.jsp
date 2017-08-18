@@ -44,7 +44,7 @@ h3 {
 .alert-info {
 	color: black;
 	background-color: beige;
-	border-color: black;
+	border-color: lightgray;
 	background-image: none;
 }
 
