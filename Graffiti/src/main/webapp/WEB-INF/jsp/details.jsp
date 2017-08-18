@@ -9,8 +9,6 @@
 <title>Ancient Graffiti Project :: Graffito Information</title>
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
-<script type="text/javascript"
-	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <%@ include file="/resources/common_head.txt"%>
 <%@ include file="/resources/leaflet_common.txt"%>
 <link rel="stylesheet"

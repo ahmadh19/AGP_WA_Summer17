@@ -15,23 +15,6 @@
 <%@ page import="java.util.*"%>
 
 <script type="text/javascript">
-function start() {
-$('img').mapster({
-	areas: [
-		<c:forEach var="locKey" items="${requestScope.findLocationKeys}">
-		{
-			key: '${locKey}',
-			fillColor: '0000FF',
-			staticState: true
-		},
-		</c:forEach>
-	], 
-	isSelectable: false,
-	mapKey: 'data-key',
-	clickNavigate: false,
-}); 
-}
-
 var locationKeys; 
 
 function setLocationKeys(){

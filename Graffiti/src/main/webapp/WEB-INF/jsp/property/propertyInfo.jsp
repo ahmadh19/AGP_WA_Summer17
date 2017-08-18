@@ -18,33 +18,10 @@
 	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/resources/css/main.css" />
-
-<script type="text/javascript"
-	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
 <script src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
 <script src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
-<script type="text/javascript"> 
-function start() {
-	$('img').mapster({
-		areas: [
-		        
-			<c:forEach var="locKey" items="${requestScope.findLocationKeys}">
-			{
-				key: '${locKey}',
-				fillColor: '0000FF',
-				staticState: true
-			},
-			</c:forEach>
-		], 
-		isSelectable: false,
-		mapKey: 'data-key',
-		clickNavigate: false,
-	}); 
-}
-
-</script>
 </head>
 <body>
 	<!-- this script is also for leaflet -->

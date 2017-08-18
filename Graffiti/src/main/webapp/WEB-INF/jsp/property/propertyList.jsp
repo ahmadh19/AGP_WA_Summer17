@@ -11,8 +11,6 @@
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
 <%@include file="../../../resources/common_head.txt"%>
 <script type="text/javascript"
-	src="<c:url value="/resources/js/jquery.imagemapster-1.2.js" />"></script>
-<script type="text/javascript"
 	src="<c:url value="/resources/js/filterSearch.js"/>"></script>
 <script type="text/javascript">
 // Based on code from https://codepen.io/jgx/pen/wiIGc

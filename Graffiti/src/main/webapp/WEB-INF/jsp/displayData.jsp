@@ -13,8 +13,6 @@
 <%@include file="../../resources/common_head.txt"%>
 <script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/jquery.imagemapster.js" />"></script>
 <script type="text/javascript">
 	function selectImg(ind, k, shortId, longId) {
 		if (ind == 1) {
