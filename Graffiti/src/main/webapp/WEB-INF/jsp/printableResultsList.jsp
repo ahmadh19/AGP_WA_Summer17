@@ -9,8 +9,8 @@
 <c:forEach var="i" items="${resultsLyst}" varStatus="graffitoIndex">
 	<h4 id="${i.edrId }" style="font-size: 24px;">
 		<c:choose>
-			<c:when test="${not empty i.agp.summary }">
-				<c:out value="${i.agp.summary }" />
+			<c:when test="${not empty i.agp.caption }">
+				<c:out value="${i.agp.caption }" />
 			</c:when>
 			<c:otherwise>
 		Graffito

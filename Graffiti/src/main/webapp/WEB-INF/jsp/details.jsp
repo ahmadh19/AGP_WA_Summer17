@@ -172,8 +172,8 @@ function backToResults(){
 		<div class="top-div">
 			<!-- sets the title of graffito -->
 			<c:choose>
-				<c:when test="${not empty i.agp.summary}">
-					<c:set var="summary" value="${i.agp.summary}" />
+				<c:when test="${not empty i.agp.caption}">
+					<c:set var="summary" value="${i.agp.caption}" />
 				</c:when>
 				<c:otherwise>
 					<c:set var="summary" value="Graffito" />

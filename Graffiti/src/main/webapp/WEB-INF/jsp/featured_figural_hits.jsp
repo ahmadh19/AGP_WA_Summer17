@@ -45,7 +45,7 @@
 									src="/Graffiti/resources/images/CloseX2.png">
 								</a> <a
 									href="<%=request.getContextPath() %>/graffito/${i.agp.agpId}"
-									target="_blank">${i.agp.summary }</a>
+									target="_blank">${i.agp.caption }</a>
 							</p>
 							<p>${i.agp.greatestHitsInfo.commentary }</p>
 						</div></li>

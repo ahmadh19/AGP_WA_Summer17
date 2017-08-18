@@ -122,7 +122,7 @@ public class GenerateCSV {
 		inscriptionRecord.add(i.getEdrId());
 		inscriptionRecord.add(i.getBibliography());
 		inscriptionRecord.add(i.getApparatus());
-		inscriptionRecord.add(i.getAgp().getSummary());
+		inscriptionRecord.add(i.getAgp().getCaption());
 		inscriptionRecord.add(i.getAgp().getCommentary());
 		inscriptionRecord.add(i.getAgp().getContentTranslation());
 		inscriptionRecord.add(i.getAgp().getWritingStyleInEnglish());
