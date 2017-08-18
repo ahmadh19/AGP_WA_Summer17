@@ -18,7 +18,7 @@ public class AGPInfo implements Comparable<AGPInfo> {
 	private String edrId;
 	private String commentary;
 	private String contentTranslation;
-	private String summary;
+	private String caption;
 	private String writingStyleInEnglish;
 	private String languageInEnglish;
 	private Property property;
@@ -78,8 +78,8 @@ public class AGPInfo implements Comparable<AGPInfo> {
 		this.isThemed = isThemed;
 	}
 	
-	public String getSummary() {
-		return summary;
+	public String getCaption() {
+		return caption;
 	}
 
 	public String getCommentary() {
@@ -173,8 +173,8 @@ public class AGPInfo implements Comparable<AGPInfo> {
 		this.edrId = edrId;
 	}
 
-	public void setSummary(String summary) {
-		this.summary = summary;
+	public void setCaption(String caption) {
+		this.caption = caption;
 	}
 
 	public void setCommentary(String commentary) {

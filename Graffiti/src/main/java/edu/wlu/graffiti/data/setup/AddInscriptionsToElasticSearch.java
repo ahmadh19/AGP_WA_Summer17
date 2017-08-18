@@ -233,7 +233,7 @@ public class AddInscriptionsToElasticSearch {
 
 		XContentBuilder inscriptionBuilder = jsonBuilder().startObject().field("id", i.getId())
 				.field("city", i.getAncientCity()).field("insula", insula).field("property", property)
-				.field("drawing", drawing).field("summary", i.getAgp().getSummary())
+				.field("drawing", drawing).field("summary", i.getAgp().getCaption())
 				.field("writing_style", i.getWritingStyle()).field("language", i.getLanguage())
 				.field("content", i.getPreprocessedContent(i.getContent())).field("edr_id", i.getEdrId())
 				.field("bibliography", i.getBibliography()).field("comment", i.getAgp().getCommentary())

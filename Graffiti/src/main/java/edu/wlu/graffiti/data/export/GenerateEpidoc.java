@@ -408,7 +408,7 @@ public class GenerateEpidoc {
 		body.addContent(div5);
 		
 		Element div6 = new Element("div").setAttribute("type", "summary");
-		Element p_div6 = new Element("p").setText(i.getAgp().getSummary());
+		Element p_div6 = new Element("p").setText(i.getAgp().getCaption());
 		div6.addContent(p_div6);
 		body.addContent(div6);
 		

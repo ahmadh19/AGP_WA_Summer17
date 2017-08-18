@@ -385,7 +385,7 @@ public class Inscription implements Comparable<Inscription> {
 	 * @return the citation for the graffito page in AGP
 	 */
 	public String getCitation() {
-		String title = agp.getSummary();
+		String title = agp.getCaption();
 		if(title == null)
 			title = "Graffito";
 		

@@ -35,7 +35,7 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		inscription.setApparatus(resultSet.getString("APPARATUS"));
 		inscription.setApparatusDisplay(resultSet.getString("apparatus_displayed"));
 
-		agp.setSummary(resultSet.getString("summary"));
+		agp.setCaption(resultSet.getString("summary")); // TODO: rename this field in the DB to caption
 		agp.setCommentary(resultSet.getString("comment"));
 		agp.setContentTranslation(resultSet.getString("content_translation"));
 		agp.setEdrId(inscription.getEdrId());
