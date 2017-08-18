@@ -182,10 +182,6 @@ hr.main-table {
 	margin-bottom: 10px;
 }
 
-.btn-agp .navbar-btn {
-	margin-bottom:0;
-}
-
 ul#searchTerms li {
 	display: inline-block;
 	margin: 0 0 7px 0;

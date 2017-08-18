@@ -11,6 +11,16 @@
 	.dropdown:hover .dropdown-menu {
 		display: block;
 	}
+	
+	.navbar-btn {
+		margin-bottom: 0px;
+		margin-top: 0px;
+		background-image: none;
+		text-shadow: 0 1px 0 #222;
+		color: #ffffff;
+		background-color: #900000;
+		border-color: #CE8177;
+	}
 </style>
 
 <header class="navbar navbar-static-top bs-docs-nav" id="top"
@@ -67,11 +77,11 @@
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Resources <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="<%=request.getContextPath()%>/properties">Properties</a></li>
+							<li><a href="/about/main/epigraphic-conventions"/>Epigraphic Conventions</a></li>
+							<li><a href="<%=request.getContextPath()%>/properties">List of Properties</a></li>
 							<li><a href="/about/teaching-resources/">Teaching
 									Resources</a></li>
 							<li><a href="<%=request.getContextPath()%>/swagger-ui.html">API Documentation</a></li>
-							<li><a href="/about/main/epigraphic-conventions"/>Epigraphic Conventions</a></li>
 						</ul></li>
 					<li class="dropdown"><a href="/about" class="dropdown-toggle"
 						data-toggle="dropdown">About the Project <span class="caret"></span></a>
@@ -85,7 +95,7 @@
 					<div class="form-group" >
 						<input id="globalSearch" type="text" class="form-control" placeholder="Global Search">
 					</div>
-					<button class="btn btn-agp navbar-btn" onclick="globalSearchFromHeader();">Search</button>
+					<button class="btn navbar-btn" onclick="globalSearchFromHeader();">Search</button>
 				</form>
 
 				<%
