@@ -525,14 +525,18 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				if (layer.feature.properties.clicked != null) {
 					layer.feature.properties.clicked = !layer.feature.properties.clicked;
 					resetHighlight(e);
+					var index = clickedAreas.indexOf(layer);
+					if(index > -1) {
+						clickedAreas.splice(index, 1);
+					}
 				} else {
 					layer.feature.properties.clicked = true;
 					e.target.setStyle({fillColor:SELECTED_COLOR});
+					clickedAreas.push(layer);
 				}
 				if (!L.Browser.ie && !L.Browser.opera) {
 			        layer.bringToFront();
 			    }
-				clickedAreas.push(layer);
 				info.update(layer.feature.properties);
 			}
 			else{
