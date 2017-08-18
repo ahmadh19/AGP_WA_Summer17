@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -13,17 +12,9 @@
 <%@ include file="/resources/leaflet_common.txt"%>
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/resources/css/main.css" />
-<script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiWallsData.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
-
 <%@ page import="java.util.*"%>
 
 <script type="text/javascript">
-
 function start() {
 $('img').mapster({
 	areas: [
