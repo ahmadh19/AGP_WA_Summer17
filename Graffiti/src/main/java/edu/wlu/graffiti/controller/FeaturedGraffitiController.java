@@ -49,7 +49,7 @@ public class FeaturedGraffitiController {
 		final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
 		request.setAttribute("translationHits", greatestTranslationHits);
 
-		return "newTranslationQuiz";
+		return "translationQuiz";
 
 	}
 	@RequestMapping(value = "/themes/{themeName}", method = RequestMethod.GET)
