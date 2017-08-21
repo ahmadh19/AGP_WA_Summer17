@@ -110,22 +110,21 @@ function checkboxesAfterBack() {
 						value = languages[value];
 					} else if (typeToken == "dc" && value == 0) {
 						// do nothing if All is selected
-						var locationKeys = "<%=locationKeys%>";		} else {
-					value = value.replace("_", " ");
+						var locationKeys = "<%=locationKeys%>";} else {
+							value = value.replace("_", " ");
+						}
+						var id = typeToken + value;
+						//type = type.replace("_", " ");
+						$("#" + id).click();
+					} else if (type == "content") {
+						addSearchTerm("Content", value, value);
+					} else if (type == "global") {
+						addSearchTerm("Global", value, value);
 					}
-					var id = typeToken+value;
-					//type = type.replace("_", " ");
-					//alert(id);import java.util.List;
-					$("#"+id).click();
-				} else if (type == "content") {
-					addSearchTerm("Content", value, value);
-				} else if (type == "global") {
-					addSearchTerm("Global", value, value);
 				}
 			}
 		}
-	} 
-}
+	}
 </script>
 <style>
 th {
@@ -142,14 +141,14 @@ hr.main-table {
 	margin-left: 0px;
 }
 
-.scroll_top {
+#scroll_top {
 	float: right;
 	position: fixed;
 	color: white;
 	cursor: pointer;
-	align: right;
+	/*align: right;*/
 	display: inline;
-	margin: 225px 0px 0px 818px;
+	margin: 500px 0px 0px 715px;
 }
 
 .btn-agp {
@@ -166,9 +165,14 @@ ul#searchTerms li {
 	<%@include file="header.jsp"%>
 	<div id="contain" class="container" style="margin-bottom: 50px;">
 		<%@include file="sidebarSearchMenu.jsp"%>
-		<!--  SideBar Map  -->
-		<div id="herculaneummap" class="searchResultsHerculaneum"></div>
-		<div id="pompeiimap" class="searchResultsPompeii"></div>
+		<!--  Right Column -->
+		<div>
+			<div id="herculaneummap" class="searchResultsHerculaneum"></div>
+			<div id="pompeiimap" class="searchResultsPompeii"></div>
+			<a href="#top">
+				<button id="scroll_top" class="btn btn-agp">Return To Top</button>
+			</a>
+		</div>
 
 		<div style="margin-left: 200px;">
 			<div style="width: 480px;">
@@ -186,10 +190,10 @@ ul#searchTerms li {
 		src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 
 	<script>
-	setLocationKeys();
-	//Apparently, these need to be used in same order as they are in div. 
-	window.initHerculaneumMap(true,false,false,false,0,locationKeys);
-	window.initPompeiiMap(true,false,false,false,0,locationKeys);
+		setLocationKeys();
+		//Apparently, these need to be used in same order as they are in div. 
+		window.initHerculaneumMap(true, false, false, false, 0, locationKeys);
+		window.initPompeiiMap(true, false, false, false, 0, locationKeys);
 	</script>
 </body>
 </html>
