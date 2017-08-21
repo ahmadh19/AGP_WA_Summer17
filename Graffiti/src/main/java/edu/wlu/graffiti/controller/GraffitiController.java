@@ -494,11 +494,8 @@ public class GraffitiController {
 						BoolQueryBuilder propertyQuery;
 	
 						String propertyID = properties[j];
-	
 						propertyIdQuery = termQuery(fieldNames.get(i), propertyID);
-	
 						propertyQuery = boolQuery().must(propertyIdQuery);
-	
 						propertiesQuery.should(propertyQuery);
 					}
 					query.must(propertiesQuery);
@@ -527,12 +524,16 @@ public class GraffitiController {
 				response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
 						.addStoredField("edr_id").setSize(NUM_RESULTS_TO_RETURN).addSort(sortOrder[0], SortOrder.ASC).get();
 			}
+			
+			System.out.println(query);
+			System.out.println(response.getHits().getTotalHits());
 	
 			for (SearchHit hit : response.getHits()) {
 				inscriptions.add(hitToInscription(hit));
 			}
 			
-		} catch(Exception e) { // what kind of exception should this be?
+		} catch(Exception e) {
+			e.printStackTrace();
 			return new ArrayList<Inscription>(); 
 		}
 

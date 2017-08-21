@@ -35,7 +35,7 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		inscription.setApparatus(resultSet.getString("APPARATUS"));
 		inscription.setApparatusDisplay(resultSet.getString("apparatus_displayed"));
 
-		agp.setCaption(resultSet.getString("summary")); // TODO: rename this field in the DB to caption
+		agp.setCaption(resultSet.getString("caption")); 
 		agp.setCommentary(resultSet.getString("comment"));
 		agp.setContentTranslation(resultSet.getString("content_translation"));
 		agp.setEdrId(inscription.getEdrId());
@@ -43,7 +43,7 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		agp.setLangner(resultSet.getString("langner"));
 		agp.setWritingStyleInEnglish(resultSet.getString("writing_style_in_english"));
 		agp.setLanguageInEnglish(resultSet.getString("lang_in_english"));
-		agp.setEpidoc(resultSet.getString("epidoc"));
+		agp.setEpidoc(resultSet.getString("content_epidocified"));
 		
 		Property p = new Property(resultSet.getInt("property_id"));
 		agp.setProperty(p);
@@ -59,7 +59,7 @@ public final class InscriptionRowMapper implements RowMapper<Inscription> {
 		agp.setMinLetterHeight(resultSet.getString("letter_height_min"));
 		agp.setMaxLetterWithFlourishesHeight(resultSet.getString("letter_with_flourishes_height_max"));
 		agp.setMinLetterWithFlourishesHeight(resultSet.getString("letter_with_flourishes_height_min"));
-		agp.setEpidoc(resultSet.getString("epidoc"));
+		agp.setEpidoc(resultSet.getString("content_epidocified"));
 		agp.setThemed(resultSet.getBoolean("is_themed"));
 
 		if (agp.hasFiguralComponent()) {
