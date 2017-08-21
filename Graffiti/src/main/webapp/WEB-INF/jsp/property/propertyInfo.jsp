@@ -12,16 +12,10 @@
 <%@include file="/resources/common_head.txt"%>
 <%@include file="/resources/leaflet_common.txt"%>
 <!-- this is the stuff for leaflet map -->
-<script type="text/javascript"
-	src="<c:url value="/resources/js/pompeiiPropertyData.js"/>"></script>
-<script type="text/javascript"
-	src="<c:url value="/resources/js/herculaneumPropertyData.js"/>"></script>
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/resources/css/main.css" />
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/resources/css/details.css" />
-<script src="<c:url value="/resources/js/pompeiiMap.js"/>"></script>
-<script src="<c:url value="/resources/js/herculaneumMap.js"/>"></script>
 </head>
 <body>
 	<!-- this script is also for leaflet -->
@@ -119,28 +113,14 @@
 		</div>
 		
 	</div>
-	
-	<!-- 
-	<script type="text/javascript"
-		src="<c:url value="/resources/js/pompeiiMap.js"/>">
-	</script>
-	<script>
-		window.initmap();
-	</script>
-	 -->
 
 	<script type="text/javascript">
 	if("${prop.insula.city.name}"=="Herculaneum"){
-		window.inithercmap(true,false,false,false,"${prop.id}");
+		window.initHerculaneumMap(true,false,false,false,"${prop.id}");
 	}
 	else if("${prop.insula.city.name}"=="Pompeii"){
-		window.initpompmap(true,false,false,false,"${prop.id}");
-		
+		window.initPompeiiMap(true,false,false,false,"${prop.id}");
 	}
-
-	
-
-	
 	</script>
 	
 </body>
