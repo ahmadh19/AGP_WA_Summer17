@@ -159,7 +159,7 @@ th {
 			<%
 				if (request.getAttribute("filterByInsula") != null) {
 			%>
-			<h2 id="pompeii">Pompeii Insula <%=request.getAttribute("filterByInsula")%> Properties</h2>
+			<h2 id="pompeii">Pompeii Insula <%=request.getAttribute("filterByInsula")%> Properties - in development</h2>
 			<div class="button_bar">
 			
 			<a
@@ -175,7 +175,7 @@ th {
 			<%
 				} else {
 			%>
-			<h2 id="pompeii">Pompeii Properties</h2>
+			<h2 id="pompeii">Pompeii Properties - in development</h2>
 			<div class="button_bar">
 			<a href="<%=request.getContextPath()%>/properties/Pompeii/csv"
 				id="pompeiiCSV">
