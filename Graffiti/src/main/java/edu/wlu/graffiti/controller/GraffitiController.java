@@ -191,7 +191,6 @@ public class GraffitiController {
 			String line = new String("");
 			int count = 0;
 			while ((line = file_in.readLine()) != null) {
-				System.out.println(count);
 				if (line.contains("EDR")) {
 					System.out.println(line);
 					inscriptions.add(separateFields(line));
@@ -525,9 +524,6 @@ public class GraffitiController {
 						.addStoredField("edr_id").setSize(NUM_RESULTS_TO_RETURN).addSort(sortOrder[0], SortOrder.ASC).get();
 			}
 			
-			System.out.println(query);
-			System.out.println(response.getHits().getTotalHits());
-	
 			for (SearchHit hit : response.getHits()) {
 				inscriptions.add(hitToInscription(hit));
 			}
