@@ -99,7 +99,7 @@ public class AddInscriptionsToElasticSearch {
 					System.out.println(ES_INDEX_NAME + " index successfully deleted");
 				}
 			}
-			
+
 			createIndexAndAnalyzer();
 			createMapping();
 
@@ -126,7 +126,7 @@ public class AddInscriptionsToElasticSearch {
 				inscriptions.add(i);
 				propResults.close();
 				rowNum++;
-				
+
 				XContentBuilder inscriptionBuilder = createContentBuilder(i);
 
 				IndexResponse response = client.prepareIndex(ES_INDEX_NAME, ES_TYPE_NAME).setSource(inscriptionBuilder)
@@ -136,8 +136,6 @@ public class AddInscriptionsToElasticSearch {
 
 				if (response.status().equals(RestStatus.CREATED)) {
 					count++;
-					// System.out.println(response.getId() + " " +
-					// response.getVersion());
 				} else {
 					System.out.println("Failed to index document " + count);
 				}
@@ -156,52 +154,39 @@ public class AddInscriptionsToElasticSearch {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * Implements a custom analyzer to fold special characters (like accents) to unicode,
-	 * to stem english words, and to strip punctuation. Then, the index is created.
-	 * @throws IOException 
+	 * Implements a custom analyzer to fold special characters (like accents) to
+	 * unicode, to stem english words, and to strip punctuation. Then, the index
+	 * is created.
+	 * 
+	 * @throws IOException
 	 */
 	private static void createIndexAndAnalyzer() throws IOException {
-		XContentBuilder settingsBuilder = jsonBuilder()
-				.startObject()
-					.startObject("analysis")
-						.startObject("filter")
-							.startObject("punct_remove")
-								.field("type", "pattern_replace")
-								.field("pattern", "\\p{Punct}")
-								.field("replacement", "")
-							.endObject()
-							.startObject("english_stop")
-								.field("type", "stop")
-								.field("stopwords", "_english_")
-							.endObject()
-							.startObject("light_english_stemmer")
-								.field("type", "stemmer")
-								.field("language", "light_english")
-							.endObject()
-							.startObject("english_possessive_stemmer")
-								.field("type", "stemmer")
-								.field("language", "possessive_english")
-							.endObject()
-						.endObject()
-						.startObject("tokenizer")
-							.startObject("custom_tokenizer")
-								.field("type", "pattern")
-								.field("pattern", "\\s|-(?![^\\[]*\\])") // splits at whitespace, and hyphen if not in square brackets
-							.endObject()
-						.endObject()
-						.startObject("analyzer")
-							.startObject("folding")
-								.field("type", "custom")
-								.field("tokenizer", "custom_tokenizer")
-								.field("filter", new String[] {"punct_remove", "english_possessive_stemmer", "lowercase", 
-										"english_stop", "light_english_stemmer", "icu_folding"})
-							.endObject()
-						.endObject()
-					.endObject()
-				.endObject();
-				
+		XContentBuilder settingsBuilder = jsonBuilder().startObject().startObject("analysis").startObject("filter")
+				.startObject("punct_remove").field("type", "pattern_replace").field("pattern", "\\p{Punct}")
+				.field("replacement", "").endObject().startObject("english_stop").field("type", "stop")
+				.field("stopwords", "_english_").endObject().startObject("light_english_stemmer")
+				.field("type", "stemmer").field("language", "light_english").endObject()
+				.startObject("english_possessive_stemmer").field("type", "stemmer")
+				.field("language", "possessive_english").endObject().endObject().startObject("tokenizer")
+				.startObject("custom_tokenizer").field("type", "pattern").field("pattern", "\\s|-(?![^\\[]*\\])") // splits
+																													// at
+																													// whitespace,
+																													// and
+																													// hyphen
+																													// if
+																													// not
+																													// in
+																													// square
+																													// brackets
+				.endObject().endObject().startObject("analyzer").startObject("folding").field("type", "custom")
+				.field("tokenizer", "custom_tokenizer")
+				.field("filter",
+						new String[] { "punct_remove", "english_possessive_stemmer", "lowercase", "english_stop",
+								"light_english_stemmer", "icu_folding" })
+				.endObject().endObject().endObject().endObject();
+
 		client.admin().indices().prepareCreate(ES_INDEX_NAME).setSettings(settingsBuilder).get();
 	}
 
@@ -210,7 +195,7 @@ public class AddInscriptionsToElasticSearch {
 		Map<String, Object> insula = new HashMap<String, Object>();
 		List<Integer> propertyTypes = new ArrayList<>();
 
-		if (i.getAgp().getProperty() != null && i.getAgp().getProperty().getInsula() != null ) {
+		if (i.getAgp().getProperty() != null && i.getAgp().getProperty().getInsula() != null) {
 			propertyTypes = getPropertyTypes(i.getAgp().getProperty().getId());
 			insula.put("insula_id", i.getAgp().getProperty().getInsula().getId());
 			insula.put("insula_name", i.getAgp().getProperty().getInsula().getFullName());
@@ -233,12 +218,11 @@ public class AddInscriptionsToElasticSearch {
 
 		XContentBuilder inscriptionBuilder = jsonBuilder().startObject().field("id", i.getId())
 				.field("city", i.getAncientCity()).field("insula", insula).field("property", property)
-				.field("drawing", drawing).field("summary", i.getAgp().getCaption())
+				.field("drawing", drawing).field("caption", i.getAgp().getCaption())
 				.field("writing_style", i.getWritingStyle()).field("language", i.getLanguage())
 				.field("content", i.getPreprocessedContent(i.getContent())).field("edr_id", i.getEdrId())
 				.field("bibliography", i.getBibliography()).field("comment", i.getAgp().getCommentary())
-				.field("content_translation", i.getAgp().getContentTranslation())
-				.field("cil", i.getAgp().getCil())
+				.field("content_translation", i.getAgp().getContentTranslation()).field("cil", i.getAgp().getCil())
 				.field("has_figural_component", i.getAgp().hasFiguralComponent())
 				.field("langner", i.getAgp().getLangner()).field("measurements", i.getMeasurements())
 				.field("writing_style_in_english", i.getAgp().getWritingStyleInEnglish())
@@ -409,15 +393,14 @@ public class AddInscriptionsToElasticSearch {
 				.startObject("properties").startObject("description_in_english").field("type", "text").endObject()
 				.startObject("description_in_latin").field("type", "text").endObject().startObject("drawing_tags")
 				.field("type", "text").endObject().startObject("drawing_tag_ids").field("type", "integer").endObject()
-				.endObject().endObject().startObject("writing_style_in_english").field("type", "keyword")
-				.endObject().startObject("language_in_english").field("type", "keyword") 
-				.endObject().startObject("content").field("type", "text").field("analyzer", "folding").endObject()
-				.startObject("summary").field("type", "keyword").endObject()
-				.startObject("edr_id").field("store", "true").field("type", "keyword").endObject()
-				.startObject("bibliography").field("type", "text").endObject()
-				.startObject("cil").field("type", "keyword").endObject().startObject("comment").field("type", "text").endObject()
-				.startObject("content_translation").field("analyzer", "folding").field("type", "text").endObject()
-				.startObject("description_in_english").field("type", "text").endObject()
+				.endObject().endObject().startObject("writing_style_in_english").field("type", "keyword").endObject()
+				.startObject("language_in_english").field("type", "keyword").endObject().startObject("content")
+				.field("type", "text").field("analyzer", "folding").endObject().startObject("caption")
+				.field("type", "keyword").endObject().startObject("edr_id").field("store", "true")
+				.field("type", "keyword").endObject().startObject("bibliography").field("type", "text").endObject()
+				.startObject("cil").field("type", "keyword").endObject().startObject("comment").field("type", "text")
+				.endObject().startObject("content_translation").field("analyzer", "folding").field("type", "text")
+				.endObject().startObject("description_in_english").field("type", "text").endObject()
 				.startObject("measurements").field("type", "text").endObject().endObject().endObject().endObject();
 
 		client.admin().indices().preparePutMapping(ES_INDEX_NAME).setType(ES_TYPE_NAME).setSource(mapping).get();

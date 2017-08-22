@@ -191,7 +191,6 @@ public class GraffitiController {
 			String line = new String("");
 			int count = 0;
 			while ((line = file_in.readLine()) != null) {
-				System.out.println(count);
 				if (line.contains("EDR")) {
 					System.out.println(line);
 					inscriptions.add(separateFields(line));
@@ -494,11 +493,8 @@ public class GraffitiController {
 						BoolQueryBuilder propertyQuery;
 	
 						String propertyID = properties[j];
-	
 						propertyIdQuery = termQuery(fieldNames.get(i), propertyID);
-	
 						propertyQuery = boolQuery().must(propertyIdQuery);
-	
 						propertiesQuery.should(propertyQuery);
 					}
 					query.must(propertiesQuery);
@@ -527,12 +523,13 @@ public class GraffitiController {
 				response = client.prepareSearch(ES_INDEX_NAME).setTypes(ES_TYPE_NAME).setQuery(query)
 						.addStoredField("edr_id").setSize(NUM_RESULTS_TO_RETURN).addSort(sortOrder[0], SortOrder.ASC).get();
 			}
-	
+			
 			for (SearchHit hit : response.getHits()) {
 				inscriptions.add(hitToInscription(hit));
 			}
 			
-		} catch(Exception e) { // what kind of exception should this be?
+		} catch(Exception e) {
+			e.printStackTrace();
 			return new ArrayList<Inscription>(); 
 		}
 
