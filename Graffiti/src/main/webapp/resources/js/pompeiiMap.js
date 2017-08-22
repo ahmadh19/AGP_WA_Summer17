@@ -68,7 +68,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	});
 	
 	var propertyLayer = L.geoJson(pompeiiPropertyData, { style: propertyStyle, onEachFeature: onEachPropertyFeature });
-	//propertyLayer.addTo(pompeiiMap);
+	propertyLayer.addTo(pompeiiMap);
 	
 	var pompeiiWallsLayer = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
 	pompeiiWallsLayer.addTo(pompeiiMap);
@@ -423,7 +423,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	// Responsible for showing the map view on the insula level.
 	function dealWithInsulaLevelPropertyView(){
-		pompeiiMap.eachLayer(function(layer){
+		propertyLayer.eachLayer(function(layer){
 			if(insulaViewZoomThresholdReached() && layer.feature!=undefined && !regioViewZoomThresholdReached()){
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
@@ -446,7 +446,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
 				layer.setStyle({color: getFillColor(graffitiInLayer)});
-			} else if( layer.feature && ! layer.feature.properties.PRIMARY_DO){
+			} else if( layer.feature && !layer.feature.properties.PRIMARY_DO){
 				layer.setStyle({fillColor:'pink'});
 			}
 		});
@@ -672,6 +672,14 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 
 	// Calls the functions on their corresponding events for EVERY feature
 	function onEachPropertyFeature(feature, layer) {
+	    layer.on({
+	        mouseover: highlightFeature,
+	        mouseout: resetHighlight,
+	        click: showDetails,
+	    });
+	}
+	
+	function onEachInsulaFeature(feature, layer) {
 	    layer.on({
 	        mouseover: highlightFeature,
 	        mouseout: resetHighlight,
