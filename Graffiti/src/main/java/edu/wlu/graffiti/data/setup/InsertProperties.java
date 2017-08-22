@@ -55,7 +55,7 @@ public class InsertProperties {
 	private static final String INSERT_PROPERTY_TYPE_MAPPING = "INSERT INTO propertyToPropertyType VALUES (?,?)";
 
 	private static String HERCULANEUM_PANORAMAS = "Herculaneum Panoramas";
-	private static String PARCO_ARCHEOLOGICO = "Parco Archeologoico";
+	private static String PARCO_ARCHEOLOGICO = "Parco Archeologico";
 
 	private static PreparedStatement selectInsulaStmt;
 	private static PreparedStatement selectPropStmt;
