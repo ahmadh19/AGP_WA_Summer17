@@ -436,7 +436,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			   numberOfGraffiti <= 270 ? '#b71518' :
 			   numberOfGraffiti <= 300 ? '#cc0029' :
 			   numberOfGraffiti <= 330 ? '#b30024' :
-			   numberOfGraffiti <= 360 ? '99001f' :
+			   numberOfGraffiti <= 360 ? '#99001f' :
 			   numberOfGraffiti <= 390 ? '#80001a' :
 			   numberOfGraffiti <= 420 ? '#660014' :
 			   numberOfGraffiti <= 460 ? '#4d000f' :
@@ -453,6 +453,32 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		}
 		return DEFAULT_COLOR;
 	}
+	
+	var legend = L.control({position: 'bottomright'});
+
+	legend.onAdd = function (map) {
+
+		var div = L.DomUtil.create('div', 'info legend'),
+			grades = [0, 5, 10, 20, 30, 40, 60, 80, 100, 130, 160, 190, 210, 240, 270, 300, 330, 360, 390, 420, 460, 500],
+			labels = [],
+			from, to;
+		labels.push(
+				'<i style="background:' + getFillColor(0) + '"></i> ' + 0);
+		
+		for (var i = 0; i < grades.length; i++) {
+			from = grades[i];
+			to = grades[i + 1];
+
+			labels.push(
+				'<i style="background:' + getFillColor(from + 1) + '"></i> ' +
+				(from+1) + (to ? '&ndash;' + to : '+'));
+		}
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
+
+	legend.addTo(hercMap);
 	
 	// On click, sees if a new insula id # has been selected. If so, adds it to
 	// the list of
