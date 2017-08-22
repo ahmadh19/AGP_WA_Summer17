@@ -57,7 +57,7 @@ public class InsertFeaturedGraffiti {
 			
 			Properties featuredGraffiti = new Properties();
 
-			featuredGraffiti.load(new FileReader("data/featuredGraffiti.prop"));
+			featuredGraffiti.load(new FileReader("data/AGPData/featuredGraffiti.prop"));
 			Enumeration<Object> propKeys = featuredGraffiti.keys();
 
 			while (propKeys.hasMoreElements()) {
