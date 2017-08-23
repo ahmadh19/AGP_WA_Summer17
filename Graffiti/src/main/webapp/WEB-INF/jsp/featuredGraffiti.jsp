@@ -556,14 +556,11 @@ opacity
 			<a href="<%=request.getContextPath()%>/TranslationQuiz"
 				 id="csv">
 				<button class="btn btn-agp right-align">Translation Quiz</button>
-			</a> <a href="http://agp-dev1.wlu.edu/about/teaching-resources/"
+			</a> <a href="/about/teaching-resources/"
 				 id="csv">
 				<button class="btn btn-agp right-align">Teaching Resources</button>
 			</a>
 		</div>
-
-
-
 
 		<h2>Featured Graffiti</h2>
 
