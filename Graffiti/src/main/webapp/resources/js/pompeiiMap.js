@@ -73,7 +73,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	var pompeiiWallsLayer = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
 	pompeiiWallsLayer.addTo(pompeiiMap);
 	
-	pompeiiMap.addLayer(grayscale);
+	//pompeiiMap.addLayer(grayscale);
 	
 	var pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: insulaStyle, onEachFeature: onEachInsulaFeature });
 	// pompeiiInsulaLayer.addTo(pompeiiMap);
