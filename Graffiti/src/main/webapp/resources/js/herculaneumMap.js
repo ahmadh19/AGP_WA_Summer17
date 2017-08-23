@@ -97,10 +97,9 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			grades = [0, 5, 10, 20, 30, 40, 60, 80],
 			labels = [],
 			from, to;
-		/*
+		
 		labels.push(
 				'<i style="background:' + getFillColor(0) + '"></i> ' + 0);
-				*/
 		
 		for (var i = 0; i < grades.length; i++) {
 			from = grades[i];
