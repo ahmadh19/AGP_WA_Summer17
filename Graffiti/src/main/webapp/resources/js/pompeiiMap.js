@@ -75,7 +75,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	pompeiiMap.addLayer(grayscale);
 	
-	var pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: propertyStyle, onEachFeature: onEachPropertyFeature });
+	var pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: propertyStyle, onEachFeature: onEachInsulaFeature });
 	pompeiiInsulaLayer.addTo(pompeiiMap)
 	
 	if( interactive && colorDensity){ 
@@ -422,16 +422,47 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	// Responsible for showing the map view on the insula level.
 	function dealWithInsulaLevelPropertyView(){
-		pompeiiInsulaLayer.eachLayer(function(layer){
-			if(regioViewZoomThresholdReached() && colorDensity && layer.feature!=undefined){
-				regioName=layer.feature.properties.NAME;
-				//numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
-				numberOfGraffitiInGroup=layer.feature.properties.number_of_graffiti;
-				newFillColor=getFillColor(numberOfGraffitiInGroup);
-				layer.setStyle({fillColor:newFillColor});
-				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
-			} 
-		});
+		if((regioViewZoomThresholdReached() || insulaViewZoomThresholdReached()) && colorDensity) {
+			if(propertyLayer._map) {
+				propertyLayer.remove(pompeiiMap);
+			}
+			pompeiiInsulaLayer.addTo(pompeiiMap);
+			pompeiiInsulaLayer.eachLayer(function(layer){
+				if(regioViewZoomThresholdReached() && layer.feature!=undefined){
+					regioName=layer.feature.properties.NAME;
+					//numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
+					numberOfGraffitiInGroup=layer.feature.properties.number_of_graffiti;
+					newFillColor=getFillColor(numberOfGraffitiInGroup);
+					layer.setStyle({fillColor:newFillColor});
+					layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
+				} else if(insulaViewZoomThresholdReached() && layer.feature!=undefined && !regioViewZoomThresholdReached()) {
+					currentInsulaNumber=layer.feature.properties.insula_short_name;
+					//numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
+					numberOfGraffitiInGroup=layer.feature.properties.number_of_graffiti;
+					newFillColor=getFillColor(numberOfGraffitiInGroup);
+					layer.setStyle({fillColor:newFillColor});
+					layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
+				}
+			});
+		}
+		
+		// Resets properties when user zooms back in
+		if (!insulaViewZoomThresholdReached() && colorDensity){
+			if(pompeiiInsulaLayer._map) {
+				pompeiiInsulaLayer.remove(pompeiiMap);
+			}
+			propertyLayer.addTo(pompeiiMap);
+			propertyLayer.eachLayer(function(layer){
+				if (layer.feature!=undefined) {
+					layer.setStyle({color: getBorderColorForCloseZoom(layer.feature)});
+					graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
+					layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
+					layer.setStyle({color: getFillColor(graffitiInLayer)});
+				}
+			});
+		}
+		
+		/*
 		propertyLayer.eachLayer(function(layer){
 			if(insulaViewZoomThresholdReached() && layer.feature!=undefined && !regioViewZoomThresholdReached()){
 				currentInsulaNumber=layer.feature.properties.insula_id;
@@ -459,6 +490,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 				layer.setStyle({fillColor:'pink'});
 			}
 		});
+		*/
 	}
 	
 	function regioViewZoomThresholdReached(){
@@ -546,7 +578,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 			   numberOfGraffiti <= 270 ? '#b71518' :
 			   numberOfGraffiti <= 300 ? '#cc0029' :
 			   numberOfGraffiti <= 330 ? '#b30024' :
-			   numberOfGraffiti <= 360 ? '99001f' :
+			   numberOfGraffiti <= 360 ? '#99001f' :
 			   numberOfGraffiti <= 390 ? '#80001a' :
 			   numberOfGraffiti <= 420 ? '#660014' :
 			   numberOfGraffiti <= 460 ? '#4d000f' :
