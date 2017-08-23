@@ -68,15 +68,15 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	});
 	
 	var propertyLayer = L.geoJson(pompeiiPropertyData, { style: propertyStyle, onEachFeature: onEachPropertyFeature });
-	//propertyLayer.addTo(pompeiiMap);
+	// propertyLayer.addTo(pompeiiMap);
 	
 	var pompeiiWallsLayer = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
 	pompeiiWallsLayer.addTo(pompeiiMap);
 	
 	pompeiiMap.addLayer(grayscale);
 	
-	var pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: propertyStyle, onEachFeature: onEachInsulaFeature });
-	pompeiiInsulaLayer.addTo(pompeiiMap)
+	var pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: insulaStyle, onEachFeature: onEachInsulaFeature });
+	// pompeiiInsulaLayer.addTo(pompeiiMap);
 	
 	if( interactive && colorDensity){ 
 		// Insula Functions:
@@ -153,7 +153,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// Builds the global list of insula ids.
 	function makeInsulaIdsListShortNamesList(){
 		var currentInsulaId=183;
-		pompeiiMap.eachLayer(function(layer){
+		pompeiiInsulaLayer.eachLayer(function(layer){
 			if(layer.feature!=undefined){
 				if(layer.feature.properties.insula_id!=currentInsulaId){
 					if(insulaGroupIdsList.indexOf(currentInsulaId)==-1){
@@ -161,17 +161,17 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 					}
 				}
 				currentInsulaId=layer.feature.properties.insula_id;
-				insulaShortNamesDict[currentInsulaId]=layer.feature.properties.short_insula_name;	
+				insulaShortNamesDict[currentInsulaId]=layer.feature.properties.insula_short_name;	
 			}
 		});
 	}
 	
 	function makeListOfRegioNames(){
 		var someName;
-		pompeiiMap.eachLayer(function(layer){
-			if(layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
+		pompeiiInsulaLayer.eachLayer(function(layer){
+			if(layer.feature!=undefined){
 				// console.log(layer.feature.properties.PRIMARY_DO);
-				someName=layer.feature.properties.PRIMARY_DO.split(".")[0];
+				someName=layer.feature.properties.insula_short_name.split(".")[0];
 				if(regioNamesList.indexOf(someName)==-1){
 					regioNamesList.push(someName);
 				}
@@ -183,10 +183,10 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var currentNumberOfGraffiti;
 		var currentRegioName;
 		var regioNamesSoFar=[];
-		pompeiiMap.eachLayer(function(layer){
-			if(layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
-				currentRegioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
-				currentNumberOfGraffiti=layer.feature.properties.Number_Of_Graffiti;
+		pompeiiInsulaLayer.eachLayer(function(layer){
+			if(layer.feature!=undefined){
+				currentRegioName=layer.feature.properties.insula_short_name.split(".")[0];
+				currentNumberOfGraffiti=layer.feature.properties.number_of_graffiti;
 				if(regioNamesSoFar.indexOf(currentRegioName)==-1){
 					regioNamesSoFar.push(currentRegioName);
 					graffitiInEachRegioDict[currentRegioName]=currentNumberOfGraffiti;
@@ -205,9 +205,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// the program
 	function makeTotalInsulaGraffitiDict(){
 		totalInsulaGraffitisDict=new Array();
-		pompeiiMap.eachLayer(function(layer){
+		pompeiiInsulaLayer.eachLayer(function(layer){
 			if(insulaViewZoomThresholdReached() && layer.feature!=undefined){
-				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
+				graffitiInLayer=layer.feature.properties.number_of_graffiti;
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				if(totalInsulaGraffitisDict[currentInsulaNumber]!=undefined){
 					totalInsulaGraffitisDict[currentInsulaNumber]+=graffitiInLayer;
@@ -223,8 +223,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// (given as a normal list in Java array form)
 	function showALabelOnMap(xYCoordinates,textToDisplay,textSize="small", markerType){
 		var myIcon= L.divIcon({ 
-		    iconSize: new L.Point(0, 0),
-			iconSize:0,
+		    //iconSize: new L.Point(0, 0),
+			//iconSize:0,
+			className: "labelClass",
 		    html: textToDisplay
 		});
 		
@@ -298,9 +299,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var regioList=[];
 		var currentRegio;
 		var currentCount;
-		pompeiiMap.eachLayer(function(layer){
-			if(layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
-				currentRegio=layer.feature.properties.PRIMARY_DO.split(".")[0];
+		pompeiiInsulaLayer.eachLayer(function(layer){
+			if(layer.feature!=undefined){
+				currentRegio=layer.feature.properties.insula_short_name.split(".")[0];
 				
 				if(regioList.indexOf(currentRegio)==-1){
 					currentCount=1;
@@ -326,9 +327,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var regioNamesSoFar=[];
 		var currentRegioName;
 		totalPropsSoFarDict=makeTotalPropsPerRegioDict(totalPropsSoFarDict);
-		pompeiiMap.eachLayer(function(layer){
-			if(layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
-				currentRegioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
+		pompeiiInsulaLayer.eachLayer(function(layer){
+			if(layer.feature!=undefined){
+				currentRegioName=layer.feature.properties.insula_short_name.split(".")[0];
 				if(regioNamesSoFar.indexOf(currentRegioName)==-1){
 					regioNamesSoFar.push(currentRegioName);
 					if(layer.feature.geometry.coordinates!=undefined){
@@ -365,7 +366,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var latLngList;
 		var currentCoordinatesList;
 		var propertiesSoFar=0;
-		pompeiiMap.eachLayer(function(layer){
+		pompeiiInsulaLayer.eachLayer(function(layer){
 			propertiesSoFar+=1;
 			if(layer.feature!=undefined && interactive){
 				currentInsulaNumber=layer.feature.properties.insula_id;
@@ -429,15 +430,15 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 			pompeiiInsulaLayer.addTo(pompeiiMap);
 			pompeiiInsulaLayer.eachLayer(function(layer){
 				if(regioViewZoomThresholdReached() && layer.feature!=undefined){
-					regioName=layer.feature.properties.NAME;
-					//numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
-					numberOfGraffitiInGroup=layer.feature.properties.number_of_graffiti;
+					regioName=layer.feature.properties.insula_short_name.split(".")[0];
+					numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
+					// numberOfGraffitiInGroup=layer.feature.properties.number_of_graffiti;
 					newFillColor=getFillColor(numberOfGraffitiInGroup);
 					layer.setStyle({fillColor:newFillColor});
 					layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
 				} else if(insulaViewZoomThresholdReached() && layer.feature!=undefined && !regioViewZoomThresholdReached()) {
 					currentInsulaNumber=layer.feature.properties.insula_short_name;
-					//numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
+					// numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
 					numberOfGraffitiInGroup=layer.feature.properties.number_of_graffiti;
 					newFillColor=getFillColor(numberOfGraffitiInGroup);
 					layer.setStyle({fillColor:newFillColor});
@@ -463,34 +464,32 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		}
 		
 		/*
-		propertyLayer.eachLayer(function(layer){
-			if(insulaViewZoomThresholdReached() && layer.feature!=undefined && !regioViewZoomThresholdReached()){
-				currentInsulaNumber=layer.feature.properties.insula_id;
-				numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
-				newFillColor=getFillColor(numberOfGraffitiInGroup);
-				layer.setStyle({fillColor:newFillColor});
-				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
-			}
-			else if(regioViewZoomThresholdReached() && colorDensity && layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
-				regioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
-				numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
-				newFillColor=getFillColor(numberOfGraffitiInGroup);
-				layer.setStyle({fillColor:newFillColor});
-				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
-			} else if(layer.feature && !layer.feature.properties.PRIMARY_DO){
-				layer.setStyle({fillColor:'pink'});
-			}	
-			// Resets properties when user zooms back in
-			if (!insulaViewZoomThresholdReached() && colorDensity && layer.feature!=undefined){
-				layer.setStyle({color: getBorderColorForCloseZoom(layer.feature)});
-				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
-				layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
-				layer.setStyle({color: getFillColor(graffitiInLayer)});
-			} else if( layer.feature && !layer.feature.properties.PRIMARY_DO){
-				layer.setStyle({fillColor:'pink'});
-			}
-		});
-		*/
+		 * propertyLayer.eachLayer(function(layer){
+		 * if(insulaViewZoomThresholdReached() && layer.feature!=undefined &&
+		 * !regioViewZoomThresholdReached()){
+		 * currentInsulaNumber=layer.feature.properties.insula_id;
+		 * numberOfGraffitiInGroup=totalInsulaGraffitisDict[currentInsulaNumber];
+		 * newFillColor=getFillColor(numberOfGraffitiInGroup);
+		 * layer.setStyle({fillColor:newFillColor}); layer.setStyle({color:
+		 * getFillColor(numberOfGraffitiInGroup)}); } else
+		 * if(regioViewZoomThresholdReached() && colorDensity &&
+		 * layer.feature!=undefined && layer.feature.properties.PRIMARY_DO){
+		 * regioName=layer.feature.properties.PRIMARY_DO.split(".")[0];
+		 * numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
+		 * newFillColor=getFillColor(numberOfGraffitiInGroup);
+		 * layer.setStyle({fillColor:newFillColor}); layer.setStyle({color:
+		 * getFillColor(numberOfGraffitiInGroup)}); } else if(layer.feature &&
+		 * !layer.feature.properties.PRIMARY_DO){
+		 * layer.setStyle({fillColor:'pink'}); } // Resets properties when user
+		 * zooms back in if (!insulaViewZoomThresholdReached() && colorDensity &&
+		 * layer.feature!=undefined){ layer.setStyle({color:
+		 * getBorderColorForCloseZoom(layer.feature)});
+		 * graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
+		 * layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
+		 * layer.setStyle({color: getFillColor(graffitiInLayer)}); } else if(
+		 * layer.feature && !layer.feature.properties.PRIMARY_DO){
+		 * layer.setStyle({fillColor:'pink'}); } });
+		 */
 	}
 	
 	function regioViewZoomThresholdReached(){
@@ -538,17 +537,35 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 			fillColor=getFillColorByFeature(feature);
 		}
 		/*
+		 * return { fillColor:fillColor, width:200, height:200, weight: 1,
+		 * opacity: 1, color: borderColor, fillOpacity: 0.7, };
+		 * fillColor=getFillColorForFeature(feature);
+		 */
 		return { 
-			fillColor:fillColor,
-			width:200,
-			height:200, 
-			weight: 1,
-			opacity: 1,
-			color: borderColor,
-			fillOpacity: 0.7,
-		};
-		fillColor=getFillColorForFeature(feature);
-		*/
+	    	fillColor:fillColor,
+	        weight: 1,
+	        opacity: 1,
+	        color: borderColor,
+	        fillOpacity: 0.7,
+	    };
+	}
+	
+	function insulaStyle(feature) {
+		borderColor=getBorderColorForCloseZoom(feature);
+		if( isPropertySelected(feature)) {
+			fillColor = SELECTED_COLOR;
+		}
+		else if (colorDensity && regioViewZoomThresholdReached())  {
+			regioName=feature.properties.insula_short_name.split(".")[0];
+			numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
+			fillColor = getFillColor(numberOfGraffitiInGroup);
+		}
+		else if( colorDensity && insulaViewZoomThresholdReached()) {
+			fillColor = getFillColor(feature.properties.number_of_graffiti);
+		} 
+		else {
+			fillColor=getFillColorByFeature(feature);
+		}
 		return { 
 	    	fillColor:fillColor,
 	        weight: 1,
@@ -611,7 +628,8 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	// Sets color for properties which the cursor is moving over.
 	function highlightFeature(e) {
-		if(interactive && !insulaViewZoomThresholdReached()){
+		// why was this in here? --> && !insulaViewZoomThresholdReached()
+		if(interactive){
 			var layer = e.target;
 			layer.setStyle({
 				color:'maroon',
@@ -672,9 +690,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		// indexOf does not work for nested lists. Thus, we have no choice but
 		// to use it with strings.
 		var clickedInsulaAsString=""+clickedInsula;
-		var clickedInsulaFullName=clickedProperty.feature.properties.full_insula_name;
+		var clickedInsulaFullName=clickedProperty.feature.properties.insula_full_name;
 		var clickedInsulaId=clickedProperty.feature.properties.insula_id;
-		var clickedInsulaShortName=clickedProperty.feature.properties.short_insula_name;
+		var clickedInsulaShortName=clickedProperty.feature.properties.insula_short_name;
 		var targetInsulaString=""+[clickedInsulaFullName,clickedInsulaId,clickedInsulaShortName];
 		var indexOfInsulaName=clickedInsulaAsString.indexOf(targetInsulaString);
 		// Only adds the new id if it is already in the list
@@ -695,7 +713,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
 			html += "<li>"+clickedInsula[i][0] + ", " +
-					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li>"
+					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][2]]+" graffiti</p>"+ "</li>"
 		}
 		html += "</ul>";
 		// Checks to avoid error for element is null.
@@ -727,6 +745,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		if(interactive && !insulaViewZoomThresholdReached()){
 			propertyLayer.resetStyle(e.target);
 			info.update();
+		} else if (interactive && insulaViewZoomThresholdReached()) {
+			pompeiiInsulaLayer.resetStyle(e.target);
+			info.update();
 		}
 	}
 
@@ -752,8 +773,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	        mouseover: highlightFeature
 	    });
 	}
-	
-	// dealWithInsulaLevelPropertyView();
 	
 	var info = L.control();
 	info.onAdd = function(map) {
@@ -865,7 +884,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 				var property = clickedAreasTable[i];
 				if (property.feature.properties.clicked && property.feature.properties.PRIMARY_DO) {
 					html += "<li>" +property.feature.properties.Property_Name + ", " + 
-							property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>=";
+							property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
 				}
 			}
 			html += "</ul>";
@@ -880,6 +899,8 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 			var clickedAreasTable = getUniqueClicked();
 		}	
 	}
+	
+	dealWithInsulaLevelPropertyView();
 	
 	// Handles the events
 	var el = document.getElementById("search");

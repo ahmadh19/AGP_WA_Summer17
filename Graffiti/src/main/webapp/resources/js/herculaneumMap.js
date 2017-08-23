@@ -69,7 +69,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	propertyLevelLegend.onAdd = function (map) {
 
 		var div = L.DomUtil.create('div', 'info legend'),
-			grades = [0, 5, 10, 20, 30],
+			grades = [0, 5, 10],
 			labels = [],
 			from, to;
 		labels.push(
@@ -408,7 +408,8 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	function showALabelOnMap(xYCoordinates,textToDisplay){
 		var myIcon = L.divIcon({ 
 		    // iconSize: new L.Point(0, 0),
-			iconSize:0,
+			// iconSize:0,
+			className: "labelClass",
 		    html: textToDisplay
 		});
 		// you can set .my-div-icon styles in CSS
@@ -590,10 +591,15 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				var layer = e.target;
 				if (layer.feature.properties.clicked != null) {
 					layer.feature.properties.clicked = !layer.feature.properties.clicked;
-					resetHighlight(e);
-					var index = clickedAreas.indexOf(layer);
-					if(index > -1) {
-						clickedAreas.splice(index, 1);
+					if(layer.feature.properties.clicked == false) {
+						resetHighlight(e);
+						var index = clickedAreas.indexOf(layer);
+						if(index > -1) {
+							clickedAreas.splice(index, 1);
+						}
+					} else {
+						e.target.setStyle({fillColor:SELECTED_COLOR});
+						clickedAreas.push(layer);
 					}
 				} else {
 					layer.feature.properties.clicked = true;
@@ -605,7 +611,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			    }
 				info.update(layer.feature.properties);
 			}
-			else{
+			else {
 				checkForInsulaClick(e.target);
 			}
 		}
@@ -724,7 +730,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				/* alert(property.feature.geometry.coordinates); */
 				if (property.feature.properties.clicked === true) {
 					
-					html += "<li>" +property.feature.properties.Property_Address + " " +property.feature.properties.Property_Name + ", " + 
+					html += "<li>" +property.feature.properties.Property_Address + ", " +property.feature.properties.Property_Name + ", " + 
 							"<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
 				}
 			}

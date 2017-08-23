@@ -53,10 +53,13 @@ public class StoreInsulaeFromDatabaseForgeoJsonMap {
 			+ "LEFT JOIN insula ON properties.insula_id=insula.id "
 			+ "LEFT JOIN cities ON insula.modern_city=cities.name "
 			+ "WHERE UPPER(modern_city) = UPPER(?) and insula.short_name = ? " + ")";
+	
+	final static String GET_INSULA_ID = "SELECT id, full_name from insula where short_name = ?";
 
 	static Connection dbCon;
 
 	private static PreparedStatement selectPropertiesStatement;
+	private static PreparedStatement getIdStatement;
 
 	@Resource
 	private static GraffitiDao graffitiDaoObject;
@@ -87,6 +90,7 @@ public class StoreInsulaeFromDatabaseForgeoJsonMap {
 			dbCon = DriverManager.getConnection(prop.getProperty("db.url"), prop.getProperty("db.user"),
 					prop.getProperty("db.password"));
 			selectPropertiesStatement = dbCon.prepareStatement(SELECT_PROPERTIES_ON_INSULA);
+			getIdStatement = dbCon.prepareStatement(GET_INSULA_ID);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -137,8 +141,19 @@ public class StoreInsulaeFromDatabaseForgeoJsonMap {
 					// Get the insula names from the database and store.
 					selectPropertiesStatement.setString(1, "Pompeii");
 					selectPropertiesStatement.setString(2, name);
+					
+					getIdStatement.setString(1, name);
 
 					ResultSet propertyResultSet = selectPropertiesStatement.executeQuery();
+					ResultSet idResultSet = getIdStatement.executeQuery();
+					
+					int id=-1;
+					String fullName = "";
+					
+					if(idResultSet.next()) {
+						id = idResultSet.getInt("id");
+						fullName = idResultSet.getString("full_name");
+					}
 
 					if (propertyResultSet.next()) {
 
@@ -146,8 +161,14 @@ public class StoreInsulaeFromDatabaseForgeoJsonMap {
 
 						ObjectNode insulaNode = (ObjectNode) featureNode;
 						ObjectNode insulae = (ObjectNode) insulaNode.path("properties");
-
+						
+						if(id == -1) {
+							continue;
+						}
+						
+						insulae.put("insula_id", id);
 						insulae.put("insula_short_name", name);
+						insulae.put("insula_full_name", fullName);
 						insulae.put("number_of_graffiti", numberOfGraffiti);
 
 						JsonNode updatedInsulae = insulae;

@@ -5,6 +5,12 @@
 	width: 800px;
 }
 
+.labelClass{
+  white-space:nowrap;
+  color: gray;
+  font-size: 18px;
+}
+
 a.leaflet-control-zoom-in,a.leaflet-control-zoom-out,.leaflet-bar a.leaflet-disabled{
 	background:transparent;
 }
