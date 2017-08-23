@@ -64,11 +64,64 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	// Are they just obscurely stored by Leaflet or GeoJSON?
 	var clickedAreas = [];
 	
+	var propertyLevelLegend = L.control({position: 'bottomright'});
+
+	propertyLevelLegend.onAdd = function (map) {
+
+		var div = L.DomUtil.create('div', 'info legend'),
+			grades = [0, 5, 10, 20, 30],
+			labels = [],
+			from, to;
+		labels.push(
+				'<i style="background:' + getFillColor(0) + '"></i> ' + 0);
+		
+		for (var i = 0; i < grades.length; i++) {
+			from = grades[i];
+			to = grades[i + 1];
+
+			labels.push(
+				'<i style="background:' + getFillColor(from + 1) + '"></i> ' +
+				(from+1) + (to ? '&ndash;' + to : '+'));
+		}
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
+	
+	var insulaLevelLegend = L.control({position: 'bottomright'});
+
+	insulaLevelLegend.onAdd = function (map) {
+
+		var div = L.DomUtil.create('div', 'info legend'),
+			//grades = [0, 5, 10, 20, 30, 40, 60, 80, 100, 130, 160, 190, 210, 240, 270, 300, 330, 360, 390, 420, 460, 500],
+			grades = [0, 5, 10, 20, 30, 40, 60, 80],
+			labels = [],
+			from, to;
+		/*
+		labels.push(
+				'<i style="background:' + getFillColor(0) + '"></i> ' + 0);
+				*/
+		
+		for (var i = 0; i < grades.length; i++) {
+			from = grades[i];
+			to = grades[i + 1];
+
+			labels.push(
+				'<i style="background:' + getFillColor(from + 1) + '"></i> ' +
+				(from+1) + (to ? '&ndash;' + to : '+'));
+		}
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
+	
 	if(interactive){
 		makeInsulaCentersDict();
 		makeTotalInsulaGraffitiDict();
 		makeInsulaIdsListShortNamesList();
 		displayInsulaLabels();
+		//insulaLevelLegend.addTo(hercMap);
+		//legend.remove(hercMap);
 		
 		hercMap.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"}));
 	}
@@ -124,12 +177,20 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				else{
 					totalInsulaGraffitisDict[currentInsulaNumber]=graffitiInLayer;
 				}
+				if(propertyLevelLegend._map) {
+					propertyLevelLegend.remove(hercMap);
+				}
+				insulaLevelLegend.addTo(hercMap);
 			}
 			// Resets properties when user zooms back in
 			else if (colorDensity && layer.feature!=undefined){
 				layer.setStyle({color: getBorderColorForCloseZoom(layer.feature)});
 				graffitiInLayer=layer.feature.properties.Number_Of_Graffiti;
 				layer.setStyle({fillColor: getFillColor(graffitiInLayer)});
+				if(insulaLevelLegend._map) {
+					insulaLevelLegend.remove(hercMap);
+				}
+				propertyLevelLegend.addTo(hercMap);
 			}
 			
 		});
@@ -153,6 +214,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			}
 			
 		});
+		
 	}
 	
 	// Returns a new array with the contents of the previous index absent
@@ -378,6 +440,11 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		return (currentZoomLevel<=insulaViewZoomLevel && colorDensity);
 	}
 	
+	function zoomedInThresholdReached(){
+		currentZoomLevel=hercMap.getZoom();
+		return (currentZoomLevel>=zoomLevelForIndividualProperty && colorDensity);
+	}
+	
 	function getBorderColorForCloseZoom(feature){
 		borderColor='white';
 		if (isPropertySelected(feature)) {
@@ -453,32 +520,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		}
 		return DEFAULT_COLOR;
 	}
-	
-	var legend = L.control({position: 'bottomright'});
-
-	legend.onAdd = function (map) {
-
-		var div = L.DomUtil.create('div', 'info legend'),
-			grades = [0, 5, 10, 20, 30, 40, 60, 80, 100, 130, 160, 190, 210, 240, 270, 300, 330, 360, 390, 420, 460, 500],
-			labels = [],
-			from, to;
-		labels.push(
-				'<i style="background:' + getFillColor(0) + '"></i> ' + 0);
-		
-		for (var i = 0; i < grades.length; i++) {
-			from = grades[i];
-			to = grades[i + 1];
-
-			labels.push(
-				'<i style="background:' + getFillColor(from + 1) + '"></i> ' +
-				(from+1) + (to ? '&ndash;' + to : '+'));
-		}
-
-		div.innerHTML = labels.join('<br>');
-		return div;
-	};
-
-	legend.addTo(hercMap);
 	
 	// On click, sees if a new insula id # has been selected. If so, adds it to
 	// the list of
@@ -684,7 +725,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				/* alert(property.feature.geometry.coordinates); */
 				if (property.feature.properties.clicked === true) {
 					
-					html += "<li>" +property.feature.properties.Property_Name + ", " + 
+					html += "<li>" +property.feature.properties.Property_Address + " " +property.feature.properties.Property_Name + ", " + 
 							"<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
 				}
 			}
