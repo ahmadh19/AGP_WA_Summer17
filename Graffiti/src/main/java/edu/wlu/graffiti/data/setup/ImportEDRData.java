@@ -109,6 +109,7 @@ public class ImportEDRData {
 			
 			HandleFindspotsWithoutAddresses.updateGraffitiLocations(HandleFindspotsWithoutAddresses.LOCATION_FILE_NAME);
 			StorePropertiesFromDatabaseForgeoJsonMap.storeProperties();
+			StoreInsulaeFromDatabaseForgeoJsonMap.storeInsulae();
 			dbCon.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();

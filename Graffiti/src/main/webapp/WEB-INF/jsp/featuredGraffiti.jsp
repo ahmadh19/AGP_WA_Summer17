@@ -128,44 +128,96 @@ a.darken:hover img {
 40%
 {
 -webkit-transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(-10deg);
+
+
+(-10
+deg
+);
+
 
     
+
 }
 70%
 {
 -webkit-transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(10deg);
+
+
+(10
+deg
+);
+
 
     
+
 }
 100%
 {
 -webkit-transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(0deg);
+
+
+(0
+deg
+);
+
 
         
+
 opacity
+
+
 :
+
  
+
 1;
 }
 }
@@ -178,44 +230,96 @@ opacity
 40%
 {
 -moz-transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(-10deg);
+
+
+(-10
+deg
+);
+
 
     
+
 }
 70%
 {
 -moz-transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(10deg);
+
+
+(10
+deg
+);
+
 
     
+
 }
 100%
 {
 -moz-transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(0deg);
+
+
+(0
+deg
+);
+
 
         
+
 opacity
+
+
 :
+
  
+
 1;
 }
 }
@@ -228,44 +332,96 @@ opacity
 40%
 {
 -o-transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(-10deg);
+
+
+(-10
+deg
+);
+
 
     
+
 }
 70%
 {
 -o-transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(10deg);
+
+
+(10
+deg
+);
+
 
     
+
 }
 100%
 {
 -o-transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(0deg);
+
+
+(0
+deg
+);
+
 
         
+
 opacity
+
+
 :
+
  
+
 1;
 }
 }
@@ -278,44 +434,96 @@ keyframes flipInX { 0% {
 40%
 {
 transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(-10deg);
+
+
+(-10
+deg
+);
+
 
     
+
 }
 70%
 {
 transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(10deg);
+
+
+(10
+deg
+);
+
 
     
+
 }
 100%
 {
 transform
+
+
 :
+
  
+
 perspective
-(400px)
+
+
+(400
+px
+)
+
  
+
 rotateX
-(0deg);
+
+
+(0
+deg
+);
+
 
         
+
 opacity
+
+
 :
+
  
+
 1;
 }
 }
@@ -361,18 +569,17 @@ opacity
 
 		<div id="portfolio">
 			<ul class="portfolio-grid">
-
-				<li><a href="<%=request.getContextPath()%>/themes/Pompeii"
-					target="_blank" class="darken"> <img
-						src="/Graffiti/resources/images/New_featured_graffiti/PompeiiCity.png"
-						alt="Pompeii" /> <span class="message">Description for
-							Pompeii here</span>
-				</a></li>
 				<li><a href="<%=request.getContextPath()%>/themes/Herculaneum"
 					target="_blank" class="darken"> <img
 						src="/Graffiti/resources/images/New_featured_graffiti/HerculaneumCity.png"
 						alt="Herculaneum" /> <span class="message">Description for
 							Herculaneum here</span>
+				</a></li>
+				<li><a href="<%=request.getContextPath()%>/themes/Pompeii"
+					target="_blank" class="darken"> <img
+						src="/Graffiti/resources/images/New_featured_graffiti/PompeiiCity.png"
+						alt="Pompeii" /> <span class="message">Description for
+							Pompeii here</span>
 				</a></li>
 				<li><a
 					href="<%=request.getContextPath()%>/featured-graffiti/figural-graffiti"
@@ -395,7 +602,7 @@ opacity
 						alt="Love" /> <span class="message">Description for Love
 							here</span>
 				</a></li>
-				
+
 				<li><a href="<%=request.getContextPath()%>/themes/Baths"
 					target="_blank" class="darken"> <img
 						src="/Graffiti/resources/images/New_featured_graffiti/Baths.png"
