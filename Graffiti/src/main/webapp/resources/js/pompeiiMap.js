@@ -68,7 +68,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	});
 	
 	var propertyLayer = L.geoJson(pompeiiPropertyData, { style: propertyStyle, onEachFeature: onEachPropertyFeature });
-	propertyLayer.addTo(pompeiiMap);
+	//propertyLayer.addTo(pompeiiMap);
 	
 	var pompeiiWallsLayer = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
 	pompeiiWallsLayer.addTo(pompeiiMap);
@@ -420,9 +420,18 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		return [x/pointsSoFar,y/pointsSoFar];
 	}
 	
-	
 	// Responsible for showing the map view on the insula level.
 	function dealWithInsulaLevelPropertyView(){
+		pompeiiInsulaLayer.eachLayer(function(layer){
+			if(regioViewZoomThresholdReached() && colorDensity && layer.feature!=undefined){
+				regioName=layer.feature.properties.NAME;
+				//numberOfGraffitiInGroup=graffitiInEachRegioDict[regioName];
+				numberOfGraffitiInGroup=layer.feature.properties.number_of_graffiti;
+				newFillColor=getFillColor(numberOfGraffitiInGroup);
+				layer.setStyle({fillColor:newFillColor});
+				layer.setStyle({color: getFillColor(numberOfGraffitiInGroup)});
+			} 
+		});
 		propertyLayer.eachLayer(function(layer){
 			if(insulaViewZoomThresholdReached() && layer.feature!=undefined && !regioViewZoomThresholdReached()){
 				currentInsulaNumber=layer.feature.properties.insula_id;
