@@ -78,7 +78,7 @@
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Resources <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="/about/main/epigraphic-conventions"/>Epigraphic Conventions</a></li>
+							<li><a href="/about/main/epigraphic-conventions">Epigraphic Conventions</a></li>
 							<li><a href="<%=request.getContextPath()%>/properties">List of Properties</a></li>
 							<li><a href="/about/teaching-resources/">Teaching
 									Resources</a></li>
