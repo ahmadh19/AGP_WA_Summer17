@@ -529,9 +529,28 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// contained inside of else.
 	function propertyStyle(feature) {
 		borderColor=getBorderColorForCloseZoom(feature);
-		fillColor=getFillColorForFeature(feature);
+		if( isPropertySelected(feature)) {
+			fillColor = SELECTED_COLOR;
+		}
+		else if( colorDensity ) {
+			fillColor = getFillColor(feature.properties.Number_Of_Graffiti);
+		} else {
+			fillColor=getFillColorByFeature(feature);
+		}
+		/*
 		return { 
-	    		fillColor:fillColor,
+			fillColor:fillColor,
+			width:200,
+			height:200, 
+			weight: 1,
+			opacity: 1,
+			color: borderColor,
+			fillOpacity: 0.7,
+		};
+		fillColor=getFillColorForFeature(feature);
+		*/
+		return { 
+	    	fillColor:fillColor,
 	        weight: 1,
 	        opacity: 1,
 	        color: borderColor,
@@ -554,7 +573,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		// fill color be maroon(dark red).
 		if(isPropertySelected(feature)){
 			return SELECTED_COLOR;
-		}
+		} 
 		// an orangey-yellow
 		return DEFAULT_COLOR;
 	}
@@ -595,7 +614,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		if(interactive && !insulaViewZoomThresholdReached()){
 			var layer = e.target;
 			layer.setStyle({
-				color:'yellow',
+				color:'maroon',
 				strokeWidth:"100"
 			});
 		
