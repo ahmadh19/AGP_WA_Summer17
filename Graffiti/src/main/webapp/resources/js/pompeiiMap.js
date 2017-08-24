@@ -713,7 +713,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
 			html += "<li>"+clickedInsula[i][0] + ", " +
-					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][2]]+" graffiti</p>"+ "</li>"
+					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li>"
 		}
 		html += "</ul>";
 		// Checks to avoid error for element is null.
@@ -787,8 +787,8 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	function updateHoverText(){
 		// TODO: Only do for the properties?
 		info.update = function (props) {
-			if(showHover && props && props.PRIMARY_DO){
-				this._div.innerHTML = (props ? props.Property_Name + ", " + props.PRIMARY_DO
+			if(showHover && props && props.PinP_Addre){
+				this._div.innerHTML = (props ? props.Property_Name + ", " + props.PinP_Addre
 						: 'Hover over property to see name');
 			}
 		};
@@ -882,9 +882,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 			var length = clickedAreasTable.length;
 			for (var i=0; i<length; i++) {
 				var property = clickedAreasTable[i];
-				if (property.feature.properties.clicked && property.feature.properties.PRIMARY_DO) {
+				if (property.feature.properties.clicked && property.feature.properties.PinP_Addre) {
 					html += "<li>" +property.feature.properties.Property_Name + ", " + 
-							property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
+							property.feature.properties.PinP_Addre + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
 				}
 			}
 			html += "</ul>";

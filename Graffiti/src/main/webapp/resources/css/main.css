@@ -8,7 +8,13 @@
 .labelClass{
   white-space:nowrap;
   color: gray;
-  font-size: 18px;
+  font-size: 14pt;
+}
+
+.labelClassHerculaneum{
+  white-space:nowrap;
+  color: gray;
+  font-size: 18pt;
 }
 
 a.leaflet-control-zoom-in,a.leaflet-control-zoom-out,.leaflet-bar a.leaflet-disabled{
