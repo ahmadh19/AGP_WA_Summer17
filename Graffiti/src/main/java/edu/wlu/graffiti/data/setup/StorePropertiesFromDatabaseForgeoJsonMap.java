@@ -62,7 +62,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 	private static final String POMPEII_JAVASCRIPT_DATA_FILE_LOC = "src/main/webapp/resources/js/pompeiiPropertyData.js";
 	private static final String POMPEII_INIT_JAVASCRIPT_LOC = "src/main/webapp/resources/js/PropertyDataFirst.txt";
 	private static final String HERCULANEUM_INIT_JAVASCRIPT_LOC = "src/main/webapp/resources/js/HerculaneumDataFirst.txt";
-	private static final String POMPEII_GEOJSON_FILE_LOC = "src/main/resources/geoJSON/pompeii_properties.json";
+	private static final String POMPEII_GEOJSON_FILE_LOC = "src/main/resources/geoJSON/properties_CTP.json";
 
 	final static String SELECT_PROPERTY = FindspotDao.SELECT_BY_CITY_AND_INSULA_AND_PROPERTY_STATEMENT;
 
@@ -295,7 +295,7 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 			while (featureIterator.hasNext()) {
 				JsonNode featureNode = featureIterator.next();
 
-				JsonNode primaryDONode = featureNode.findValue("PRIMARY_DO");
+				JsonNode primaryDONode = featureNode.findValue("PinP_Addre");
 				if (primaryDONode == null) {
 					continue;
 				}
@@ -309,8 +309,13 @@ public class StorePropertiesFromDatabaseForgeoJsonMap {
 
 				String pt1 = parts[0];
 				String pt2 = parts[1];
-				String pt3 = parts[2];
-
+				String pt3;
+				if(parts.length == 3) {
+					pt3 = parts[2];
+				} else {
+					pt3 = "";
+				}
+				
 				String insulaName = pt1 + "." + pt2;
 				String propertyNum = pt3;
 

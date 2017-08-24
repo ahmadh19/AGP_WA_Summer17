@@ -10,7 +10,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
 	var borderColor;
 	var southWest = L.latLng(40.746, 14.48),
-	northEast = L.latLng(40.754, 14.494),
+	northEast = L.latLng(43.754, 15.494),
 	bounds = L.latLngBounds(southWest, northEast);
 	
 	var currentZoomLevel;
@@ -60,7 +60,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	// Fires when the map is initialized
 	pompeiiMap = new L.map('pompeiimap', {
-		center: [40.750, 14.4884],
+		center: [40.750950, 14.488600],
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
 		maxZoom:20,
@@ -360,7 +360,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		// console.log("12");
 		var currentInsulaNumber;
 		// Manually set as the first insula id for pompeii
-		var oldInsulaNumber=183;
+		var oldInsulaNumber=183; //	TODO: this looks wrong. verify that this is correct. -Hammad
 		var xSoFar=0;
 		var ySoFar=0;
 		var latLngList;
@@ -545,7 +545,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	    	fillColor:fillColor,
 	        weight: 1,
 	        opacity: 1,
-	        color: borderColor,
+	        color: fillColor,
 	        fillOpacity: 0.7,
 	    };
 	}
@@ -570,7 +570,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	    	fillColor:fillColor,
 	        weight: 1,
 	        opacity: 1,
-	        color: borderColor,
+	        color: fillColor,
 	        fillOpacity: 0.7,
 	    };
 	}
@@ -713,7 +713,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var numberOfInsulaSelected=clickedInsula.length;
 		for (var i=0; i<numberOfInsulaSelected; i++) {
 			html += "<li>"+clickedInsula[i][0] + ", " +
-					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][2]]+" graffiti</p>"+ "</li>"
+					"<p>"+totalInsulaGraffitisDict[clickedInsula[i][1]]+" graffiti</p>"+ "</li>"
 		}
 		html += "</ul>";
 		// Checks to avoid error for element is null.
@@ -787,8 +787,8 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	function updateHoverText(){
 		// TODO: Only do for the properties?
 		info.update = function (props) {
-			if(showHover && props && props.PRIMARY_DO){
-				this._div.innerHTML = (props ? props.Property_Name + ", " + props.PRIMARY_DO
+			if(showHover && props && props.PinP_Addre){
+				this._div.innerHTML = (props ? props.Property_Name + ", " + props.PinP_Addre
 						: 'Hover over property to see name');
 			}
 		};
@@ -882,9 +882,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 			var length = clickedAreasTable.length;
 			for (var i=0; i<length; i++) {
 				var property = clickedAreasTable[i];
-				if (property.feature.properties.clicked && property.feature.properties.PRIMARY_DO) {
+				if (property.feature.properties.clicked && property.feature.properties.PinP_Addre) {
 					html += "<li>" +property.feature.properties.Property_Name + ", " + 
-							property.feature.properties.PRIMARY_DO + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
+							property.feature.properties.PinP_Addre + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
 				}
 			}
 			html += "</ul>";
