@@ -44,14 +44,21 @@ public class FeaturedGraffitiController {
 	private ThemeDao themeDao;
 	
 	@RequestMapping(value = "/TranslationQuiz", method = RequestMethod.GET)
-	public String featuredHits(final HttpServletRequest request) {
-
+	public String translationQuiz(final HttpServletRequest request) {
 		final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
 		request.setAttribute("translationHits", greatestTranslationHits);
 
 		return "translationQuiz";
-
 	}
+	
+	@RequestMapping(value = "/featured-graffiti", method = RequestMethod.GET)
+	public String featuredHits(final HttpServletRequest request) {
+		final List<Theme> themes = themeDao.getThemes();
+		request.setAttribute("themes", themes);
+
+		return "featuredGraffiti";
+	}
+	
 	@RequestMapping(value = "/themes/{themeName}", method = RequestMethod.GET)
 	public String searchThemedGraffiti(@PathVariable String themeName, final HttpServletRequest request) {
 
