@@ -10,7 +10,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	var mapboxAccessToken = 'pk.eyJ1IjoibWFydGluZXphMTgiLCJhIjoiY2lxczduaG5wMDJyc2doamY0NW53M3NnaCJ9.TeA0JhIaoNKHUUJr2HyLHQ';
 	var borderColor;
 	var southWest = L.latLng(40.746, 14.48),
-	northEast = L.latLng(40.754, 14.494),
+	northEast = L.latLng(43.754, 15.494),
 	bounds = L.latLngBounds(southWest, northEast);
 	
 	var currentZoomLevel;
@@ -60,7 +60,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	// Fires when the map is initialized
 	pompeiiMap = new L.map('pompeiimap', {
-		center: [40.750, 14.4884],
+		center: [40.750950, 14.488600],
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
 		maxZoom:20,
@@ -360,7 +360,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		// console.log("12");
 		var currentInsulaNumber;
 		// Manually set as the first insula id for pompeii
-		var oldInsulaNumber=183;
+		var oldInsulaNumber=183; //	TODO: this looks wrong. verify that this is correct. -Hammad
 		var xSoFar=0;
 		var ySoFar=0;
 		var latLngList;
@@ -545,7 +545,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	    	fillColor:fillColor,
 	        weight: 1,
 	        opacity: 1,
-	        color: borderColor,
+	        color: fillColor,
 	        fillOpacity: 0.7,
 	    };
 	}
@@ -570,7 +570,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	    	fillColor:fillColor,
 	        weight: 1,
 	        opacity: 1,
-	        color: borderColor,
+	        color: fillColor,
 	        fillOpacity: 0.7,
 	    };
 	}
