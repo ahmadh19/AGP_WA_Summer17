@@ -613,14 +613,13 @@ opacity
 	backface-visibility: visible !important;
 	animation-name: flipInX;
 }
-</style>
-<!--  Function to hide the gallery on load -->
-<script>
-	$(document).ready(function() {
-		$("#gallery").hide();
-	});
-</script>
 
+.message {
+	text-align: center; 
+	font-size: 14pt;
+	color: lightgray;
+}
+</style>
 </head>
 <body>
 

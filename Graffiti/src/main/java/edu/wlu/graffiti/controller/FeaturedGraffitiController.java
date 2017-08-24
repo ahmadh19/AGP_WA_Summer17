@@ -59,6 +59,13 @@ public class FeaturedGraffitiController {
 		return "featuredGraffiti";
 	}
 	
+	@RequestMapping(value = "/themes/Figural")
+	public String featuredFiguralGraffiti(final HttpServletRequest request) {
+		List<Inscription> greatestFiguralHits = graffitiDao.getGreatestFiguralHits();
+		request.setAttribute("figuralHits", greatestFiguralHits);
+		return "figuralGraffiti";
+	}
+	
 	@RequestMapping(value = "/themes/{themeName}", method = RequestMethod.GET)
 	public String searchThemedGraffiti(@PathVariable String themeName, final HttpServletRequest request) {
 		Theme theme = themeDao.getThemeByName(themeName);
@@ -70,11 +77,6 @@ public class FeaturedGraffitiController {
 		return "themedGraffitiResults";
 	}
 	
-	@RequestMapping(value = "/featured-graffiti/figural-graffiti")
-	public String featuredFiguralGraffiti(final HttpServletRequest request) {
-		List<Inscription> greatestFiguralHits = graffitiDao.getGreatestFiguralHits();
-		request.setAttribute("figuralHits", greatestFiguralHits);
-		return "figuralGraffiti";
-	}
+	
 
 }
