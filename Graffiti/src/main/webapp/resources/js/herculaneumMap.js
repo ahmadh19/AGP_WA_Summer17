@@ -179,7 +179,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				if(propertyLevelLegend._map) {
 					propertyLevelLegend.remove(hercMap);
 				}
-				insulaLevelLegend.addTo(hercMap);
+				//insulaLevelLegend.addTo(hercMap);
 			}
 			// Resets properties when user zooms back in
 			else if (colorDensity && layer.feature!=undefined){
@@ -311,18 +311,14 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		// console.log("Into find cds loop:");
 		
 		hercMap.eachLayer(function(layer){
-			propertiesSoFar+=1;
 			if(layer.feature!=undefined && interactive){
+				propertiesSoFar+=1;
+				
 				currentInsulaNumber=layer.feature.properties.insula_id;
 				currentCoordinatesList=layer.feature.geometry.coordinates;
-				// console.log("Here is current coordinates list for layer:");
-				// console.log(currentCoordinatesList+" ");
 				if(currentInsulaNumber==oldInsulaNumber){
-					currentInsulaNumber=layer.feature.properties.insula_id;
 					// If a change in insula number has occurred, find the
 					// center of the coordinates and add them to the dictionary
-					var i=0;
-					
 					// This passes in the coordinates list for just one property
 					// in the insula which are then added
 					xAndYAddition=findCenter(currentCoordinatesList[0]);
@@ -335,7 +331,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 					latLngList=[xSoFar/propertiesSoFar,ySoFar/propertiesSoFar];
 					// This treats the currentInsulaNumber as a key(dictionary
 					// form)
-					
 					insulaCentersDict[oldInsulaNumber]=latLngList;
 					// Reset old variables:
 					xSoFar=0;
@@ -362,9 +357,11 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		var y=0
 		var pointsSoFar=0;
 		for(i;i<coordinatesList.length;i++){
-			x+=coordinatesList[i][0];
-			y+=coordinatesList[i][1];
-			pointsSoFar+=1;
+			if (coordinatesList[i].length == 2) {
+				x+=coordinatesList[i][0];
+				y+=coordinatesList[i][1];
+				pointsSoFar+=1;
+			}
 		}
 		return [x/pointsSoFar,y/pointsSoFar];
 	}
@@ -406,15 +403,17 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	}
 	
 	function showALabelOnMap(xYCoordinates,textToDisplay){
+		if(textToDisplay!="OutsideWalls" && textToDisplay!="WithinWalls"){
 		var myIcon = L.divIcon({ 
 		    // iconSize: new L.Point(0, 0),
 			// iconSize:0,
-			className: "labelClass",
+			className: "labelClassHerculaneum",
 		    html: textToDisplay
 		});
 		// you can set .my-div-icon styles in CSS
 		var myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(hercMap);
 		insulaMarkersList.push(myMarker);
+		}
 	}
 	
 	// Shows the short names of each insula in black
@@ -429,7 +428,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			insulaCenterCoordinates=insulaCentersDict[insulaId];
 			// console.log(insulaCentersDict+"h");
 			shortInsulaName=insulaShortNamesDict[insulaId];
-			if(! isNaN(insulaCenterCoordinates[0]) && ! isNaN(insulaCenterCoordinates[1])){
+			if(insulaCenterCoordinates && ! isNaN(insulaCenterCoordinates[0]) && ! isNaN(insulaCenterCoordinates[1])){
 				showALabelOnMap(insulaCenterCoordinates,shortInsulaName);
 			}
 		}
@@ -489,25 +488,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			return numberOfGraffiti == 0   ? '#FFEDC0' :
 			   numberOfGraffiti <= 5   ? '#FFEDA0' :
 			   numberOfGraffiti <= 10  ? '#fed39a' :
-			   numberOfGraffiti <= 20  ? '#fec880' :
-			   numberOfGraffiti <= 30  ? '#FEB24C' :
-			   numberOfGraffiti <= 40  ? '#fe9b1b' :
-			   numberOfGraffiti <= 60  ? '#fda668' :
-		       numberOfGraffiti <= 80  ? '#FD8D3C' :
-			   numberOfGraffiti <= 100 ? '#fd7a1c' :
-		       numberOfGraffiti <= 130 ? '#fc6c4f' :
-			   numberOfGraffiti <= 160 ? '#FC4E2A' :
-			   numberOfGraffiti <= 190 ? '#fb2d04' :
-			   numberOfGraffiti <= 210 ? '#ea484b' :
-			   numberOfGraffiti <= 240 ? '#E31A1C' :
-			   numberOfGraffiti <= 270 ? '#b71518' :
-			   numberOfGraffiti <= 300 ? '#cc0029' :
-			   numberOfGraffiti <= 330 ? '#b30024' :
-			   numberOfGraffiti <= 360 ? '#99001f' :
-			   numberOfGraffiti <= 390 ? '#80001a' :
-			   numberOfGraffiti <= 420 ? '#660014' :
-			   numberOfGraffiti <= 460 ? '#4d000f' :
-			   numberOfGraffiti <= 500 ? '#33000a' :
+			   numberOfGraffiti <= 90  ? '#fec880' :
 										 '#000000';
 		}
 		
