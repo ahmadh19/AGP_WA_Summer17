@@ -345,7 +345,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				}
 			}
 		});
-		console.log(insulaCentersDict);
 	}
 	
 	// Uses math to directly find and return the latitude and longitude of the
