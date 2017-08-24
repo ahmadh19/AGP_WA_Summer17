@@ -27,9 +27,10 @@ public class InsertFeaturedGraffiti {
 
 	private static final String INSERT_FEATURED_GRAFFITI = "INSERT INTO graffititothemes " + "(graffito_id, theme_id) "
 			+ "VALUES (?, ?)";
-	private static final String SET_INSCRIPTION_AS_THEMED = "UPDATE agp_inscription_info " + "SET is_themed=true " + "where edr_id=(?)";
+	private static final String SET_INSCRIPTION_AS_THEMED = "UPDATE agp_inscription_info " + "SET is_themed=true "
+			+ "where edr_id=(?)";
 	private static final String GET_THEME_ID = "SELECT theme_id FROM themes WHERE name = ?";
-	
+
 	private static String DB_DRIVER;
 	private static String DB_URL;
 	private static String DB_USER;
@@ -37,24 +38,17 @@ public class InsertFeaturedGraffiti {
 	static Connection newDBCon;
 
 	public static void main(String[] args) {
+		insertFeaturedGraffiti();
+	}
+
+	public static void insertFeaturedGraffiti() {
 		init();
 
-		try {
-			insertFeaturedGraffiti();
-
-			newDBCon.close();
-
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-	}
-	
-	private static void insertFeaturedGraffiti() {
 		try {
 			PreparedStatement pstmt = newDBCon.prepareStatement(INSERT_FEATURED_GRAFFITI);
 			PreparedStatement pstmt2 = newDBCon.prepareStatement(SET_INSCRIPTION_AS_THEMED);
 			PreparedStatement pstmt3 = newDBCon.prepareStatement(GET_THEME_ID);
-			
+
 			Properties featuredGraffiti = new Properties();
 
 			featuredGraffiti.load(new FileReader("data/AGPData/featuredGraffiti.prop"));
@@ -65,24 +59,25 @@ public class InsertFeaturedGraffiti {
 				Object edrId = propKeys.nextElement();
 				Object theme = featuredGraffiti.get(edrId);
 				System.out.println(edrId + ": " + theme);
-				
+
 				pstmt3.setString(1, (String) theme);
 				ResultSet rs = pstmt3.executeQuery();
 				int themeId = -1;
-				while(rs.next()) {
+				while (rs.next()) {
 					themeId = rs.getInt("theme_id");
 				}
-				
-				if(themeId != -1) {
+
+				if (themeId != -1) {
 					pstmt.setString(1, (String) edrId);
 					pstmt.setInt(2, themeId);
 					pstmt.executeUpdate();
-					
+
 					pstmt2.setString(1, (String) edrId);
 					pstmt2.executeUpdate();
 				}
 			}
 			pstmt.close();
+			newDBCon.close();
 		} catch (IOException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,7 +100,7 @@ public class InsertFeaturedGraffiti {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void getConfigurationProperties() {
 		Properties prop = Utils.getConfigurationProperties();
 
@@ -114,6 +109,5 @@ public class InsertFeaturedGraffiti {
 		DB_USER = prop.getProperty("db.user");
 		DB_PASSWORD = prop.getProperty("db.password");
 	}
-
 
 }

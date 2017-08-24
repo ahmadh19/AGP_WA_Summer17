@@ -23,6 +23,7 @@ public class ImportAGPData {
 
 		InsertFiguralInformation.insertFiguralInfo();
 		UpdateSummaryTranslationCommentaryPlus.updateInfo();
+		InsertFeaturedGraffiti.insertFeaturedGraffiti();
 	}
 
 }
