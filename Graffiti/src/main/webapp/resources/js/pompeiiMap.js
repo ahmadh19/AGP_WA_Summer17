@@ -63,7 +63,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		center: [40.750950, 14.488600],
 		zoom: currentZoomLevel,
 		minZoom: currentZoomLevel,
-		maxZoom:20,
+		maxZoom: insulaViewZoomLevel, // can change this when we want the property view as well
 		maxBounds: bounds,
 	});
 	
@@ -360,7 +360,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		// console.log("12");
 		var currentInsulaNumber;
 		// Manually set as the first insula id for pompeii
-		var oldInsulaNumber=183; //	TODO: this looks wrong. verify that this is correct. -Hammad
+		var oldInsulaNumber=183; 
 		var xSoFar=0;
 		var ySoFar=0;
 		var latLngList;
@@ -514,7 +514,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	}
 	
 	function updateBorderColors(){
-		propertyLayer.eachLayer(function(layer){
+		pompeiiInsulaLayer.eachLayer(function(layer){
 			if(layer.feature!=undefined && layer.feature.properties.clicked ){
 				borderColor=getBorderColorForCloseZoom(layer.feature);
 			}
@@ -536,11 +536,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		} else {
 			fillColor=getFillColorByFeature(feature);
 		}
-		/*
-		 * return { fillColor:fillColor, width:200, height:200, weight: 1,
-		 * opacity: 1, color: borderColor, fillOpacity: 0.7, };
-		 * fillColor=getFillColorForFeature(feature);
-		 */
 		return { 
 	    	fillColor:fillColor,
 	        weight: 1,
@@ -550,9 +545,10 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	    };
 	}
 	
+	
 	function insulaStyle(feature) {
 		borderColor=getBorderColorForCloseZoom(feature);
-		if( isPropertySelected(feature)) {
+		if( isPropertySelected(feature) && (feature.properties.insula_short_name == "I.8" || feature.properties.insula_short_name == "VII.12")) {
 			fillColor = SELECTED_COLOR;
 		}
 		else if (colorDensity && regioViewZoomThresholdReached())  {
@@ -588,7 +584,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	function getFillColorForFeature(feature){
 		// If the property is selected and there is no colorDensity, make the
 		// fill color be maroon(dark red).
-		if(isPropertySelected(feature)){
+		if(isPropertySelected(feature) && (feature.properties.insula_short_name == "I.8" || feature.properties.insula_short_name == "VII.12")){
 			return SELECTED_COLOR;
 		} 
 		// an orangey-yellow
@@ -664,6 +660,38 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 			else if(! regioViewZoomThresholdReached()){
 				checkForInsulaClick(e.target);
 			}
+		}
+	}
+	
+	// Sorts items based on whether they have been clicked
+	// or not. If they have been and are clicked again, sets to false and vice
+	// versa.
+	// This version is for insula click compatibility only. When we introduce property clicks,
+	// it will need redesign.
+	function showInsulaDetails(e) {
+		if(interactive){
+			var layer = e.target;
+			if (layer.feature.properties.clicked != null) {
+				layer.feature.properties.clicked = !layer.feature.properties.clicked;
+				if(layer.feature.properties.clicked == false) {
+					resetHighlight(e);
+					var index = clickedAreas.indexOf(layer);
+					if(index > -1) {
+						clickedAreas.splice(index, 1);
+					}
+				} else {
+					e.target.setStyle({fillColor:SELECTED_COLOR});
+					clickedAreas.push(layer);
+				}
+			} else {
+				layer.feature.properties.clicked = true;
+				e.target.setStyle({fillColor:SELECTED_COLOR});
+				clickedAreas.push(layer);
+			}
+			if (!L.Browser.ie && !L.Browser.opera) {
+		        layer.bringToFront();
+		    }
+			info.update(layer.feature.properties);
 		}
 	}
 	
@@ -764,13 +792,12 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	    layer.on({
 	        mouseover: highlightFeature,
 	        mouseout: resetHighlight,
-	        click: showDetails,
+	        click: showInsulaDetails,
 	    });
 	}
 	
 	function onEachWallFeature(feature, layer) {
 	    layer.on({
-	        mouseover: highlightFeature
 	    });
 	}
 	
@@ -787,8 +814,8 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	function updateHoverText(){
 		// TODO: Only do for the properties?
 		info.update = function (props) {
-			if(showHover && props && props.PinP_Addre){
-				this._div.innerHTML = (props ? props.Property_Name + ", " + props.PinP_Addre
+			if(showHover && props){
+				this._div.innerHTML = (props ? props.insula_full_name
 						: 'Hover over property to see name');
 			}
 		};
@@ -809,7 +836,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 				currentInsulaId=currentInsula[1];
 				listOfSelectedInsulaIds.push(currentInsulaId);	
 			}
-			pompeiiMap.eachLayer(function(layer){
+			pompeiiInsulaLayer.eachLayer(function(layer){
 				if(layer.feature!=undefined){
 					if(listOfSelectedInsulaIds.indexOf(layer.feature.properties.insula_id)!=-1 && !uniqueClicked.includes(layer)){
 						uniqueClicked.push(layer);
@@ -830,15 +857,15 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var listInSelectedInsula;
 		var length = clickedAreas.length;
 		for (var i = 0; i < length; i++) {
-			var property = clickedAreas[i];
-			if (!uniqueClicked.includes(property)) {
-				uniqueClicked.push(property)
+			var insula = clickedAreas[i];
+			if (!uniqueClicked.includes(insula)) {
+				uniqueClicked.push(insula)
 			}
 		}
-		uniqueClicked=selectPropertiesInAllSelectedInsula(uniqueClicked);
 		return uniqueClicked;
 	}
 	
+	/*
 	// Collects the ids of the clicked item objects (the property id).
 	function collectClicked() {
 		var propIdsOfClicked = [];
@@ -852,6 +879,23 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		}
 		return propIdsOfClicked;
 	}
+	*/
+	
+	function collectClicked() {
+		var insulaIdsOfClicked = [];
+		
+		var selectedInsulae = getUniqueClicked();
+		var length = selectedInsulae.length;
+		for (var i=0; i<length; i++) {
+			var property = selectedInsulae[i];
+			var insulaID = property.feature.properties.insula_id;
+			if(property.feature.properties.insula_short_name == "I.8" || 
+					property.feature.properties.insula_short_name == "VII.12") {
+				insulaIdsOfClicked.push(insulaID);
+			}
+		}
+		return insulaIdsOfClicked;
+	}
 	
 	// creates url to call for searching when the user clicks the search button.
 	function searchForProperties() {
@@ -859,8 +903,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var argString = "";
 		if (highlighted.length > 0){
 			for (var i = 0; i < highlighted.length; i++) {
-				argString = argString + "property=" + highlighted[i];
-				argString = argString + "&";
+				argString = argString + "insula=" + highlighted[i] + "&";
 			}
 			window.location = "results?" + argString;
 			return true;
@@ -870,6 +913,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		}
 	}
 	
+	/*
 	// Displays the Selected Properties and their corresponding information in
 	// an HTML table formatted.
 	// Achieved by mixing html and javascript, accessing text properties of the
@@ -899,6 +943,27 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 			var clickedAreasTable = getUniqueClicked();
 		}	
 	}
+	*/
+	
+	function displayHighlightedRegions() {
+		// when you click on the map, it updates the selection info
+		var clickedAreasTable = getUniqueClicked();
+		var html = "<strong>Selected Insulae:</strong><ul>";
+		var length = clickedAreasTable.length;
+		for (var i=0; i<length; i++) {
+			var property = clickedAreasTable[i];
+			if (property.feature.properties.clicked && (property.feature.properties.insula_short_name == "I.8" || 
+										property.feature.properties.insula_short_name == "VII.12")) {
+				html += "<li>" +property.feature.properties.insula_full_name + ",<p>"+property.feature.properties.number_of_graffiti+" graffiti</p>"+ "</li>";
+			}
+		}
+		html += "</ul>";
+		// Checks to avoid error for element is null.
+		var elem = document.getElementById("selectionDiv");
+		  	if(typeof elem !== 'undefined' && elem !== null) {
+		  		document.getElementById("selectionDiv").innerHTML = html;
+		  	}
+	}	
 	
 	dealWithInsulaLevelPropertyView();
 	
