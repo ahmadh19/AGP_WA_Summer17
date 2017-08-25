@@ -718,7 +718,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				/* alert(property.feature.geometry.coordinates); */
 				if (property.feature.properties.clicked === true) {
 					
-					html += "<li>" +property.feature.properties.Property_Address + ", " +property.feature.properties.Property_Name + ", " + 
+					html += "<li>" +property.feature.properties.Property_Address + ", " +property.feature.properties.Property_Name +
 							"<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
 				}
 			}
