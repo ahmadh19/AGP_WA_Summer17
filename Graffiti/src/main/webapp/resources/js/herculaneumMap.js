@@ -30,7 +30,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	var zoomLevelForIndividualProperty=18;
 	var initialZoomNotCalled=true;
 	var totalInsulaGraffitisDict=new Array();
-	var currentInsulaNumber;
 	var graffitiInLayer;
 	var numberOfGraffitiInGroup;
 	
@@ -39,6 +38,9 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	
 	// Holds the center latitudes and longitudes of all insula on the map.
 	var insulaCentersDict=[];
+	var insulaNumProperties=[];
+	var pointsAccumulatorDict=[];
+
 	var insulaGroupIdsList=[];
 	var insulaShortNamesDict=[];
 	
@@ -60,8 +62,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	// Sinks with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
 	
-	// I see the clicked areas collection, but what about the rest of the items?
-	// Are they just obscurely stored by Leaflet or GeoJSON?
 	var clickedAreas = [];
 	
 	var propertyLevelLegend = L.control({position: 'bottomright'});
@@ -295,73 +295,71 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 			}
 		});
 	}
+	
 	// This function gets and returns a "dictionary" of the latitude and
-	// longitude of each insula given its id(as index).
+	// longitude of each insula given its id (as index).
 	// Used to find where to place the labels of each insula on the map, upon
 	// iteration through this list.
+	// This creates a weighted average; it isn't really the center.
 	function makeInsulaCentersDict(){
 		var currentInsulaNumber;
-		// Manually set as the first insula id
-		var oldInsulaNumber=183;
-		var xSoFar=0;
-		var ySoFar=0;
-		var latLngList;
-		var currentCoordinatesList;
-		var propertiesSoFar=0;
-		// console.log("Into find cds loop:");
 		
-		hercMap.eachLayer(function(layer){
-			if(layer.feature!=undefined && interactive){
-				propertiesSoFar+=1;
-				
-				currentInsulaNumber=layer.feature.properties.insula_id;
-				currentCoordinatesList=layer.feature.geometry.coordinates;
-				if(currentInsulaNumber==oldInsulaNumber){
-					// If a change in insula number has occurred, find the
-					// center of the coordinates and add them to the dictionary
-					// This passes in the coordinates list for just one property
-					// in the insula which are then added
-					xAndYAddition=findCenter(currentCoordinatesList[0]);
-					xSoFar+=xAndYAddition[0];
-					ySoFar+=xAndYAddition[1];
+		if( interactive ) {
+			// total up the centers of all the properties for each insula.
+			hercMap.eachLayer(function(layer){
+				if(layer.feature!=undefined){
+					currentInsulaNumber=layer.feature.properties.insula_id;
+					currentCoordinatesList=layer.feature.geometry.coordinates;
+					// The array is in an array in an array
+					propertyCenter=findCenter(currentCoordinatesList[0][0]);
+					// SS: Not sure why this code doesn't work.
+					//center = layer.getBounds().getCenter();
+					//propertyCenter=[center.lat, center.lng];
+					//console.log(propertyCenter);
+					
+					// create a new entry
+					if( pointsAccumulatorDict[currentInsulaNumber] == undefined) {
+						pointsAccumulatorDict[currentInsulaNumber] = [0,0];
+						insulaNumProperties[currentInsulaNumber] = 0;
+					}
+					// update entry
+					pointsAccumulatorDict[currentInsulaNumber][0] += propertyCenter[0];
+					pointsAccumulatorDict[currentInsulaNumber][1] += propertyCenter[1];
+					insulaNumProperties[currentInsulaNumber] += 1;
 				}
-				else{
-					// Add to dictionary:
-					// Both divisions are required
-					latLngList=[xSoFar/propertiesSoFar,ySoFar/propertiesSoFar];
-					// This treats the currentInsulaNumber as a key(dictionary
-					// form)
-					insulaCentersDict[oldInsulaNumber]=latLngList;
-					// Reset old variables:
-					xSoFar=0;
-					ySoFar=0;
-					propertiesSoFar=0;
-					oldInsulaNumber=currentInsulaNumber;
-					// This passes in the coordinates list for just one property
-					// in the insula which are then added
-					xAndYAddition=findCenter(currentCoordinatesList[0]);
-					xSoFar+=xAndYAddition[0];
-					ySoFar+=xAndYAddition[1];
+			});
+			
+			// calculate the averages
+			hercMap.eachLayer(function(layer){
+				if(layer.feature!=undefined){
+					currentInsulaNumber=layer.feature.properties.insula_id;
+					
+					numProperties = insulaNumProperties[currentInsulaNumber];
+					xTotal = pointsAccumulatorDict[currentInsulaNumber][0];
+					yTotal = pointsAccumulatorDict[currentInsulaNumber][1];
+
+					centerCoord = [xTotal/numProperties, yTotal/numProperties];
+					insulaCentersDict[currentInsulaNumber]=centerCoord;
+					
+					//console.log( currentInsulaNumber + " " + numProperties + " " + centerCoord);
 				}
-			}
-		});
+			});
+			
+		}
 	}
 	
 	// Uses math to directly find and return the latitude and longitude of the
 	// center of a list of coordinates.
+	// Seems to be just one long list; not broken into coordinates
 	// Returns a list of the latitude, x and the longitude, y
 	function findCenter(coordinatesList){
-		coordinatesList=coordinatesList[0];
-		var i=0;
 		var x=0;
-		var y=0
+		var y=0;
 		var pointsSoFar=0;
-		for(i;i<coordinatesList.length;i++){
-			if (coordinatesList[i].length == 2) {
-				x+=coordinatesList[i][0];
-				y+=coordinatesList[i][1];
-				pointsSoFar+=1;
-			}
+		for(var i=0;i<coordinatesList.length;i++){
+			x+=coordinatesList[i][0];
+			y+=coordinatesList[i][1];
+			pointsSoFar+=1;
 		}
 		return [x/pointsSoFar,y/pointsSoFar];
 	}
@@ -370,7 +368,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	// Marks all properties inside of selected insula as selected by
 	// adding them to the clickedInsula list.
 	function selectPropertiesInAllSelectedInsula(uniqueClicked){
-		// console.log("22");
 		if(interactive){
 			var i=0;
 			var currentInsulaId;
@@ -485,11 +482,20 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	
 	function getFillColor(numberOfGraffiti){
 		if(colorDensity){
-			return numberOfGraffiti == 0   ? '#FFEDC0' :
-			   numberOfGraffiti <= 5   ? '#FFEDA0' :
-			   numberOfGraffiti <= 10  ? '#fed39a' :
-			   numberOfGraffiti <= 90  ? '#fec880' :
-										 '#000000';
+			if( zoomedOutThresholdReached() ) { // for insula level
+				return numberOfGraffiti == 0   ? '#FFEDC0' :
+					   numberOfGraffiti <= 5   ? '#FFEDA0' :
+					   numberOfGraffiti <= 10  ? '#fed39a' :
+					   numberOfGraffiti <= 20  ? '#fec880' :
+					   numberOfGraffiti <= 90 ? '#FEB24C':
+												 '#000000';
+			} else { // for property level
+				return numberOfGraffiti == 0   ? '#FFEDC0' :
+					   numberOfGraffiti <= 5   ? '#FFEDA0' :
+					   numberOfGraffiti <= 10  ? '#fed39a' :
+					   numberOfGraffiti <= 90  ? '#fec880' :
+												 '#000000';
+			}
 		}
 		
 		return DEFAULT_COLOR;
