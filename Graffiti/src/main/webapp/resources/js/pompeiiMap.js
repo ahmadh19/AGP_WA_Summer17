@@ -27,12 +27,14 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	var INSULA_VIEW_ZOOM = 17;
 	var INDIVIDUAL_PROPERTY_ZOOM=19;
 	
+	currentZoomLevel=16;
+	/*
 	if(moreZoom){
 		currentZoomLevel=17;
 	}
 	else{
 		currentZoomLevel=16;
-	}
+	} */
 	
 	var totalInsulaGraffitisDict=new Array();
 	// The list of active insula markers.
@@ -57,8 +59,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	var regioNamesList=[];
 	var graffitiInEachRegioDict={};
 		
-	
-	
 	// Shows or hides insula labels depending on zoom levels and if the map is
 	// interactive
 	function dealWithLabelsAndSelection(){
@@ -918,7 +918,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	pompeiiMap = new L.map('pompeiimap', {
 		center: [40.750950, 14.488600],
 		zoom: currentZoomLevel,
-		minZoom: currentZoomLevel,
+		minZoom: REGIO_VIEW_ZOOM,
 		maxZoom: INSULA_VIEW_ZOOM, /* can change this when we want the property view as well */
 		maxBounds: bounds
 	});
@@ -937,7 +937,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: insulaStyle, onEachFeature: onEachInsulaFeature });
 	pompeiiInsulaLayer.addTo(pompeiiMap);
 		
-	//if( interactive && colorDensity){ 
+	if( interactive && colorDensity){ 
 		// Insula Functions:
 		makeInsulaCentersDict(); 
 		makeTotalInsulaGraffitiDict();
@@ -950,7 +950,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 
 		dealWithLabelsAndSelection(); 
 		pompeiiMap.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"})); 
-	//}
+	}
 	 
 	// A listener for zoom events.
 	pompeiiMap.on('zoomend', function(e) {

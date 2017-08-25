@@ -310,7 +310,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 				if(layer.feature!=undefined){
 					currentInsulaNumber=layer.feature.properties.insula_id;
 					currentCoordinatesList=layer.feature.geometry.coordinates;
-					// The array is in an array in an array
+					// currentCoordinatesList is an array in an array in an array
 					propertyCenter=findCenter(currentCoordinatesList[0][0]);
 					// SS: Not sure why this code doesn't work.
 					//center = layer.getBounds().getCenter();
@@ -326,6 +326,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 					pointsAccumulatorDict[currentInsulaNumber][0] += propertyCenter[0];
 					pointsAccumulatorDict[currentInsulaNumber][1] += propertyCenter[1];
 					insulaNumProperties[currentInsulaNumber] += 1;
+					console.log(layer.feature.properties.short_insula_name + " " + propertyCenter);
 				}
 			});
 			
@@ -341,7 +342,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 					centerCoord = [xTotal/numProperties, yTotal/numProperties];
 					insulaCentersDict[currentInsulaNumber]=centerCoord;
 					
-					//console.log( currentInsulaNumber + " " + numProperties + " " + centerCoord);
+					console.log( layer.feature.properties.short_insula_name + " " + numProperties + " " + centerCoord);
 				}
 			});
 			
