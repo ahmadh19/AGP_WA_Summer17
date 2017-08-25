@@ -336,7 +336,7 @@ function refineResults(filterOrSort) {
 	document.getElementById("search-results").innerHTML = xmlHttp.responseText;
 	//Without eval, innerHTML is a string instead of a list. Eval fixes this.
 	//making locationKeys of the list type.
-	var locationKeys=eval(document.getElementById("mapkeys").innerHTML);
+	locationKeys=eval(document.getElementById("mapkeys").innerHTML);
 	pompeiiMap.remove();
 	hercMap.remove();
 	window.initPompeiiMap(true,false,false,false,0,locationKeys);

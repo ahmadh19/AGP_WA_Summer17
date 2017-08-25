@@ -10,9 +10,6 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.elasticsearch.index.query.QueryBuilders.regexpQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -331,7 +328,6 @@ public class GraffitiController {
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 		List<Inscription> inscriptions = searchResults(request);
 		request.setAttribute("resultsLyst", inscriptions);
-		//request.setAttribute("searchQueryDesc", "filtering");
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
 		request.setAttribute("insulaLocationKeys", findInsulaLocations(inscriptions));
 		return "filter";
@@ -536,10 +532,10 @@ public class GraffitiController {
 		return inscription;
 	}
 
-	private static List<String> findLocationKeys(final List<Inscription> inscriptions) {
-		final List<String> locationKeys = new ArrayList<String>();
+	private static List<Integer> findLocationKeys(final List<Inscription> inscriptions) {
+		final List<Integer> locationKeys = new ArrayList<Integer>();
 		if (inscriptions != null) {
-			final Set<String> locationKeysSet = new TreeSet<String>();
+			final Set<Integer> locationKeysSet = new TreeSet<Integer>();
 			for (final Inscription inscription : inscriptions) {
 				locationKeysSet.add(inscription.getSpotKey());
 			}
@@ -548,9 +544,9 @@ public class GraffitiController {
 		return locationKeys;
 	}
 
-	private static List<String> findLocationKey(final Inscription inscription) {
-		final List<String> locationKeys = new ArrayList<String>();
-		final Set<String> locationKeysSet = new TreeSet<String>();
+	private static List<Integer> findLocationKey(final Inscription inscription) {
+		final List<Integer> locationKeys = new ArrayList<Integer>();
+		final Set<Integer> locationKeysSet = new TreeSet<Integer>();
 
 		locationKeysSet.add(inscription.getSpotKey());
 		locationKeys.addAll(locationKeysSet);
