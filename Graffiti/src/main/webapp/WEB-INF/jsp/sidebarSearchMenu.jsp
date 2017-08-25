@@ -107,13 +107,11 @@ button:disabled {
 <div id="popupButton" class="popover">
 	<div class="arrow"></div>
 	<div class="popover-content">
-		<p>
 		<table class="center">
 			<tr>
 				<td nowrap align="center"><div id="greekKeys"></div>
 			</tr>
 		</table>
-		</p>
 	</div>
 </div>
 
