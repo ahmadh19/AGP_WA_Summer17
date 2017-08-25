@@ -29,12 +29,8 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	currentZoomLevel=16;
 	/*
-	if(moreZoom){
-		currentZoomLevel=17;
-	}
-	else{
-		currentZoomLevel=16;
-	} */
+	 * if(moreZoom){ currentZoomLevel=17; } else{ currentZoomLevel=16; }
+	 */
 	
 	var totalInsulaGraffitisDict=new Array();
 	// The list of active insula markers.
@@ -96,9 +92,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		else if(propertyIdListToHighlight.length==1){
 			var newCenterCoordinates=[];
 			var idOfListHighlight=propertyIdListToHighlight[0];
-			propertyLayer.eachLayer(function(layer){
+			insulaLayer.eachLayer(function(layer){
 				if(layer.feature!=undefined){
-					if(layer.feature.properties.Property_Id==idOfListHighlight){
+					if(layer.feature.properties.insula_id==idOfListHighlight){
 						newCenterCoordinates=layer.getBounds().getCenter();
 						pompeiiMap.setView(newCenterCoordinates,INDIVIDUAL_PROPERTY_ZOOM);
 					}
@@ -179,8 +175,8 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// (given as a normal list in Java array form)
 	function showALabelOnMap(xYCoordinates,textToDisplay,textSize="small", markerType){
 		var myIcon= L.divIcon({ 
-		    //iconSize: new L.Point(0, 0),
-			//iconSize:0,
+		    // iconSize: new L.Point(0, 0),
+			// iconSize:0,
 			className: "labelClass",
 		    html: textToDisplay
 		});
@@ -460,6 +456,10 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		return feature.properties.clicked == true || feature.properties.Property_Id==propertyIdToHighlight || propertyIdListToHighlight.indexOf(feature.properties.Property_Id)>=0;
 	}
 	
+	function isInsulaSelected(feature) {
+		return feature.properties.clicked == true || feature.properties.insula_id==propertyIdToHighlight || propertyIdListToHighlight.indexOf(feature.properties.insula_id)>=0;
+	}
+	
 	function getBorderColorForCloseZoom(feature){
 		if (isPropertySelected(feature)) {
 			return 'black';
@@ -499,10 +499,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	    };
 	}
 	
-	
 	function insulaStyle(feature) {
 		borderColor=getBorderColorForCloseZoom(feature);
-		if( isPropertySelected(feature) && (feature.properties.insula_short_name == "I.8" || feature.properties.insula_short_name == "VII.12")) {
+		if( isInsulaSelected(feature) && (feature.properties.insula_short_name == "I.8" || feature.properties.insula_short_name == "VII.12")) {
 			fillColor = SELECTED_COLOR;
 		}
 		else if (colorDensity && regioViewZoomThresholdReached())  {
@@ -538,7 +537,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	function getFillColorForFeature(feature){
 		// If the property is selected and there is no colorDensity, make the
 		// fill color be maroon(dark red).
-		if(isPropertySelected(feature) && (feature.properties.insula_short_name == "I.8" || feature.properties.insula_short_name == "VII.12")){
+		if(isInsulaSelected(feature) && (feature.properties.insula_short_name == "I.8" || feature.properties.insula_short_name == "VII.12")){
 			return SELECTED_COLOR;
 		} 
 		// an orangey-yellow
@@ -592,6 +591,25 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		}
 	}
 	
+	// Sets color for properties which the cursor is moving over.
+	function highlightInsula(e) {
+		if(interactive ){
+			if( e.target.feature.properties.insula_short_name == "I.8" || 
+					e.target.feature.properties.insula_short_name == "VII.12") {
+				var layer = e.target;
+				layer.setStyle({
+					color:'maroon', fillcolor: 'maroon',
+					strokeWidth:"150"
+				});
+
+				if (!L.Browser.ie && !L.Browser.opera) {
+					layer.bringToFront();
+				}
+				info.update(layer.feature.properties);
+			}
+		}
+	}
+	
 	// Sorts items based on whether they have been clicked
 	// or not. If they have been and are clicked again, sets to false and vice
 	// versa.
@@ -619,7 +637,8 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// Sorts items based on whether they have been clicked
 	// or not. If they have been and are clicked again, sets to false and vice
 	// versa.
-	// This version is for insula click compatibility only. When we introduce property clicks,
+	// This version is for insula click compatibility only. When we introduce
+	// property clicks,
 	// it will need redesign.
 	function showInsulaDetails(e) {
 		if(interactive){
@@ -741,7 +760,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	function onEachInsulaFeature(feature, layer) {
 	    layer.on({
-	        mouseover: highlightFeature,
+	        mouseover: highlightInsula,
 	        mouseout: resetHighlight,
 	        click: showInsulaDetails,
 	    });
@@ -816,20 +835,15 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	}
 	
 	/*
-	// Collects the ids of the clicked item objects (the property id).
-	function collectClicked() {
-		var propIdsOfClicked = [];
-		
-		var selectedProps = getUniqueClicked();
-		var length = selectedProps.length;
-		for (var i=0; i<length; i++) {
-			var property = selectedProps[i];
-			var propertyID = property.feature.properties.Property_Id;
-			propIdsOfClicked.push(propertyID);
-		}
-		return propIdsOfClicked;
-	}
-	*/
+	 * // Collects the ids of the clicked item objects (the property id).
+	 * function collectClicked() { var propIdsOfClicked = [];
+	 * 
+	 * var selectedProps = getUniqueClicked(); var length =
+	 * selectedProps.length; for (var i=0; i<length; i++) { var property =
+	 * selectedProps[i]; var propertyID =
+	 * property.feature.properties.Property_Id;
+	 * propIdsOfClicked.push(propertyID); } return propIdsOfClicked; }
+	 */
 	
 	function collectClicked() {
 		var insulaIdsOfClicked = [];
@@ -864,36 +878,25 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	}
 	
 	/*
-	// Displays the Selected Properties and their corresponding information in
-	// an HTML table formatted.
-	// Achieved by mixing html and javascript, accessing text properties of the
-	// regions(items).
-	function displayHighlightedRegions() {
-		// when you click on the map, it updates the selection info
-		if(!insulaViewZoomThresholdReached()){
-			var clickedAreasTable = getUniqueClicked();
-			var html = "<strong>Selected Properties:</strong><ul>";
-			var length = clickedAreasTable.length;
-			for (var i=0; i<length; i++) {
-				var property = clickedAreasTable[i];
-				if (property.feature.properties.clicked && property.feature.properties.PinP_Addre) {
-					html += "<li>" +property.feature.properties.Property_Name + ", " + 
-							property.feature.properties.PinP_Addre + "<p>"+property.feature.properties.Number_Of_Graffiti+" graffiti</p>"+ "</li>";
-				}
-			}
-			html += "</ul>";
-			// Checks to avoid error for element is null.
-			var elem = document.getElementById("selectionDiv");
-			  if(typeof elem !== 'undefined' && elem !== null) {
-				  document.getElementById("selectionDiv").innerHTML = html;
-			  }
-		}
-		else if( !regioViewZoomThresholdReached()){
-			displayHighlightedInsula();
-			var clickedAreasTable = getUniqueClicked();
-		}	
-	}
-	*/
+	 * // Displays the Selected Properties and their corresponding information
+	 * in // an HTML table formatted. // Achieved by mixing html and javascript,
+	 * accessing text properties of the // regions(items). function
+	 * displayHighlightedRegions() { // when you click on the map, it updates
+	 * the selection info if(!insulaViewZoomThresholdReached()){ var
+	 * clickedAreasTable = getUniqueClicked(); var html = "<strong>Selected
+	 * Properties:</strong><ul>"; var length = clickedAreasTable.length; for
+	 * (var i=0; i<length; i++) { var property = clickedAreasTable[i]; if
+	 * (property.feature.properties.clicked &&
+	 * property.feature.properties.PinP_Addre) { html += "<li>"
+	 * +property.feature.properties.Property_Name + ", " +
+	 * property.feature.properties.PinP_Addre + "<p>"+property.feature.properties.Number_Of_Graffiti+"
+	 * graffiti</p>"+ "</li>"; } } html += "</ul>"; // Checks to avoid
+	 * error for element is null. var elem =
+	 * document.getElementById("selectionDiv"); if(typeof elem !== 'undefined' &&
+	 * elem !== null) { document.getElementById("selectionDiv").innerHTML =
+	 * html; } } else if( !regioViewZoomThresholdReached()){
+	 * displayHighlightedInsula(); var clickedAreasTable = getUniqueClicked(); } }
+	 */
 	
 	function displayHighlightedRegions() {
 		// when you click on the map, it updates the selection info
@@ -919,7 +922,10 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		center: [40.750950, 14.488600],
 		zoom: currentZoomLevel,
 		minZoom: REGIO_VIEW_ZOOM,
-		maxZoom: INSULA_VIEW_ZOOM, /* can change this when we want the property view as well */
+		maxZoom: INSULA_VIEW_ZOOM, /*
+									 * can change this when we want the property
+									 * view as well
+									 */
 		maxBounds: bounds
 	});
 	
@@ -930,9 +936,12 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	pompeiiWallsLayer.addTo(pompeiiMap);
 	
 	// Syncs with mapbox
-	//var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
-	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
-	//pompeiiMap.addLayer(grayscale);
+	// var mapboxUrl =
+	// 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token='
+	// + mapboxAccessToken;
+	// var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light',
+	// attribution: 'Mapbox Light'});
+	// pompeiiMap.addLayer(grayscale);
 	
 	pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: insulaStyle, onEachFeature: onEachInsulaFeature });
 	pompeiiInsulaLayer.addTo(pompeiiMap);
