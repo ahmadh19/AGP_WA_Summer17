@@ -164,37 +164,6 @@ public class GraffitiController {
 		return "inputData";
 	}
 
-	/*
-	 * reads in the file inputed from inputData.jsp and currently reads each
-	 * line and check to see if it contains the string "EDR" to check if that
-	 * line is a valid line holding information for a new inscription. Thus it
-	 * is required for the inscriptions in the csv file to have an EDR number
-	 * starting with EDR
-	 */
-	@RequestMapping(value = "/inputDataComplete", method = RequestMethod.POST)
-	public String inputDataComplete(final HttpServletRequest request) {
-
-		final ArrayList<ArrayList<String>> inscriptions = new ArrayList<ArrayList<String>>();
-		try {
-			BufferedReader file_in = new BufferedReader(new InputStreamReader(request.getInputStream()));
-			String line = new String("");
-			int count = 0;
-			while ((line = file_in.readLine()) != null) {
-				if (line.contains("EDR")) {
-					System.out.println(line);
-					inscriptions.add(separateFields(line));
-				}
-				count++;
-			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
-
-		this.graffitiDao.insertEdrInscription(inscriptions);
-
-		return "inputDataComplete";
-	}
-
 	// Used for mapping the URI to show inscriptions. It has a similar structure
 	// to the mapping done to /result below
 	@RequestMapping(value = "/region/{city}", method = RequestMethod.GET)
@@ -303,7 +272,8 @@ public class GraffitiController {
 			request.setAttribute("images", i.getImages());
 			request.setAttribute("imagePages", i.getPages());
 			request.setAttribute("thumbnails", i.getThumbnails());
-			request.setAttribute("findLocationKeys", findLocationKeys(i));
+			request.setAttribute("findLocationKeys", findLocationKey(i));
+			request.setAttribute("insulaLocationKeys", findInsulaLocation(i));
 			request.setAttribute("inscription", i);
 			request.setAttribute("city", city);
 			request.getSession().setAttribute("returnFromEDR", edr);
@@ -338,6 +308,7 @@ public class GraffitiController {
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
+		request.setAttribute("insulaLocationKeys", findInsulaLocations(inscriptions));
 		return "results";
 	}
 
@@ -360,8 +331,9 @@ public class GraffitiController {
 		s.setAttribute("returnURL", ControllerUtils.getFullRequest(request));
 		List<Inscription> inscriptions = searchResults(request);
 		request.setAttribute("resultsLyst", inscriptions);
-		request.setAttribute("searchQueryDesc", "filtering");
+		//request.setAttribute("searchQueryDesc", "filtering");
 		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
+		request.setAttribute("insulaLocationKeys", findInsulaLocations(inscriptions));
 		return "filter";
 	}
 
@@ -374,7 +346,6 @@ public class GraffitiController {
 
 		request.setAttribute("resultsLyst", inscriptions);
 		request.setAttribute("searchQueryDesc", "filtering");
-		request.setAttribute("findLocationKeys", findLocationKeys(inscriptions));
 		return "print";
 	}
 
@@ -571,31 +542,37 @@ public class GraffitiController {
 			final Set<String> locationKeysSet = new TreeSet<String>();
 			for (final Inscription inscription : inscriptions) {
 				locationKeysSet.add(inscription.getSpotKey());
-				/* locationKeysSet.add(inscription.getGenSpotKey()); */
 			}
 			locationKeys.addAll(locationKeysSet);
 		}
 		return locationKeys;
 	}
 
-	private static List<String> findLocationKeys(final Inscription inscription) {
+	private static List<String> findLocationKey(final Inscription inscription) {
 		final List<String> locationKeys = new ArrayList<String>();
 		final Set<String> locationKeysSet = new TreeSet<String>();
 
 		locationKeysSet.add(inscription.getSpotKey());
-		/* locationKeysSet.add(inscription.getGenSpotKey()); */
 		locationKeys.addAll(locationKeysSet);
 		return locationKeys;
 	}
-
-	private static ArrayList<String> separateFields(String line) {
-		final ArrayList<String> fields = new ArrayList<String>();
-		while (line.contains(",")) {
-			fields.add(line.substring(0, line.indexOf(",")));
-			line = line.substring(line.indexOf(",") + 1);
+	
+	private static List<Integer> findInsulaLocation(final Inscription inscription) {
+		final List<Integer> locationKeys = new ArrayList<Integer>();
+		locationKeys.add(inscription.getAgp().getProperty().getInsula().getId());
+		return locationKeys;
+	}
+	
+	private static List<Integer> findInsulaLocations(final List<Inscription> inscriptions) {
+		final List<Integer> locationKeys = new ArrayList<Integer>();
+		if (inscriptions != null) {
+			final Set<Integer> locationKeysSet = new TreeSet<Integer>();
+			for (final Inscription inscription : inscriptions) {
+				locationKeysSet.add(inscription.getAgp().getProperty().getInsula().getId());
+			}
+			locationKeys.addAll(locationKeysSet);
 		}
-		fields.add(line);
-		return fields;
+		return locationKeys;
 	}
 
 	public GraffitiDao getGraffitiDao() {
