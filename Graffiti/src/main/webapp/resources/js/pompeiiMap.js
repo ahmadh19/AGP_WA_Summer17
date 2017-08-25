@@ -13,23 +13,27 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	northEast = L.latLng(43.754, 15.494),
 	bounds = L.latLngBounds(southWest, northEast);
 	
+	var propertyLayer, pompeiiWallsLayer, pompeiiInsulaLayer;
+	
 	var currentZoomLevel;
 	var showInsulaMarkers;
 	
-	var regioViewZoomLevel=16;
+	console.log( propertyIdToHighlight);
+	console.log(propertyIdListToHighlight);
 	
+	var REGIO_VIEW_ZOOM=16;
 	// The minimum zoom level to show insula view instead of property
 	// view (smaller zoom level means more zoomed out)
-	var insulaViewZoomLevel=17;
+	var INSULA_VIEW_ZOOM = 17;
+	var INDIVIDUAL_PROPERTY_ZOOM=19;
 	
 	if(moreZoom){
-		currentZoomLevel=15;
+		currentZoomLevel=17;
 	}
 	else{
 		currentZoomLevel=16;
 	}
 	
-	var zoomLevelForIndividualProperty=19;
 	var totalInsulaGraffitisDict=new Array();
 	// The list of active insula markers.
 	// Can be iterated through to remove all markers from the map(?)
@@ -42,7 +46,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// A list filled with nested list of the full name, id, and short name of
 	// each insula selected.
 	var clickedInsula=[];
-	
+		
 	// Holds the center latitudes and longitudes of all insula on the map.
 	var insulaCentersDict=[];
 	var insulaGroupIdsList=[];
@@ -52,53 +56,8 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	var regioCentersDict={};
 	var regioNamesList=[];
 	var graffitiInEachRegioDict={};
+		
 	
-	// Syncs with mapbox
-	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
-	
-	var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
-	
-	// Fires when the map is initialized
-	pompeiiMap = new L.map('pompeiimap', {
-		center: [40.750950, 14.488600],
-		zoom: currentZoomLevel,
-		minZoom: currentZoomLevel,
-		maxZoom: insulaViewZoomLevel, // can change this when we want the property view as well
-		maxBounds: bounds,
-	});
-	
-	var propertyLayer = L.geoJson(pompeiiPropertyData, { style: propertyStyle, onEachFeature: onEachPropertyFeature });
-	// propertyLayer.addTo(pompeiiMap);
-	
-	var pompeiiWallsLayer = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
-	pompeiiWallsLayer.addTo(pompeiiMap);
-	
-	//pompeiiMap.addLayer(grayscale);
-	
-	var pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: insulaStyle, onEachFeature: onEachInsulaFeature });
-	// pompeiiInsulaLayer.addTo(pompeiiMap);
-	
-	if( interactive && colorDensity){ 
-		// Insula Functions:
-		makeInsulaCentersDict(); 
-		makeTotalInsulaGraffitiDict();
-		makeInsulaIdsListShortNamesList(); 
-
-		// Regio Functions:
-		makeRegioCentersDict(); 
-		makeTotalRegioGraffitiDict();
-		makeListOfRegioNames();
-
-		dealWithLabelsAndSelection(); 
-		pompeiiMap.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"})); 
-	}
-	 
-	
-	// A listener for zoom events.
-	pompeiiMap.on('zoomend', function(e) {
-		dealWithInsulaLevelPropertyView();
-		dealWithLabelsAndSelection();
-	});
 	
 	// Shows or hides insula labels depending on zoom levels and if the map is
 	// interactive
@@ -129,7 +88,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 				if(layer.feature!=undefined){
 					if(layer.feature.properties.Property_Id==propertyIdToHighlight){
 						newCenterCoordinates=layer.getBounds().getCenter();
-						propertyLayer.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
+						propertyLayer.setView(newCenterCoordinates,INDIVIDUAL_PROPERTY_ZOOM);
 					}
 				}	
 			});
@@ -141,14 +100,12 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 				if(layer.feature!=undefined){
 					if(layer.feature.properties.Property_Id==idOfListHighlight){
 						newCenterCoordinates=layer.getBounds().getCenter();
-						pompeiiMap.setView(newCenterCoordinates,zoomLevelForIndividualProperty);
+						pompeiiMap.setView(newCenterCoordinates,INDIVIDUAL_PROPERTY_ZOOM);
 					}
 				}
 			});
 		}
 	}
-	
-	showCloseUpView();
 	
 	// Builds the global list of insula ids.
 	function makeInsulaIdsListShortNamesList(){
@@ -170,7 +127,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		var someName;
 		pompeiiInsulaLayer.eachLayer(function(layer){
 			if(layer.feature!=undefined){
-				// console.log(layer.feature.properties.PRIMARY_DO);
 				someName=layer.feature.properties.insula_short_name.split(".")[0];
 				if(regioNamesList.indexOf(someName)==-1){
 					regioNamesList.push(someName);
@@ -259,7 +215,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// Shows the short names of each insula in black
 	// at the center ccoordinates.
 	function displayInsulaLabels(){
-		// console.log("11");
 		var i;
 		var insulaId;
 		var insulaCenterCoordinates;
@@ -357,10 +312,9 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	// Used to find where to place the labels of each insula on the map, upon
 	// iteration through this list.
 	function makeInsulaCentersDict(){
-		// console.log("12");
 		var currentInsulaNumber;
 		// Manually set as the first insula id for pompeii
-		var oldInsulaNumber=183; 
+		var oldInsulaNumber=-1; 
 		var xSoFar=0;
 		var ySoFar=0;
 		var latLngList;
@@ -494,12 +448,12 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	function regioViewZoomThresholdReached(){
 		currentZoomLevel=pompeiiMap.getZoom();
-		return (currentZoomLevel<=regioViewZoomLevel && colorDensity);
+		return (currentZoomLevel<=REGIO_VIEW_ZOOM && colorDensity);
 	}
 	
 	function insulaViewZoomThresholdReached(){
 		currentZoomLevel=pompeiiMap.getZoom();
-		return (currentZoomLevel<=insulaViewZoomLevel && colorDensity);
+		return (currentZoomLevel<=INSULA_VIEW_ZOOM && colorDensity);
 	}
 	
 	function isPropertySelected(feature) {
@@ -534,7 +488,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		else if( colorDensity ) {
 			fillColor = getFillColor(feature.properties.Number_Of_Graffiti);
 		} else {
-			fillColor=getFillColorByFeature(feature);
+			fillColor=getFillColorForFeature(feature);
 		}
 		return { 
 	    	fillColor:fillColor,
@@ -560,7 +514,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 			fillColor = getFillColor(feature.properties.number_of_graffiti);
 		} 
 		else {
-			fillColor=getFillColorByFeature(feature);
+			fillColor=getFillColorForFeature(feature);
 		}
 		return { 
 	    	fillColor:fillColor,
@@ -624,7 +578,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	// Sets color for properties which the cursor is moving over.
 	function highlightFeature(e) {
-		// why was this in here? --> && !insulaViewZoomThresholdReached()
 		if(interactive){
 			var layer = e.target;
 			layer.setStyle({
@@ -765,8 +718,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	}
 	
 	
-	// Try: just commenting first line. Then, the map still works but colors
-	// remain unchanged when clicked twice.
 	// Used to reset the color, size, etc of items to their default state (ie.
 	// after being clicked twice)
 	function resetHighlight(e) {
@@ -822,7 +773,6 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		info.addTo(pompeiiMap);
 	}
 	
-	updateHoverText();
 	// Marks all properties inside of selected insula as selected by
 	// adding them to the clickedInsula list.
 	function selectPropertiesInAllSelectedInsula(uniqueClicked){
@@ -965,7 +915,53 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		  	}
 	}	
 	
+	pompeiiMap = new L.map('pompeiimap', {
+		center: [40.750950, 14.488600],
+		zoom: currentZoomLevel,
+		minZoom: currentZoomLevel,
+		maxZoom: INSULA_VIEW_ZOOM, /* can change this when we want the property view as well */
+		maxBounds: bounds
+	});
+	
+	propertyLayer = L.geoJson(pompeiiPropertyData, { style: propertyStyle, onEachFeature: onEachPropertyFeature });
+	// propertyLayer.addTo(pompeiiMap);
+	
+	pompeiiWallsLayer = L.geoJson(pompeiiWallsData, {style: wallStyle, onEachFeature: onEachWallFeature});
+	pompeiiWallsLayer.addTo(pompeiiMap);
+	
+	// Syncs with mapbox
+	//var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
+	//var grayscale = new L.tileLayer(mapboxUrl, {id: 'mapbox.light', attribution: 'Mapbox Light'});
+	//pompeiiMap.addLayer(grayscale);
+	
+	pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: insulaStyle, onEachFeature: onEachInsulaFeature });
+	pompeiiInsulaLayer.addTo(pompeiiMap);
+		
+	//if( interactive && colorDensity){ 
+		// Insula Functions:
+		makeInsulaCentersDict(); 
+		makeTotalInsulaGraffitiDict();
+		makeInsulaIdsListShortNamesList(); 
+
+		// Regio Functions:
+		makeRegioCentersDict(); 
+		makeTotalRegioGraffitiDict();
+		makeListOfRegioNames();
+
+		dealWithLabelsAndSelection(); 
+		pompeiiMap.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"})); 
+	//}
+	 
+	// A listener for zoom events.
+	pompeiiMap.on('zoomend', function(e) {
+		dealWithInsulaLevelPropertyView();
+		dealWithLabelsAndSelection();
+	});
 	dealWithInsulaLevelPropertyView();
+	
+	updateHoverText();
+	
+	showCloseUpView();
 	
 	// Handles the events
 	var el = document.getElementById("search");
