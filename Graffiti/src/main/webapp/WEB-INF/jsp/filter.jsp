@@ -5,14 +5,15 @@
 <%@ page import="java.util.*"%>
 
 <%
-	List<String> newLocationKeys = (List<String>) request.getAttribute("findLocationKeys");
+	List<String> updatedLocationKeys = (List<String>) request.getAttribute("findLocationKeys");
+	List<Integer> updatedInsulaKeys = (List<Integer>) request.getAttribute("insulaLocationKeys");
 %>
 
-<div id="mapkeys" style="display: none;"><%=newLocationKeys%></div>
+<div id="mapkeys" style="display: none;"><%=updatedLocationKeys%>,<%=updatedInsulaKeys%></div>
 <div style="width: 480px">
 <p class="alert alert-info">
 
-<c:out value="${num} results found ${searchQueryDesc}" /></p>
+<c:out value="${num} results found" /></p>
 <a href="<%=request.getContextPath()%>/filtered-results/json"
 	id="bulkJson">
 	<button class="btn btn-agp btn-sm">Export as JSON</button>

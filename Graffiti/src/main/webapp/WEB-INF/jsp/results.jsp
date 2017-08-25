@@ -21,8 +21,13 @@ function setLocationKeys(){
 	<%List<String> locationKeys = (List<String>) request.getAttribute("findLocationKeys");
 			if (locationKeys == null) {
 				locationKeys = new ArrayList();
-			}%>
-	locationKeys = <%=locationKeys%>;
+			}
+		List<Integer> insulaLocations = (List<Integer>) request.getAttribute("insulaLocationKeys");
+			if( insulaLocations == null ) {
+				insulaLocations = new ArrayList();
+			}
+			%>
+	locationKeys = <%=locationKeys%>, <%=insulaLocations%>;
 }
 
 function selectImg(ind, k, shortId, longId){
