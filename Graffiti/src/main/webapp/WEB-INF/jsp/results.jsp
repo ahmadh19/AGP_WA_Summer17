@@ -149,6 +149,7 @@ hr.main-table {
 	/*align: right;*/
 	display: inline;
 	margin: 500px 0px 0px 715px;
+	z-index: -1;
 }
 
 .btn-agp {
@@ -193,7 +194,7 @@ ul#searchTerms li {
 		setLocationKeys();
 		//Apparently, these need to be used in same order as they are in div. 
 		window.initHerculaneumMap(true, false, false, false, 0, locationKeys);
-		window.initPompeiiMap(true, false, false, false, 0, locationKeys);
+		window.initPompeiiMap(false, false, false, false, 0, locationKeys);
 	</script>
 </body>
 </html>
