@@ -65,7 +65,7 @@ h3 {
 			<p />
 		</c:if>
 		<div>
-			<p class="alert alert-info">This site is an active work in progress. More updates coming soon.</p>
+			<p class="alert alert-info">This site is an active work in progress. More updates are coming soon.</p>
 		</div>
 		<p style="font-size: 16px; text-align: center;">Welcome to The
 			Ancient Graffiti Project, a digital resource and search engine for locating and

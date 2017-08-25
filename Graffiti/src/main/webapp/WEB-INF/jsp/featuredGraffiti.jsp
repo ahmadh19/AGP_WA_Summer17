@@ -130,93 +130,112 @@ a.darken:hover img {
 -webkit-transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (-10
 deg
+
+
 );
-
-
-    
-
 }
 70%
 {
 -webkit-transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (10
 deg
+
+
 );
-
-
-    
-
 }
 100%
 {
 -webkit-transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (0
 deg
+
+
 );
-
-
-        
-
 opacity
+
+
 
 
 :
 
+
  
+
 
 1;
 }
@@ -232,93 +251,112 @@ opacity
 -moz-transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (-10
 deg
+
+
 );
-
-
-    
-
 }
 70%
 {
 -moz-transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (10
 deg
+
+
 );
-
-
-    
-
 }
 100%
 {
 -moz-transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (0
 deg
+
+
 );
-
-
-        
-
 opacity
+
+
 
 
 :
 
+
  
+
 
 1;
 }
@@ -334,93 +372,112 @@ opacity
 -o-transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (-10
 deg
+
+
 );
-
-
-    
-
 }
 70%
 {
 -o-transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (10
 deg
+
+
 );
-
-
-    
-
 }
 100%
 {
 -o-transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (0
 deg
+
+
 );
-
-
-        
-
 opacity
+
+
 
 
 :
 
+
  
+
 
 1;
 }
@@ -436,93 +493,112 @@ keyframes flipInX { 0% {
 transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (-10
 deg
+
+
 );
-
-
-    
-
 }
 70%
 {
 transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (10
 deg
+
+
 );
-
-
-    
-
 }
 100%
 {
 transform
 
 
+
+
 :
 
+
  
+
 
 perspective
 
 
+
+
 (400
 px
+
+
 )
-
- 
-
 rotateX
+
+
 
 
 (0
 deg
+
+
 );
-
-
-        
-
 opacity
+
+
 
 
 :
 
+
  
+
 
 1;
 }
@@ -537,14 +613,13 @@ opacity
 	backface-visibility: visible !important;
 	animation-name: flipInX;
 }
-</style>
-<!--  Function to hide the gallery on load -->
-<script>
-	$(document).ready(function() {
-		$("#gallery").hide();
-	});
-</script>
 
+.message {
+	text-align: center; 
+	font-size: 14pt;
+	color: lightgray;
+}
+</style>
 </head>
 <body>
 
@@ -553,11 +628,9 @@ opacity
 
 	<div class="container">
 		<div id="selectors">
-			<a href="<%=request.getContextPath()%>/TranslationQuiz"
-				 id="csv">
+			<a href="<%=request.getContextPath()%>/TranslationQuiz" id="csv">
 				<button class="btn btn-agp right-align">Translation Quiz</button>
-			</a> <a href="/about/teaching-resources/"
-				 id="csv">
+			</a> <a href="/about/teaching-resources/" id="csv">
 				<button class="btn btn-agp right-align">Teaching Resources</button>
 			</a>
 		</div>
@@ -566,70 +639,14 @@ opacity
 
 		<div id="portfolio">
 			<ul class="portfolio-grid">
-				<li><a href="<%=request.getContextPath()%>/themes/Herculaneum"
-					 class="darken"> <img
-						src="/Graffiti/resources/images/featured_graffiti/HerculaneumCity.png"
-						alt="Herculaneum" /> <span class="message">Description for
-							Herculaneum here</span>
-				</a></li>
-				<li><a href="<%=request.getContextPath()%>/themes/Pompeii"
-					 class="darken"> <img
-						src="/Graffiti/resources/images/featured_graffiti/PompeiiCity.png"
-						alt="Pompeii" /> <span class="message">Description for
-							Pompeii here</span>
-				</a></li>
-				<li><a
-					href="<%=request.getContextPath()%>/featured-graffiti/figural-graffiti"
-					 class="darken"> <img
-						src="/Graffiti/resources/images/featured_graffiti/FG.png"
-						alt="Figural Graffiti" /> <span class="message">Description
-							for Figural Graffiti here</span>
-				</a></li>
-				<!-- 
-                    <li>
-                        <a href="<%=request.getContextPath()%>/themes/Smyrna"  class="darken">
-                            <img src="/Graffiti/resources/images/featured_graffiti/SmyrnaCity.png" alt="Smyrna"/>
-                        	 <span class="message">Description for Smyrna here</span>
-                        </a>
-                    </li>
-     -->
-				<li><a href="<%=request.getContextPath()%>/themes/Love"
-					 class="darken"> <img
-						src="/Graffiti/resources/images/featured_graffiti/Love.png"
-						alt="Love" /> <span class="message">Description for Love
-							here</span>
-				</a></li>
-
-				<li><a href="<%=request.getContextPath()%>/themes/Baths"
-					 class="darken"> <img
-						src="/Graffiti/resources/images/featured_graffiti/Baths.png"
-						alt="Baths" /> <span class="message">Description for Baths
-							here</span>
-				</a></li>
-				<li><a href="<%=request.getContextPath()%>/themes/Gladiators"
-					 class="darken"> <img
-						src="/Graffiti/resources/images/featured_graffiti/Gladiators.png"
-						alt="Gladiators" /> <span class="message">Description for
-							Gladiators here</span>
-				</a></li>
-				<li><a href="<%=request.getContextPath()%>/themes/Food"
-					 class="darken"> <img
-						src="/Graffiti/resources/images/featured_graffiti/Food.png"
-						alt="Food" /> <span class="message">Description for Food
-							here</span>
-				</a></li>
-				<li><a href="<%=request.getContextPath()%>/themes/Travel"
-					 class="darken"> <img
-						src="/Graffiti/resources/images/featured_graffiti/Inns.jpg"
-						alt="Inns and Travel Graffiti" /> <span class="message">Description
-							for Travel here</span>
-				</a></li>
-				<li><a href="<%=request.getContextPath()%>/themes/Grammar"
-					 class="darken"> <img
-						src="/Graffiti/resources/images/featured_graffiti/Grammar.png"
-						alt="Grammar Graffiti" /> <span class="message">Description
-							for Grammar here</span>
-				</a></li>
+				<c:forEach var="theme" items="${themes}">
+					<li><a
+						href="<%=request.getContextPath()%>/themes/${theme.name}"
+						class="darken"> <img
+							src="/Graffiti/resources/images/featured_graffiti/${theme.name}.png"
+							alt="Herculaneum" /> <span class="message">${theme.description}</span>
+					</a></li>
+				</c:forEach>
 			</ul>
 		</div>
 	</div>

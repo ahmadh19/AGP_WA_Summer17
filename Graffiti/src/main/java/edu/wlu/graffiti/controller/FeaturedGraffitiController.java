@@ -44,21 +44,30 @@ public class FeaturedGraffitiController {
 	private ThemeDao themeDao;
 	
 	@RequestMapping(value = "/TranslationQuiz", method = RequestMethod.GET)
-	public String featuredHits(final HttpServletRequest request) {
-
+	public String translationQuiz(final HttpServletRequest request) {
 		final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
 		request.setAttribute("translationHits", greatestTranslationHits);
 
 		return "translationQuiz";
-
 	}
+	
+	@RequestMapping(value = "/featured-graffiti", method = RequestMethod.GET)
+	public String featuredHits(final HttpServletRequest request) {
+		final List<Theme> themes = themeDao.getThemes();
+		request.setAttribute("themes", themes);
+
+		return "featuredGraffiti";
+	}
+	
+	@RequestMapping(value = "/themes/Figural")
+	public String featuredFiguralGraffiti(final HttpServletRequest request) {
+		List<Inscription> greatestFiguralHits = graffitiDao.getGreatestFiguralHits();
+		request.setAttribute("figuralHits", greatestFiguralHits);
+		return "figuralGraffiti";
+	}
+	
 	@RequestMapping(value = "/themes/{themeName}", method = RequestMethod.GET)
 	public String searchThemedGraffiti(@PathVariable String themeName, final HttpServletRequest request) {
-
-		// Old code:
-		//final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
-		//request.setAttribute("translationHits", greatestTranslationHits);
-		
 		Theme theme = themeDao.getThemeByName(themeName);
 		
 		List<Inscription> inscriptions = graffitiDao.getInscriptionByTheme(theme.getId());
@@ -66,14 +75,8 @@ public class FeaturedGraffitiController {
 		request.setAttribute("theme", themeDao.getThemeByName(themeName));
 		
 		return "themedGraffitiResults";
-
 	}
 	
-	@RequestMapping(value = "/featured-graffiti/figural-graffiti")
-	public String featuredFiguralGraffiti(final HttpServletRequest request) {
-		List<Inscription> greatestFiguralHits = graffitiDao.getGreatestFiguralHits();
-		request.setAttribute("figuralHits", greatestFiguralHits);
-		return "figuralGraffiti";
-	}
+	
 
 }

@@ -140,17 +140,6 @@ public class GraffitiController {
 		return "searchHerculaneum";
 	}
 
-	@RequestMapping(value = "/featured-graffiti", method = RequestMethod.GET)
-	public String featuredHits(final HttpServletRequest request) {
-
-		final List<Inscription> greatestFiguralHits = this.graffitiDao.getGreatestFiguralHits();
-		final List<Inscription> greatestTranslationHits = this.graffitiDao.getGreatestTranslationHits();
-		request.setAttribute("figuralHits", greatestFiguralHits);
-		request.setAttribute("translationHits", greatestTranslationHits);
-
-		return "featuredGraffiti";
-
-	}
 	/*
 	 * 
 	 * @RequestMapping(value = "/new-featured-graffiti", method =
