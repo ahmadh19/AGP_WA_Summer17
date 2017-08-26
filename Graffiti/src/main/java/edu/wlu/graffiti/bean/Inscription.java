@@ -119,21 +119,21 @@ public class Inscription implements Comparable<Inscription> {
 	// send to map.jsp in order to highlight the map
 	// highlighting properties --> Just need to use the property id?
 	@JsonIgnore
-	public String getSpotKey() {
+	public int getSpotKey() {
 		if (getFindSpot() != null) { // TODO do we need to check this? when will
 										// an inscription not have a findspot?
-			return String.valueOf(agp.getProperty().getId());
+			return agp.getProperty().getId();
 		}
-		return "";
+		return -1;
 	}
 
 	// highlighting insula
 	@JsonIgnore
-	public String getGenSpotKey() {
-		if (getSpotKey() != "") { // TODO do we need to check this?
-			return String.valueOf(agp.getProperty().getInsula().getId());
+	public int getGenSpotKey() {
+		if (getSpotKey() != -1) { // TODO do we need to check this?
+			return agp.getProperty().getInsula().getId();
 		}
-		return "";
+		return 0;
 	}
 
 	public void setFindSpot(final String findSpot) {
