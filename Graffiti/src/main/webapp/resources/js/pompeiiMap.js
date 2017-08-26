@@ -784,9 +784,11 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	function updateHoverText(){
 		// TODO: Only do for the properties?
 		info.update = function (props) {
-			if(showHover && props){
-				this._div.innerHTML = (props ? props.insula_full_name
-						: 'Hover over property to see name');
+			if(showHover){
+				if(!props) 
+					this._div.innerHTML = 'Hover over property to see name';
+				else if(props.insula_full_name)
+					this._div.innerHTML = props.insula_full_name;
 			}
 		};
 		info.addTo(pompeiiMap);
