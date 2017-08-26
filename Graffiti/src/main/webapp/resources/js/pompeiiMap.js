@@ -945,6 +945,36 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 	
 	pompeiiInsulaLayer = L.geoJson(pompeiiInsulaData, { style: insulaStyle, onEachFeature: onEachInsulaFeature });
 	pompeiiInsulaLayer.addTo(pompeiiMap);
+	
+	var insulaLevelLegend = L.control({position: 'bottomright'});
+
+	insulaLevelLegend.onAdd = function (map) {
+
+		var div = L.DomUtil.create('div', 'info legend'),
+			/*
+			 * This was the original ranges list. Simply add or remove the numbers to manipulate the ranges on the legend. -Hammad
+			 * grades = [0, 5, 10, 20, 30, 40, 60, 80, 100, 130, 160, 190, 210, 240, 270, 300, 330, 360, 390, 420, 460, 500],
+			*/
+			grades = [0, 5, 10, 20, 30, 40, 60, 80, 100, 130, 160],
+			labels = [],
+			from, to;
+		
+		labels.push(
+				'<i style="background:' + getFillColor(0) + '"></i> ' + 0);
+		
+		for (var i = 0; i < grades.length; i++) {
+			from = grades[i];
+			to = grades[i + 1];
+
+			labels.push(
+				'<i style="background:' + getFillColor(from + 1) + '"></i> ' +
+				(from+1) + (to ? '&ndash;' + to : '+'));
+		}
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
+
 		
 	if( interactive && colorDensity){ 
 		// Insula Functions:
@@ -958,6 +988,7 @@ function initPompeiiMap(moreZoom=false,showHover=true,colorDensity=true,interact
 		makeListOfRegioNames();
 
 		dealWithLabelsAndSelection(); 
+		insulaLevelLegend.addTo(pompeiiMap);
 		pompeiiMap.addControl(new L.Control.Compass({autoActive: true, position: "bottomleft"})); 
 	}
 	 
