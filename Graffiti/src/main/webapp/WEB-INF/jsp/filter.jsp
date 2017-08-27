@@ -13,7 +13,7 @@
 <div id="mapkeys" style="display:none;"><%=updatedLocationKeys%></div>
 <div style="width: 480px">
 	<p class="alert alert-info">
-		<c:out value="${num} results" />
+		<c:out value="${num} results found" />
 	</p>
 	<a href="<%=request.getContextPath()%>/filtered-results/json"
 		id="bulkJson">
