@@ -58,6 +58,10 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	    onEachFeature: onEachProperty
 	}).addTo(hercMap);
 	
+	var herculaneumInsula = L.geoJson(herculaneumInsulaData, {
+		style: insulaStyle
+	}).addTo(hercMap);
+	
 	
 	// Sinks with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
@@ -326,7 +330,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 					pointsAccumulatorDict[currentInsulaNumber][0] += propertyCenter[0];
 					pointsAccumulatorDict[currentInsulaNumber][1] += propertyCenter[1];
 					insulaNumProperties[currentInsulaNumber] += 1;
-					console.log(layer.feature.properties.short_insula_name + " " + propertyCenter);
+					//console.log(layer.feature.properties.short_insula_name + " " + propertyCenter);
 				}
 			});
 			
@@ -342,7 +346,7 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 					centerCoord = [xTotal/numProperties, yTotal/numProperties];
 					insulaCentersDict[currentInsulaNumber]=centerCoord;
 					
-					console.log( layer.feature.properties.short_insula_name + " " + numProperties + " " + centerCoord);
+					//console.log( layer.feature.properties.short_insula_name + " " + numProperties + " " + centerCoord);
 				}
 			});
 			
@@ -470,6 +474,21 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		} else {
 			fillColor=getFillColorByFeature(feature);
 		}
+		return { 
+			fillColor:fillColor,
+			width:200,
+			height:200, 
+			weight: 1,
+			opacity: 1,
+			color: borderColor,
+			fillOpacity: 0.7,
+		};
+	}
+	
+	function insulaStyle(feature) {
+		borderColor="black";
+		fillColor = DEFAULT_COLOR;
+		
 		return { 
 			fillColor:fillColor,
 			width:200,
