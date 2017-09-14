@@ -71,7 +71,7 @@ CREATE TABLE agp_inscription_info (
     summary character varying(200),
     is_greatest_hit_translation boolean DEFAULT false,
     is_greatest_hit_figural boolean DEFAULT false,
-    epidoc text,
+    content_epidocified text,
     letter_with_flourishes_height_min character varying(10),
     letter_with_flourishes_height_max character varying(10)
 );
