@@ -65,21 +65,24 @@ h3 {
 			<p />
 		</c:if>
 		<div>
-			<p class="alert alert-info">This site is an active work in progress. More updates are coming soon.</p>
+			<p class="alert alert-info">This site is an active work in
+				progress. More updates are coming soon.</p>
 		</div>
-		<p style="font-size: 16px; text-align: center;">Welcome to The
-			Ancient Graffiti Project, a digital resource and search engine for locating and
-			studying graffiti of the early Roman empire. More than 500 ancient graffiti are now
-			available here, ca. 300 from Herculaneum and another 200 from Pompeii
-			(from the Lupanar, Insula I.8, and other locations). <br/>Entries for the
-			Herculaneum graffiti now include photographs from our fieldwork in
-			2014-2016.</p>
+		<p style="font-size: 16px; text-align: center;">
+			Welcome to The Ancient Graffiti Project, a digital resource and
+			search engine for locating and studying graffiti of the early Roman
+			empire. More than 500 ancient graffiti are now available here, ca.
+			300 from Herculaneum and another 200 from Pompeii (from the Lupanar,
+			Insula I.8, and other locations). <br />Entries for the Herculaneum
+			graffiti now include photographs from our fieldwork in 2014-2016.
+		</p>
 	</div>
 	<!-- <h2 style="text-align:center;">Click on a map to search</h2> -->
 	<div style="max-width: 1100px; float: center; margin: auto;">
 		<div class="leftcol">
 			<h3>Herculaneum</h3>
 			<a href="searchHerculaneum"><img class="fluid-img"
+				alt="Map of Herculaneum properties"
 				src="<%=request.getContextPath()%>/resources/images/Herculaneum.jpg"
 				onmouseover="this.src='<%=request.getContextPath()%>/resources/images/exploreHerculaneum.jpg'"
 				onmouseout="this.src='<%=request.getContextPath()%>/resources/images/Herculaneum.jpg'" /></a>
@@ -88,6 +91,7 @@ h3 {
 		<div class="rightcol">
 			<h3>Pompeii</h3>
 			<a href="searchPompeii"><img class="fluid-img"
+				alt="Map of Pompeii"
 				src="<%=request.getContextPath()%>/resources/images/Pompeii.jpg"
 				onmouseover="this.src='<%=request.getContextPath()%>/resources/images/explorePompeii.jpg'"
 				onmouseout="this.src='<%=request.getContextPath()%>/resources/images/Pompeii.jpg'" /></a>
