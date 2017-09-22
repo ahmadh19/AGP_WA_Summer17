@@ -61,7 +61,7 @@ public class ImportEDRData {
 
 	private static final String UPDATE_CONTENT = "UPDATE edr_inscriptions SET " + "content = ? WHERE edr_id = ?";
 	private static final String UPDATE_CONTENT_EPIDOC = "UPDATE agp_inscription_info SET "
-			+ "epidoc = ? WHERE edr_id = ?";
+			+ "content_epidocified = ? WHERE edr_id = ?";
 	private static final String UPDATE_CIL = "UPDATE agp_inscription_info SET "
 			+ "cil = ? WHERE edr_id = ?";
 	private static final String UPDATE_BIB = "UPDATE edr_inscriptions SET " + "bibliography = ? WHERE edr_id = ?";
