@@ -35,12 +35,8 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	
 	var insulaMarkersList=[];
 	var clickedInsula=[];
+	var clickedAreas = [];
 	
-	// Holds the center latitudes and longitudes of all insula on the map.
-	var insulaCentersDict=[];
-	var insulaNumProperties=[];
-	var pointsAccumulatorDict=[];
-
 	var insulaGroupIdsList=[];
 	var insulaShortNamesDict=[];
 	
@@ -58,20 +54,17 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	    onEachFeature: onEachProperty
 	}).addTo(hercMap);
 	
-	var herculaneumInsula = L.geoJson(herculaneumInsulaData, {
+	var herculaneumInsulae = L.geoJson(herculaneumInsulaData, {
 		style: insulaStyle
 	}).addTo(hercMap);
-	
 	
 	// Sinks with mapbox(?), why do we need access tokens security?
 	var mapboxUrl = 'https://api.mapbox.com/styles/v1/martineza18/ciqsdxkit0000cpmd73lxz8o5/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken;
 	
-	var clickedAreas = [];
 	
 	var propertyLevelLegend = L.control({position: 'bottomright'});
 
 	propertyLevelLegend.onAdd = function (map) {
-
 		var div = L.DomUtil.create('div', 'info legend'),
 			grades = [0, 5, 10],
 			labels = [],
@@ -95,7 +88,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	var insulaLevelLegend = L.control({position: 'bottomright'});
 
 	insulaLevelLegend.onAdd = function (map) {
-
 		var div = L.DomUtil.create('div', 'info legend'),
 			//grades = [0, 5, 10, 20, 30, 40, 60, 80, 100, 130, 160, 190, 210, 240, 270, 300, 330, 360, 390, 420, 460, 500],
 			grades = [0, 5, 10, 20, 30, 40, 60, 80],
@@ -119,7 +111,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	};
 	
 	if(interactive){
-		makeInsulaCentersDict();
 		makeTotalInsulaGraffitiDict();
 		makeInsulaIdsListShortNamesList();
 		displayInsulaLabels();
@@ -300,76 +291,6 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		});
 	}
 	
-	// This function gets and returns a "dictionary" of the latitude and
-	// longitude of each insula given its id (as index).
-	// Used to find where to place the labels of each insula on the map, upon
-	// iteration through this list.
-	// This creates a weighted average; it isn't really the center.
-	function makeInsulaCentersDict(){
-		var currentInsulaNumber;
-		
-		if( interactive ) {
-			// total up the centers of all the properties for each insula.
-			hercMap.eachLayer(function(layer){
-				if(layer.feature!=undefined){
-					currentInsulaNumber=layer.feature.properties.insula_id;
-					currentCoordinatesList=layer.feature.geometry.coordinates;
-					// currentCoordinatesList is an array in an array in an array
-					propertyCenter=findCenter(currentCoordinatesList[0][0]);
-					// SS: Not sure why this code doesn't work.
-					//center = layer.getBounds().getCenter();
-					//propertyCenter=[center.lat, center.lng];
-					//console.log(propertyCenter);
-					
-					// create a new entry
-					if( pointsAccumulatorDict[currentInsulaNumber] == undefined) {
-						pointsAccumulatorDict[currentInsulaNumber] = [0,0];
-						insulaNumProperties[currentInsulaNumber] = 0;
-					}
-					// update entry
-					pointsAccumulatorDict[currentInsulaNumber][0] += propertyCenter[0];
-					pointsAccumulatorDict[currentInsulaNumber][1] += propertyCenter[1];
-					insulaNumProperties[currentInsulaNumber] += 1;
-					//console.log(layer.feature.properties.short_insula_name + " " + propertyCenter);
-				}
-			});
-			
-			// calculate the averages
-			hercMap.eachLayer(function(layer){
-				if(layer.feature!=undefined){
-					currentInsulaNumber=layer.feature.properties.insula_id;
-					
-					numProperties = insulaNumProperties[currentInsulaNumber];
-					xTotal = pointsAccumulatorDict[currentInsulaNumber][0];
-					yTotal = pointsAccumulatorDict[currentInsulaNumber][1];
-
-					centerCoord = [xTotal/numProperties, yTotal/numProperties];
-					insulaCentersDict[currentInsulaNumber]=centerCoord;
-					
-					//console.log( layer.feature.properties.short_insula_name + " " + numProperties + " " + centerCoord);
-				}
-			});
-			
-		}
-	}
-	
-	// Uses math to directly find and return the latitude and longitude of the
-	// center of a list of coordinates.
-	// Seems to be just one long list; not broken into coordinates
-	// Returns a list of the latitude, x and the longitude, y
-	function findCenter(coordinatesList){
-		var x=0;
-		var y=0;
-		var pointsSoFar=0;
-		for(var i=0;i<coordinatesList.length;i++){
-			x+=coordinatesList[i][0];
-			y+=coordinatesList[i][1];
-			pointsSoFar+=1;
-		}
-		return [x/pointsSoFar,y/pointsSoFar];
-	}
-	
-	
 	// Marks all properties inside of selected insula as selected by
 	// adding them to the clickedInsula list.
 	function selectPropertiesInAllSelectedInsula(uniqueClicked){
@@ -404,36 +325,20 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 		});
 	}
 	
-	function showALabelOnMap(xYCoordinates,textToDisplay){
-		if(textToDisplay!="OutsideWalls" && textToDisplay!="WithinWalls"){
-		var myIcon = L.divIcon({ 
-		    // iconSize: new L.Point(0, 0),
-			// iconSize:0,
-			className: "labelClassHerculaneum",
-		    html: textToDisplay
-		});
-		// you can set .my-div-icon styles in CSS
-		var myMarker=new L.marker([xYCoordinates[1], xYCoordinates[0]], {icon: myIcon}).addTo(hercMap);
-		insulaMarkersList.push(myMarker);
-		}
-	}
-	
-	// Shows the short names of each insula in black
-	// at the center coordinates.
+	// Shows the names of each insula at the center of the feature.
 	function displayInsulaLabels(){
-		var i;
-		var insulaId;
-		var insulaCenterCoordinates;
-		var shortInsulaName;
-		for(i=0;i<insulaGroupIdsList.length;i++){
-			insulaId=insulaGroupIdsList[i];
-			insulaCenterCoordinates=insulaCentersDict[insulaId];
-			// console.log(insulaCentersDict+"h");
-			shortInsulaName=insulaShortNamesDict[insulaId];
-			if(insulaCenterCoordinates && ! isNaN(insulaCenterCoordinates[0]) && ! isNaN(insulaCenterCoordinates[1])){
-				showALabelOnMap(insulaCenterCoordinates,shortInsulaName);
+		herculaneumInsulae.eachLayer(function(layer){
+			//layer.bindTooltip(layer.feature.properties.name, {permanent:true, direction:'centered'}).addTo(hercMap);
+			if(layer.feature!=undefined){
+				var myIcon = L.divIcon({ 
+					className: "labelClassHerculaneum",
+					html: layer.feature.properties.name,
+					iconAnchor: [0,0]
+				});
+				var myMarker=new L.marker(layer.getBounds().getCenter(), {icon: myIcon}).addTo(hercMap);
+				insulaMarkersList.push(myMarker);
 			}
-		}
+		});
 	}
 	
 	function zoomedOutThresholdReached(){
@@ -767,12 +672,3 @@ function initHerculaneumMap(moreZoom=false,showHover=true,colorDensity=true,inte
 	}
 	
 }
-	
-	
-	
-	
-
-
-
-
-	
