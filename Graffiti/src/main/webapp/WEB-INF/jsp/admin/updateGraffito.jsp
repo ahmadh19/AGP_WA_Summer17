@@ -238,9 +238,9 @@ input[name*="image"] {
 				</div>
 
 				<div class="form-group">
-					<label for="summary" class="col-sm-3 control-label">Summary:</label>
+					<label for="summary" class="col-sm-3 control-label">Caption:</label>
 					<div class="col-sm-6">
-						<textarea id="summary" name="summary" class="form-control">${i.agp.summary}</textarea>
+						<textarea id="summary" name="summary" class="form-control">${i.agp.caption}</textarea>
 					</div>
 				</div>
 
