@@ -124,7 +124,7 @@
 	<div class="block" id="Jumbo">
 		<div class="jumbotron">
 			<div class="container">
-				<h1>The Ancient Graffiti Project Search Engine</h1>
+				<h1>The Ancient Graffiti Project</h1>
 				<p>A digital resource for studying the graffiti of Herculaneum
 					and Pompeii</p>
 			</div>
